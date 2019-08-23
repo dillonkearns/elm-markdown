@@ -117,6 +117,28 @@ This is just some text
                                 , Body "This is just some text"
                                 ]
                             )
+        , test "long example" <|
+            \() ->
+                """# Heading
+
+This is just some text.
+
+## Subheading
+
+Body of the subheading.
+"""
+                    |> Parser.run multiParser
+                    |> Expect.equal
+                        (Ok
+                            [ Heading 1 "Heading"
+                            , Body ""
+                            , Body "This is just some text."
+                            , Body ""
+                            , Heading 2 "Subheading"
+                            , Body ""
+                            , Body "Body of the subheading."
+                            ]
+                        )
         ]
 
 
