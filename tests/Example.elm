@@ -19,8 +19,8 @@ body =
             )
 
 
-point : Parser Block
-point =
+lineParser : Parser Block
+lineParser =
     Parser.oneOf
         [ heading
         , body
@@ -49,7 +49,7 @@ heading =
 
 parse : String -> Result (List Parser.DeadEnd) Block
 parse input =
-    Parser.run point input
+    Parser.run lineParser input
 
 
 suite : Test
