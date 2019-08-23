@@ -23,7 +23,8 @@ type alias Attribute =
 
 type HtmlNode
     = Element String (List Attribute) (List HtmlNode)
-    | Text String
+      -- | Text String
+    | InnerBlocks (List Block)
 
 
 body : Parser Block
@@ -49,7 +50,7 @@ lineParser =
 xmlNodeToHtmlNode xmlNode =
     case xmlNode of
         XmlParser.Text value ->
-            Text value
+            InnerBlocks []
 
         XmlParser.Element a b c ->
             Element a b (List.map xmlNodeToHtmlNode c)
