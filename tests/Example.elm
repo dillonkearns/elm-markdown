@@ -104,9 +104,14 @@ childToParser node =
             Advanced.succeed (Html (Element tag attributes []))
 
         Text innerText ->
-            Body (innerText |> String.trim)
-                |> Advanced.succeed
+            case Advanced.run multiParser innerText of
+                Ok value ->
+                    succeed (Html (InnerBlocks value))
 
+                Err error ->
+                    Advanced.problem (Parser.Expecting (error |> Debug.toString))
+
+        -- |> Advanced.map Html
         _ ->
             Debug.todo "handle Element _ _ (_ :: _)"
 
@@ -244,28 +249,28 @@ Body of the subheading.
                                 )
                             ]
                         )
-        , skip <|
-            test "heading within HTML" <|
-                \() ->
-                    """# Heading
+        , test "heading within HTML" <|
+            \() ->
+                """# Heading
 <div>
 # Heading in a div!
+
 </div>
 """
-                        |> Advanced.run multiParser
-                        |> Expect.equal
-                            (Ok
-                                [ Heading 1 "Heading"
-                                , Html
-                                    (Element "div"
-                                        []
-                                        [ InnerBlocks
-                                            [ Heading 1 "Heading in a div!"
-                                            ]
+                    |> Advanced.run multiParser
+                    |> Expect.equal
+                        (Ok
+                            [ Heading 1 "Heading"
+                            , Html
+                                (Element "div"
+                                    []
+                                    [ InnerBlocks
+                                        [ Heading 1 "Heading in a div!"
                                         ]
-                                    )
-                                ]
-                            )
+                                    ]
+                                )
+                            ]
+                        )
         ]
 
 
