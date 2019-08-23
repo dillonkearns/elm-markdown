@@ -4,6 +4,7 @@ import Expect exposing (Expectation)
 import Parser
 import Parser.Advanced as Advanced exposing ((|.), (|=), Nestable(..), Step(..), andThen, chompUntil, chompWhile, getChompedString, inContext, int, lazy, loop, map, multiComment, oneOf, problem, succeed, symbol, token)
 import Test exposing (..)
+import XmlParser exposing (Node(..))
 
 
 type alias Parser a =
@@ -13,6 +14,7 @@ type alias Parser a =
 type Block
     = Heading Int String
     | Body String
+    | HtmlNode Node
 
 
 body : Parser Block
@@ -28,6 +30,7 @@ lineParser : Parser Block
 lineParser =
     oneOf
         [ heading
+        , XmlParser.element |> Advanced.map HtmlNode
         , body
         ]
 
@@ -142,6 +145,18 @@ Body of the subheading.
                             , Heading 2 "Subheading"
                             , Body ""
                             , Body "Body of the subheading."
+                            ]
+                        )
+        , test "embedded HTML" <|
+            \() ->
+                """# Heading
+<div></div>
+"""
+                    |> Advanced.run multiParser
+                    |> Expect.equal
+                        (Ok
+                            [ Heading 1 "Heading"
+                            , HtmlNode (Element "div" [] [])
                             ]
                         )
         ]
