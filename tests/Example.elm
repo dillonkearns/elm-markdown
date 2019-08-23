@@ -105,7 +105,6 @@ childToParser node =
             Advanced.succeed (Html (Element tag attributes []))
 
         Text innerText ->
-            -- InnerBlocks [ Body (innerText |> String.trim) ]
             Body (innerText |> String.trim)
                 |> Advanced.succeed
 
@@ -246,6 +245,28 @@ Body of the subheading.
                                 )
                             ]
                         )
+        , skip <|
+            test "heading within HTML" <|
+                \() ->
+                    """# Heading
+<div>
+# Heading in a div!
+</div>
+"""
+                        |> Advanced.run multiParser
+                        |> Expect.equal
+                            (Ok
+                                [ Heading 1 "Heading"
+                                , Html
+                                    (Element "div"
+                                        []
+                                        [ InnerBlocks
+                                            [ Heading 1 "Heading in a div!"
+                                            ]
+                                        ]
+                                    )
+                                ]
+                            )
         ]
 
 
