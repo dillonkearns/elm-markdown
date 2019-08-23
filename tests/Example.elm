@@ -35,7 +35,7 @@ parse input =
 
 suite : Test
 suite =
-    test "# Hello!" <|
+    test "Heading 1" <|
         \() ->
             "# Hello!"
                 |> parse
