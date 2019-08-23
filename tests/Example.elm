@@ -5,13 +5,11 @@ import Parser exposing ((|.), (|=), Parser, float, spaces, succeed, symbol)
 import Test exposing (..)
 
 
-type alias Heading =
-    { level : Int
-    , body : String
-    }
+type Block
+    = Heading Int String
 
 
-point : Parser Heading
+point : Parser Block
 point =
     succeed Heading
         |. symbol "#"
@@ -31,7 +29,7 @@ point =
             )
 
 
-parse : String -> Result (List Parser.DeadEnd) Heading
+parse : String -> Result (List Parser.DeadEnd) Block
 parse input =
     Parser.run point input
 
@@ -43,12 +41,12 @@ suite =
             \() ->
                 "# Hello!"
                     |> parse
-                    |> Expect.equal (Ok { level = 1, body = "Hello!" })
+                    |> Expect.equal (Ok (Heading 1 "Hello!"))
         , test "Heading 2" <|
             \() ->
                 "## Hello!"
                     |> parse
-                    |> Expect.equal (Ok { level = 2, body = "Hello!" })
+                    |> Expect.equal (Ok (Heading 2 "Hello!"))
 
         -- TODO limit parsing over heading level 7, see https://spec.commonmark.org/0.27/#atx-headings
         -- , test "Heading 7 is invalid" <|
