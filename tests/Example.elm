@@ -110,7 +110,7 @@ childToParser node =
             Advanced.succeed (Element tag attributes [])
 
         Text innerText ->
-            InnerBlocks [ Body innerText ]
+            InnerBlocks [ Body (innerText |> String.trim) ]
                 |> Advanced.succeed
 
         _ ->
