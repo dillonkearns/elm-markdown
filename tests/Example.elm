@@ -97,21 +97,10 @@ combine list =
                     |> Advanced.andThen
                         (\soFar ->
                             parser
-                                |> Advanced.map
-                                    (\a ->
-                                        let
-                                            _ =
-                                                Debug.log "a is" a
-                                        in
-                                        soFar
-                                    )
+                                |> Advanced.map (\a -> a :: soFar)
                         )
             )
             (Advanced.succeed [])
-
-
-
--- |> Advanced.map List.concat
 
 
 childToParser : Node -> Parser Block
