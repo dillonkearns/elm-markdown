@@ -37,10 +37,7 @@ statementsHelp revStmts =
     oneOf
         [ succeed (\stmt -> Loop (stmt :: revStmts))
             |= lineParser
-            -- |. spaces
             |. symbol "\n"
-
-        -- |. spaces
         , succeed ()
             |> map (\_ -> Done (List.reverse revStmts))
         ]
@@ -82,12 +79,13 @@ suite =
                     "## Hello!"
                         |> parse
                         |> Expect.equal (Ok (Heading 2 "Hello!"))
-
-            -- TODO limit parsing over heading level 7, see https://spec.commonmark.org/0.27/#atx-headings
-            -- , test "Heading 7 is invalid" <|
-            --     \() ->
-            --         "####### Hello!"
-            --             |> parserError
+            , skip <|
+                -- TODO limit parsing over heading level 7, see https://spec.commonmark.org/0.27/#atx-headings
+                test "Heading 7 is invalid"
+                <|
+                    \() ->
+                        "####### Hello!"
+                            |> parserError
             ]
         , test "plain text" <|
             \() ->
@@ -106,6 +104,19 @@ This is just some text
                             , Body "This is just some text"
                             ]
                         )
+        , skip <|
+            test "doesn't need to end in newline" <|
+                \() ->
+                    """# Heading
+                        This is just some text
+                        """
+                        |> Parser.run multiParser
+                        |> Expect.equal
+                            (Ok
+                                [ Heading 1 "Heading"
+                                , Body "This is just some text"
+                                ]
+                            )
         ]
 
 
