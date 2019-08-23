@@ -67,7 +67,7 @@ xmlNodeToHtmlNode parser =
                             Advanced.succeed
                                 (Element tag
                                     attributes
-                                    [ InnerBlocks parsedChildren ]
+                                    parsedChildren
                                 )
                         )
                         (thing children)
@@ -75,7 +75,7 @@ xmlNodeToHtmlNode parser =
         parser
 
 
-thing : List Node -> Parser (List Block)
+thing : List Node -> Parser (List HtmlNode)
 thing children =
     children
         |> List.map childToParser
@@ -97,16 +97,16 @@ combine list =
             (Advanced.succeed [])
 
 
-childToParser : Node -> Parser Block
+childToParser : Node -> Parser HtmlNode
 childToParser node =
     case node of
         XmlParser.Element tag attributes [] ->
-            Advanced.succeed (Html (Element tag attributes []))
+            Advanced.succeed (Element tag attributes [])
 
         Text innerText ->
             case Advanced.run multiParser innerText of
                 Ok value ->
-                    succeed (Html (InnerBlocks value))
+                    succeed (InnerBlocks value)
 
                 Err error ->
                     Advanced.problem (Parser.Expecting (error |> Debug.toString))
