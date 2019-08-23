@@ -7,10 +7,28 @@ import Test exposing (..)
 
 type Block
     = Heading Int String
+    | Body String
+
+
+body : Parser Block
+body =
+    succeed Body
+        |= Parser.getChompedString
+            (Parser.succeed ()
+                |. Parser.chompWhile (\c -> c /= '\n')
+            )
 
 
 point : Parser Block
 point =
+    Parser.oneOf
+        [ heading
+        , body
+        ]
+
+
+heading : Parser Block
+heading =
     succeed Heading
         |. symbol "#"
         |= (Parser.getChompedString
@@ -55,6 +73,11 @@ suite =
             --         "####### Hello!"
             --             |> parserError
             ]
+        , test "plain text" <|
+            \() ->
+                "This is just some text"
+                    |> parse
+                    |> Expect.equal (Ok (Body "This is just some text"))
         ]
 
 
