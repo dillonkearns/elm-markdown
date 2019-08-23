@@ -1,8 +1,13 @@
 module Example exposing (..)
 
 import Expect exposing (Expectation)
-import Parser exposing (..)
+import Parser
+import Parser.Advanced as Advanced exposing ((|.), (|=), Nestable(..), Step(..), andThen, chompUntil, chompWhile, getChompedString, inContext, int, lazy, loop, map, multiComment, oneOf, problem, succeed, symbol, token)
 import Test exposing (..)
+
+
+type alias Parser a =
+    Advanced.Parser String Parser.Problem a
 
 
 type Block
@@ -13,15 +18,15 @@ type Block
 body : Parser Block
 body =
     succeed Body
-        |= Parser.getChompedString
-            (Parser.succeed ()
-                |. Parser.chompWhile (\c -> c /= '\n')
+        |= getChompedString
+            (succeed ()
+                |. chompWhile (\c -> c /= '\n')
             )
 
 
 lineParser : Parser Block
 lineParser =
-    Parser.oneOf
+    oneOf
         [ heading
         , body
         ]
@@ -37,7 +42,7 @@ statementsHelp revStmts =
     oneOf
         [ succeed (\stmt -> Loop (stmt :: revStmts))
             |= lineParser
-            |. symbol "\n"
+            |. symbol (Advanced.Token "\n" (Parser.Expecting "newline"))
         , succeed ()
             |> map (\_ -> Done (List.reverse revStmts))
         ]
@@ -46,23 +51,23 @@ statementsHelp revStmts =
 heading : Parser Block
 heading =
     succeed Heading
-        |. symbol "#"
-        |= (Parser.getChompedString
-                (Parser.succeed ()
-                    |. Parser.chompWhile (\c -> c == '#')
+        |. symbol (Advanced.Token "#" (Parser.Expecting "#"))
+        |= (getChompedString
+                (succeed ()
+                    |. chompWhile (\c -> c == '#')
                 )
-                |> Parser.map
+                |> map
                     (\additionalHashes ->
                         String.length additionalHashes + 1
                     )
            )
-        |. Parser.chompWhile (\c -> c == ' ')
-        |= Parser.getChompedString (Parser.succeed () |. Parser.chompWhile (\c -> c /= '\n'))
+        |. chompWhile (\c -> c == ' ')
+        |= getChompedString (succeed () |. chompWhile (\c -> c /= '\n'))
 
 
-parse : String -> Result (List Parser.DeadEnd) Block
+parse : String -> Result (List (Advanced.DeadEnd String Parser.Problem)) Block
 parse input =
-    Parser.run lineParser input
+    Advanced.run lineParser input
 
 
 suite : Test
@@ -97,7 +102,7 @@ suite =
                 """# Heading
 This is just some text
 """
-                    |> Parser.run multiParser
+                    |> Advanced.run multiParser
                     |> Expect.equal
                         (Ok
                             [ Heading 1 "Heading"
@@ -110,7 +115,7 @@ This is just some text
                     """# Heading
                         This is just some text
                         """
-                        |> Parser.run multiParser
+                        |> Advanced.run multiParser
                         |> Expect.equal
                             (Ok
                                 [ Heading 1 "Heading"
@@ -127,7 +132,7 @@ This is just some text.
 
 Body of the subheading.
 """
-                    |> Parser.run multiParser
+                    |> Advanced.run multiParser
                     |> Expect.equal
                         (Ok
                             [ Heading 1 "Heading"
