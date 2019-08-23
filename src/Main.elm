@@ -7,10 +7,6 @@ import Html.Attributes exposing (..)
 import Url
 
 
-
--- MAIN
-
-
 main : Program () Model Msg
 main =
     Browser.application
@@ -21,10 +17,6 @@ main =
         , onUrlChange = UrlChanged
         , onUrlRequest = LinkClicked
         }
-
-
-
--- MODEL
 
 
 type alias Model =
@@ -79,21 +71,6 @@ subscriptions _ =
 
 view : Model -> Browser.Document Msg
 view model =
-    { title = "URL Interceptor"
-    , body =
-        [ text "The current URL is: "
-        , b [] [ text (Url.toString model.url) ]
-        , ul []
-            [ viewLink "/home"
-            , viewLink "/profile"
-            , viewLink "/reviews/the-century-of-the-self"
-            , viewLink "/reviews/public-opinion"
-            , viewLink "/reviews/shah-of-shahs"
-            ]
-        ]
+    { title = "elm-markdown-parser"
+    , body = [ Html.text "Hi!" ]
     }
-
-
-viewLink : String -> Html msg
-viewLink path =
-    li [] [ a [ href path ] [ text path ] ]
