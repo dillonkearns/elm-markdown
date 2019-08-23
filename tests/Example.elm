@@ -48,18 +48,31 @@ lineParser =
 htmlParser : Parser Block
 htmlParser =
     XmlParser.element
-        |> Advanced.map xmlNodeToHtmlNode
+        |> xmlNodeToHtmlNode
         |> Advanced.map Html
 
 
-xmlNodeToHtmlNode : Node -> HtmlNode
-xmlNodeToHtmlNode xmlNode =
-    case xmlNode of
-        XmlParser.Text value ->
-            InnerBlocks []
+xmlNodeToHtmlNode : Parser Node -> Parser HtmlNode
+xmlNodeToHtmlNode parser =
+    Advanced.andThen
+        (\xmlNode ->
+            case xmlNode of
+                XmlParser.Text innerText ->
+                    -- InnerBlocks []
+                    -- Advanced.andThen (\_ -> Debug.todo "")
+                    -- Advanced.problem ""
+                    -- anything
+                    -- Advanced.succeed (InnerBlocks [])
+                    InnerBlocks [ Body innerText ]
+                        |> Advanced.succeed
 
-        XmlParser.Element a b c ->
-            Element a b (List.map xmlNodeToHtmlNode c)
+                XmlParser.Element tag attributes children ->
+                    -- children
+                    -- |> Advanced.andThen
+                    -- TODO use children
+                    Advanced.succeed (Element tag attributes [])
+        )
+        parser
 
 
 multiParser : Parser (List Block)
@@ -185,7 +198,14 @@ Hello!
                     |> Expect.equal
                         (Ok
                             [ Heading 1 "Heading"
-                            , Html (Element "div" [] [])
+                            , Html
+                                (Element "div"
+                                    []
+                                    [ InnerBlocks
+                                        [ Body "Hello!"
+                                        ]
+                                    ]
+                                )
                             ]
                         )
         ]
