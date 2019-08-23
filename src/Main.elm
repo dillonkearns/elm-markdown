@@ -44,6 +44,18 @@ view model =
     }
 
 
+markdown =
+    """# Hello 👋
+
+Welcome to this document!
+
+## Features
+
+Let me tell you why I built this...
+"""
+
+
 mainView : Html msg
 mainView =
-    Html.text "Hi!"
+    markdown
+        |> Html.text
