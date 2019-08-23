@@ -59,5 +59,22 @@ mainView : Html msg
 mainView =
     markdown
         |> Markdown.parse
-        |> Debug.toString
-        |> Html.text
+        |> Result.map
+            (Markdown.render
+                { h1 = \content -> Html.h1 [] [ Html.text content ]
+                , h2 = \content -> Html.h2 [] [ Html.text content ]
+                , raw = Html.text
+                , todo = Html.text "TODO"
+                }
+            )
+        |> Result.map (Html.div [])
+        |> (\result ->
+                case result of
+                    Ok content ->
+                        content
+
+                    Err error ->
+                        error
+                            |> Debug.toString
+                            |> Html.text
+           )

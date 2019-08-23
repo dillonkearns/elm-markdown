@@ -26,6 +26,37 @@ import Parser.Advanced as Advanced
 import XmlParser exposing (Node(..))
 
 
+render :
+    { h1 : String -> view
+    , h2 : String -> view
+    , raw : String -> view
+    , todo : view
+    }
+    -> List Block
+    -> List view
+render renderer blocks =
+    List.map
+        (\block ->
+            case block of
+                Heading 1 content ->
+                    renderer.h1 content
+
+                Heading 2 content ->
+                    renderer.h2 content
+
+                Heading level content ->
+                    -- TODO
+                    renderer.h2 content
+
+                Body content ->
+                    renderer.raw content
+
+                Html _ ->
+                    renderer.todo
+        )
+        blocks
+
+
 type alias Parser a =
     Advanced.Parser String Parser.Problem a
 
