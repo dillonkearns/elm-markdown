@@ -67,12 +67,67 @@ xmlNodeToHtmlNode parser =
                         |> Advanced.succeed
 
                 XmlParser.Element tag attributes children ->
-                    -- children
-                    -- |> Advanced.andThen
-                    -- TODO use children
-                    Advanced.succeed (Element tag attributes [])
+                    Advanced.andThen
+                        (\parsedChildren ->
+                            Advanced.succeed
+                                (Element tag
+                                    attributes
+                                    [ InnerBlocks parsedChildren ]
+                                )
+                        )
+                        (thing children)
         )
         parser
+
+
+thing : List Node -> Parser (List Block)
+thing children =
+    -- Advanced.succeed []
+    children
+        |> List.map childToParser
+        |> combine
+
+
+combine : List (Parser a) -> Parser (List a)
+combine list =
+    list
+        |> List.foldl
+            (\parser listParser ->
+                listParser
+                    |> Advanced.andThen
+                        (\soFar ->
+                            parser
+                                |> Advanced.map
+                                    (\a ->
+                                        let
+                                            _ =
+                                                Debug.log "a is" a
+                                        in
+                                        soFar
+                                    )
+                        )
+            )
+            (Advanced.succeed [])
+
+
+
+-- |> Advanced.map List.concat
+
+
+childToParser : Node -> Parser Block
+childToParser node =
+    (case node of
+        XmlParser.Element tag attributes [] ->
+            Advanced.succeed (Element tag attributes [])
+
+        Text innerText ->
+            InnerBlocks [ Body innerText ]
+                |> Advanced.succeed
+
+        _ ->
+            Debug.todo "handle Element _ _ (_ :: _)"
+    )
+        |> Advanced.map Html
 
 
 multiParser : Parser (List Block)
@@ -191,7 +246,7 @@ Body of the subheading.
             \() ->
                 """# Heading
 <div>
-Hello!
+  Hello!
 </div>
 """
                     |> Advanced.run multiParser
