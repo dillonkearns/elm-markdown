@@ -19,7 +19,10 @@ point =
                 (Parser.succeed ()
                     |. Parser.chompWhile (\c -> c == '#')
                 )
-                |> Parser.map (\_ -> 1)
+                |> Parser.map
+                    (\additionalHashes ->
+                        String.length additionalHashes + 1
+                    )
            )
         |. spaces
         |= Parser.getChompedString
@@ -41,4 +44,9 @@ suite =
                 "# Hello!"
                     |> parse
                     |> Expect.equal (Ok { level = 1, body = "Hello!" })
+        , test "Heading 2" <|
+            \() ->
+                "## Hello!"
+                    |> parse
+                    |> Expect.equal (Ok { level = 2, body = "Hello!" })
         ]
