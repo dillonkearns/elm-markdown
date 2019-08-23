@@ -77,7 +77,6 @@ xmlNodeToHtmlNode parser =
 
 thing : List Node -> Parser (List Block)
 thing children =
-    -- Advanced.succeed []
     children
         |> List.map childToParser
         |> combine
