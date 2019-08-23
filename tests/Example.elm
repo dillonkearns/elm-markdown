@@ -27,6 +27,13 @@ lineParser =
         ]
 
 
+multiParser : Parser (List Block)
+multiParser =
+    lineParser
+        |. symbol "\n"
+        |> Parser.andThen (\block -> Parser.map (\block2 -> [ block, block2 ]) lineParser)
+
+
 heading : Parser Block
 heading =
     succeed Heading
@@ -78,6 +85,17 @@ suite =
                 "This is just some text"
                     |> parse
                     |> Expect.equal (Ok (Body "This is just some text"))
+        , test "parse heading then plain text" <|
+            \() ->
+                """# Heading
+This is just some text"""
+                    |> Parser.run multiParser
+                    |> Expect.equal
+                        (Ok
+                            [ Heading 1 "Heading"
+                            , Body "This is just some text"
+                            ]
+                        )
         ]
 
 
