@@ -59,7 +59,7 @@ heading =
                         String.length additionalHashes + 1
                     )
            )
-        |. spaces
+        |. Parser.chompWhile (\c -> c == ' ')
         |= Parser.getChompedString
             (Parser.succeed ()
                 |. Parser.chompWhile (\c -> c /= '\n')
