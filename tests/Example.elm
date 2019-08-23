@@ -36,23 +36,25 @@ parse input =
 
 suite : Test
 suite =
-    describe "headings"
-        [ test "Heading 1" <|
-            \() ->
-                "# Hello!"
-                    |> parse
-                    |> Expect.equal (Ok (Heading 1 "Hello!"))
-        , test "Heading 2" <|
-            \() ->
-                "## Hello!"
-                    |> parse
-                    |> Expect.equal (Ok (Heading 2 "Hello!"))
+    describe "parsing"
+        [ describe "headings"
+            [ test "Heading 1" <|
+                \() ->
+                    "# Hello!"
+                        |> parse
+                        |> Expect.equal (Ok (Heading 1 "Hello!"))
+            , test "Heading 2" <|
+                \() ->
+                    "## Hello!"
+                        |> parse
+                        |> Expect.equal (Ok (Heading 2 "Hello!"))
 
-        -- TODO limit parsing over heading level 7, see https://spec.commonmark.org/0.27/#atx-headings
-        -- , test "Heading 7 is invalid" <|
-        --     \() ->
-        --         "####### Hello!"
-        --             |> parserError
+            -- TODO limit parsing over heading level 7, see https://spec.commonmark.org/0.27/#atx-headings
+            -- , test "Heading 7 is invalid" <|
+            --     \() ->
+            --         "####### Hello!"
+            --             |> parserError
+            ]
         ]
 
 
