@@ -52,6 +52,10 @@ Welcome to this document!
 ## Features
 
 Let me tell you why I built this...
+
+<Red>
+# Is this red? 😺
+</Red>
 """
 
 
@@ -65,6 +69,7 @@ mainView =
                 , h2 = \content -> Html.h2 [] [ Html.text content ]
                 , raw = Html.text
                 , todo = Html.text "TODO"
+                , red = Html.div [ style "background-color" "red" ]
                 }
             )
         |> Result.map (Html.div [])

@@ -31,6 +31,7 @@ render :
     , h2 : String -> view
     , raw : String -> view
     , todo : view
+    , red : List view -> view
     }
     -> List Block
     -> List view
@@ -51,10 +52,19 @@ render renderer blocks =
                 Body content ->
                     renderer.raw content
 
-                Html _ ->
-                    renderer.todo
+                Html html ->
+                    renderHtmlNode renderer html
         )
         blocks
+
+
+renderHtmlNode renderer html =
+    case html of
+        InnerBlocks innerBlocks ->
+            render renderer innerBlocks |> renderer.red
+
+        Element tag attributes children ->
+            List.map (renderHtmlNode renderer) children |> renderer.red
 
 
 type alias Parser a =
