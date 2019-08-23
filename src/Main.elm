@@ -40,5 +40,10 @@ update msg model =
 view : Model -> Browser.Document Msg
 view model =
     { title = "elm-markdown-parser"
-    , body = [ Html.text "Hi!" ]
+    , body = [ mainView ]
     }
+
+
+mainView : Html msg
+mainView =
+    Html.text "Hi!"
