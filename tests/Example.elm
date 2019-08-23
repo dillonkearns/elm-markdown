@@ -49,4 +49,20 @@ suite =
                 "## Hello!"
                     |> parse
                     |> Expect.equal (Ok { level = 2, body = "Hello!" })
+
+        -- TODO limit parsing over heading level 7, see https://spec.commonmark.org/0.27/#atx-headings
+        -- , test "Heading 7 is invalid" <|
+        --     \() ->
+        --         "####### Hello!"
+        --             |> parserError
         ]
+
+
+parserError : String -> Expect.Expectation
+parserError markdown =
+    case parse markdown of
+        Ok _ ->
+            Expect.fail "Expected a parser failure!"
+
+        Err _ ->
+            Expect.pass
