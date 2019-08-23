@@ -35,8 +35,10 @@ parse input =
 
 suite : Test
 suite =
-    test "Heading 1" <|
-        \() ->
-            "# Hello!"
-                |> parse
-                |> Expect.equal (Ok { level = 1, body = "Hello!" })
+    describe "headings"
+        [ test "Heading 1" <|
+            \() ->
+                "# Hello!"
+                    |> parse
+                    |> Expect.equal (Ok { level = 1, body = "Hello!" })
+        ]
