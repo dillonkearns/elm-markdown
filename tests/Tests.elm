@@ -1,4 +1,4 @@
-module Example exposing (..)
+module Tests exposing (suite)
 
 import Expect exposing (Expectation)
 import Parser
