@@ -52,6 +52,7 @@ htmlParser =
         |> Advanced.map Html
 
 
+xmlNodeToHtmlNode : Node -> HtmlNode
 xmlNodeToHtmlNode xmlNode =
     case xmlNode of
         XmlParser.Text value ->
