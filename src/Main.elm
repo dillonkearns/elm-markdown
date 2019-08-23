@@ -58,4 +58,6 @@ Let me tell you why I built this...
 mainView : Html msg
 mainView =
     markdown
+        |> Markdown.parse
+        |> Debug.toString
         |> Html.text

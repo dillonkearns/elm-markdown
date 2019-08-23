@@ -168,6 +168,6 @@ heading =
         |= getChompedString (succeed () |. chompWhile (\c -> c /= '\n'))
 
 
-parse : String -> Result (List (Advanced.DeadEnd String Parser.Problem)) Block
+parse : String -> Result (List (Advanced.DeadEnd String Parser.Problem)) (List Block)
 parse input =
-    Advanced.run lineParser input
+    Advanced.run multiParser input
