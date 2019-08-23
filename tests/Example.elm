@@ -13,10 +13,15 @@ type alias Heading =
 
 point : Parser Heading
 point =
-    succeed (Heading 1)
+    succeed Heading
         |. symbol "#"
+        |= (Parser.getChompedString
+                (Parser.succeed ()
+                    |. Parser.chompWhile (\c -> c == '#')
+                )
+                |> Parser.map (\_ -> 1)
+           )
         |. spaces
-        -- |= string
         |= Parser.getChompedString
             (Parser.succeed ()
                 |. Parser.chompWhile (\c -> c /= '\n')
