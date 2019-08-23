@@ -6,13 +6,14 @@ import Test exposing (..)
 
 
 type alias Heading =
-    { body : String
+    { level : Int
+    , body : String
     }
 
 
 point : Parser Heading
 point =
-    succeed Heading
+    succeed (Heading 1)
         |. symbol "#"
         |. spaces
         -- |= string
@@ -33,4 +34,4 @@ suite =
         \() ->
             "# Hello!"
                 |> parse
-                |> Expect.equal (Ok { body = "Hello!" })
+                |> Expect.equal (Ok { level = 1, body = "Hello!" })
