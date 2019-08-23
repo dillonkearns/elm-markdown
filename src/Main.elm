@@ -4,34 +4,27 @@ import Browser
 import Browser.Navigation as Nav
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import Markdown.Parser as Markdown
 import Url
 
 
 main : Program () Model Msg
 main =
-    Browser.application
+    Browser.document
         { init = init
         , view = view
         , update = update
-        , subscriptions = subscriptions
-        , onUrlChange = UrlChanged
-        , onUrlRequest = LinkClicked
+        , subscriptions = \_ -> Sub.none
         }
 
 
 type alias Model =
-    { key : Nav.Key
-    , url : Url.Url
-    }
+    ()
 
 
-init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
-init flags url key =
-    ( Model key url, Cmd.none )
-
-
-
--- UPDATE
+init : () -> ( Model, Cmd Msg )
+init flags =
+    ( (), Cmd.none )
 
 
 type Msg
@@ -41,32 +34,7 @@ type Msg
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    case msg of
-        LinkClicked urlRequest ->
-            case urlRequest of
-                Browser.Internal url ->
-                    ( model, Nav.pushUrl model.key (Url.toString url) )
-
-                Browser.External href ->
-                    ( model, Nav.load href )
-
-        UrlChanged url ->
-            ( { model | url = url }
-            , Cmd.none
-            )
-
-
-
--- SUBSCRIPTIONS
-
-
-subscriptions : Model -> Sub Msg
-subscriptions _ =
-    Sub.none
-
-
-
--- VIEW
+    ( model, Cmd.none )
 
 
 view : Model -> Browser.Document Msg
