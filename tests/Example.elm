@@ -1,39 +1,36 @@
 module Example exposing (..)
 
 import Expect exposing (Expectation)
-import Fuzz exposing (Fuzzer, int, list, string)
 import Parser exposing ((|.), (|=), Parser, float, spaces, succeed, symbol)
 import Test exposing (..)
 
 
-type alias Point =
-    { x : Float
-    , y : Float
+type alias Heading =
+    { body : String
     }
 
 
-point : Parser Point
+point : Parser Heading
 point =
-    succeed Point
-        |. symbol "("
+    succeed Heading
+        |. symbol "#"
         |. spaces
-        |= float
-        |. spaces
-        |. symbol ","
-        |. spaces
-        |= float
-        |. spaces
-        |. symbol ")"
+        -- |= string
+        |= Parser.getChompedString
+            (Parser.succeed ()
+                |. Parser.chompWhile (\c -> c /= '\n')
+            )
 
 
+parse : String -> Result (List Parser.DeadEnd) Heading
 parse input =
     Parser.run point input
 
 
 suite : Test
 suite =
-    test "hello!" <|
+    test "# Hello!" <|
         \() ->
-            "(1, 2)"
+            "# Hello!"
                 |> parse
-                |> Expect.equal (Ok { x = 1, y = 2 })
+                |> Expect.equal (Ok { body = "Hello!" })
