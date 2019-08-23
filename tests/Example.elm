@@ -58,11 +58,6 @@ xmlNodeToHtmlNode parser =
         (\xmlNode ->
             case xmlNode of
                 XmlParser.Text innerText ->
-                    -- InnerBlocks []
-                    -- Advanced.andThen (\_ -> Debug.todo "")
-                    -- Advanced.problem ""
-                    -- anything
-                    -- Advanced.succeed (InnerBlocks [])
                     InnerBlocks [ Body innerText ]
                         |> Advanced.succeed
 
@@ -105,18 +100,17 @@ combine list =
 
 childToParser : Node -> Parser Block
 childToParser node =
-    (case node of
+    case node of
         XmlParser.Element tag attributes [] ->
-            Advanced.succeed (Element tag attributes [])
+            Advanced.succeed (Html (Element tag attributes []))
 
         Text innerText ->
-            InnerBlocks [ Body (innerText |> String.trim) ]
+            -- InnerBlocks [ Body (innerText |> String.trim) ]
+            Body (innerText |> String.trim)
                 |> Advanced.succeed
 
         _ ->
             Debug.todo "handle Element _ _ (_ :: _)"
-    )
-        |> Advanced.map Html
 
 
 multiParser : Parser (List Block)
