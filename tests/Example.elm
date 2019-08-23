@@ -1,7 +1,7 @@
 module Example exposing (..)
 
 import Expect exposing (Expectation)
-import Parser exposing ((|.), (|=), Parser, float, spaces, succeed, symbol)
+import Parser exposing (..)
 import Test exposing (..)
 
 
@@ -29,9 +29,21 @@ lineParser =
 
 multiParser : Parser (List Block)
 multiParser =
-    lineParser
-        |. symbol "\n"
-        |> Parser.andThen (\block -> Parser.map (\block2 -> [ block, block2 ]) lineParser)
+    loop [] statementsHelp
+
+
+statementsHelp : List Block -> Parser (Step (List Block) (List Block))
+statementsHelp revStmts =
+    oneOf
+        [ succeed (\stmt -> Loop (stmt :: revStmts))
+            |= lineParser
+            -- |. spaces
+            |. symbol "\n"
+
+        -- |. spaces
+        , succeed ()
+            |> map (\_ -> Done (List.reverse revStmts))
+        ]
 
 
 heading : Parser Block
@@ -88,7 +100,8 @@ suite =
         , test "parse heading then plain text" <|
             \() ->
                 """# Heading
-This is just some text"""
+This is just some text
+"""
                     |> Parser.run multiParser
                     |> Expect.equal
                         (Ok
