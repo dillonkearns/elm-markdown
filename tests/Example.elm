@@ -14,7 +14,16 @@ type alias Parser a =
 type Block
     = Heading Int String
     | Body String
-    | HtmlNode Node
+    | Html HtmlNode
+
+
+type alias Attribute =
+    { name : String, value : String }
+
+
+type HtmlNode
+    = Element String (List Attribute) (List HtmlNode)
+    | Text String
 
 
 body : Parser Block
@@ -30,9 +39,20 @@ lineParser : Parser Block
 lineParser =
     oneOf
         [ heading
-        , XmlParser.element |> Advanced.map HtmlNode
+        , XmlParser.element
+            |> Advanced.map xmlNodeToHtmlNode
+            |> Advanced.map Html
         , body
         ]
+
+
+xmlNodeToHtmlNode xmlNode =
+    case xmlNode of
+        XmlParser.Text value ->
+            Text value
+
+        XmlParser.Element a b c ->
+            Element a b (List.map xmlNodeToHtmlNode c)
 
 
 multiParser : Parser (List Block)
@@ -150,13 +170,15 @@ Body of the subheading.
         , test "embedded HTML" <|
             \() ->
                 """# Heading
-<div></div>
+<div>
+Hello!
+</div>
 """
                     |> Advanced.run multiParser
                     |> Expect.equal
                         (Ok
                             [ Heading 1 "Heading"
-                            , HtmlNode (Element "div" [] [])
+                            , Html (Element "div" [] [])
                             ]
                         )
         ]
