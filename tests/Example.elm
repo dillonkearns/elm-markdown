@@ -40,11 +40,16 @@ lineParser : Parser Block
 lineParser =
     oneOf
         [ heading
-        , XmlParser.element
-            |> Advanced.map xmlNodeToHtmlNode
-            |> Advanced.map Html
+        , htmlParser
         , body
         ]
+
+
+htmlParser : Parser Block
+htmlParser =
+    XmlParser.element
+        |> Advanced.map xmlNodeToHtmlNode
+        |> Advanced.map Html
 
 
 xmlNodeToHtmlNode xmlNode =
