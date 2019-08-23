@@ -60,10 +60,7 @@ heading =
                     )
            )
         |. Parser.chompWhile (\c -> c == ' ')
-        |= Parser.getChompedString
-            (Parser.succeed ()
-                |. Parser.chompWhile (\c -> c /= '\n')
-            )
+        |= Parser.getChompedString (Parser.succeed () |. Parser.chompWhile (\c -> c /= '\n'))
 
 
 parse : String -> Result (List Parser.DeadEnd) Block
