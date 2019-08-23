@@ -232,7 +232,7 @@ Body of the subheading.
             \() ->
                 """# Heading
 <div>
-  Hello!
+Hello!
 </div>
 """
                     |> Advanced.run multiParser
@@ -243,7 +243,9 @@ Body of the subheading.
                                 (Element "div"
                                     []
                                     [ InnerBlocks
-                                        [ Body "Hello!"
+                                        -- TODO how should `Body ""` be handled?
+                                        [ Body ""
+                                        , Body "Hello!"
                                         ]
                                     ]
                                 )
@@ -265,7 +267,9 @@ Body of the subheading.
                                 (Element "div"
                                     []
                                     [ InnerBlocks
-                                        [ Heading 1 "Heading in a div!"
+                                        [ Body ""
+                                        , Heading 1 "Heading in a div!"
+                                        , Body ""
                                         ]
                                     ]
                                 )
