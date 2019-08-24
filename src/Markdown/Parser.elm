@@ -273,9 +273,12 @@ childToParser node =
                 Err error ->
                     Advanced.problem (Parser.Expecting (error |> Debug.toString))
 
-        -- |> Advanced.map Html
-        _ ->
-            Debug.todo "handle Element _ _ (_ :: _)"
+        Element tag attributes children ->
+            nodesToBlocksParser children
+                |> Advanced.andThen
+                    (\childrenAsBlocks ->
+                        Advanced.succeed [ Html tag attributes childrenAsBlocks ]
+                    )
 
 
 multiParser : Parser (List Block)

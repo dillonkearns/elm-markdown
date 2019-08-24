@@ -57,6 +57,9 @@ Let me tell you why I built this...
 # Is this red? 😺
 
 It seems to be! 👌
+<Blue>
+This should be blue in red!
+</Blue>
 </Red>
 
 
@@ -81,16 +84,12 @@ mainView =
                     [ Markdown.htmlTag "Red"
                         (\children ->
                             Html.div [ style "background-color" "red" ]
-                                (Html.text "Hello from succeed!"
-                                    :: children
-                                )
+                                children
                         )
                     , Markdown.htmlTag "Blue"
                         (\children ->
                             Html.div [ style "background-color" "blue" ]
-                                (Html.text "Hello from succeed!"
-                                    :: children
-                                )
+                                children
                         )
                     ]
             }
