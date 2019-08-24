@@ -7,3 +7,11 @@ Simple headings:
 <h1>foo</h1>
 <h2>foo</h2>
 ````````````````````````````````
+
+Intraword emphasis with `*` is permitted:
+
+```````````````````````````````` example
+foo*bar*
+.
+<p>foo<em>bar</em></p>
+````````````````````````````````

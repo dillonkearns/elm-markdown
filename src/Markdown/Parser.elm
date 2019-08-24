@@ -1,5 +1,6 @@
 module Markdown.Parser exposing (..)
 
+import Markdown.Inlines as Inlines exposing (StyledString)
 import Parser
 import Parser.Advanced as Advanced
     exposing
@@ -80,7 +81,7 @@ htmlTag expectedTag a =
 type alias Renderer view =
     { h1 : String -> view
     , h2 : String -> view
-    , raw : String -> view
+    , raw : List Inlines.StyledString -> view
     , todo : view
     , htmlDecoder : Decoder (List view -> view)
     }
@@ -170,7 +171,7 @@ type alias Parser a =
 
 type Block
     = Heading Int String
-    | Body String
+    | Body (List StyledString)
     | Html String (List Attribute) (List Block)
 
 
@@ -180,11 +181,16 @@ type alias Attribute =
 
 body : Parser Block
 body =
-    succeed Body
-        |= getChompedString
-            (succeed ()
-                |. chompWhile (\c -> c /= '\n')
-            )
+    Inlines.parse
+        |> Advanced.map Body
+
+
+
+-- succeed Body
+-- |= getChompedString
+--     (succeed ()
+--         |. chompWhile (\c -> c /= '\n')
+--     )
 
 
 lineParser : Parser Block
@@ -218,7 +224,12 @@ xmlNodeToHtmlNode parser =
             case xmlNode of
                 XmlParser.Text innerText ->
                     -- TODO is this right?
-                    Body innerText
+                    Body
+                        -- TODO remove hardcoding
+                        [ { string = innerText
+                          , style = { isBold = False, isItalic = False }
+                          }
+                        ]
                         |> Advanced.succeed
 
                 XmlParser.Element tag attributes children ->
