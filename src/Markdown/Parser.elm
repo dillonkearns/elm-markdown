@@ -139,8 +139,62 @@ combineResults =
     List.foldr (Result.map2 (::)) (Ok [])
 
 
+deadEndsToString : List (Advanced.DeadEnd String Parser.Problem) -> String
 deadEndsToString deadEnds =
-    "Errors"
+    deadEnds
+        |> List.map deadEndToString
+        |> String.join "\n"
+
+
+deadEndToString : Advanced.DeadEnd String Parser.Problem -> String
+deadEndToString deadEnd =
+    "Problem at row " ++ String.fromInt deadEnd.row ++ "\n" ++ problemToString deadEnd.problem
+
+
+problemToString : Parser.Problem -> String
+problemToString problem =
+    case problem of
+        Parser.Expecting string ->
+            "Expecting " ++ string
+
+        Parser.ExpectingInt ->
+            "Expecting int"
+
+        Parser.ExpectingHex ->
+            "Expecting hex"
+
+        Parser.ExpectingOctal ->
+            "Expecting octal"
+
+        Parser.ExpectingBinary ->
+            "Expecting binary"
+
+        Parser.ExpectingFloat ->
+            "Expecting float"
+
+        Parser.ExpectingNumber ->
+            "Expecting number"
+
+        Parser.ExpectingVariable ->
+            "Expecting variable"
+
+        Parser.ExpectingSymbol string ->
+            "Expecting symbol " ++ string
+
+        Parser.ExpectingKeyword string ->
+            "Expecting keyword " ++ string
+
+        Parser.ExpectingEnd ->
+            "Expecting keyword end"
+
+        Parser.UnexpectedChar ->
+            "Unexpected char"
+
+        Parser.Problem problemDescription ->
+            problemDescription
+
+        Parser.BadRepeat ->
+            "Bad repeat"
 
 
 renderHtmlNode : Renderer view -> String -> List Attribute -> List Block -> Result String view
