@@ -42,7 +42,7 @@ suite =
             \() ->
                 "This is just some text"
                     |> parse
-                    |> Expect.equal (Ok (Body "This is just some text"))
+                    |> Expect.equal (Ok (Body (unstyledText "This is just some text")))
         , test "parse heading then plain text" <|
             \() ->
                 """# Heading
@@ -52,7 +52,7 @@ This is just some text
                     |> Expect.equal
                         (Ok
                             [ Heading 1 "Heading"
-                            , Body "This is just some text"
+                            , Body (unstyledText "This is just some text")
                             ]
                         )
         , skip <|
@@ -65,7 +65,7 @@ This is just some text
                         |> Expect.equal
                             (Ok
                                 [ Heading 1 "Heading"
-                                , Body "This is just some text"
+                                , Body (unstyledText "This is just some text")
                                 ]
                             )
         , test "long example" <|
@@ -82,12 +82,12 @@ Body of the subheading.
                     |> Expect.equal
                         (Ok
                             [ Heading 1 "Heading"
-                            , Body ""
-                            , Body "This is just some text."
-                            , Body ""
+                            , Body (unstyledText "")
+                            , Body (unstyledText "This is just some text.")
+                            , Body (unstyledText "")
                             , Heading 2 "Subheading"
-                            , Body ""
-                            , Body "Body of the subheading."
+                            , Body (unstyledText "")
+                            , Body (unstyledText "Body of the subheading.")
                             ]
                         )
         , test "embedded HTML" <|
@@ -101,16 +101,12 @@ Hello!
                     |> Expect.equal
                         (Ok
                             [ Heading 1 "Heading"
-                            , Html
-                                (Element "div"
-                                    []
-                                    [ InnerBlocks
-                                        -- TODO how should `Body ""` be handled?
-                                        [ Body ""
-                                        , Body "Hello!"
-                                        ]
-                                    ]
-                                )
+                            , Html "div"
+                                []
+                                [ -- TODO how should `Body ""` be handled?
+                                  Body (unstyledText "")
+                                , Body (unstyledText "Hello!")
+                                ]
                             ]
                         )
         , test "heading within HTML" <|
@@ -125,19 +121,19 @@ Hello!
                     |> Expect.equal
                         (Ok
                             [ Heading 1 "Heading"
-                            , Html
-                                (Element "div"
-                                    []
-                                    [ InnerBlocks
-                                        [ Body ""
-                                        , Heading 1 "Heading in a div!"
-                                        , Body ""
-                                        ]
-                                    ]
-                                )
+                            , Html "div"
+                                []
+                                [ Body (unstyledText "")
+                                , Heading 1 "Heading in a div!"
+                                , Body (unstyledText "")
+                                ]
                             ]
                         )
         ]
+
+
+unstyledText body =
+    [ { string = body, style = { isBold = False, isItalic = False } } ]
 
 
 parserError : String -> Expect.Expectation
