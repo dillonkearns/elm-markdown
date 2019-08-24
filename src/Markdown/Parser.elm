@@ -230,16 +230,17 @@ xmlNodeToHtmlNode parser =
                                     parsedChildren
                                 )
                         )
-                        (thing children)
+                        (nodesToBlocksParser children)
         )
         parser
 
 
-thing : List Node -> Parser (List Block)
-thing children =
+nodesToBlocksParser : List Node -> Parser (List Block)
+nodesToBlocksParser children =
     children
         |> List.map childToParser
         |> combine
+        |> Advanced.map List.concat
 
 
 combine : List (Parser a) -> Parser (List a)
@@ -257,24 +258,17 @@ combine list =
             (Advanced.succeed [])
 
 
-childToParser : Node -> Parser Block
+childToParser : Node -> Parser (List Block)
 childToParser node =
     case node of
         XmlParser.Element tag attributes [] ->
             -- TODO
-            Advanced.succeed (Html tag attributes [])
+            Advanced.succeed [ Html tag attributes [] ]
 
         Text innerText ->
             case Advanced.run multiParser innerText of
                 Ok value ->
-                    case value |> List.head of
-                        Just headValue ->
-                            succeed headValue
-
-                        Nothing ->
-                            -- TODO find a way to use the list of children @@@@@@
-                            -- succeed value
-                            Advanced.problem (Parser.Expecting "TODO childToParser")
+                    succeed value
 
                 Err error ->
                     Advanced.problem (Parser.Expecting (error |> Debug.toString))
