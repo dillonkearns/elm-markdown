@@ -59,8 +59,7 @@ This is just some text
             test "doesn't need to end in newline" <|
                 \() ->
                     """# Heading
-                        This is just some text
-                        """
+This is just some text"""
                         |> Advanced.run multiParser
                         |> Expect.equal
                             (Ok
