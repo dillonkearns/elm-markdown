@@ -146,7 +146,9 @@ if __name__ == "__main__":
         skipped = len(all_tests) - len(tests)
         converter = CMark(prog=args.program, library_dir=args.library_dir, extensions=args.extensions).to_html
         result_counts = {'pass': 0, 'fail': 0, 'error': 0, 'skip': skipped}
-        for test in tests:
+        # TODO why isn't filtering working
+        # for test in tests:
+        for test in all_tests:
             do_test(converter, test, args.normalize, result_counts)
         out("{pass} passed, {fail} failed, {error} errored, {skip} skipped\n".format(**result_counts))
         exit(result_counts['fail'] + result_counts['error'])
