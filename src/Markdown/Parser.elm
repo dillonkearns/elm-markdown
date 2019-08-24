@@ -26,12 +26,38 @@ import Parser.Advanced as Advanced
 import XmlParser exposing (Node(..))
 
 
+type Decoder a
+    = Decoder (HtmlNode -> Result String a)
+
+
+htmlSucceed : view -> Decoder view
+htmlSucceed value =
+    Decoder (\_ -> Ok value)
+
+
+htmlTag : String -> view -> Decoder view
+htmlTag expectedTag a =
+    Decoder
+        (\node ->
+            case node of
+                Element tag attributes children ->
+                    if tag == expectedTag then
+                        Ok a
+
+                    else
+                        Err ("Expected " ++ expectedTag ++ " but was " ++ tag)
+
+                _ ->
+                    Err ("Was expecting " ++ expectedTag ++ " but this is not a tag... Should be impossible TODO")
+        )
+
+
 type alias Renderer view =
     { h1 : String -> view
     , h2 : String -> view
     , raw : String -> view
     , todo : view
-    , red : List view -> view
+    , htmlDecoder : Decoder (List view -> view)
     }
 
 
@@ -96,13 +122,27 @@ renderHtmlNode renderer html =
     case html of
         InnerBlocks innerBlocks ->
             renderHelper renderer innerBlocks
-                |> combineResults
-                |> Result.map renderer.red
+                |> useRed html renderer.htmlDecoder
 
         Element tag attributes children ->
             List.map (renderHtmlNode renderer) children
-                |> combineResults
-                |> Result.map renderer.red
+                |> useRed html renderer.htmlDecoder
+
+
+useRed : HtmlNode -> Decoder (List view -> view) -> List (Result String view) -> Result String view
+useRed htmlNode (Decoder redRenderer) renderedChildren =
+    renderedChildren
+        |> combineResults
+        |> (\childrenResult ->
+                case childrenResult of
+                    Ok okChildren ->
+                        redRenderer htmlNode
+                            |> Result.map
+                                (\myRenderer -> myRenderer okChildren)
+
+                    Err errors ->
+                        Err errors
+           )
 
 
 type alias Parser a =

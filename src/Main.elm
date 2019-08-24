@@ -69,7 +69,16 @@ mainView =
             , h2 = \content -> Html.h2 [] [ Html.text content ]
             , raw = Html.text
             , todo = Html.text "TODO"
-            , red = Html.div [ style "background-color" "red" ]
+            , htmlDecoder =
+                Markdown.htmlSucceed
+                    (\children ->
+                        Html.div [ style "background-color" "red" ]
+                            (Html.text "Hello from succeed!"
+                                :: children
+                            )
+                    )
+
+            -- , htmlDecoder = Markdown.htmlTag "Red" (\_ -> Html.div [ style "background-color" "red" ] [ Html.text "Hi!!!!!" ])
             }
         |> Result.map (Html.div [])
         |> (\result ->
