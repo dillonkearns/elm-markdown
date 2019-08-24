@@ -26,7 +26,7 @@ import Parser.Advanced as Advanced
 import XmlParser exposing (Node(..))
 
 
-render :
+renderHelper :
     { h1 : String -> view
     , h2 : String -> view
     , raw : String -> view
@@ -35,7 +35,7 @@ render :
     }
     -> List Block
     -> List view
-render renderer blocks =
+renderHelper renderer blocks =
     List.map
         (\block ->
             case block of
@@ -58,10 +58,31 @@ render renderer blocks =
         blocks
 
 
+render :
+    String
+    ->
+        { h1 : String -> view
+        , h2 : String -> view
+        , raw : String -> view
+        , todo : view
+        , red : List view -> view
+        }
+    -> Result String (List view)
+render markdownText renderer =
+    markdownText
+        |> parse
+        |> Result.map (renderHelper renderer)
+        |> Result.mapError deadEndsToString
+
+
+deadEndsToString deadEnds =
+    "Errors"
+
+
 renderHtmlNode renderer html =
     case html of
         InnerBlocks innerBlocks ->
-            render renderer innerBlocks |> renderer.red
+            renderHelper renderer innerBlocks |> renderer.red
 
         Element tag attributes children ->
             List.map (renderHtmlNode renderer) children |> renderer.red

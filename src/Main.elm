@@ -55,23 +55,21 @@ Let me tell you why I built this...
 
 <Red>
 # Is this red? 😺
+
+It seems to be! 👌
 </Red>
 """
 
 
 mainView : Html msg
 mainView =
-    markdown
-        |> Markdown.parse
-        |> Result.map
-            (Markdown.render
-                { h1 = \content -> Html.h1 [] [ Html.text content ]
-                , h2 = \content -> Html.h2 [] [ Html.text content ]
-                , raw = Html.text
-                , todo = Html.text "TODO"
-                , red = Html.div [ style "background-color" "red" ]
-                }
-            )
+    Markdown.render markdown
+        { h1 = \content -> Html.h1 [] [ Html.text content ]
+        , h2 = \content -> Html.h2 [] [ Html.text content ]
+        , raw = Html.text
+        , todo = Html.text "TODO"
+        , red = Html.div [ style "background-color" "red" ]
+        }
         |> Result.map (Html.div [])
         |> (\result ->
                 case result of
