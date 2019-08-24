@@ -58,6 +58,13 @@ Let me tell you why I built this...
 
 It seems to be! 👌
 </Red>
+
+
+<Blue>
+# Is this blue? 😺
+
+It seems to be! 👌
+</Blue>
 """
 
 
@@ -74,6 +81,13 @@ mainView =
                     [ Markdown.htmlTag "Red"
                         (\children ->
                             Html.div [ style "background-color" "red" ]
+                                (Html.text "Hello from succeed!"
+                                    :: children
+                                )
+                        )
+                    , Markdown.htmlTag "Blue"
+                        (\children ->
+                            Html.div [ style "background-color" "blue" ]
                                 (Html.text "Hello from succeed!"
                                     :: children
                                 )
