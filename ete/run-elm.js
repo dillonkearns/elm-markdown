@@ -1,9 +1,23 @@
 #! /usr/bin/env node
 const { Elm } = require("./elm.js");
+console.warn = function(message) {};
 
-const markdownInput = "# Title example";
-const app = Elm.OutputMarkdownHtml.init({ flags: markdownInput });
+let stdin = process.openStdin();
 
-app.ports.printOutput.subscribe(output => {
-  console.log(output);
+let data = "";
+stdin.on("data", function(chunk) {
+  data += chunk;
+});
+
+stdin.on("end", function() {
+  const app = Elm.OutputMarkdownHtml.init({ flags: data });
+
+  app.ports.printOutput.subscribe(output => {
+    console.log(output);
+  });
+
+  app.ports.error.subscribe(output => {
+    console.error(output);
+    process.exit(127);
+  });
 });
