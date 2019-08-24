@@ -233,19 +233,6 @@ type alias Attribute =
     { name : String, value : String }
 
 
-body : Parser Block
-body =
-    -- Inlines.parse
-    --     |. Advanced.chompUntilEndOr "\n"
-    --     |> Advanced.map Body
-    succeed
-        (\content ->
-            [ { string = content, style = { isBold = False, isItalic = False } } ]
-        )
-        |= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
-        |> Advanced.map Body
-
-
 plainLine : Parser (List StyledString)
 plainLine =
     -- Inlines.parse
@@ -269,8 +256,6 @@ lineParser =
     oneOf
         [ heading
         , htmlParser
-
-        -- , body
         , plainLine |> Advanced.map Body
         ]
 
@@ -279,10 +264,6 @@ htmlParser : Parser Block
 htmlParser =
     XmlParser.element
         |> xmlNodeToHtmlNode
-
-
-
--- |> Advanced.map toTopLevelHtml
 
 
 toTopLevelHtml : String -> List Attribute -> List Block -> Block
@@ -374,7 +355,8 @@ statementsHelp revStmts =
                 Loop (stmt :: revStmts)
             )
             |= lineParser
-            -- |. Advanced.chompUntilEndOr "\n"
+            -- TODO this is causing files to require newlines
+            -- at the end... how do I avoid this?
             |. symbol (Advanced.Token "\n" (Parser.Expecting "newline"))
         , succeed ()
             |> map (\_ -> Done (List.reverse revStmts))
