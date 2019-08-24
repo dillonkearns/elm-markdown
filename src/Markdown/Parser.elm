@@ -77,6 +77,7 @@ deadEndsToString deadEnds =
     "Errors"
 
 
+renderHtmlNode : Renderer view -> HtmlNode -> view
 renderHtmlNode renderer html =
     case html of
         InnerBlocks innerBlocks ->
