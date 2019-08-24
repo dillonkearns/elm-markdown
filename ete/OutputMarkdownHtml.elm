@@ -39,7 +39,7 @@ renderMarkdown markdown =
         |> Markdown.render
             { h1 = \content -> Html.h1 [] [ Html.text content ]
             , h2 = \content -> Html.h2 [] [ Html.text content ]
-            , raw = Html.text
+            , raw = \content -> Html.p [] [ Html.text content ]
             , todo = Html.text "TODO"
             , htmlDecoder = Markdown.htmlOneOf []
             }
