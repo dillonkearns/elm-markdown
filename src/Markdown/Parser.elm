@@ -79,8 +79,7 @@ htmlTag expectedTag a =
 
 
 type alias Renderer view =
-    { h1 : String -> view
-    , h2 : String -> view
+    { heading : Int -> String -> view
     , raw : List Inlines.StyledString -> view
     , todo : view
     , htmlDecoder : Decoder (List view -> view)
@@ -95,17 +94,8 @@ renderHelper renderer blocks =
     List.map
         (\block ->
             case block of
-                Heading 1 content ->
-                    renderer.h1 content
-                        |> Ok
-
-                Heading 2 content ->
-                    renderer.h2 content
-                        |> Ok
-
                 Heading level content ->
-                    -- TODO
-                    renderer.h2 content
+                    renderer.heading level content
                         |> Ok
 
                 Body content ->

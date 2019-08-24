@@ -80,8 +80,29 @@ renderMarkdown : String -> Html
 renderMarkdown markdown =
     markdown
         |> Markdown.render
-            { h1 = \content -> Html.h1 [] [ Html.text content ]
-            , h2 = \content -> Html.h2 [] [ Html.text content ]
+            { heading =
+                \level content ->
+                    case level of
+                        1 ->
+                            Html.h1 [] [ Html.text content ]
+
+                        2 ->
+                            Html.h2 [] [ Html.text content ]
+
+                        3 ->
+                            Html.h3 [] [ Html.text content ]
+
+                        4 ->
+                            Html.h4 [] [ Html.text content ]
+
+                        5 ->
+                            Html.h5 [] [ Html.text content ]
+
+                        6 ->
+                            Html.h6 [] [ Html.text content ]
+
+                        _ ->
+                            Html.text ""
             , raw =
                 \styledStrings ->
                     Html.p []
