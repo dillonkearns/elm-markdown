@@ -38,23 +38,27 @@ type alias Renderer view =
 renderHelper :
     Renderer view
     -> List Block
-    -> List view
+    -> List (Result String view)
 renderHelper renderer blocks =
     List.map
         (\block ->
             case block of
                 Heading 1 content ->
                     renderer.h1 content
+                        |> Ok
 
                 Heading 2 content ->
                     renderer.h2 content
+                        |> Ok
 
                 Heading level content ->
                     -- TODO
                     renderer.h2 content
+                        |> Ok
 
                 Body content ->
                     renderer.raw content
+                        |> Ok
 
                 Html html ->
                     renderHtmlNode renderer html
@@ -69,22 +73,36 @@ render :
 render renderer markdownText =
     markdownText
         |> parse
-        |> Result.map (renderHelper renderer)
         |> Result.mapError deadEndsToString
+        |> Result.andThen
+            (\markdownAst ->
+                markdownAst
+                    |> renderHelper renderer
+                    |> combineResults
+            )
+
+
+combineResults : List (Result x a) -> Result x (List a)
+combineResults =
+    List.foldr (Result.map2 (::)) (Ok [])
 
 
 deadEndsToString deadEnds =
     "Errors"
 
 
-renderHtmlNode : Renderer view -> HtmlNode -> view
+renderHtmlNode : Renderer view -> HtmlNode -> Result String view
 renderHtmlNode renderer html =
     case html of
         InnerBlocks innerBlocks ->
-            renderHelper renderer innerBlocks |> renderer.red
+            renderHelper renderer innerBlocks
+                |> combineResults
+                |> Result.map renderer.red
 
         Element tag attributes children ->
-            List.map (renderHtmlNode renderer) children |> renderer.red
+            List.map (renderHtmlNode renderer) children
+                |> combineResults
+                |> Result.map renderer.red
 
 
 type alias Parser a =
