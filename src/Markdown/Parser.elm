@@ -118,8 +118,10 @@ renderHelper renderer blocks =
                     renderer.raw content
                         |> Ok
 
-                Html html ->
-                    renderHtmlNode renderer html
+                Html tag attributes children ->
+                    -- TODO remove the extra layer of wrapping here...
+                    -- Change renderHtmlNode to take in those 3 params directly
+                    renderHtmlNode renderer (Element tag attributes children)
         )
         blocks
 
@@ -180,7 +182,7 @@ type alias Parser a =
 type Block
     = Heading Int String
     | Body String
-    | Html HtmlNode
+    | Html String (List Attribute) (List HtmlNode)
 
 
 type alias Attribute =
@@ -215,7 +217,19 @@ htmlParser : Parser Block
 htmlParser =
     XmlParser.element
         |> xmlNodeToHtmlNode
-        |> Advanced.map Html
+        |> Advanced.map toTopLevelHtml
+
+
+toTopLevelHtml : HtmlNode -> Block
+toTopLevelHtml node =
+    case node of
+        Element tag attributes children ->
+            Html tag attributes children
+
+        InnerBlocks blockList ->
+            -- TODO throw an error here, OR
+            -- arrange the types so this is not possible
+            Html "TODO" [] []
 
 
 xmlNodeToHtmlNode : Parser Node -> Parser HtmlNode
