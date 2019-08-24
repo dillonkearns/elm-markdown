@@ -17,7 +17,7 @@ stdin.on("end", function() {
   });
 
   app.ports.error.subscribe(output => {
-    console.error(output);
-    process.exit(127);
+    console.log("ERROR\n" + output);
+    // process.exit(127);
   });
 });
