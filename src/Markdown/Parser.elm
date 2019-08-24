@@ -26,13 +26,17 @@ import Parser.Advanced as Advanced
 import XmlParser exposing (Node(..))
 
 
-renderHelper :
+type alias Renderer view =
     { h1 : String -> view
     , h2 : String -> view
     , raw : String -> view
     , todo : view
     , red : List view -> view
     }
+
+
+renderHelper :
+    Renderer view
     -> List Block
     -> List view
 renderHelper renderer blocks =
@@ -59,12 +63,7 @@ renderHelper renderer blocks =
 
 
 render :
-    { h1 : String -> view
-    , h2 : String -> view
-    , raw : String -> view
-    , todo : view
-    , red : List view -> view
-    }
+    Renderer view
     -> String
     -> Result String (List view)
 render renderer markdownText =
