@@ -30,13 +30,10 @@ suite =
                     "## Hello!"
                         |> parse
                         |> Expect.equal (Ok (Heading 2 "Hello!"))
-            , skip <|
-                -- TODO limit parsing over heading level 7, see https://spec.commonmark.org/0.27/#atx-headings
-                test "Heading 7 is invalid"
-                <|
-                    \() ->
-                        "####### Hello!"
-                            |> parserError
+            , test "Heading 7 is invalid" <|
+                \() ->
+                    "####### Hello!"
+                        |> parserError
             ]
         , test "plain text" <|
             \() ->

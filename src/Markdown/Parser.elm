@@ -371,9 +371,17 @@ heading =
                 (succeed ()
                     |. chompWhile (\c -> c == '#')
                 )
-                |> map
+                |> andThen
                     (\additionalHashes ->
-                        String.length additionalHashes + 1
+                        let
+                            level =
+                                String.length additionalHashes + 1
+                        in
+                        if level >= 7 then
+                            Advanced.problem (Parser.Expecting "heading with < 7 #'s")
+
+                        else
+                            succeed level
                     )
            )
         |. chompWhile (\c -> c == ' ')
