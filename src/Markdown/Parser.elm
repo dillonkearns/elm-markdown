@@ -162,16 +162,12 @@ useRed : HtmlNode -> Decoder (List view -> view) -> List (Result String view) ->
 useRed htmlNode (Decoder redRenderer) renderedChildren =
     renderedChildren
         |> combineResults
-        |> (\childrenResult ->
-                case childrenResult of
-                    Ok okChildren ->
-                        redRenderer htmlNode
-                            |> Result.map
-                                (\myRenderer -> myRenderer okChildren)
-
-                    Err errors ->
-                        Err errors
-           )
+        |> Result.andThen
+            (\okChildren ->
+                redRenderer htmlNode
+                    |> Result.map
+                        (\myRenderer -> myRenderer okChildren)
+            )
 
 
 type alias Parser a =
