@@ -39,7 +39,10 @@ htmlOneOf : List (Decoder view) -> Decoder view
 htmlOneOf decoders =
     List.foldl
         (\(Decoder decoder) (Decoder soFar) ->
-            Decoder (\node -> resultOr (soFar node) (decoder node))
+            Decoder
+                (\node ->
+                    resultOr (decoder node) (soFar node)
+                )
         )
         (Decoder (\node -> Err "No decoders"))
         decoders
