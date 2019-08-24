@@ -112,7 +112,7 @@ renderHelper renderer blocks =
                         |> Ok
 
                 Html tag attributes children ->
-                    renderHtmlNode renderer tag attributes children
+                    renderHtmlNode renderer tag attributes (children |> List.reverse)
         )
         blocks
 

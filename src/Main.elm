@@ -62,6 +62,7 @@ This should be blue in red!
 </Blue>
 </Red>
 
+This should be plain markdown text.
 
 <Blue>
 # Is this blue? 😺
