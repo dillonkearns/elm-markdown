@@ -27,12 +27,12 @@ import XmlParser exposing (Node(..))
 
 
 type Decoder a
-    = Decoder (HtmlNode -> Result String a)
+    = Decoder (String -> List Attribute -> List Block -> Result String a)
 
 
 htmlSucceed : view -> Decoder view
 htmlSucceed value =
-    Decoder (\_ -> Ok value)
+    Decoder (\_ _ _ -> Ok value)
 
 
 htmlOneOf : List (Decoder view) -> Decoder view
@@ -40,11 +40,11 @@ htmlOneOf decoders =
     List.foldl
         (\(Decoder decoder) (Decoder soFar) ->
             Decoder
-                (\node ->
-                    resultOr (decoder node) (soFar node)
+                (\tag attributes children ->
+                    resultOr (decoder tag attributes children) (soFar tag attributes children)
                 )
         )
-        (Decoder (\node -> Err "No decoders"))
+        (Decoder (\tag attributes children -> Err "No Html Decoders succeeded in oneOf."))
         decoders
 
 
@@ -68,19 +68,12 @@ resultOr ra rb =
 htmlTag : String -> view -> Decoder view
 htmlTag expectedTag a =
     Decoder
-        (\node ->
-            case node of
-                Element tag attributes children ->
-                    if tag == expectedTag then
-                        Ok a
+        (\tag attributes children ->
+            if tag == expectedTag then
+                Ok a
 
-                    else
-                        Err ("Expected " ++ expectedTag ++ " but was " ++ tag)
-
-                _ ->
-                    -- TODO make this impossible, maybe change the type so there is
-                    -- exactly one at the top-level (can't be InnerBlocks at the top)
-                    Ok a
+            else
+                Err ("Expected " ++ expectedTag ++ " but was " ++ tag)
         )
 
 
@@ -119,9 +112,7 @@ renderHelper renderer blocks =
                         |> Ok
 
                 Html tag attributes children ->
-                    -- TODO remove the extra layer of wrapping here...
-                    -- Change renderHtmlNode to take in those 3 params directly
-                    renderHtmlNode renderer (Element tag attributes children)
+                    renderHtmlNode renderer tag attributes children
         )
         blocks
 
@@ -151,25 +142,23 @@ deadEndsToString deadEnds =
     "Errors"
 
 
-renderHtmlNode : Renderer view -> HtmlNode -> Result String view
-renderHtmlNode renderer html =
-    case html of
-        InnerBlocks innerBlocks ->
-            renderHelper renderer innerBlocks
-                |> useRed html renderer.htmlDecoder
-
-        Element tag attributes children ->
-            List.map (renderHtmlNode renderer) children
-                |> useRed html renderer.htmlDecoder
+renderHtmlNode : Renderer view -> String -> List Attribute -> List Block -> Result String view
+renderHtmlNode renderer tag attributes children =
+    useRed tag
+        attributes
+        children
+        -- TODO why am I passing children AND parsed children... this is probably causing a bug
+        renderer.htmlDecoder
+        (renderHelper renderer children)
 
 
-useRed : HtmlNode -> Decoder (List view -> view) -> List (Result String view) -> Result String view
-useRed htmlNode (Decoder redRenderer) renderedChildren =
+useRed : String -> List Attribute -> List Block -> Decoder (List view -> view) -> List (Result String view) -> Result String view
+useRed tag attributes children (Decoder redRenderer) renderedChildren =
     renderedChildren
         |> combineResults
         |> Result.andThen
             (\okChildren ->
-                redRenderer htmlNode
+                redRenderer tag attributes children
                     |> Result.map
                         (\myRenderer -> myRenderer okChildren)
             )
@@ -182,17 +171,11 @@ type alias Parser a =
 type Block
     = Heading Int String
     | Body String
-    | Html String (List Attribute) (List HtmlNode)
+    | Html String (List Attribute) (List Block)
 
 
 type alias Attribute =
     { name : String, value : String }
-
-
-type HtmlNode
-    = Element String (List Attribute) (List HtmlNode)
-      -- | Text String
-    | InnerBlocks (List Block)
 
 
 body : Parser Block
@@ -217,35 +200,32 @@ htmlParser : Parser Block
 htmlParser =
     XmlParser.element
         |> xmlNodeToHtmlNode
-        |> Advanced.map toTopLevelHtml
 
 
-toTopLevelHtml : HtmlNode -> Block
-toTopLevelHtml node =
-    case node of
-        Element tag attributes children ->
-            Html tag attributes children
 
-        InnerBlocks blockList ->
-            -- TODO throw an error here, OR
-            -- arrange the types so this is not possible
-            Html "TODO" [] []
+-- |> Advanced.map toTopLevelHtml
 
 
-xmlNodeToHtmlNode : Parser Node -> Parser HtmlNode
+toTopLevelHtml : String -> List Attribute -> List Block -> Block
+toTopLevelHtml tag attributes children =
+    Html tag attributes children
+
+
+xmlNodeToHtmlNode : Parser Node -> Parser Block
 xmlNodeToHtmlNode parser =
     Advanced.andThen
         (\xmlNode ->
             case xmlNode of
                 XmlParser.Text innerText ->
-                    InnerBlocks [ Body innerText ]
+                    -- TODO is this right?
+                    Body innerText
                         |> Advanced.succeed
 
                 XmlParser.Element tag attributes children ->
                     Advanced.andThen
                         (\parsedChildren ->
                             Advanced.succeed
-                                (Element tag
+                                (Html tag
                                     attributes
                                     parsedChildren
                                 )
@@ -255,7 +235,7 @@ xmlNodeToHtmlNode parser =
         parser
 
 
-thing : List Node -> Parser (List HtmlNode)
+thing : List Node -> Parser (List Block)
 thing children =
     children
         |> List.map childToParser
@@ -277,16 +257,24 @@ combine list =
             (Advanced.succeed [])
 
 
-childToParser : Node -> Parser HtmlNode
+childToParser : Node -> Parser Block
 childToParser node =
     case node of
         XmlParser.Element tag attributes [] ->
-            Advanced.succeed (Element tag attributes [])
+            -- TODO
+            Advanced.succeed (Html tag attributes [])
 
         Text innerText ->
             case Advanced.run multiParser innerText of
                 Ok value ->
-                    succeed (InnerBlocks value)
+                    case value |> List.head of
+                        Just headValue ->
+                            succeed headValue
+
+                        Nothing ->
+                            -- TODO find a way to use the list of children @@@@@@
+                            -- succeed value
+                            Advanced.problem (Parser.Expecting "TODO childToParser")
 
                 Err error ->
                     Advanced.problem (Parser.Expecting (error |> Debug.toString))
