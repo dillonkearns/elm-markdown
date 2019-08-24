@@ -235,7 +235,14 @@ type alias Attribute =
 
 body : Parser Block
 body =
-    Inlines.parse
+    -- Inlines.parse
+    --     |. Advanced.chompUntilEndOr "\n"
+    --     |> Advanced.map Body
+    succeed
+        (\content ->
+            [ { string = content, style = { isBold = False, isItalic = False } } ]
+        )
+        |= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
         |> Advanced.map Body
 
 
@@ -350,8 +357,12 @@ multiParser =
 statementsHelp : List Block -> Parser (Step (List Block) (List Block))
 statementsHelp revStmts =
     oneOf
-        [ succeed (\stmt -> Loop (stmt :: revStmts))
+        [ succeed
+            (\stmt ->
+                Loop (stmt :: revStmts)
+            )
             |= lineParser
+            -- |. Advanced.chompUntilEndOr "\n"
             |. symbol (Advanced.Token "\n" (Parser.Expecting "newline"))
         , succeed ()
             |> map (\_ -> Done (List.reverse revStmts))
@@ -372,7 +383,11 @@ heading =
                     )
            )
         |. chompWhile (\c -> c == ' ')
-        |= getChompedString (succeed () |. chompWhile (\c -> c /= '\n'))
+        |= getChompedString
+            (succeed ()
+                -- |. chompWhile (\c -> c /= '\n')
+                |. Advanced.chompUntilEndOr "\n"
+            )
 
 
 parse : String -> Result (List (Advanced.DeadEnd String Parser.Problem)) (List Block)
