@@ -261,9 +261,12 @@ combine list =
 childToParser : Node -> Parser (List Block)
 childToParser node =
     case node of
-        XmlParser.Element tag attributes [] ->
-            -- TODO
-            Advanced.succeed [ Html tag attributes [] ]
+        Element tag attributes children ->
+            nodesToBlocksParser children
+                |> Advanced.andThen
+                    (\childrenAsBlocks ->
+                        Advanced.succeed [ Html tag attributes childrenAsBlocks ]
+                    )
 
         Text innerText ->
             case Advanced.run multiParser innerText of
@@ -272,13 +275,6 @@ childToParser node =
 
                 Err error ->
                     Advanced.problem (Parser.Expecting (error |> Debug.toString))
-
-        Element tag attributes children ->
-            nodesToBlocksParser children
-                |> Advanced.andThen
-                    (\childrenAsBlocks ->
-                        Advanced.succeed [ Html tag attributes childrenAsBlocks ]
-                    )
 
 
 multiParser : Parser (List Block)
