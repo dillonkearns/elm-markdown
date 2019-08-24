@@ -246,12 +246,22 @@ body =
         |> Advanced.map Body
 
 
+plainLine : Parser (List StyledString)
+plainLine =
+    -- Inlines.parse
+    --     |. Advanced.chompUntilEndOr "\n"
+    --     |> Advanced.map Body
+    succeed identity
+        |= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
+        |> Advanced.andThen
+            (\line ->
+                case Advanced.run Inlines.parse line of
+                    Ok styledLine ->
+                        succeed styledLine
 
--- succeed Body
--- |= getChompedString
---     (succeed ()
---         |. chompWhile (\c -> c /= '\n')
---     )
+                    Err error ->
+                        problem (Parser.Expecting "....??? TODO")
+            )
 
 
 lineParser : Parser Block
@@ -259,7 +269,9 @@ lineParser =
     oneOf
         [ heading
         , htmlParser
-        , body
+
+        -- , body
+        , plainLine |> Advanced.map Body
         ]
 
 

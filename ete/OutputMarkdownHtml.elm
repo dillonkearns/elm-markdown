@@ -25,25 +25,33 @@ port error : String -> Cmd msg
 
 styledStringView : StyledString -> Html.Html msg
 styledStringView { style, string } =
-    [ Html.text string ]
-        |> Html.span
-            ([ Attr.style "font-weight" "bold"
-                |> (if style.isBold then
-                        Just
+    -- [ Html.text string ]
+    if style.isBold then
+        Html.em [] [ Html.text string ]
 
-                    else
-                        \_ -> Nothing
-                   )
-             , Attr.style "font-style" "italic"
-                |> (if style.isItalic then
-                        Just
+    else
+        Html.text string
 
-                    else
-                        \_ -> Nothing
-                   )
-             ]
-                |> List.filterMap identity
-            )
+
+
+-- |> Html.span
+--     ([ Attr.style "font-weight" "bold"
+--         |> (if style.isBold then
+--                 Just
+--
+--             else
+--                 \_ -> Nothing
+--            )
+--      , Attr.style "font-style" "italic"
+--         |> (if style.isItalic then
+--                 Just
+--
+--             else
+--                 \_ -> Nothing
+--            )
+--      ]
+--         |> List.filterMap identity
+--     )
 
 
 printHtml : Html -> Cmd msg
