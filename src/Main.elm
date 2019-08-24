@@ -70,13 +70,15 @@ mainView =
             , raw = Html.text
             , todo = Html.text "TODO"
             , htmlDecoder =
-                Markdown.htmlTag "Red"
-                    (\children ->
-                        Html.div [ style "background-color" "red" ]
-                            (Html.text "Hello from succeed!"
-                                :: children
-                            )
-                    )
+                Markdown.htmlOneOf
+                    [ Markdown.htmlTag "Red"
+                        (\children ->
+                            Html.div [ style "background-color" "red" ]
+                                (Html.text "Hello from succeed!"
+                                    :: children
+                                )
+                        )
+                    ]
             }
         |> Result.map (Html.div [])
         |> (\result ->

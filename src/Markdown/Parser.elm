@@ -35,6 +35,33 @@ htmlSucceed value =
     Decoder (\_ -> Ok value)
 
 
+htmlOneOf : List (Decoder view) -> Decoder view
+htmlOneOf decoders =
+    List.foldl
+        (\(Decoder decoder) (Decoder soFar) ->
+            Decoder (\node -> resultOr (soFar node) (decoder node))
+        )
+        (Decoder (\node -> Err "No decoders"))
+        decoders
+
+
+
+-- (\decoder soFar -> soFar)
+-- (\_ _ -> Debug.todo "")
+-- (\node -> Err "No decoders")
+-- decoders
+
+
+resultOr : Result e a -> Result e a -> Result e a
+resultOr ra rb =
+    case ra of
+        Err _ ->
+            rb
+
+        Ok _ ->
+            ra
+
+
 htmlTag : String -> view -> Decoder view
 htmlTag expectedTag a =
     Decoder
