@@ -48,7 +48,9 @@ htmlTag expectedTag a =
                         Err ("Expected " ++ expectedTag ++ " but was " ++ tag)
 
                 _ ->
-                    Err ("Was expecting " ++ expectedTag ++ " but this is not a tag... Should be impossible TODO")
+                    -- TODO make this impossible, maybe change the type so there is
+                    -- exactly one at the top-level (can't be InnerBlocks at the top)
+                    Ok a
         )
 
 
