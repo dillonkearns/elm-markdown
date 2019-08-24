@@ -63,13 +63,14 @@ It seems to be! 👌
 
 mainView : Html msg
 mainView =
-    Markdown.render markdown
-        { h1 = \content -> Html.h1 [] [ Html.text content ]
-        , h2 = \content -> Html.h2 [] [ Html.text content ]
-        , raw = Html.text
-        , todo = Html.text "TODO"
-        , red = Html.div [ style "background-color" "red" ]
-        }
+    markdown
+        |> Markdown.render
+            { h1 = \content -> Html.h1 [] [ Html.text content ]
+            , h2 = \content -> Html.h2 [] [ Html.text content ]
+            , raw = Html.text
+            , todo = Html.text "TODO"
+            , red = Html.div [ style "background-color" "red" ]
+            }
         |> Result.map (Html.div [])
         |> (\result ->
                 case result of

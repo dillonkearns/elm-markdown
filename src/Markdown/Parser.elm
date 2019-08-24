@@ -59,16 +59,15 @@ renderHelper renderer blocks =
 
 
 render :
-    String
-    ->
-        { h1 : String -> view
-        , h2 : String -> view
-        , raw : String -> view
-        , todo : view
-        , red : List view -> view
-        }
+    { h1 : String -> view
+    , h2 : String -> view
+    , raw : String -> view
+    , todo : view
+    , red : List view -> view
+    }
+    -> String
     -> Result String (List view)
-render markdownText renderer =
+render renderer markdownText =
     markdownText
         |> parse
         |> Result.map (renderHelper renderer)
