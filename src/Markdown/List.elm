@@ -19,7 +19,6 @@ type alias ListItem =
 
 parser : Parser (List ListItem)
 parser =
-    -- Debug.todo ""
     loop [] statementsHelp
 
 

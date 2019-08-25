@@ -92,10 +92,13 @@ renderMarkdown markdown =
                 \link content -> Html.a [ Attr.href link.destination ] [ Html.text content ]
             , plain =
                 Html.text
-
-            -- \styledStrings ->
-            --     Html.p []
-            --         (List.map styledStringView styledStrings)
+            , list =
+                \items ->
+                    Html.ul []
+                        (items
+                            |> List.map
+                                (\itemBlocks -> Html.li [] itemBlocks)
+                        )
             , todo = Html.text "TODO"
             , htmlDecoder = Markdown.htmlOneOf []
             }
