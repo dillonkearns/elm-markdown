@@ -33,8 +33,3 @@ parser =
         |= getChompedString
             (chompUntil (Advanced.Token ")" (Parser.ExpectingSymbol ")")))
         |. Advanced.symbol (Advanced.Token ")" (Parser.ExpectingSymbol ")"))
-
-
-isUninteresting : Char -> Bool
-isUninteresting char =
-    char /= '*' && char /= '`'

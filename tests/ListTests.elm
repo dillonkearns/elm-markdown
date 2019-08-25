@@ -13,11 +13,6 @@ type alias Parser a =
     Advanced.Parser String Parser.Problem a
 
 
-parse : String -> Result (List (Advanced.DeadEnd String Parser.Problem)) Block
-parse input =
-    Advanced.run lineParser input
-
-
 suite : Test
 suite =
     describe "list parsing"
@@ -25,7 +20,8 @@ suite =
             \() ->
                 """- Item 1
 - Item 2
-- Item 3"""
+- Item 3
+"""
                     |> Advanced.run Markdown.List.parser
                     |> Expect.equal
                         (Ok
