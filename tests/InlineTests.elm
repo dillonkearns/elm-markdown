@@ -46,11 +46,11 @@ suite =
                     |> Advanced.run multiParser
                     |> Expect.equal
                         (Ok
-                            [ Heading 1 "Heading"
+                            [ Heading 1 (unstyledText "Heading")
                             , Html "div"
                                 []
                                 [ Body (unstyledText "")
-                                , Heading 1 "Heading in a div!"
+                                , Heading 1 (unstyledText "Heading in a div!")
                                 , Body (unstyledText "")
                                 ]
                             ]
