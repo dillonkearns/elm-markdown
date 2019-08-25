@@ -378,6 +378,8 @@ childToParser node =
 multiParser : Parser (List Block)
 multiParser =
     loop [] statementsHelp
+        -- TODO find a more elegant way to exclude empty blocks for each blank lines
+        |> map (List.filter (\item -> item /= Body []))
 
 
 statementsHelp : List Block -> Parser (Step (List Block) (List Block))

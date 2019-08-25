@@ -41,3 +41,17 @@ The title may be omitted:
 .
 <p><a href="/uri">link</a></p>
 ````````````````````````````````
+
+A link can contain fragment identifiers and queries:
+
+```````````````````````````````` example
+[link](#fragment)
+
+[link](http://example.com#fragment)
+
+[link](http://example.com?foo=3#frag)
+.
+<p><a href="#fragment">link</a></p>
+<p><a href="http://example.com#fragment">link</a></p>
+<p><a href="http://example.com?foo=3#frag">link</a></p>
+````````````````````````````````
