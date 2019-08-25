@@ -15,7 +15,7 @@ type alias Parser a =
 
 isUninteresting : Char -> Bool
 isUninteresting char =
-    char /= '_' && char /= '*'
+    char /= '*'
 
 
 type alias Style =
@@ -65,11 +65,11 @@ parseHelp state =
         (\chompedString ->
             oneOf
                 [ map
-                    (\_ -> nextStepWhenFoundItalic state chompedString)
-                    (token (Token "_" (Parser.Expecting "_")))
-                , map
                     (\_ -> nextStepWhenFoundBold state chompedString)
-                    (token (Token "*" (Parser.Expecting "_")))
+                    (token (Token "**" (Parser.Expecting "**")))
+                , map
+                    (\_ -> nextStepWhenFoundItalic state chompedString)
+                    (token (Token "*" (Parser.Expecting "*")))
                 , succeed
                     (nextStepWhenFoundNothing state chompedString)
                 ]

@@ -13,45 +13,7 @@ port error : String -> Cmd msg
 
 
 
--- render : Result a (List StyledString) -> Html msg
--- render result =
---   case result of
---     Ok styledString ->
---       List.map styledStringView styledString |> Html.div []
---     Err errors ->
---       Html.text "Errors"
 --
-
-
-styledStringView : StyledString -> Html.Html msg
-styledStringView { style, string } =
-    -- [ Html.text string ]
-    if style.isBold then
-        Html.em [] [ Html.text string ]
-
-    else
-        Html.text string
-
-
-
--- |> Html.span
---     ([ Attr.style "font-weight" "bold"
---         |> (if style.isBold then
---                 Just
---
---             else
---                 \_ -> Nothing
---            )
---      , Attr.style "font-style" "italic"
---         |> (if style.isItalic then
---                 Just
---
---             else
---                 \_ -> Nothing
---            )
---      ]
---         |> List.filterMap identity
---     )
 
 
 printHtml : Html -> Cmd msg
@@ -74,6 +36,18 @@ init markdown =
         |> renderMarkdown
         |> printHtml
     )
+
+
+styledStringView : StyledString -> Html.Html msg
+styledStringView { style, string } =
+    if style.isBold then
+        Html.strong [] [ Html.text string ]
+
+    else if style.isItalic then
+        Html.em [] [ Html.text string ]
+
+    else
+        Html.text string
 
 
 renderMarkdown : String -> Html
@@ -102,7 +76,7 @@ renderMarkdown markdown =
                             Html.h6 [] [ Html.text content ]
 
                         _ ->
-                            Html.text ""
+                            Html.text "TODO maye use a type here to clean it up... this will never happen"
             , raw =
                 \styledStrings ->
                     Html.p []
