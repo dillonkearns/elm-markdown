@@ -46,6 +46,9 @@ styledStringView { style, string } =
     else if style.isItalic then
         Html.em [] [ Html.text string ]
 
+    else if style.isCode then
+        Html.code [] [ Html.text string ]
+
     else
         Html.text string
 

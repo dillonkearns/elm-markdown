@@ -78,11 +78,11 @@ Body of the subheading.
                     |> Expect.equal
                         (Ok
                             [ Heading 1 "Heading"
-                            , Body (unstyledText "")
+                            , Body []
                             , Body (unstyledText "This is just some text.")
-                            , Body (unstyledText "")
+                            , Body []
                             , Heading 2 "Subheading"
-                            , Body (unstyledText "")
+                            , Body []
                             , Body (unstyledText "Body of the subheading.")
                             ]
                         )
@@ -100,7 +100,7 @@ Hello!
                             , Html "div"
                                 []
                                 [ -- TODO how should `Body ""` be handled?
-                                  Body (unstyledText "")
+                                  Body []
                                 , Body (unstyledText "Hello!")
                                 ]
                             ]
@@ -119,9 +119,9 @@ Hello!
                             [ Heading 1 "Heading"
                             , Html "div"
                                 []
-                                [ Body (unstyledText "")
+                                [ Body []
                                 , Heading 1 "Heading in a div!"
-                                , Body (unstyledText "")
+                                , Body []
                                 ]
                             ]
                         )
@@ -129,7 +129,7 @@ Hello!
 
 
 unstyledText body =
-    [ { string = body, style = { isBold = False, isItalic = False } } ]
+    [ { string = body, style = { isCode = False, isBold = False, isItalic = False } } ]
 
 
 parserError : String -> Expect.Expectation

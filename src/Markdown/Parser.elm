@@ -270,7 +270,7 @@ xmlNodeToHtmlNode parser =
                     Body
                         -- TODO remove hardcoding
                         [ { string = innerText
-                          , style = { isBold = False, isItalic = False }
+                          , style = { isCode = False, isBold = False, isItalic = False }
                           }
                         ]
                         |> Advanced.succeed
