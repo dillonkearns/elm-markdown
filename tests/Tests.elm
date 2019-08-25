@@ -24,12 +24,12 @@ suite =
                 \() ->
                     "# Hello!"
                         |> parse
-                        |> Expect.equal (Ok (Heading 1 "Hello!"))
+                        |> Expect.equal (Ok (Heading 1 (unstyledText "Hello!")))
             , test "Heading 2" <|
                 \() ->
                     "## Hello!"
                         |> parse
-                        |> Expect.equal (Ok (Heading 2 "Hello!"))
+                        |> Expect.equal (Ok (Heading 2 (unstyledText "Hello!")))
             , test "Heading 7 is invalid" <|
                 \() ->
                     "####### Hello!"
@@ -48,7 +48,7 @@ This is just some text
                     |> Advanced.run multiParser
                     |> Expect.equal
                         (Ok
-                            [ Heading 1 "Heading"
+                            [ Heading 1 (unstyledText "Heading")
                             , Body (unstyledText "This is just some text")
                             ]
                         )
@@ -60,7 +60,7 @@ This is just some text"""
                         |> Advanced.run multiParser
                         |> Expect.equal
                             (Ok
-                                [ Heading 1 "Heading"
+                                [ Heading 1 (unstyledText "Heading")
                                 , Body (unstyledText "This is just some text")
                                 ]
                             )
@@ -77,11 +77,11 @@ Body of the subheading.
                     |> Advanced.run multiParser
                     |> Expect.equal
                         (Ok
-                            [ Heading 1 "Heading"
+                            [ Heading 1 (unstyledText "Heading")
                             , Body []
                             , Body (unstyledText "This is just some text.")
                             , Body []
-                            , Heading 2 "Subheading"
+                            , Heading 2 (unstyledText "Subheading")
                             , Body []
                             , Body (unstyledText "Body of the subheading.")
                             ]
@@ -96,7 +96,7 @@ Hello!
                     |> Advanced.run multiParser
                     |> Expect.equal
                         (Ok
-                            [ Heading 1 "Heading"
+                            [ Heading 1 (unstyledText "Heading")
                             , Html "div"
                                 []
                                 [ -- TODO how should `Body ""` be handled?
@@ -116,11 +116,11 @@ Hello!
                     |> Advanced.run multiParser
                     |> Expect.equal
                         (Ok
-                            [ Heading 1 "Heading"
+                            [ Heading 1 (unstyledText "Heading")
                             , Html "div"
                                 []
                                 [ Body []
-                                , Heading 1 "Heading in a div!"
+                                , Heading 1 (unstyledText "Heading in a div!")
                                 , Body []
                                 ]
                             ]
