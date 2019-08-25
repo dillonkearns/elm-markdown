@@ -32,6 +32,7 @@ parser =
         |. Advanced.symbol (Advanced.Token "(" (Parser.ExpectingSymbol "("))
         |= getChompedString
             (chompUntil (Advanced.Token ")" (Parser.ExpectingSymbol ")")))
+        |. Advanced.symbol (Advanced.Token ")" (Parser.ExpectingSymbol ")"))
 
 
 isUninteresting : Char -> Bool

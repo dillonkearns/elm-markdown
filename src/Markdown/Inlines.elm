@@ -23,7 +23,7 @@ type alias Style =
     { isCode : Bool
     , isBold : Bool
     , isItalic : Bool
-    , link : Maybe Link
+    , link : Maybe { title : Maybe String, destination : String }
     }
 
 
@@ -54,8 +54,8 @@ nextStepWhenFoundLink link ( currStyle, revStyledStrings ) string =
                , destination = currStyle.link.destination |> Maybe.withDefault ""
                }
         -}
-        ( { currStyle | link = Just link }
-        , { style = currStyle, string = string } :: revStyledStrings
+        ( currStyle
+        , { style = { currStyle | link = Just { title = link.title, destination = link.destination } }, string = link.description } :: revStyledStrings
         )
 
 
