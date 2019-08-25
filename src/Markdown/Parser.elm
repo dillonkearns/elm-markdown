@@ -263,9 +263,6 @@ type alias Attribute =
 
 plainLine : Parser (List StyledString)
 plainLine =
-    -- Inlines.parse
-    --     |. Advanced.chompUntilEndOr "\n"
-    --     |> Advanced.map Body
     succeed identity
         |= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
         |> Advanced.andThen
@@ -282,10 +279,23 @@ plainLine =
 lineParser : Parser Block
 lineParser =
     oneOf
-        [ heading
+        [ blankLine
+        , heading
         , htmlParser
         , plainLine |> Advanced.map Body
         ]
+
+
+
+-- make sure that blank lines are consumed
+-- to prevent failures or infinite loops for
+-- empty lines
+
+
+blankLine : Parser Block
+blankLine =
+    succeed (Body [])
+        |. symbol (Advanced.Token "\n" (Parser.Expecting "\n"))
 
 
 htmlParser : Parser Block
@@ -378,6 +388,7 @@ childToParser node =
 multiParser : Parser (List Block)
 multiParser =
     loop [] statementsHelp
+        |. succeed Advanced.end
         -- TODO find a more elegant way to exclude empty blocks for each blank lines
         |> map (List.filter (\item -> item /= Body []))
 
@@ -386,13 +397,24 @@ statementsHelp : List Block -> Parser (Step (List Block) (List Block))
 statementsHelp revStmts =
     oneOf
         [ succeed
-            (\stmt ->
-                Loop (stmt :: revStmts)
+            (\offsetBefore stmt offsetAfter ->
+                let
+                    madeProgress =
+                        offsetAfter > offsetBefore
+                in
+                if madeProgress then
+                    Loop (stmt :: revStmts)
+
+                else
+                    Done (List.reverse (stmt :: revStmts))
             )
+            |= Advanced.getOffset
             |= lineParser
-            -- TODO this is causing files to require newlines
-            -- at the end... how do I avoid this?
-            |. symbol (Advanced.Token "\n" (Parser.Expecting "newline"))
+            |= Advanced.getOffset
+
+        -- TODO this is causing files to require newlines
+        -- at the end... how do I avoid this?
+        -- |. symbol (Advanced.Token "\n" (Parser.Expecting "newline"))
         , succeed ()
             |> map (\_ -> Done (List.reverse revStmts))
         ]

@@ -53,18 +53,18 @@ This is just some text
                             , Body (unstyledText "This is just some text")
                             ]
                         )
-        , skip <|
-            test "doesn't need to end in newline" <|
-                \() ->
-                    """# Heading
-This is just some text"""
-                        |> Advanced.run multiParser
-                        |> Expect.equal
-                            (Ok
-                                [ Heading 1 (unstyledText "Heading")
-                                , Body (unstyledText "This is just some text")
-                                ]
-                            )
+        , test "doesn't need to end in newline" <|
+            \() ->
+                """# Heading
+This is just some text
+"""
+                    |> Advanced.run multiParser
+                    |> Expect.equal
+                        (Ok
+                            [ Heading 1 (unstyledText "Heading")
+                            , Body (unstyledText "This is just some text")
+                            ]
+                        )
         , test "long example" <|
             \() ->
                 """# Heading
