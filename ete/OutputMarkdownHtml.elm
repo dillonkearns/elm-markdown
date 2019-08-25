@@ -80,45 +80,24 @@ renderMarkdown markdown =
 
                         _ ->
                             Html.text "TODO maye use a type here to clean it up... this will never happen"
-            , raw =
-                \styledStrings ->
-                    Html.p []
-                        (List.map styledStringView styledStrings)
+            , raw = Html.p []
+            , bold =
+                \content -> Html.strong [] [ Html.text content ]
+            , italic =
+                \content -> Html.em [] [ Html.text content ]
+            , code =
+                \content -> Html.code [] [ Html.text content ]
+            , plain =
+                Html.text
+
+            -- \styledStrings ->
+            --     Html.p []
+            --         (List.map styledStringView styledStrings)
             , todo = Html.text "TODO"
             , htmlDecoder = Markdown.htmlOneOf []
             }
         |> Result.map (List.map (Html.toString 0))
         |> Result.map (String.join "")
-
-
-
--- renderStyled : List StyledString -> Html.Html msg
--- renderStyled styledStrings =
---     -- List.map styledStringView styledStrings
---     styledStrings
---         |> List.foldl foldThing []
---         |> Html.p []
---
---
--- foldThing : StyledString -> List (Html.Html msg) -> List (Html.Html msg)
--- foldThing { style, string } soFar =
---     if style.isBold && style.isItalic then
---         Html.strong []
---             [ Html.em [] [ Html.text string ]
---             ]
---             :: soFar
---
---     else if style.isBold then
---         Html.strong [] [ Html.text string ]
---             :: soFar
---
---     else if style.isItalic then
---         Html.em [] [ Html.text string ]
---             :: soFar
---
---     else
---         Html.text string
---             :: soFar
 
 
 main =
