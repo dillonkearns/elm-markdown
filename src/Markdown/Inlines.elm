@@ -5,6 +5,7 @@ import Char
 import Debug
 import Html exposing (Html)
 import Html.Attributes as Attr
+import Markdown.Link as Link exposing (Link)
 import Parser
 import Parser.Advanced as Advanced exposing (..)
 
@@ -19,7 +20,11 @@ isUninteresting char =
 
 
 type alias Style =
-    { isCode : Bool, isBold : Bool, isItalic : Bool }
+    { isCode : Bool
+    , isBold : Bool
+    , isItalic : Bool
+    , link : Maybe Link
+    }
 
 
 type alias StyledString =
@@ -34,6 +39,22 @@ nextStepWhenFoundBold : State -> String -> Step State (List StyledString)
 nextStepWhenFoundBold ( currStyle, revStyledStrings ) string =
     Loop
         ( { currStyle | isBold = not currStyle.isBold }
+        , { style = currStyle, string = string } :: revStyledStrings
+        )
+
+
+nextStepWhenFoundLink : Link -> State -> String -> Step State (List StyledString)
+nextStepWhenFoundLink link ( currStyle, revStyledStrings ) string =
+    Loop
+        -- TODO
+        {-
+           | link =
+               { title = Nothing
+               , description = currStyle.link.description |> Maybe.withDefault ""
+               , destination = currStyle.link.destination |> Maybe.withDefault ""
+               }
+        -}
+        ( { currStyle | link = Just link }
         , { style = currStyle, string = string } :: revStyledStrings
         )
 
@@ -65,7 +86,15 @@ nextStepWhenFoundNothing ( currStyle, revStyledStrings ) string =
 
 parse : Parser (List StyledString)
 parse =
-    loop ( { isCode = False, isBold = False, isItalic = False }, [] ) parseHelp
+    loop
+        ( { isCode = False
+          , isBold = False
+          , isItalic = False
+          , link = Nothing
+          }
+        , []
+        )
+        parseHelp
 
 
 parseHelp : State -> Parser (Step State (List StyledString))
@@ -82,6 +111,8 @@ parseHelp state =
                 , map
                     (\_ -> nextStepWhenFoundItalic state chompedString)
                     (token (Token "*" (Parser.Expecting "*")))
+                , Link.parser
+                    |> map (\link -> nextStepWhenFoundLink link state chompedString)
                 , succeed
                     (nextStepWhenFoundNothing state chompedString)
                 ]

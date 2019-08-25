@@ -1,7 +1,7 @@
 module InlineTests exposing (suite)
 
 import Expect exposing (Expectation)
-import Markdown.Inlines
+import Markdown.Inlines as Inlines
 import Markdown.Parser exposing (..)
 import Parser
 import Parser.Advanced as Advanced
@@ -23,7 +23,7 @@ suite =
         [ test "code spans" <|
             \() ->
                 """`code`"""
-                    |> Advanced.run Markdown.Inlines.parse
+                    |> Advanced.run Inlines.parse
                     |> Expect.equal
                         (Ok
                             [ { string = "code"
@@ -31,6 +31,7 @@ suite =
                                     { isCode = True
                                     , isBold = False
                                     , isItalic = False
+                                    , link = Nothing
                                     }
                               }
                             ]
@@ -49,17 +50,26 @@ suite =
                             [ Heading 1 (unstyledText "Heading")
                             , Html "div"
                                 []
-                                [ Body (unstyledText "")
+                                [ Body []
                                 , Heading 1 (unstyledText "Heading in a div!")
-                                , Body (unstyledText "")
+                                , Body []
                                 ]
                             ]
                         )
         ]
 
 
+unstyledText : String -> List Inlines.StyledString
 unstyledText body =
-    [ { string = body, style = { isCode = False, isBold = False, isItalic = False } } ]
+    [ { string = body
+      , style =
+            { isCode = False
+            , isBold = False
+            , isItalic = False
+            , link = Nothing
+            }
+      }
+    ]
 
 
 parserError : String -> Expect.Expectation

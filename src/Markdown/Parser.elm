@@ -300,7 +300,12 @@ xmlNodeToHtmlNode parser =
                     Body
                         -- TODO remove hardcoding
                         [ { string = innerText
-                          , style = { isCode = False, isBold = False, isItalic = False }
+                          , style =
+                                { isCode = False
+                                , isBold = False
+                                , isItalic = False
+                                , link = Nothing
+                                }
                           }
                         ]
                         |> Advanced.succeed

@@ -1,6 +1,7 @@
 module Tests exposing (suite)
 
 import Expect exposing (Expectation)
+import Markdown.Inlines
 import Markdown.Parser exposing (..)
 import Parser
 import Parser.Advanced as Advanced
@@ -128,8 +129,17 @@ Hello!
         ]
 
 
+unstyledText : String -> List Markdown.Inlines.StyledString
 unstyledText body =
-    [ { string = body, style = { isCode = False, isBold = False, isItalic = False } } ]
+    [ { string = body
+      , style =
+            { isCode = False
+            , isBold = False
+            , isItalic = False
+            , link = Nothing
+            }
+      }
+    ]
 
 
 parserError : String -> Expect.Expectation
