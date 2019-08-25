@@ -118,6 +118,25 @@ Hello!
                                 ]
                             ]
                         )
+        , test "simple list" <|
+            \() ->
+                """- One
+- Two
+- Three
+                        """
+                    |> Advanced.run multiParser
+                    |> Expect.equal
+                        (Ok
+                            [ ListBlock
+                                [ unstyledText "One"
+                                , unstyledText "Two"
+                                , unstyledText "Three"
+                                ]
+
+                            -- TODO why is this extra block here? Fix
+                            -- , ListBlock []
+                            ]
+                        )
         ]
 
 
@@ -132,6 +151,18 @@ unstyledText body =
             }
       }
     ]
+
+
+unstyledTextSingle : String -> Markdown.Inlines.StyledString
+unstyledTextSingle body =
+    { string = body
+    , style =
+        { isCode = False
+        , isBold = False
+        , isItalic = False
+        , link = Nothing
+        }
+    }
 
 
 parserError : String -> Expect.Expectation

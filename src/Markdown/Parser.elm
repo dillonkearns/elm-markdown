@@ -70,7 +70,7 @@ type alias Renderer view =
 
     -- TODO make this a `Result` so users can validate links
     , link : { title : Maybe String, destination : String } -> String -> view
-    , list : List (List view) -> view
+    , list : List view -> view
     }
 
 
@@ -127,10 +127,10 @@ renderHelper renderer blocks =
 
                 ListBlock items ->
                     items
-                        |> List.map (renderHelper renderer)
-                        |> List.map combineResults
-                        |> combineResults
-                        |> Result.map renderer.list
+                        |> List.map (renderStyled renderer)
+                        |> List.map renderer.raw
+                        |> renderer.list
+                        |> Ok
         )
         blocks
 
@@ -243,7 +243,7 @@ type Block
     = Heading Int (List StyledString)
     | Body (List StyledString)
     | Html String (List Attribute) (List Block)
-    | ListBlock (List (List Block))
+    | ListBlock (List (List Inlines.StyledString))
 
 
 type alias Attribute =
@@ -279,28 +279,7 @@ lineParser =
 listBlock : Parser Block
 listBlock =
     Markdown.List.parser
-        |> transformTemp
-
-
-
--- |> map Body
--- |> map ListBlock
-
-
-transformTemp : Parser (List (List Inlines.StyledString)) -> Parser Block
-transformTemp parser =
-    parser
-        |> map (List.map Body)
-        |> map List.singleton
         |> map ListBlock
-
-
-
--- Debug.todo ""
--- map ( Heading 0 "")
--- make sure that blank lines are consumed
--- to prevent failures or infinite loops for
--- empty lines
 
 
 blankLine : Parser Block

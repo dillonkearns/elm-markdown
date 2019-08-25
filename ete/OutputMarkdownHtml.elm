@@ -97,8 +97,15 @@ renderMarkdown markdown =
                     Html.ul []
                         (items
                             |> List.map
-                                (\itemBlocks -> Html.li [] itemBlocks)
+                                (\itemBlocks ->
+                                    Html.li []
+                                        [ itemBlocks ]
+                                )
                         )
+
+            -- \styledStrings ->
+            --     Html.p []
+            --         (List.map styledStringView styledStrings)
             , todo = Html.text "TODO"
             , htmlDecoder = Markdown.htmlOneOf []
             }
