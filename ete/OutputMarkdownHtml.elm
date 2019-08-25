@@ -87,6 +87,9 @@ renderMarkdown markdown =
                 \content -> Html.em [] [ Html.text content ]
             , code =
                 \content -> Html.code [] [ Html.text content ]
+            , link =
+                -- TODO use link.title
+                \link content -> Html.a [ Attr.href link.destination ] [ Html.text content ]
             , plain =
                 Html.text
 

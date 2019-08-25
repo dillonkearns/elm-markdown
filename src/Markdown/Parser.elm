@@ -87,6 +87,9 @@ type alias Renderer view =
     , code : String -> view
     , bold : String -> view
     , italic : String -> view
+
+    -- TODO make this a `Result` so users can validate links
+    , link : { title : Maybe String, destination : String } -> String -> view
     }
 
 
@@ -98,21 +101,27 @@ renderStyled renderer styledStrings =
 
 foldThing : Renderer view -> StyledString -> List view -> List view
 foldThing renderer { style, string } soFar =
-    if style.isBold then
-        renderer.bold string
-            :: soFar
+    case style.link of
+        Just link ->
+            renderer.link link string
+                :: soFar
 
-    else if style.isItalic then
-        renderer.italic string
-            :: soFar
+        Nothing ->
+            if style.isBold then
+                renderer.bold string
+                    :: soFar
 
-    else if style.isCode then
-        renderer.code string
-            :: soFar
+            else if style.isItalic then
+                renderer.italic string
+                    :: soFar
 
-    else
-        renderer.plain string
-            :: soFar
+            else if style.isCode then
+                renderer.code string
+                    :: soFar
+
+            else
+                renderer.plain string
+                    :: soFar
 
 
 renderHelper :

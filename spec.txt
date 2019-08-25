@@ -32,3 +32,12 @@ This is a simple code span:
 .
 <p><code>foo</code></p>
 ````````````````````````````````
+
+
+The title may be omitted:
+
+```````````````````````````````` example
+[link](/uri)
+.
+<p><a href="/uri">link</a></p>
+````````````````````````````````
