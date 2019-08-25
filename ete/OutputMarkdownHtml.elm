@@ -61,22 +61,22 @@ renderMarkdown markdown =
                 \level content ->
                     case level of
                         1 ->
-                            Html.h1 [] [ Html.text content ]
+                            Html.h1 [] content
 
                         2 ->
-                            Html.h2 [] [ Html.text content ]
+                            Html.h2 [] content
 
                         3 ->
-                            Html.h3 [] [ Html.text content ]
+                            Html.h3 [] content
 
                         4 ->
-                            Html.h4 [] [ Html.text content ]
+                            Html.h4 [] content
 
                         5 ->
-                            Html.h5 [] [ Html.text content ]
+                            Html.h5 [] content
 
                         6 ->
-                            Html.h6 [] [ Html.text content ]
+                            Html.h6 [] content
 
                         _ ->
                             Html.text "TODO maye use a type here to clean it up... this will never happen"

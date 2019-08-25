@@ -79,7 +79,7 @@ htmlTag expectedTag a =
 
 
 type alias Renderer view =
-    { heading : Int -> String -> view
+    { heading : Int -> List view -> view
     , raw : List view -> view
     , todo : view
     , htmlDecoder : Decoder (List view -> view)
@@ -90,11 +90,10 @@ type alias Renderer view =
     }
 
 
-renderStyled : Renderer view -> List StyledString -> view
+renderStyled : Renderer view -> List StyledString -> List view
 renderStyled renderer styledStrings =
     styledStrings
         |> List.foldr (foldThing renderer) []
-        |> renderer.raw
 
 
 foldThing : Renderer view -> StyledString -> List view -> List view
@@ -125,11 +124,12 @@ renderHelper renderer blocks =
         (\block ->
             case block of
                 Heading level content ->
-                    renderer.heading level content
+                    renderer.heading level (renderStyled renderer content)
                         |> Ok
 
                 Body content ->
                     renderStyled renderer content
+                        |> renderer.raw
                         |> Ok
 
                 Html tag attributes children ->
@@ -139,15 +139,7 @@ renderHelper renderer blocks =
 
 
 render :
-    { heading : Int -> String -> view
-    , raw : List view -> view
-    , todo : view
-    , htmlDecoder : Decoder (List view -> view)
-    , plain : String -> view
-    , code : String -> view
-    , bold : String -> view
-    , italic : String -> view
-    }
+    Renderer view
     -> String
     -> Result String (List view)
 render renderer markdownText =
@@ -251,7 +243,7 @@ type alias Parser a =
 
 
 type Block
-    = Heading Int String
+    = Heading Int (List StyledString)
     | Body (List StyledString)
     | Html String (List Attribute) (List Block)
 
@@ -412,11 +404,26 @@ heading =
                     )
            )
         |. chompWhile (\c -> c == ' ')
-        |= getChompedString
-            (succeed ()
-                -- |. chompWhile (\c -> c /= '\n')
-                |. Advanced.chompUntilEndOr "\n"
-            )
+        |= (getChompedString
+                (succeed ()
+                    -- |. chompWhile (\c -> c /= '\n')
+                    |. Advanced.chompUntilEndOr "\n"
+                )
+                |> Advanced.andThen
+                    (\headingText ->
+                        let
+                            result =
+                                headingText
+                                    |> Advanced.run Inlines.parse
+                        in
+                        case result of
+                            Ok styled ->
+                                succeed styled
+
+                            Err error ->
+                                problem (Parser.Expecting "TODO")
+                    )
+           )
 
 
 parse : String -> Result (List (Advanced.DeadEnd String Parser.Problem)) (List Block)
