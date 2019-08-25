@@ -88,6 +88,36 @@ renderMarkdown markdown =
         |> Result.map (String.join "")
 
 
+
+-- renderStyled : List StyledString -> Html.Html msg
+-- renderStyled styledStrings =
+--     -- List.map styledStringView styledStrings
+--     styledStrings
+--         |> List.foldl foldThing []
+--         |> Html.p []
+--
+--
+-- foldThing : StyledString -> List (Html.Html msg) -> List (Html.Html msg)
+-- foldThing { style, string } soFar =
+--     if style.isBold && style.isItalic then
+--         Html.strong []
+--             [ Html.em [] [ Html.text string ]
+--             ]
+--             :: soFar
+--
+--     else if style.isBold then
+--         Html.strong [] [ Html.text string ]
+--             :: soFar
+--
+--     else if style.isItalic then
+--         Html.em [] [ Html.text string ]
+--             :: soFar
+--
+--     else
+--         Html.text string
+--             :: soFar
+
+
 main =
     Platform.worker
         { init = init
