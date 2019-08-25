@@ -192,7 +192,6 @@ renderHtmlNode renderer tag attributes children =
     useRed tag
         attributes
         children
-        -- TODO why am I passing children AND parsed children... this is probably causing a bug
         renderer.htmlDecoder
         (renderHelper renderer children)
 
