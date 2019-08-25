@@ -19,15 +19,19 @@ type alias Link =
 parser : Parser Link
 parser =
     succeed
-        (\description ->
+        (\description destination ->
             { description = description
             , title = Nothing
-            , destination = "/about"
+            , destination = destination
             }
         )
         |. Advanced.symbol (Advanced.Token "[" (Parser.ExpectingSymbol "["))
         |= getChompedString
             (chompUntil (Advanced.Token "]" (Parser.ExpectingSymbol "]")))
+        |. Advanced.symbol (Advanced.Token "]" (Parser.ExpectingSymbol "]"))
+        |. Advanced.symbol (Advanced.Token "(" (Parser.ExpectingSymbol "("))
+        |= getChompedString
+            (chompUntil (Advanced.Token ")" (Parser.ExpectingSymbol ")")))
 
 
 isUninteresting : Char -> Bool

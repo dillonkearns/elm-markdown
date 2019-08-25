@@ -19,8 +19,8 @@ parse input =
 
 suite : Test
 suite =
-    describe "inline parsing"
-        [ test "code spans" <|
+    describe "link parsing"
+        [ test "basic link with no title" <|
             \() ->
                 """[About](/about)"""
                     |> Advanced.run Markdown.Link.parser
