@@ -56,6 +56,30 @@ suite =
                                 ]
                             ]
                         )
+        , test "simple link" <|
+            \() ->
+                """[Contact](/contact)
+"""
+                    |> Advanced.run multiParser
+                    |> Expect.equal
+                        (Ok
+                            [ Body
+                                [ { string = ""
+                                  , style =
+                                        { isCode = False
+                                        , isBold = False
+                                        , isItalic = False
+                                        , link =
+                                            Just
+                                                { destination = "/contact"
+                                                , title = Nothing
+                                                , description = "Contact"
+                                                }
+                                        }
+                                  }
+                                ]
+                            ]
+                        )
         ]
 
 

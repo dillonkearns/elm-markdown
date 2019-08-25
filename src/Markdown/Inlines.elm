@@ -16,7 +16,7 @@ type alias Parser a =
 
 isUninteresting : Char -> Bool
 isUninteresting char =
-    char /= '*' && char /= '`'
+    char /= '*' && char /= '`' && char /= '['
 
 
 type alias Style =
@@ -102,7 +102,9 @@ parseHelp state =
     andThen
         (\chompedString ->
             oneOf
-                [ map
+                [ Link.parser
+                    |> map (\link -> nextStepWhenFoundLink link state chompedString)
+                , map
                     (\_ -> nextStepWhenFoundCode state chompedString)
                     (token (Token "`" (Parser.Expecting "`")))
                 , map
@@ -111,8 +113,6 @@ parseHelp state =
                 , map
                     (\_ -> nextStepWhenFoundItalic state chompedString)
                     (token (Token "*" (Parser.Expecting "*")))
-                , Link.parser
-                    |> map (\link -> nextStepWhenFoundLink link state chompedString)
                 , succeed
                     (nextStepWhenFoundNothing state chompedString)
                 ]
