@@ -79,11 +79,8 @@ Body of the subheading.
                     |> Expect.equal
                         (Ok
                             [ Heading 1 (unstyledText "Heading")
-                            , Body []
                             , Body (unstyledText "This is just some text.")
-                            , Body []
                             , Heading 2 (unstyledText "Subheading")
-                            , Body []
                             , Body (unstyledText "Body of the subheading.")
                             ]
                         )
@@ -100,9 +97,7 @@ Hello!
                             [ Heading 1 (unstyledText "Heading")
                             , Html "div"
                                 []
-                                [ -- TODO how should `Body ""` be handled?
-                                  Body []
-                                , Body (unstyledText "Hello!")
+                                [ Body (unstyledText "Hello!")
                                 ]
                             ]
                         )
@@ -120,9 +115,7 @@ Hello!
                             [ Heading 1 (unstyledText "Heading")
                             , Html "div"
                                 []
-                                [ Body []
-                                , Heading 1 (unstyledText "Heading in a div!")
-                                , Body []
+                                [ Heading 1 (unstyledText "Heading in a div!")
                                 ]
                             ]
                         )

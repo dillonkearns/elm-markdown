@@ -50,36 +50,33 @@ suite =
                             [ Heading 1 (unstyledText "Heading")
                             , Html "div"
                                 []
-                                [ Body []
-                                , Heading 1 (unstyledText "Heading in a div!")
-                                , Body []
+                                [ Heading 1 (unstyledText "Heading in a div!")
                                 ]
                             ]
                         )
-        , only <|
-            test "simple link" <|
-                \() ->
-                    """[Contact](/contact)
+        , test "simple link" <|
+            \() ->
+                """[Contact](/contact)
 """
-                        |> Advanced.run multiParser
-                        |> Expect.equal
-                            (Ok
-                                [ Body
-                                    [ { string = "Contact"
-                                      , style =
-                                            { isCode = False
-                                            , isBold = False
-                                            , isItalic = False
-                                            , link =
-                                                Just
-                                                    { destination = "/contact"
-                                                    , title = Nothing
-                                                    }
-                                            }
-                                      }
-                                    ]
+                    |> Advanced.run multiParser
+                    |> Expect.equal
+                        (Ok
+                            [ Body
+                                [ { string = "Contact"
+                                  , style =
+                                        { isCode = False
+                                        , isBold = False
+                                        , isItalic = False
+                                        , link =
+                                            Just
+                                                { destination = "/contact"
+                                                , title = Nothing
+                                                }
+                                        }
+                                  }
                                 ]
-                            )
+                            ]
+                        )
         ]
 
 
