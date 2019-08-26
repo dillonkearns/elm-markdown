@@ -12,9 +12,9 @@ type alias Parser a =
     Advanced.Parser String Parser.Problem a
 
 
-parse : String -> Result (List (Advanced.DeadEnd String Parser.Problem)) Block
-parse input =
-    Advanced.run lineParser input
+parse : String -> Result (List (Advanced.DeadEnd String Parser.Problem)) (List Block)
+parse =
+    Markdown.Parser.parse
 
 
 suite : Test
@@ -25,12 +25,12 @@ suite =
                 \() ->
                     "# Hello!"
                         |> parse
-                        |> Expect.equal (Ok (Heading 1 (unstyledText "Hello!")))
+                        |> Expect.equal (Ok [ Heading 1 (unstyledText "Hello!") ])
             , test "Heading 2" <|
                 \() ->
                     "## Hello!"
                         |> parse
-                        |> Expect.equal (Ok (Heading 2 (unstyledText "Hello!")))
+                        |> Expect.equal (Ok [ Heading 2 (unstyledText "Hello!") ])
             , test "Heading 7 is invalid" <|
                 \() ->
                     "####### Hello!"
@@ -40,7 +40,7 @@ suite =
             \() ->
                 "This is just some text"
                     |> parse
-                    |> Expect.equal (Ok (Body (unstyledText "This is just some text")))
+                    |> Expect.equal (Ok [ Body (unstyledText "This is just some text") ])
         , test "parse heading then plain text" <|
             \() ->
                 """# Heading
@@ -160,6 +160,17 @@ Text after
                             -- , ListBlock []
                             ]
                         )
+        , test "plain text on multiple lines is in one paragraph" <|
+            \() ->
+                """Line 1
+Line 2
+
+Line after blank line"""
+                    |> parse
+                    |> Expect.equal (Ok [ Body (unstyledText """Line 1
+Line 2
+
+Line after blank line""") ])
         ]
 
 

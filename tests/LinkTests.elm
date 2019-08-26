@@ -12,9 +12,9 @@ type alias Parser a =
     Advanced.Parser String Parser.Problem a
 
 
-parse : String -> Result (List (Advanced.DeadEnd String Parser.Problem)) Block
-parse input =
-    Advanced.run lineParser input
+parse : String -> Result (List (Advanced.DeadEnd String Parser.Problem)) (List Block)
+parse =
+    Markdown.Parser.parse
 
 
 suite : Test

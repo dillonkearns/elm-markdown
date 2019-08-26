@@ -250,7 +250,7 @@ type alias Attribute =
     { name : String, value : String }
 
 
-plainLine : Parser (List StyledString)
+plainLine : Parser (List Block)
 plainLine =
     succeed identity
         |= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
@@ -263,17 +263,8 @@ plainLine =
                     Err error ->
                         problem (Parser.Expecting "....??? TODO")
             )
-
-
-lineParser : Parser Block
-lineParser =
-    oneOf
-        [ listBlock
-        , blankLine
-        , heading
-        , htmlParser
-        , plainLine |> Advanced.map Body
-        ]
+        |> Advanced.map Body
+        |> Advanced.map List.singleton
 
 
 listBlock : Parser Block
@@ -377,36 +368,51 @@ childToParser node =
 
 multiParser : Parser (List Block)
 multiParser =
-    loop [] statementsHelp
+    loop [ [] ] statementsHelp
         |. succeed Advanced.end
         -- TODO find a more elegant way to exclude empty blocks for each blank lines
         |> map (List.filter (\item -> item /= Body []))
 
 
-statementsHelp : List Block -> Parser (Step (List Block) (List Block))
+statementsHelp : List (List Block) -> Parser (Step (List (List Block)) (List Block))
 statementsHelp revStmts =
     oneOf
         [ succeed
-            (\offsetBefore stmt offsetAfter ->
+            (\offsetBefore stmts offsetAfter ->
                 let
                     madeProgress =
                         offsetAfter > offsetBefore
                 in
                 if madeProgress then
-                    Loop (stmt :: revStmts)
+                    Loop (stmts :: revStmts)
 
                 else
-                    Done (List.reverse (stmt :: revStmts))
+                    Done
+                        (List.reverse (stmts :: revStmts)
+                            |> List.concat
+                        )
             )
             |= Advanced.getOffset
-            |= lineParser
+            |= oneOf
+                [ listBlock |> map List.singleton
+                , blankLine |> map List.singleton
+                , heading |> map List.singleton
+                , htmlParser |> map List.singleton
+                , plainLine
+                ]
             |= Advanced.getOffset
 
         -- TODO this is causing files to require newlines
         -- at the end... how do I avoid this?
         -- |. symbol (Advanced.Token "\n" (Parser.Expecting "newline"))
         , succeed ()
-            |> map (\_ -> Done (List.reverse revStmts))
+            |> map
+                (\_ ->
+                    Done
+                        (List.reverse revStmts
+                            |> List.concat
+                        )
+                )
         ]
 
 
