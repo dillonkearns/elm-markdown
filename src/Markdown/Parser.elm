@@ -270,8 +270,9 @@ lineParser =
     oneOf
         [ blankLine
         , heading
-        , listBlock
         , htmlParser
+
+        -- , listBlock
         , plainLine |> Advanced.map Body
         ]
 

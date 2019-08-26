@@ -137,6 +137,29 @@ Hello!
                             -- , ListBlock []
                             ]
                         )
+        , test "mixed content with list" <|
+            \() ->
+                """# Title
+
+- This is an item
+- And so is this
+
+Text after
+"""
+                    |> Advanced.run multiParser
+                    |> Expect.equal
+                        (Ok
+                            [ Heading 1 (unstyledText "Title")
+                            , ListBlock
+                                [ unstyledText "This is an item"
+                                , unstyledText "And so is this"
+                                ]
+                            , Body (unstyledText "Text after")
+
+                            -- TODO why is this extra block here? Fix
+                            -- , ListBlock []
+                            ]
+                        )
         ]
 
 
