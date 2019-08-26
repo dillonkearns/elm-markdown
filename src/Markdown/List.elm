@@ -19,7 +19,11 @@ type alias ListItem =
 
 parser : Parser (List ListItem)
 parser =
-    loop [] statementsHelp
+    singleItemParser
+        |> andThen
+            (\firstItem ->
+                loop [] (statementsHelp firstItem)
+            )
 
 
 singleItemParser : Parser ListItem
@@ -35,8 +39,8 @@ singleItemParser =
         |. Advanced.symbol (Advanced.Token "\n" (Parser.ExpectingSymbol "\n"))
 
 
-statementsHelp : List ListItem -> Parser (Step (List ListItem) (List ListItem))
-statementsHelp revStmts =
+statementsHelp : ListItem -> List ListItem -> Parser (Step (List ListItem) (List ListItem))
+statementsHelp firstItem revStmts =
     oneOf
         [ succeed
             (\offsetBefore stmt offsetAfter ->
@@ -60,7 +64,7 @@ statementsHelp revStmts =
         -- at the end... how do I avoid this?
         -- |. symbol (Advanced.Token "\n" (Parser.Expecting "newline"))
         , succeed ()
-            |> map (\_ -> Done (List.reverse revStmts))
+            |> map (\_ -> Done (firstItem :: List.reverse revStmts))
         ]
 
 

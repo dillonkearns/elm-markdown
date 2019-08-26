@@ -268,11 +268,10 @@ plainLine =
 lineParser : Parser Block
 lineParser =
     oneOf
-        [ blankLine
+        [ listBlock
+        , blankLine
         , heading
         , htmlParser
-
-        -- , listBlock
         , plainLine |> Advanced.map Body
         ]
 
