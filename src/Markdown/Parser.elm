@@ -405,6 +405,8 @@ statementsHelp revStmts =
                 [ listBlock |> map List.singleton
                 , blankLine |> map List.singleton
                 , heading |> map List.singleton
+                , Markdown.CodeBlock.parser |> map CodeBlock |> map List.singleton
+                , htmlParser |> map List.singleton
                 , htmlParser |> map List.singleton
                 , plainLine
                 ]

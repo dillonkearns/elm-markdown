@@ -171,6 +171,38 @@ Line after blank line"""
 Line 2
 
 Line after blank line""") ])
+        , test "code fence with paragraph and heading below" <|
+            \() ->
+                """```shell
+.
+├── content/
+├── elm.json
+├── images/
+├── static/
+├── index.js
+├── package.json
+└── src/
+    └── Main.elm
+```
+
+This is more stuff
+
+## h2
+
+qwer
+"""
+                    |> parse
+                    |> Expect.equal
+                        (Ok
+                            [ CodeBlock
+                                { body = ".\n├── content/\n├── elm.json\n├── images/\n├── static/\n├── index.js\n├── package.json\n└── src/\n    └── Main.elm"
+                                , language = Just "shell"
+                                }
+                            , Body (unstyledText "This is more stuff")
+                            , Heading 2 (unstyledText "h2")
+                            , Body (unstyledText "qwer")
+                            ]
+                        )
         ]
 
 

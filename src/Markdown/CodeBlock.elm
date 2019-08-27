@@ -30,12 +30,14 @@ parserHelp delimeter =
             }
         )
         |. Advanced.symbol (Advanced.Token delimeter (Parser.ExpectingSymbol delimeter))
-        |= getChompedString (chompUntil (Advanced.Token "\n" (Parser.Problem "Expecting ending code fence.")))
+        |= getChompedString (chompUntil (Advanced.Token "\n" (Parser.Problem "Expecting newline")))
         |. Advanced.symbol (Advanced.Token "\n" (Parser.ExpectingSymbol "\n"))
-        |= getChompedString (Advanced.chompUntil (Advanced.Token ("\n" ++ delimeter) (Parser.Problem "Expecting ending code fence.")))
+        |= getChompedString (Advanced.chompUntilEndOr ("\n" ++ delimeter))
+        |. Advanced.symbol (Advanced.Token ("\n" ++ delimeter) (Parser.ExpectingSymbol delimeter))
 
 
 
+-- |. Advanced.symbol (Advanced.Token "\n" (Parser.ExpectingSymbol "\n"))
 -- |. Advanced.symbol (Advanced.Token delimeter (Parser.ExpectingSymbol delimeter))
 
 
