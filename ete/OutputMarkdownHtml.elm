@@ -108,6 +108,13 @@ renderMarkdown markdown =
             --         (List.map styledStringView styledStrings)
             , todo = Html.text "TODO"
             , htmlDecoder = Markdown.htmlOneOf []
+            , codeBlock =
+                \{ body, language } ->
+                    Html.pre []
+                        [ Html.code []
+                            [ Html.text body
+                            ]
+                        ]
             }
         |> Result.map (List.map (Html.toString 0))
         |> Result.map (String.join "")
