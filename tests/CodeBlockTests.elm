@@ -33,6 +33,18 @@ $ echo hello world
                             , language = Just "shell"
                             }
                         )
+        , test "code fence can use ~~~ as delimeter" <|
+            \() ->
+                """~~~shell
+$ echo hello world
+~~~"""
+                    |> Advanced.run Markdown.CodeBlock.parser
+                    |> Expect.equal
+                        (Ok
+                            { body = "$ echo hello world"
+                            , language = Just "shell"
+                            }
+                        )
         ]
 
 

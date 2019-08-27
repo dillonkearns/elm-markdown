@@ -10,6 +10,14 @@ type alias Parser a =
 
 parser : Parser CodeBlock
 parser =
+    oneOf
+        [ parserHelp "```"
+        , parserHelp "~~~"
+        ]
+
+
+parserHelp : String -> Parser CodeBlock
+parserHelp delimeter =
     succeed
         (\language body ->
             { body = body
@@ -21,14 +29,14 @@ parser =
                     Just language
             }
         )
-        |. Advanced.symbol (Advanced.Token "```" (Parser.ExpectingSymbol "```"))
+        |. Advanced.symbol (Advanced.Token delimeter (Parser.ExpectingSymbol delimeter))
         |= getChompedString (chompUntil (Advanced.Token "\n" (Parser.Problem "Expecting ending code fence.")))
         |. Advanced.symbol (Advanced.Token "\n" (Parser.ExpectingSymbol "\n"))
-        |= getChompedString (Advanced.chompUntil (Advanced.Token "\n```" (Parser.Problem "Expecting ending code fence.")))
+        |= getChompedString (Advanced.chompUntil (Advanced.Token ("\n" ++ delimeter) (Parser.Problem "Expecting ending code fence.")))
 
 
 
--- |. Advanced.symbol (Advanced.Token "```" (Parser.ExpectingSymbol "```"))
+-- |. Advanced.symbol (Advanced.Token delimeter (Parser.ExpectingSymbol delimeter))
 
 
 type alias CodeBlock =
