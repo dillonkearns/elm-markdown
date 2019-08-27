@@ -38,10 +38,9 @@ def out(str):
     sys.stdout.buffer.write(str.encode('utf-8'))
 
 def print_test_header(headertext, example_number, start_line, end_line):
-    out("Example %d (lines %d-%d) %s\n" % (example_number,start_line,end_line,headertext))
+    out("## Example %d\n(lines %d-%d) %s\n" % (example_number,start_line,end_line,headertext))
 
 def do_test(converter, test, normalize, result_counts):
-    print(converter(test['markdown'], test['extensions']))
     [retcode, actual_html, err] = converter(test['markdown'], test['extensions'])
     actual_html = re.sub(r'\r\n', '\n', actual_html)
     if retcode == 0:
@@ -59,9 +58,15 @@ def do_test(converter, test, normalize, result_counts):
             passed = actual_html == expected_html
         if passed:
             result_counts['pass'] += 1
-        else:
             print_test_header(test['section'], test['example'], test['start_line'], test['end_line'])
-            out(test['markdown'] + '\n')
+            out("```markdown\n" + test['markdown'] + '```\n')
+            out("Passed with output:\n```html\n" + expected_html + '```\n')
+
+        else:
+            result_counts['fail'] += 1
+            print_test_header(test['section'], test['example'], test['start_line'], test['end_line'])
+            out("```markdown\n" + test['markdown'] + '```\n')
+
             if unicode_error:
                 out("Unicode error: " + str(unicode_error) + '\n')
                 out("Expected: " + repr(expected_html) + '\n')
@@ -69,16 +74,17 @@ def do_test(converter, test, normalize, result_counts):
             else:
                 expected_html_lines = expected_html.splitlines(True)
                 actual_html_lines = actual_html.splitlines(True)
+                out('\n```diff\n')
                 for diffline in unified_diff(expected_html_lines, actual_html_lines,
                                 "expected HTML", "actual HTML"):
                     out(diffline)
+                out('```\n')
             out('\n')
-            result_counts['fail'] += 1
     else:
+        result_counts['error'] += 1
         print_test_header(test['section'], test['example'], test['start_line'], test['end_line'])
         out("program returned error code %d\n" % retcode)
         sys.stdout.buffer.write(err)
-        result_counts['error'] += 1
 
 def get_tests(specfile):
     line_number = 0
@@ -147,6 +153,8 @@ if __name__ == "__main__":
         skipped = len(all_tests) - len(tests)
         converter = CMark(prog=args.program, library_dir=args.library_dir, extensions=args.extensions).to_html
         result_counts = {'pass': 0, 'fail': 0, 'error': 0, 'skip': skipped}
+        # TODO why isn't filtering working
+        # for test in tests:
         for test in all_tests:
             do_test(converter, test, args.normalize, result_counts)
         out("{pass} passed, {fail} failed, {error} errored, {skip} skipped\n".format(**result_counts))
