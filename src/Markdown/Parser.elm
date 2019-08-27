@@ -1,5 +1,6 @@
 module Markdown.Parser exposing (..)
 
+import Markdown.CodeBlock
 import Markdown.Inlines as Inlines exposing (StyledString)
 import Markdown.List
 import Parser
@@ -71,6 +72,7 @@ type alias Renderer view =
     -- TODO make this a `Result` so users can validate links
     , link : { title : Maybe String, destination : String } -> String -> view
     , list : List view -> view
+    , codeBlock : { body : String, language : Maybe String } -> view
     }
 
 
@@ -130,6 +132,11 @@ renderHelper renderer blocks =
                         |> List.map (renderStyled renderer)
                         |> List.map renderer.raw
                         |> renderer.list
+                        |> Ok
+
+                CodeBlock codeBlock ->
+                    codeBlock
+                        |> renderer.codeBlock
                         |> Ok
         )
         blocks
@@ -244,6 +251,7 @@ type Block
     | Body (List StyledString)
     | Html String (List Attribute) (List Block)
     | ListBlock (List (List Inlines.StyledString))
+    | CodeBlock Markdown.CodeBlock.CodeBlock
 
 
 type alias Attribute =
