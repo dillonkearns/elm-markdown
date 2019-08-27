@@ -11,12 +11,19 @@ type alias Parser a =
 parser : Parser CodeBlock
 parser =
     succeed
-        (\body ->
+        (\language body ->
             { body = body
-            , language = Nothing
+            , language =
+                if language == "" then
+                    Nothing
+
+                else
+                    Just language
             }
         )
-        |. Advanced.symbol (Advanced.Token "```\n" (Parser.ExpectingSymbol "```"))
+        |. Advanced.symbol (Advanced.Token "```" (Parser.ExpectingSymbol "```"))
+        |= getChompedString (chompUntil (Advanced.Token "\n" (Parser.Problem "Expecting ending code fence.")))
+        |. Advanced.symbol (Advanced.Token "\n" (Parser.ExpectingSymbol "\n"))
         |= getChompedString (Advanced.chompUntil (Advanced.Token "\n```" (Parser.Problem "Expecting ending code fence.")))
 
 

@@ -21,6 +21,18 @@ theAnswer = 42
                         (Ok
                             { body = "theAnswer = 42", language = Nothing }
                         )
+        , test "code fence with language" <|
+            \() ->
+                """```shell
+$ echo hello world
+```"""
+                    |> Advanced.run Markdown.CodeBlock.parser
+                    |> Expect.equal
+                        (Ok
+                            { body = "$ echo hello world"
+                            , language = Just "shell"
+                            }
+                        )
         ]
 
 
