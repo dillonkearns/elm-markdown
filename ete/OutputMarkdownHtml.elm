@@ -102,11 +102,6 @@ renderMarkdown markdown =
                                         [ itemBlocks ]
                                 )
                         )
-
-            -- \styledStrings ->
-            --     Html.p []
-            --         (List.map styledStringView styledStrings)
-            , todo = Html.text "TODO"
             , htmlDecoder = Markdown.htmlOneOf []
             , codeBlock =
                 \{ body, language } ->

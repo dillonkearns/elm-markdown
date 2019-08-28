@@ -86,7 +86,6 @@ mainView =
                                 Html.text string
                             )
                         |> Html.p []
-            , todo = Html.text "TODO"
             , htmlDecoder =
                 Markdown.htmlOneOf
                     [ Markdown.htmlTag "Red"
