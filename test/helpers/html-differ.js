@@ -1,13 +1,12 @@
-const HtmlDiffer = require('@markedjs/html-differ').HtmlDiffer;
+const HtmlDiffer = require("@markedjs/html-differ").HtmlDiffer;
 const htmlDiffer = new HtmlDiffer({ ignoreSelfClosingSlash: true });
 
 module.exports = {
   isEqual: htmlDiffer.isEqual.bind(htmlDiffer),
-  firstDiff: (actual, expected, padding) => {
+  firstDiff: async (actual, expected, padding) => {
     padding = padding || 30;
-    const result = htmlDiffer
-      .diffHtml(actual, expected)
-      .reduce((obj, diff) => {
+    const result = (await htmlDiffer.diffHtml(actual, expected)).reduce(
+      (obj, diff) => {
         if (diff.added) {
           if (obj.firstIndex === null) {
             obj.firstIndex = obj.expected.length;
@@ -24,15 +23,23 @@ module.exports = {
         }
 
         return obj;
-      }, {
+      },
+      {
         firstIndex: null,
-        actual: '',
-        expected: ''
-      });
+        actual: "",
+        expected: ""
+      }
+    );
 
     return {
-      actual: result.actual.substring(result.firstIndex - padding, result.firstIndex + padding),
-      expected: result.expected.substring(result.firstIndex - padding, result.firstIndex + padding)
+      actual: result.actual.substring(
+        result.firstIndex - padding,
+        result.firstIndex + padding
+      ),
+      expected: result.expected.substring(
+        result.firstIndex - padding,
+        result.firstIndex + padding
+      )
     };
   }
 };
