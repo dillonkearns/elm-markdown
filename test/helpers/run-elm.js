@@ -19,7 +19,6 @@ function runner(markdown) {
   });
 }
 
-module.exports = async function(markdown) {
-  const result = await runner(markdown);
-  return result;
+module.exports = function(markdown) {
+  return runner(markdown);
 };
