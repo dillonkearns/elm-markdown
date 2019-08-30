@@ -72,6 +72,36 @@ suite =
                                 ]
                             ]
                         )
+        , test "plain text followed by link" <|
+            \() ->
+                """This is an intro and [this is a link](/my/page)"""
+                    |> Advanced.run multiParser
+                    |> Expect.equal
+                        (Ok
+                            [ Body
+                                [ { string = "This is an intro and "
+                                  , style =
+                                        { isCode = False
+                                        , isBold = False
+                                        , isItalic = False
+                                        , link = Nothing
+                                        }
+                                  }
+                                , { string = "this is a link"
+                                  , style =
+                                        { isCode = False
+                                        , isBold = False
+                                        , isItalic = False
+                                        , link =
+                                            Just
+                                                { destination = "/my/page"
+                                                , title = Nothing
+                                                }
+                                        }
+                                  }
+                                ]
+                            ]
+                        )
         ]
 
 
