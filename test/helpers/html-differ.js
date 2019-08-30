@@ -6,42 +6,47 @@ module.exports = {
   firstDiff: (actual, expected, padding) => {
     padding = padding || 30;
     return htmlDiffer.diffHtml(actual, expected).then(diffs => {
-      const result = diffs.reduce(
-        (obj, diff) => {
-          if (diff.added) {
-            if (obj.firstIndex === null) {
-              obj.firstIndex = obj.expected.length;
-            }
-            obj.expected += diff.value;
-          } else if (diff.removed) {
-            if (obj.firstIndex === null) {
-              obj.firstIndex = obj.actual.length;
-            }
-            obj.actual += diff.value;
-          } else {
-            obj.actual += diff.value;
-            obj.expected += diff.value;
-          }
-
-          return obj;
-        },
-        {
-          firstIndex: null,
-          actual: "",
-          expected: ""
+      return htmlDiffer.isEqual(actual, expected).then(equal => {
+        if (equal) {
+          return null;
         }
-      );
+        const result = diffs.reduce(
+          (obj, diff) => {
+            if (diff.added) {
+              if (obj.firstIndex === null) {
+                obj.firstIndex = obj.expected.length;
+              }
+              obj.expected += diff.value;
+            } else if (diff.removed) {
+              if (obj.firstIndex === null) {
+                obj.firstIndex = obj.actual.length;
+              }
+              obj.actual += diff.value;
+            } else {
+              obj.actual += diff.value;
+              obj.expected += diff.value;
+            }
 
-      return {
-        actual: result.actual.substring(
-          result.firstIndex - padding,
-          result.firstIndex + padding
-        ),
-        expected: result.expected.substring(
-          result.firstIndex - padding,
-          result.firstIndex + padding
-        )
-      };
+            return obj;
+          },
+          {
+            firstIndex: null,
+            actual: "",
+            expected: ""
+          }
+        );
+
+        return {
+          actual: result.actual.substring(
+            result.firstIndex - padding,
+            result.firstIndex + padding
+          ),
+          expected: result.expected.substring(
+            result.firstIndex - padding,
+            result.firstIndex + padding
+          )
+        };
+      });
     });
   }
 };
