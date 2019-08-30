@@ -92,6 +92,7 @@ renderMarkdown markdown =
                             [ Html.text body
                             ]
                         ]
+            , thematicBreak = Html.hr [] []
             }
         |> Result.map (List.map (Html.toString 0))
         |> Result.map (String.join "")

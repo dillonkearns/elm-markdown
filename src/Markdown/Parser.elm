@@ -4,7 +4,7 @@ import Markdown.CodeBlock
 import Markdown.Inlines as Inlines exposing (StyledString)
 import Markdown.List
 import Parser
-import Parser.Advanced as Advanced exposing ((|.), (|=), Nestable(..), Step(..), andThen, chompUntil, chompWhile, getChompedString, inContext, int, lazy, loop, map, multiComment, oneOf, problem, succeed, symbol, token)
+import Parser.Advanced as Advanced exposing ((|.), (|=), Nestable(..), Step(..), andThen, chompIf, chompUntil, chompWhile, getChompedString, inContext, int, lazy, loop, map, multiComment, oneOf, problem, succeed, symbol, token)
 import XmlParser exposing (Node(..))
 
 
@@ -65,6 +65,7 @@ type alias Renderer view =
     , link : { title : Maybe String, destination : String } -> String -> view
     , list : List view -> view
     , codeBlock : { body : String, language : Maybe String } -> view
+    , thematicBreak : view
     }
 
 
@@ -130,6 +131,9 @@ renderHelper renderer blocks =
                     codeBlock
                         |> renderer.codeBlock
                         |> Ok
+
+                ThematicBreak ->
+                    Ok renderer.thematicBreak
         )
         blocks
 
@@ -244,6 +248,7 @@ type Block
     | Html String (List Attribute) (List Block)
     | ListBlock (List (List Inlines.StyledString))
     | CodeBlock Markdown.CodeBlock.CodeBlock
+    | ThematicBreak
 
 
 type alias Attribute =
@@ -400,11 +405,11 @@ statementsHelp revStmts =
             )
             |= Advanced.getOffset
             |= oneOf
-                [ listBlock |> map List.singleton
+                [ thematicBreak |> map List.singleton
+                , listBlock |> map List.singleton
                 , blankLine |> map List.singleton
                 , heading |> map List.singleton
                 , Markdown.CodeBlock.parser |> map CodeBlock |> map List.singleton
-                , htmlParser |> map List.singleton
                 , htmlParser |> map List.singleton
                 , plainLine
                 ]
@@ -422,6 +427,47 @@ statementsHelp revStmts =
                         )
                 )
         ]
+
+
+spaceOrTab =
+    \c -> c == ' ' || c == '\t'
+
+
+oneOrMore condition =
+    chompIf condition (Parser.Problem "Expected one or more character")
+        |. chompWhile condition
+
+
+zeroOrMore condition =
+    chompWhile condition
+
+
+thematicBreak : Parser Block
+thematicBreak =
+    succeed ThematicBreak
+        |. oneOf
+            [ symbol (Advanced.Token "   " (Parser.Problem "Expecting 3 spaces"))
+            , symbol (Advanced.Token "  " (Parser.Problem "Expecting 2 spaces"))
+            , symbol (Advanced.Token " " (Parser.Problem "Expecting space"))
+            , succeed ()
+            ]
+        |. oneOf
+            [ symbol (Advanced.Token "---" (Parser.Expecting "---"))
+                |. chompWhile (\c -> c == '-')
+            , symbol (Advanced.Token "***" (Parser.Expecting "***"))
+                |. chompWhile (\c -> c == '*')
+            , symbol (Advanced.Token "___" (Parser.Expecting "___"))
+                |. chompWhile (\c -> c == '_')
+            ]
+        |. zeroOrMore spaceOrTab
+        |. oneOf
+            [ Advanced.end (Parser.Problem "Expecting end")
+            , chompIf (\c -> c == '\n') (Parser.Problem "Expecting newline")
+            ]
+
+
+
+-- |. chompIf (\c -> c == '\n') (Parser.Problem "Expecting newline")
 
 
 heading : Parser Block

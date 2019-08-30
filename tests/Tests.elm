@@ -142,6 +142,25 @@ Hello!
                             -- , ListBlock []
                             ]
                         )
+        , test "thematic break" <|
+            \() ->
+                """---"""
+                    |> Advanced.run multiParser
+                    |> Expect.equal
+                        (Ok
+                            [ ThematicBreak
+                            ]
+                        )
+        , test "thematic break followed by newline" <|
+            \() ->
+                """---
+"""
+                    |> Advanced.run multiParser
+                    |> Expect.equal
+                        (Ok
+                            [ ThematicBreak
+                            ]
+                        )
         , test "mixed content with list" <|
             \() ->
                 """# Title
