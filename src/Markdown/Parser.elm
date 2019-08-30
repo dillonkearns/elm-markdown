@@ -62,20 +62,21 @@ type alias Renderer view =
     , italic : String -> view
 
     -- TODO make this a `Result` so users can validate links
-    , link : { title : Maybe String, destination : String } -> String -> view
+    , link : { title : Maybe String, destination : String } -> String -> Result String view
     , list : List view -> view
     , codeBlock : { body : String, language : Maybe String } -> view
     , thematicBreak : view
     }
 
 
-renderStyled : Renderer view -> List StyledString -> List view
+renderStyled : Renderer view -> List StyledString -> Result String (List view)
 renderStyled renderer styledStrings =
     styledStrings
         |> List.foldr (foldThing renderer) []
+        |> combineResults
 
 
-foldThing : Renderer view -> StyledString -> List view -> List view
+foldThing : Renderer view -> StyledString -> List (Result String view) -> List (Result String view)
 foldThing renderer { style, string } soFar =
     case style.link of
         Just link ->
@@ -84,19 +85,19 @@ foldThing renderer { style, string } soFar =
 
         Nothing ->
             if style.isBold then
-                renderer.bold string
+                (renderer.bold string |> Ok)
                     :: soFar
 
             else if style.isItalic then
-                renderer.italic string
+                (renderer.italic string |> Ok)
                     :: soFar
 
             else if style.isCode then
-                renderer.code string
+                (renderer.code string |> Ok)
                     :: soFar
 
             else
-                renderer.plain string
+                (renderer.plain string |> Ok)
                     :: soFar
 
 
@@ -109,13 +110,12 @@ renderHelper renderer blocks =
         (\block ->
             case block of
                 Heading level content ->
-                    renderer.heading level (renderStyled renderer content)
-                        |> Ok
+                    renderStyled renderer content
+                        |> Result.map (renderer.heading level)
 
                 Body content ->
                     renderStyled renderer content
-                        |> renderer.raw
-                        |> Ok
+                        |> Result.map renderer.raw
 
                 Html tag attributes children ->
                     renderHtmlNode renderer tag attributes children
@@ -123,9 +123,9 @@ renderHelper renderer blocks =
                 ListBlock items ->
                     items
                         |> List.map (renderStyled renderer)
-                        |> List.map renderer.raw
-                        |> renderer.list
-                        |> Ok
+                        |> combineResults
+                        |> Result.map (List.map renderer.raw)
+                        |> Result.map renderer.list
 
                 CodeBlock codeBlock ->
                     codeBlock
