@@ -7,7 +7,7 @@
     "build": "rm -r dist && parcel build src/index.html --public-url ./",
     "ete": "cd ete && elm make OutputMarkdownHtml.elm --output elm.js && ./spec_tests.py --spec ../spec.txt --library-dir . --program ./run-elm.js",
     "test": "elm-test",
-    "autotest": "elm-test --watch",
+    "autotest": "elm-test --watch tests/**/*.elm",
     "specs:marked": "cd test && elm make OutputMarkdownHtml.elm --output elm.js && cd .. && jasmine --config=jasmine.json test/specs/**/*-spec.js"
   },
   "author": "Dillon Kearns",
