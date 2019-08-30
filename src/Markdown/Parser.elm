@@ -456,6 +456,7 @@ heading =
                         let
                             result =
                                 headingText
+                                    |> dropTrailingHashes
                                     |> Advanced.run Inlines.parse
                         in
                         case result of
@@ -466,6 +467,16 @@ heading =
                                 problem (Parser.Expecting "TODO")
                     )
            )
+
+
+dropTrailingHashes headingString =
+    if headingString |> String.endsWith "#" then
+        String.dropRight 1 headingString
+            |> String.trimRight
+            |> dropTrailingHashes
+
+    else
+        headingString
 
 
 parse : String -> Result (List (Advanced.DeadEnd String Parser.Problem)) (List Block)

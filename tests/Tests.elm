@@ -26,6 +26,11 @@ suite =
                     "# Hello!"
                         |> parse
                         |> Expect.equal (Ok [ Heading 1 (unstyledText "Hello!") ])
+            , test "heading can end with trailing #'s'" <|
+                \() ->
+                    "# Hello! ###"
+                        |> parse
+                        |> Expect.equal (Ok [ Heading 1 (unstyledText "Hello!") ])
             , test "Heading 2" <|
                 \() ->
                     "## Hello!"
