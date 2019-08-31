@@ -227,6 +227,11 @@ qwer
                             , Body (unstyledText "qwer")
                             ]
                         )
+        , test "indented code block" <|
+            \() ->
+                """    foo = 123"""
+                    |> parse
+                    |> Expect.equal (Ok [ CodeBlock { body = "foo = 123", language = Nothing } ])
         ]
 
 

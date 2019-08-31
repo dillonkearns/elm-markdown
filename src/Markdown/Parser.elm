@@ -405,11 +405,11 @@ statementsHelp revStmts =
             )
             |= Advanced.getOffset
             |= oneOf
-                [ thematicBreak |> map List.singleton
+                [ Markdown.CodeBlock.parser |> map CodeBlock |> map List.singleton
+                , thematicBreak |> map List.singleton
                 , listBlock |> map List.singleton
                 , blankLine |> map List.singleton
                 , heading |> map List.singleton
-                , Markdown.CodeBlock.parser |> map CodeBlock |> map List.singleton
                 , htmlParser |> map List.singleton
                 , plainLine
                 ]
