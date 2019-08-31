@@ -25,7 +25,10 @@ indentedBlock =
             , language = Nothing
             }
         )
-        |. Advanced.symbol (Advanced.Token "    " (Parser.ExpectingSymbol "Indentation"))
+        |. oneOf
+            [ Advanced.symbol (Advanced.Token "    " (Parser.ExpectingSymbol "Indentation"))
+            , Advanced.symbol (Advanced.Token "\t" (Parser.ExpectingSymbol "Indentation"))
+            ]
         |= getChompedString (Advanced.chompUntilEndOr "\n")
 
 

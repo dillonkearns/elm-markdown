@@ -232,6 +232,11 @@ qwer
                 """    foo = 123"""
                     |> parse
                     |> Expect.equal (Ok [ CodeBlock { body = "foo = 123", language = Nothing } ])
+        , test "indented code block with tab" <|
+            \() ->
+                """\tfoo = 123"""
+                    |> parse
+                    |> Expect.equal (Ok [ CodeBlock { body = "foo = 123", language = Nothing } ])
         ]
 
 
