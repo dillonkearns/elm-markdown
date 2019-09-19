@@ -116,25 +116,3 @@ Parsing failed in the following 2 ways:
 (2) Expecting attribute "button".
 """)
         ]
-
-
-unstyledTextSingle : String -> Markdown.Inlines.StyledString
-unstyledTextSingle body =
-    { string = body
-    , style =
-        { isCode = False
-        , isBold = False
-        , isItalic = False
-        , link = Nothing
-        }
-    }
-
-
-parserError : String -> Expect.Expectation
-parserError markdown =
-    case parse markdown of
-        Ok _ ->
-            Expect.fail "Expected a parser failure!"
-
-        Err _ ->
-            Expect.pass
