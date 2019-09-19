@@ -1,5 +1,6 @@
 module Markdown.Parser exposing (..)
 
+import List.Extra
 import Markdown.CodeBlock
 import Markdown.Inlines as Inlines exposing (StyledString)
 import Markdown.List
@@ -10,6 +11,19 @@ import XmlParser exposing (Node(..))
 
 type Decoder a
     = Decoder (String -> List Attribute -> List Block -> Result String a)
+
+
+mapDecoder : (a -> b) -> Decoder a -> Decoder b
+mapDecoder function (Decoder handler) =
+    (\tagName attributes innerBlocks ->
+        handler tagName attributes innerBlocks
+            |> Result.map function
+    )
+        |> Decoder
+
+
+
+-- Debug.todo ""
 
 
 htmlSucceed : view -> Decoder view
@@ -50,6 +64,31 @@ htmlTag expectedTag a =
             else
                 Err ("Expected " ++ expectedTag ++ " but was " ++ tag)
         )
+
+
+withAttribute : String -> Decoder (String -> view) -> Decoder view
+withAttribute attributeName (Decoder handler) =
+    (\tagName attributes innerBlocks ->
+        handler tagName attributes innerBlocks
+            |> (case
+                    attributes
+                        |> List.Extra.find
+                            (\{ name, value } ->
+                                name == attributeName
+                            )
+                of
+                    Just { value } ->
+                        Result.map ((|>) value)
+
+                    Nothing ->
+                        \_ ->
+                            Err
+                                ("Couldn't find attribute "
+                                    ++ attributeName
+                                )
+               )
+    )
+        |> Decoder
 
 
 type alias Renderer view =

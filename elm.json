@@ -11,6 +11,7 @@
             "elm/html": "1.0.0",
             "elm/parser": "1.1.0",
             "elm/url": "1.0.0",
+            "elm-community/list-extra": "8.2.2",
             "rtfeldman/elm-hex": "1.0.0"
         },
         "indirect": {

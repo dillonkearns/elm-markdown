@@ -75,10 +75,11 @@ suite =
                 """<signup-form button="Sign up now!" />"""
                     |> Markdown.render
                         (testRenderer
-                            [ Markdown.htmlTag "signup-form" (\children -> Html "signup-form")
+                            [ Markdown.htmlTag "signup-form" (\buttonText children -> Html ("signup-form " ++ buttonText))
+                                |> Markdown.withAttribute "button"
                             ]
                         )
-                    |> Expect.equal (Ok [ Html "signup-form" ])
+                    |> Expect.equal (Ok [ Html "signup-form Sign up now!" ])
         ]
 
 
