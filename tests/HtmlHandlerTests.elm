@@ -64,6 +64,12 @@ suite =
                             ]
                         )
                     |> Expect.equal (Ok [ Html "social-links" ])
+        , test "unregistered html tag" <|
+            \() ->
+                "<social-links />"
+                    |> Markdown.render
+                        (testRenderer [])
+                    |> Expect.equal (Err "No Html Decoders succeeded in oneOf.")
         ]
 
 
