@@ -33,19 +33,23 @@ htmlSucceed value =
 
 htmlOneOf : List (Decoder view) -> Decoder view
 htmlOneOf decoders =
+    let
+        unwrappedDecoders =
+            decoders
+                |> List.map (\(Decoder rawDecoder) -> rawDecoder)
+    in
     List.foldl
-        (\(Decoder decoder) (Decoder soFar) ->
-            Decoder
-                (\tag attributes children ->
-                    resultOr (decoder tag attributes children) (soFar tag attributes children)
-                )
+        (\decoder soFar ->
+            \tag attributes children ->
+                resultOr (decoder tag attributes children) (soFar tag attributes children)
         )
-        (Decoder
-            (\tag attributes children ->
-                Err "No Html Decoders succeeded in oneOf."
-            )
+        (\tag attributes children ->
+            Err "No Html Decoders succeeded in oneOf."
         )
-        decoders
+        unwrappedDecoders
+        |> (\rawDecoder ->
+                Decoder rawDecoder
+           )
 
 
 resultOr : Result e a -> Result e a -> Result e a
