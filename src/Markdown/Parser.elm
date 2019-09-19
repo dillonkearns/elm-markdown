@@ -68,7 +68,9 @@ htmlOneOf decoders =
 
                                     _ ->
                                         """oneOf failed parsing this value:
-    <unregistered-tag>
+    """
+                                            ++ tagToString tagName attributes
+                                            ++ """
 
 Parsing failed in the following 2 ways:
 
@@ -89,6 +91,11 @@ Parsing failed in the following 2 ways:
                 )
                     |> Decoder
            )
+
+
+tagToString : String -> List Attribute -> String
+tagToString tagName attributes =
+    "<" ++ tagName ++ ">"
 
 
 resultOr : Result e a -> Result (List e) a -> Result (List e) a
