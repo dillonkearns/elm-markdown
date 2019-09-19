@@ -95,6 +95,26 @@ suite =
 
 Expecting attribute "button".
 """)
+        , test "give details for all failures in oneOf" <|
+            \() ->
+                """<unregistered-tag />"""
+                    |> Markdown.render
+                        (testRenderer
+                            [ Markdown.htmlTag "signup-form" (\buttonText children -> Html ("signup-form " ++ buttonText))
+                                |> Markdown.withAttribute "button"
+                            , Markdown.htmlTag "signup-form" (\children -> Html "signup-form")
+                            ]
+                        )
+                    |> Expect.equal (Err """oneOf failed parsing this value:
+    <unregistered-tag>
+
+Parsing failed in the following 2 ways:
+
+
+(1) Expected signup-form but was unregistered-tag
+
+(2) Expecting attribute "button".
+""")
         ]
 
 

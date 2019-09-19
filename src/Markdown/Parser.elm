@@ -67,7 +67,24 @@ htmlOneOf decoders =
                                             ++ "\n"
 
                                     _ ->
-                                        String.join "\n\n" errors
+                                        """oneOf failed parsing this value:
+    <unregistered-tag>
+
+Parsing failed in the following 2 ways:
+
+
+"""
+                                            ++ (List.indexedMap
+                                                    (\index error ->
+                                                        "("
+                                                            ++ String.fromInt (index + 1)
+                                                            ++ ") "
+                                                            ++ error
+                                                    )
+                                                    errors
+                                                    |> String.join "\n\n"
+                                               )
+                                            ++ "\n"
                             )
                 )
                     |> Decoder
