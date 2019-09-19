@@ -36,7 +36,8 @@ htmlOneOf decoders =
     let
         unwrappedDecoders =
             decoders
-                |> List.map (\(Decoder rawDecoder) -> rawDecoder)
+                |> List.map
+                    (\(Decoder rawDecoder) -> rawDecoder)
     in
     List.foldl
         (\decoder soFar ->
@@ -44,22 +45,39 @@ htmlOneOf decoders =
                 resultOr (decoder tag attributes children) (soFar tag attributes children)
         )
         (\tag attributes children ->
-            Err "No Html Decoders succeeded in oneOf."
+            Err []
         )
         unwrappedDecoders
         |> (\rawDecoder ->
-                Decoder rawDecoder
+                (\tagName attributes innerBlocks ->
+                    rawDecoder tagName attributes innerBlocks
+                        |> Result.mapError
+                            (\errors ->
+                                case errors of
+                                    [] ->
+                                        "Ran into a oneOf with no possibilities!"
+
+                                    _ ->
+                                        String.join "\n\n" errors
+                            )
+                )
+                    |> Decoder
            )
 
 
-resultOr : Result e a -> Result e a -> Result e a
+resultOr : Result e a -> Result (List e) a -> Result (List e) a
 resultOr ra rb =
     case ra of
-        Err _ ->
-            rb
+        Err singleError ->
+            case rb of
+                Ok okValue ->
+                    Ok okValue
 
-        Ok _ ->
-            ra
+                Err errorsSoFar ->
+                    Err (singleError :: errorsSoFar)
+
+        Ok okValue ->
+            Ok okValue
 
 
 htmlTag : String -> view -> Decoder view

@@ -69,7 +69,7 @@ suite =
                 "<social-links />"
                     |> Markdown.render
                         (testRenderer [])
-                    |> Expect.equal (Err "No Html Decoders succeeded in oneOf.")
+                    |> Expect.equal (Err "Ran into a oneOf with no possibilities!")
         , test "html attribute parser" <|
             \() ->
                 """<signup-form button="Sign up now!" />"""
