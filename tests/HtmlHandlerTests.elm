@@ -70,6 +70,15 @@ suite =
                     |> Markdown.render
                         (testRenderer [])
                     |> Expect.equal (Err "No Html Decoders succeeded in oneOf.")
+        , test "html attribute parser" <|
+            \() ->
+                """<signup-form button="Sign up now!" />"""
+                    |> Markdown.render
+                        (testRenderer
+                            [ Markdown.htmlTag "signup-form" (\children -> Html "signup-form")
+                            ]
+                        )
+                    |> Expect.equal (Ok [ Html "signup-form" ])
         ]
 
 
