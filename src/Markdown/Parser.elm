@@ -57,6 +57,15 @@ htmlOneOf decoders =
                                     [] ->
                                         "Ran into a oneOf with no possibilities!"
 
+                                    [ singleError ] ->
+                                        """Problem with the given value:
+
+<signup-form>
+
+"""
+                                            ++ singleError
+                                            ++ "\n"
+
                                     _ ->
                                         String.join "\n\n" errors
                             )
@@ -109,8 +118,9 @@ withAttribute attributeName (Decoder handler) =
                     Nothing ->
                         \_ ->
                             Err
-                                ("Couldn't find attribute "
+                                ("Expecting attribute \""
                                     ++ attributeName
+                                    ++ "\"."
                                 )
                )
     )

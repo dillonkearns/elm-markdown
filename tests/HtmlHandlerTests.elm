@@ -89,7 +89,12 @@ suite =
                                 |> Markdown.withAttribute "button"
                             ]
                         )
-                    |> Expect.equal (Err "Couldn't find attribute button")
+                    |> Expect.equal (Err """Problem with the given value:
+
+<signup-form>
+
+Expecting attribute "button".
+""")
         ]
 
 
