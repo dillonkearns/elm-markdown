@@ -40,7 +40,11 @@ htmlOneOf decoders =
                     resultOr (decoder tag attributes children) (soFar tag attributes children)
                 )
         )
-        (Decoder (\tag attributes children -> Err "No Html Decoders succeeded in oneOf."))
+        (Decoder
+            (\tag attributes children ->
+                Err "No Html Decoders succeeded in oneOf."
+            )
+        )
         decoders
 
 

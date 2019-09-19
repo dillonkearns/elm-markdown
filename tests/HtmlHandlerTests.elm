@@ -80,6 +80,16 @@ suite =
                             ]
                         )
                     |> Expect.equal (Ok [ Html "signup-form Sign up now!" ])
+        , test "fail on missing attribute" <|
+            \() ->
+                """<signup-form />"""
+                    |> Markdown.render
+                        (testRenderer
+                            [ Markdown.htmlTag "signup-form" (\buttonText children -> Html ("signup-form " ++ buttonText))
+                                |> Markdown.withAttribute "button"
+                            ]
+                        )
+                    |> Expect.equal (Err "Couldn't find attribute button")
         ]
 
 
