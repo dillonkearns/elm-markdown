@@ -40,25 +40,25 @@ renderMarkdown markdown =
     markdown
         |> Markdown.render
             { heading =
-                \level content ->
+                \{ level, children } ->
                     case level of
                         1 ->
-                            Html.h1 [] content
+                            Html.h1 [] children
 
                         2 ->
-                            Html.h2 [] content
+                            Html.h2 [] children
 
                         3 ->
-                            Html.h3 [] content
+                            Html.h3 [] children
 
                         4 ->
-                            Html.h4 [] content
+                            Html.h4 [] children
 
                         5 ->
-                            Html.h5 [] content
+                            Html.h5 [] children
 
                         6 ->
-                            Html.h6 [] content
+                            Html.h6 [] children
 
                         _ ->
                             Html.text "TODO maye use a type here to clean it up... this will never happen"
