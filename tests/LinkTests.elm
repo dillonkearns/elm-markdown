@@ -31,6 +31,17 @@ suite =
                             , title = Nothing
                             }
                         )
+        , test "image" <|
+            \() ->
+                """![About](/my-image.jpg)"""
+                    |> Advanced.run Markdown.Link.parser
+                    |> Expect.equal
+                        (Ok
+                            { description = "About"
+                            , destination = "/my-image.jpg"
+                            , title = Nothing
+                            }
+                        )
         ]
 
 

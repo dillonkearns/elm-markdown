@@ -18,18 +18,35 @@ type alias Link =
 
 parser : Parser Link
 parser =
-    succeed
-        (\description destination ->
-            { description = description
-            , title = Nothing
-            , destination = destination
-            }
-        )
-        |. Advanced.symbol (Advanced.Token "[" (Parser.ExpectingSymbol "["))
-        |= getChompedString
-            (chompUntil (Advanced.Token "]" (Parser.ExpectingSymbol "]")))
-        |. Advanced.symbol (Advanced.Token "]" (Parser.ExpectingSymbol "]"))
-        |. Advanced.symbol (Advanced.Token "(" (Parser.ExpectingSymbol "("))
-        |= getChompedString
-            (chompUntil (Advanced.Token ")" (Parser.ExpectingSymbol ")")))
-        |. Advanced.symbol (Advanced.Token ")" (Parser.ExpectingSymbol ")"))
+    oneOf
+        [ succeed
+            (\description destination ->
+                { description = description
+                , title = Nothing
+                , destination = destination
+                }
+            )
+            |. Advanced.symbol (Advanced.Token "![" (Parser.ExpectingSymbol "["))
+            |= getChompedString
+                (chompUntil (Advanced.Token "]" (Parser.ExpectingSymbol "]")))
+            |. Advanced.symbol (Advanced.Token "]" (Parser.ExpectingSymbol "]"))
+            |. Advanced.symbol (Advanced.Token "(" (Parser.ExpectingSymbol "("))
+            |= getChompedString
+                (chompUntil (Advanced.Token ")" (Parser.ExpectingSymbol ")")))
+            |. Advanced.symbol (Advanced.Token ")" (Parser.ExpectingSymbol ")"))
+        , succeed
+            (\description destination ->
+                { description = description
+                , title = Nothing
+                , destination = destination
+                }
+            )
+            |. Advanced.symbol (Advanced.Token "[" (Parser.ExpectingSymbol "["))
+            |= getChompedString
+                (chompUntil (Advanced.Token "]" (Parser.ExpectingSymbol "]")))
+            |. Advanced.symbol (Advanced.Token "]" (Parser.ExpectingSymbol "]"))
+            |. Advanced.symbol (Advanced.Token "(" (Parser.ExpectingSymbol "("))
+            |= getChompedString
+                (chompUntil (Advanced.Token ")" (Parser.ExpectingSymbol ")")))
+            |. Advanced.symbol (Advanced.Token ")" (Parser.ExpectingSymbol ")"))
+        ]
