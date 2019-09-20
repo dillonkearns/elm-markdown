@@ -34,6 +34,10 @@ testRenderer htmlHandlers =
         \content -> Unexpected "String"
     , code =
         \content -> Unexpected "String"
+    , image =
+        \link content ->
+            Unexpected "String"
+                |> Ok
     , link =
         \link content ->
             Unexpected "String"

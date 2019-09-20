@@ -1,4 +1,4 @@
-module Markdown.Inlines exposing (State, Style, StyledString, isUninteresting, nextStepWhenFoundBold, nextStepWhenFoundItalic, nextStepWhenFoundNothing, parse, parseHelp, toString)
+module Markdown.Inlines exposing (LinkUrl(..), State, Style, StyledString, isUninteresting, nextStepWhenFoundBold, nextStepWhenFoundItalic, nextStepWhenFoundNothing, parse, parseHelp, toString)
 
 import Browser
 import Char
@@ -29,8 +29,13 @@ type alias Style =
     { isCode : Bool
     , isBold : Bool
     , isItalic : Bool
-    , link : Maybe { title : Maybe String, destination : String }
+    , link : Maybe { title : Maybe String, destination : LinkUrl }
     }
+
+
+type LinkUrl
+    = Image String
+    | Link String
 
 
 type alias StyledString =
@@ -55,7 +60,7 @@ nextStepWhenFoundLink link ( currStyle, revStyledStrings ) string =
         Link.Link record ->
             Loop
                 ( currStyle
-                , { style = { currStyle | link = Just { title = record.title, destination = record.destination } }, string = record.description }
+                , { style = { currStyle | link = Just { title = record.title, destination = Link record.destination } }, string = record.description }
                     :: { style = currStyle, string = string }
                     :: revStyledStrings
                 )
@@ -63,7 +68,7 @@ nextStepWhenFoundLink link ( currStyle, revStyledStrings ) string =
         Link.Image record ->
             Loop
                 ( currStyle
-                , { style = { currStyle | link = Just { title = Nothing, destination = record.src } }, string = record.alt }
+                , { style = { currStyle | link = Just { title = Nothing, destination = Image record.src } }, string = record.alt }
                     :: { style = currStyle, string = string }
                     :: revStyledStrings
                 )

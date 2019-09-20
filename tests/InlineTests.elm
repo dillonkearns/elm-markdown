@@ -64,7 +64,7 @@ suite =
                                         , isItalic = False
                                         , link =
                                             Just
-                                                { destination = "/contact"
+                                                { destination = Inlines.Link "/contact"
                                                 , title = Nothing
                                                 }
                                         }
@@ -94,7 +94,7 @@ suite =
                                         , isItalic = False
                                         , link =
                                             Just
-                                                { destination = "/my/page"
+                                                { destination = Inlines.Link "/my/page"
                                                 , title = Nothing
                                                 }
                                         }
