@@ -12,19 +12,20 @@ type alias Parser a =
     Advanced.Parser String Parser.Problem a
 
 
-type alias Link =
-    { description : String, title : Maybe String, destination : String }
+type Link
+    = Link { description : String, title : Maybe String, destination : String }
+    | Image { alt : String, src : String }
 
 
 parser : Parser Link
 parser =
     oneOf
         [ succeed
-            (\description destination ->
-                { description = description
-                , title = Nothing
-                , destination = destination
-                }
+            (\alt src ->
+                Image
+                    { alt = alt
+                    , src = src
+                    }
             )
             |. Advanced.symbol (Advanced.Token "![" (Parser.ExpectingSymbol "["))
             |= getChompedString
@@ -36,10 +37,11 @@ parser =
             |. Advanced.symbol (Advanced.Token ")" (Parser.ExpectingSymbol ")"))
         , succeed
             (\description destination ->
-                { description = description
-                , title = Nothing
-                , destination = destination
-                }
+                Link
+                    { description = description
+                    , title = Nothing
+                    , destination = destination
+                    }
             )
             |. Advanced.symbol (Advanced.Token "[" (Parser.ExpectingSymbol "["))
             |= getChompedString

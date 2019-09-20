@@ -1,7 +1,7 @@
 module LinkTests exposing (suite)
 
 import Expect exposing (Expectation)
-import Markdown.Link
+import Markdown.Link as Link
 import Markdown.Parser exposing (..)
 import Parser
 import Parser.Advanced as Advanced
@@ -23,24 +23,27 @@ suite =
         [ test "basic link with no title" <|
             \() ->
                 """[About](/about)"""
-                    |> Advanced.run Markdown.Link.parser
+                    |> Advanced.run Link.parser
                     |> Expect.equal
                         (Ok
-                            { description = "About"
-                            , destination = "/about"
-                            , title = Nothing
-                            }
+                            (Link.Link
+                                { description = "About"
+                                , destination = "/about"
+                                , title = Nothing
+                                }
+                            )
                         )
         , test "image" <|
             \() ->
                 """![About](/my-image.jpg)"""
-                    |> Advanced.run Markdown.Link.parser
+                    |> Advanced.run Link.parser
                     |> Expect.equal
                         (Ok
-                            { description = "About"
-                            , destination = "/my-image.jpg"
-                            , title = Nothing
-                            }
+                            (Link.Image
+                                { alt = "About"
+                                , src = "/my-image.jpg"
+                                }
+                            )
                         )
         ]
 

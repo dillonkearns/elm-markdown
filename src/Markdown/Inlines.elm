@@ -51,12 +51,22 @@ nextStepWhenFoundBold ( currStyle, revStyledStrings ) string =
 
 nextStepWhenFoundLink : Link -> State -> String -> Step State (List StyledString)
 nextStepWhenFoundLink link ( currStyle, revStyledStrings ) string =
-    Loop
-        ( currStyle
-        , { style = { currStyle | link = Just { title = link.title, destination = link.destination } }, string = link.description }
-            :: { style = currStyle, string = string }
-            :: revStyledStrings
-        )
+    case link of
+        Link.Link record ->
+            Loop
+                ( currStyle
+                , { style = { currStyle | link = Just { title = record.title, destination = record.destination } }, string = record.description }
+                    :: { style = currStyle, string = string }
+                    :: revStyledStrings
+                )
+
+        Link.Image record ->
+            Loop
+                ( currStyle
+                , { style = { currStyle | link = Just { title = Nothing, destination = record.src } }, string = record.alt }
+                    :: { style = currStyle, string = string }
+                    :: revStyledStrings
+                )
 
 
 nextStepWhenFoundCode : State -> String -> Step State (List StyledString)
