@@ -22,7 +22,14 @@ type alias Parser a =
 
 isUninteresting : Char -> Bool
 isUninteresting char =
-    char /= '*' && char /= '`' && char /= '['
+    char
+        /= '*'
+        && char
+        /= '`'
+        && char
+        /= '['
+        && char
+        /= '!'
 
 
 type alias Style =

@@ -237,6 +237,24 @@ qwer
                 """\tfoo = 123"""
                     |> parse
                     |> Expect.equal (Ok [ CodeBlock { body = "foo = 123", language = Nothing } ])
+        , test "image" <|
+            \() ->
+                """![This is an image](/my/image.jpg)"""
+                    |> parse
+                    |> Expect.equal
+                        (Ok
+                            [ Body
+                                [ { string = "This is an image"
+                                  , style =
+                                        { isBold = False
+                                        , isCode = False
+                                        , isItalic = False
+                                        , link = Just { destination = Markdown.Inlines.Image "/my/image.jpg", title = Nothing }
+                                        }
+                                  }
+                                ]
+                            ]
+                        )
         ]
 
 
