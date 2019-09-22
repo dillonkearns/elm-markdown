@@ -99,6 +99,10 @@ nextStepWhenFoundItalic ( currStyle, revStyledStrings ) string =
 
 nextStepWhenFoundNothing : State -> String -> Step State (List StyledString)
 nextStepWhenFoundNothing ( currStyle, revStyledStrings ) string =
+    let
+        _ =
+            Debug.log "found nothing" { string = string }
+    in
     Done
         (List.reverse
             ({ style = currStyle, string = string } :: revStyledStrings)
@@ -123,6 +127,10 @@ parseHelp : State -> Parser (Step State (List StyledString))
 parseHelp state =
     andThen
         (\chompedString ->
+            let
+                _ =
+                    Debug.log "chomped" chompedString
+            in
             oneOf
                 [ Link.parser
                     |> map (\link -> nextStepWhenFoundLink link state chompedString)
@@ -135,10 +143,9 @@ parseHelp state =
                 , map
                     (\_ -> nextStepWhenFoundItalic state chompedString)
                     (token (Token "*" (Parser.Expecting "*")))
-                , succeed
-                    (nextStepWhenFoundNothing state chompedString)
+                , succeed identity
+                    |= succeed (nextStepWhenFoundNothing state chompedString)
+                    |. end (Parser.Expecting "End of inlines")
                 ]
         )
-        (getChompedString
-            (chompWhile isUninteresting)
-        )
+        (getChompedString (chompWhile isUninteresting))
