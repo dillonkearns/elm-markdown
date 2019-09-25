@@ -71,7 +71,7 @@ renderMarkdown markdown =
                 \content -> Html.code [] [ Html.text content ]
             , link =
                 \link content ->
-                    Html.a [ Attr.href link.destination ] [ Html.text content ]
+                    Html.a [ Attr.href link.destination ] content
                         |> Ok
             , image =
                 \image content ->
