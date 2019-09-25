@@ -2,6 +2,7 @@ const path = require("path");
 const load = require("../helpers/load.js");
 const runElm = require("../helpers/run-elm.js");
 const htmlDiffer = require("../helpers/html-differ.js");
+const fs = require("fs");
 
 function runSpecs(title, dir, showCompletionTable, options) {
   options = options || {};
@@ -12,6 +13,10 @@ function runSpecs(title, dir, showCompletionTable, options) {
   }
 
   describe(title, () => {
+    afterAll(() => {
+      printStatus();
+    });
+
     Object.keys(specs).forEach(section => {
       describe(section, () => {
         specs[section].specs.forEach(spec => {
@@ -67,3 +72,26 @@ runSpecs("Original", "./original", false, { gfm: false, pedantic: true });
 runSpecs("New", "./new");
 runSpecs("ReDOS", "./redos");
 runSpecs("Security", "./security", false, { silent: true }); // silent - do not show deprecation warning
+
+function printStatus() {
+  /** @typedef { { markdown: string; html: string; example: number; start_line: number; end_line: number; section: string; options: { gfm: boolean; pedantic: boolean; headerIds: boolean; silent: boolean; }; } } Spec */
+  // @ts-ignore
+  /** @type {Spec[]]} */ let failures = global.fails;
+  // @ts-ignore
+  /** @type {Spec[]]} */ let passes = global.passes;
+  const passedJson = passes.reduce(function(
+    /** @type {Object} */ accumulator,
+    spec
+  ) {
+    accumulator[spec.section] = accumulator[spec.section] || [];
+    accumulator[spec.section].push(spec.example);
+
+    // Pass the object on to the next loop
+    return accumulator;
+  },
+  {});
+  Object.keys(passedJson).forEach(section => {
+    passedJson[section].sort();
+  });
+  fs.writeFileSync("./spec-results.json", JSON.stringify(passedJson));
+}
