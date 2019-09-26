@@ -1,7 +1,9 @@
 module Markdown.Parser exposing (..)
 
 import List.Extra
+import Markdown.Block as Block exposing (Block)
 import Markdown.CodeBlock
+import Markdown.Decoder
 import Markdown.Inlines as Inlines exposing (StyledString)
 import Markdown.List
 import Parser
@@ -9,26 +11,22 @@ import Parser.Advanced as Advanced exposing ((|.), (|=), Nestable(..), Step(..),
 import XmlParser exposing (Node(..))
 
 
-type Decoder a
-    = Decoder (String -> List Attribute -> List Block -> Result String a)
+type alias Decoder a =
+    Markdown.Decoder.Decoder a
 
 
 mapDecoder : (a -> b) -> Decoder a -> Decoder b
-mapDecoder function (Decoder handler) =
+mapDecoder function (Markdown.Decoder.Decoder handler) =
     (\tagName attributes innerBlocks ->
         handler tagName attributes innerBlocks
             |> Result.map function
     )
-        |> Decoder
-
-
-
--- Debug.todo ""
+        |> Markdown.Decoder.Decoder
 
 
 htmlSucceed : view -> Decoder view
 htmlSucceed value =
-    Decoder (\_ _ _ -> Ok value)
+    Markdown.Decoder.Decoder (\_ _ _ -> Ok value)
 
 
 htmlOneOf : List (Decoder view) -> Decoder view
@@ -37,7 +35,7 @@ htmlOneOf decoders =
         unwrappedDecoders =
             decoders
                 |> List.map
-                    (\(Decoder rawDecoder) -> rawDecoder)
+                    (\(Markdown.Decoder.Decoder rawDecoder) -> rawDecoder)
     in
     List.foldl
         (\decoder soFar ->
@@ -89,7 +87,7 @@ Parsing failed in the following 2 ways:
                                             ++ "\n"
                             )
                 )
-                    |> Decoder
+                    |> Markdown.Decoder.Decoder
            )
 
 
@@ -115,7 +113,7 @@ resultOr ra rb =
 
 htmlTag : String -> view -> Decoder view
 htmlTag expectedTag a =
-    Decoder
+    Markdown.Decoder.Decoder
         (\tag attributes children ->
             if tag == expectedTag then
                 Ok a
@@ -126,7 +124,7 @@ htmlTag expectedTag a =
 
 
 withAttribute : String -> Decoder (String -> view) -> Decoder view
-withAttribute attributeName (Decoder handler) =
+withAttribute attributeName (Markdown.Decoder.Decoder handler) =
     (\tagName attributes innerBlocks ->
         handler tagName attributes innerBlocks
             |> (case
@@ -148,7 +146,7 @@ withAttribute attributeName (Decoder handler) =
                                 )
                )
     )
-        |> Decoder
+        |> Markdown.Decoder.Decoder
 
 
 type alias Renderer view =
@@ -226,7 +224,7 @@ renderHelper renderer blocks =
     List.map
         (\block ->
             case block of
-                Heading level content ->
+                Block.Heading level content ->
                     renderStyled renderer content
                         |> Result.map
                             (\children ->
@@ -234,26 +232,26 @@ renderHelper renderer blocks =
                                     { level = level, rawText = Inlines.toString content, children = children }
                             )
 
-                Body content ->
+                Block.Body content ->
                     renderStyled renderer content
                         |> Result.map renderer.raw
 
-                Html tag attributes children ->
+                Block.Html tag attributes children ->
                     renderHtmlNode renderer tag attributes children
 
-                ListBlock items ->
+                Block.ListBlock items ->
                     items
                         |> List.map (renderStyled renderer)
                         |> combineResults
                         |> Result.map (List.map renderer.raw)
                         |> Result.map renderer.list
 
-                CodeBlock codeBlock ->
+                Block.CodeBlock codeBlock ->
                     codeBlock
                         |> renderer.codeBlock
                         |> Ok
 
-                ThematicBreak ->
+                Block.ThematicBreak ->
                     Ok renderer.thematicBreak
         )
         blocks
@@ -363,7 +361,7 @@ renderHtmlNode renderer tag attributes children =
 
 
 useRed : String -> List Attribute -> List Block -> Decoder (List view -> view) -> List (Result String view) -> Result String view
-useRed tag attributes children (Decoder redRenderer) renderedChildren =
+useRed tag attributes children (Markdown.Decoder.Decoder redRenderer) renderedChildren =
     renderedChildren
         |> combineResults
         |> Result.andThen
@@ -376,15 +374,6 @@ useRed tag attributes children (Decoder redRenderer) renderedChildren =
 
 type alias Parser a =
     Advanced.Parser String Parser.Problem a
-
-
-type Block
-    = Heading Int (List StyledString)
-    | Body (List StyledString)
-    | Html String (List Attribute) (List Block)
-    | ListBlock (List (List Inlines.StyledString))
-    | CodeBlock Markdown.CodeBlock.CodeBlock
-    | ThematicBreak
 
 
 type alias Attribute =
@@ -404,19 +393,19 @@ plainLine =
                     Err error ->
                         problem (Parser.Expecting (error |> List.map deadEndToString |> String.join "\n"))
             )
-        |> Advanced.map Body
+        |> Advanced.map Block.Body
         |> Advanced.map List.singleton
 
 
 listBlock : Parser Block
 listBlock =
     Markdown.List.parser
-        |> map ListBlock
+        |> map Block.ListBlock
 
 
 blankLine : Parser Block
 blankLine =
-    succeed (Body [])
+    succeed (Block.Body [])
         |. symbol (Advanced.Token "\n" (Parser.Expecting "\n"))
 
 
@@ -428,7 +417,7 @@ htmlParser =
 
 toTopLevelHtml : String -> List Attribute -> List Block -> Block
 toTopLevelHtml tag attributes children =
-    Html tag attributes children
+    Block.Html tag attributes children
 
 
 xmlNodeToHtmlNode : Parser Node -> Parser Block
@@ -438,7 +427,7 @@ xmlNodeToHtmlNode parser =
             case xmlNode of
                 XmlParser.Text innerText ->
                     -- TODO is this right?
-                    Body
+                    Block.Body
                         -- TODO remove hardcoding
                         [ { string = innerText
                           , style =
@@ -455,7 +444,7 @@ xmlNodeToHtmlNode parser =
                     Advanced.andThen
                         (\parsedChildren ->
                             Advanced.succeed
-                                (Html tag
+                                (Block.Html tag
                                     attributes
                                     parsedChildren
                                 )
@@ -495,7 +484,7 @@ childToParser node =
             nodesToBlocksParser children
                 |> Advanced.andThen
                     (\childrenAsBlocks ->
-                        Advanced.succeed [ Html tag attributes childrenAsBlocks ]
+                        Advanced.succeed [ Block.Html tag attributes childrenAsBlocks ]
                     )
 
         Text innerText ->
@@ -518,7 +507,7 @@ multiParser =
     loop [ [] ] statementsHelp
         |. succeed Advanced.end
         -- TODO find a more elegant way to exclude empty blocks for each blank lines
-        |> map (List.filter (\item -> item /= Body []))
+        |> map (List.filter (\item -> item /= Block.Body []))
 
 
 statementsHelp : List (List Block) -> Parser (Step (List (List Block)) (List Block))
@@ -541,7 +530,7 @@ statementsHelp revStmts =
             )
             |= Advanced.getOffset
             |= oneOf
-                [ Markdown.CodeBlock.parser |> map CodeBlock |> map List.singleton
+                [ Markdown.CodeBlock.parser |> map Block.CodeBlock |> map List.singleton
                 , thematicBreak |> map List.singleton
                 , listBlock |> map List.singleton
                 , blankLine |> map List.singleton
@@ -580,7 +569,7 @@ zeroOrMore condition =
 
 thematicBreak : Parser Block
 thematicBreak =
-    succeed ThematicBreak
+    succeed Block.ThematicBreak
         |. oneOf
             [ symbol (Advanced.Token "   " (Parser.Problem "Expecting 3 spaces"))
             , symbol (Advanced.Token "  " (Parser.Problem "Expecting 2 spaces"))
@@ -608,7 +597,7 @@ thematicBreak =
 
 heading : Parser Block
 heading =
-    succeed Heading
+    succeed Block.Heading
         |. symbol (Advanced.Token "#" (Parser.Expecting "#"))
         |= (getChompedString
                 (succeed ()
