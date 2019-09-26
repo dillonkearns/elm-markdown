@@ -20,8 +20,6 @@ type alias Renderer view =
     , code : String -> view
     , bold : String -> view
     , italic : String -> view
-
-    -- TODO make this a `Result` so users can validate links
     , link : { title : Maybe String, destination : String } -> List view -> Result String view
     , image : { src : String } -> String -> Result String view
     , list : List view -> view
