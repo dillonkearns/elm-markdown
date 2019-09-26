@@ -24,7 +24,7 @@ type Rendered
     | Html String
 
 
-testRenderer : List (Markdown.Decoder (List Rendered -> Rendered)) -> Markdown.Renderer Rendered
+testRenderer : List (Markdown.Html.Decoder (List Rendered -> Rendered)) -> Markdown.Renderer Rendered
 testRenderer htmlHandlers =
     { heading =
         \{ level, children } ->

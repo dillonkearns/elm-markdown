@@ -1,4 +1,11 @@
-module Markdown.Html exposing (..)
+module Markdown.Html exposing
+    ( Decoder
+    , htmlSucceed
+    , mapDecoder
+    , oneOf
+    , tag
+    , withAttribute
+    )
 
 import List.Extra
 import Markdown.Block exposing (Block)
