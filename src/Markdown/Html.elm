@@ -55,9 +55,9 @@ oneOf decoders =
                                     [ singleError ] ->
                                         """Problem with the given value:
 
-<signup-form>
-
 """
+                                            ++ tagToString tagName attributes
+                                            ++ "\n\n"
                                             ++ singleError
                                             ++ "\n"
 
