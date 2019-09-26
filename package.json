@@ -8,20 +8,22 @@
     "ete": "cd ete && elm make OutputMarkdownHtml.elm --output elm.js && ./spec_tests.py --spec ../spec.txt --library-dir . --program ./run-elm.js",
     "test": "elm-test",
     "autotest": "elm-test --watch tests/**/*.elm",
+    "diff": "git show HEAD:spec-results.json > git-head-spec-results.json && json-diff git-head-spec-results.json spec-results.json",
     "specs:marked": "cd test && elm make OutputMarkdownHtml.elm --output elm.js && cd .. && jasmine --config=jasmine.json test/specs/**/*-spec.js"
   },
   "author": "Dillon Kearns",
   "dependencies": {},
   "devDependencies": {
+    "@markedjs/html-differ": "^3.0.0",
     "elm": "^0.19.0-no-deps",
     "elm-debug-transformer": "0.0.7",
     "elm-format": "^0.8.2",
     "elm-hot": "^1.0.1",
     "elm-test": "^0.19.0-rev6",
-    "node-elm-compiler": "^5.0.3",
-    "parcel-bundler": "^1.12.0",
     "front-matter": "^3.0.2",
-    "@markedjs/html-differ": "^3.0.0",
-    "jasmine": "^3.4.0"
+    "jasmine": "^3.4.0",
+    "json-diff": "^0.5.4",
+    "node-elm-compiler": "^5.0.3",
+    "parcel-bundler": "^1.12.0"
   }
 }
