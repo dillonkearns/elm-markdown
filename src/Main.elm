@@ -87,7 +87,7 @@ mainView =
                             )
                         |> Html.p []
             , htmlDecoder =
-                Markdown.htmlOneOf
+                Markdown.oneOf
                     [ Markdown.tag "Red"
                         (\children ->
                             Html.div [ style "background-color" "red" ]

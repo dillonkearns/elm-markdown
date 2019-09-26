@@ -26,8 +26,8 @@ htmlSucceed value =
     Markdown.Decoder.Decoder (\_ _ _ -> Ok value)
 
 
-htmlOneOf : List (Decoder view) -> Decoder view
-htmlOneOf decoders =
+oneOf : List (Decoder view) -> Decoder view
+oneOf decoders =
     let
         unwrappedDecoders =
             decoders
