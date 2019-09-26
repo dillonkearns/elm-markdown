@@ -1,6 +1,7 @@
 module InlineTests exposing (suite)
 
 import Expect exposing (Expectation)
+import Markdown.Block as Block exposing (Block)
 import Markdown.Inlines as Inlines
 import Markdown.Parser exposing (..)
 import Parser
@@ -42,10 +43,10 @@ suite =
                     |> Advanced.run multiParser
                     |> Expect.equal
                         (Ok
-                            [ Heading 1 (unstyledText "Heading")
-                            , Html "div"
+                            [ Block.Heading 1 (unstyledText "Heading")
+                            , Block.Html "div"
                                 []
-                                [ Heading 1 (unstyledText "Heading in a div!")
+                                [ Block.Heading 1 (unstyledText "Heading in a div!")
                                 ]
                             ]
                         )
@@ -56,7 +57,7 @@ suite =
                     |> Advanced.run multiParser
                     |> Expect.equal
                         (Ok
-                            [ Body
+                            [ Block.Body
                                 [ { string = "Contact"
                                   , style =
                                         { isCode = False
@@ -78,7 +79,7 @@ suite =
                     |> Advanced.run multiParser
                     |> Expect.equal
                         (Ok
-                            [ Body
+                            [ Block.Body
                                 [ { string = "This is an intro and "
                                   , style =
                                         { isCode = False

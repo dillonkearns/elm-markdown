@@ -1,6 +1,7 @@
 module Tests exposing (suite)
 
 import Expect exposing (Expectation)
+import Markdown.Block as Block exposing (Block)
 import Markdown.Inlines
 import Markdown.Parser exposing (..)
 import Parser
@@ -25,17 +26,17 @@ suite =
                 \() ->
                     "# Hello!"
                         |> parse
-                        |> Expect.equal (Ok [ Heading 1 (unstyledText "Hello!") ])
+                        |> Expect.equal (Ok [ Block.Heading 1 (unstyledText "Hello!") ])
             , test "heading can end with trailing #'s'" <|
                 \() ->
                     "# Hello! ###"
                         |> parse
-                        |> Expect.equal (Ok [ Heading 1 (unstyledText "Hello!") ])
+                        |> Expect.equal (Ok [ Block.Heading 1 (unstyledText "Hello!") ])
             , test "Heading 2" <|
                 \() ->
                     "## Hello!"
                         |> parse
-                        |> Expect.equal (Ok [ Heading 2 (unstyledText "Hello!") ])
+                        |> Expect.equal (Ok [ Block.Heading 2 (unstyledText "Hello!") ])
             , test "Heading 7 is invalid" <|
                 \() ->
                     "####### Hello!"
@@ -45,7 +46,7 @@ suite =
             \() ->
                 "This is just some text"
                     |> parse
-                    |> Expect.equal (Ok [ Body (unstyledText "This is just some text") ])
+                    |> Expect.equal (Ok [ Block.Body (unstyledText "This is just some text") ])
         , test "parse heading then plain text" <|
             \() ->
                 """# Heading
@@ -54,8 +55,8 @@ This is just some text
                     |> Advanced.run multiParser
                     |> Expect.equal
                         (Ok
-                            [ Heading 1 (unstyledText "Heading")
-                            , Body (unstyledText "This is just some text")
+                            [ Block.Heading 1 (unstyledText "Heading")
+                            , Block.Body (unstyledText "This is just some text")
                             ]
                         )
         , test "doesn't need to end in newline" <|
@@ -65,8 +66,8 @@ This is just some text"""
                     |> Advanced.run multiParser
                     |> Expect.equal
                         (Ok
-                            [ Heading 1 (unstyledText "Heading")
-                            , Body (unstyledText "This is just some text")
+                            [ Block.Heading 1 (unstyledText "Heading")
+                            , Block.Body (unstyledText "This is just some text")
                             ]
                         )
         , test "long example" <|
@@ -82,10 +83,10 @@ Body of the subheading.
                     |> Advanced.run multiParser
                     |> Expect.equal
                         (Ok
-                            [ Heading 1 (unstyledText "Heading")
-                            , Body (unstyledText "This is just some text.")
-                            , Heading 2 (unstyledText "Subheading")
-                            , Body (unstyledText "Body of the subheading.")
+                            [ Block.Heading 1 (unstyledText "Heading")
+                            , Block.Body (unstyledText "This is just some text.")
+                            , Block.Heading 2 (unstyledText "Subheading")
+                            , Block.Body (unstyledText "Body of the subheading.")
                             ]
                         )
         , test "embedded HTML" <|
@@ -98,10 +99,10 @@ Hello!
                     |> Advanced.run multiParser
                     |> Expect.equal
                         (Ok
-                            [ Heading 1 (unstyledText "Heading")
-                            , Html "div"
+                            [ Block.Heading 1 (unstyledText "Heading")
+                            , Block.Html "div"
                                 []
-                                [ Body (unstyledText "Hello!")
+                                [ Block.Body (unstyledText "Hello!")
                                 ]
                             ]
                         )
@@ -116,10 +117,10 @@ Hello!
                     |> Advanced.run multiParser
                     |> Expect.equal
                         (Ok
-                            [ Heading 1 (unstyledText "Heading")
-                            , Html "div"
+                            [ Block.Heading 1 (unstyledText "Heading")
+                            , Block.Html "div"
                                 []
-                                [ Heading 1 (unstyledText "Heading in a div!")
+                                [ Block.Heading 1 (unstyledText "Heading in a div!")
                                 ]
                             ]
                         )
@@ -132,7 +133,7 @@ Hello!
                     |> Advanced.run multiParser
                     |> Expect.equal
                         (Ok
-                            [ ListBlock
+                            [ Block.ListBlock
                                 [ unstyledText "One"
                                 , unstyledText "Two"
                                 , unstyledText "Three"
@@ -148,7 +149,7 @@ Hello!
                     |> Advanced.run multiParser
                     |> Expect.equal
                         (Ok
-                            [ ThematicBreak
+                            [ Block.ThematicBreak
                             ]
                         )
         , test "thematic break followed by newline" <|
@@ -158,7 +159,7 @@ Hello!
                     |> Advanced.run multiParser
                     |> Expect.equal
                         (Ok
-                            [ ThematicBreak
+                            [ Block.ThematicBreak
                             ]
                         )
         , test "mixed content with list" <|
@@ -173,12 +174,12 @@ Text after
                     |> Advanced.run multiParser
                     |> Expect.equal
                         (Ok
-                            [ Heading 1 (unstyledText "Title")
-                            , ListBlock
+                            [ Block.Heading 1 (unstyledText "Title")
+                            , Block.ListBlock
                                 [ unstyledText "This is an item"
                                 , unstyledText "And so is this"
                                 ]
-                            , Body (unstyledText "Text after")
+                            , Block.Body (unstyledText "Text after")
 
                             -- TODO why is this extra block here? Fix
                             -- , ListBlock []
@@ -191,7 +192,7 @@ Line 2
 
 Line after blank line"""
                     |> parse
-                    |> Expect.equal (Ok [ Body (unstyledText """Line 1
+                    |> Expect.equal (Ok [ Block.Body (unstyledText """Line 1
 Line 2
 
 Line after blank line""") ])
@@ -218,32 +219,32 @@ qwer
                     |> parse
                     |> Expect.equal
                         (Ok
-                            [ CodeBlock
+                            [ Block.CodeBlock
                                 { body = ".\n├── content/\n├── elm.json\n├── images/\n├── static/\n├── index.js\n├── package.json\n└── src/\n    └── Main.elm"
                                 , language = Just "shell"
                                 }
-                            , Body (unstyledText "This is more stuff")
-                            , Heading 2 (unstyledText "h2")
-                            , Body (unstyledText "qwer")
+                            , Block.Body (unstyledText "This is more stuff")
+                            , Block.Heading 2 (unstyledText "h2")
+                            , Block.Body (unstyledText "qwer")
                             ]
                         )
         , test "indented code block" <|
             \() ->
                 """    foo = 123"""
                     |> parse
-                    |> Expect.equal (Ok [ CodeBlock { body = "foo = 123", language = Nothing } ])
+                    |> Expect.equal (Ok [ Block.CodeBlock { body = "foo = 123", language = Nothing } ])
         , test "indented code block with tab" <|
             \() ->
                 """\tfoo = 123"""
                     |> parse
-                    |> Expect.equal (Ok [ CodeBlock { body = "foo = 123", language = Nothing } ])
+                    |> Expect.equal (Ok [ Block.CodeBlock { body = "foo = 123", language = Nothing } ])
         , test "image" <|
             \() ->
                 """![This is an image](/my/image.jpg)"""
                     |> parse
                     |> Expect.equal
                         (Ok
-                            [ Body
+                            [ Block.Body
                                 [ { string = "This is an image"
                                   , style =
                                         { isBold = False

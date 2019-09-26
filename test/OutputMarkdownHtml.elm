@@ -2,6 +2,7 @@ port module OutputMarkdownHtml exposing (main)
 
 import Html.String as Html
 import Html.String.Attributes as Attr
+import Markdown.Html
 import Markdown.Inlines exposing (StyledString)
 import Markdown.Parser as Markdown
 
@@ -89,7 +90,7 @@ renderMarkdown markdown =
                                         [ itemBlocks ]
                                 )
                         )
-            , htmlDecoder = Markdown.htmlOneOf []
+            , htmlDecoder = Markdown.Html.htmlOneOf []
             , codeBlock =
                 \{ body, language } ->
                     Html.pre []

@@ -1,6 +1,7 @@
 module LinkTests exposing (suite)
 
 import Expect exposing (Expectation)
+import Markdown.Block as Block exposing (Block)
 import Markdown.Link as Link
 import Markdown.Parser exposing (..)
 import Parser

@@ -1,6 +1,8 @@
 module HtmlHandlerTests exposing (suite)
 
 import Expect exposing (Expectation)
+import Markdown.Block as Block exposing (Block)
+import Markdown.Html
 import Markdown.Inlines
 import Markdown.Parser as Markdown exposing (..)
 import Parser
@@ -48,7 +50,7 @@ testRenderer htmlHandlers =
     , list =
         \items ->
             Unexpected "String"
-    , htmlDecoder = Markdown.htmlOneOf htmlHandlers
+    , htmlDecoder = Markdown.Html.htmlOneOf htmlHandlers
     , codeBlock =
         \{ body, language } ->
             Unexpected "String"
@@ -64,7 +66,7 @@ suite =
                 "<social-links />"
                     |> Markdown.render
                         (testRenderer
-                            [ Markdown.htmlTag "social-links" (\children -> Html "social-links")
+                            [ Markdown.Html.htmlTag "social-links" (\children -> Html "social-links")
                             ]
                         )
                     |> Expect.equal (Ok [ Html "social-links" ])
@@ -79,8 +81,8 @@ suite =
                 """<signup-form button="Sign up now!" />"""
                     |> Markdown.render
                         (testRenderer
-                            [ Markdown.htmlTag "signup-form" (\buttonText children -> Html ("signup-form " ++ buttonText))
-                                |> Markdown.withAttribute "button"
+                            [ Markdown.Html.htmlTag "signup-form" (\buttonText children -> Html ("signup-form " ++ buttonText))
+                                |> Markdown.Html.withAttribute "button"
                             ]
                         )
                     |> Expect.equal (Ok [ Html "signup-form Sign up now!" ])
@@ -89,8 +91,8 @@ suite =
                 """<signup-form />"""
                     |> Markdown.render
                         (testRenderer
-                            [ Markdown.htmlTag "signup-form" (\buttonText children -> Html ("signup-form " ++ buttonText))
-                                |> Markdown.withAttribute "button"
+                            [ Markdown.Html.htmlTag "signup-form" (\buttonText children -> Html ("signup-form " ++ buttonText))
+                                |> Markdown.Html.withAttribute "button"
                             ]
                         )
                     |> Expect.equal (Err """Problem with the given value:
@@ -104,9 +106,9 @@ Expecting attribute "button".
                 """<unregistered-tag />"""
                     |> Markdown.render
                         (testRenderer
-                            [ Markdown.htmlTag "signup-form" (\buttonText children -> Html ("signup-form " ++ buttonText))
-                                |> Markdown.withAttribute "button"
-                            , Markdown.htmlTag "signup-form" (\children -> Html "signup-form")
+                            [ Markdown.Html.htmlTag "signup-form" (\buttonText children -> Html ("signup-form " ++ buttonText))
+                                |> Markdown.Html.withAttribute "button"
+                            , Markdown.Html.htmlTag "signup-form" (\children -> Html "signup-form")
                             ]
                         )
                     |> Expect.equal (Err """oneOf failed parsing this value:

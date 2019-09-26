@@ -1,8 +1,11 @@
 module Markdown.Block exposing (Block(..))
 
 import Markdown.CodeBlock
-import Markdown.Html exposing (Attribute)
 import Markdown.Inlines as Inlines exposing (StyledString)
+
+
+type alias Attribute =
+    { name : String, value : String }
 
 
 type Block
