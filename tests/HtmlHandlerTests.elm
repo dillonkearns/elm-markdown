@@ -66,7 +66,7 @@ suite =
                 "<social-links />"
                     |> Markdown.render
                         (testRenderer
-                            [ Markdown.Html.htmlTag "social-links" (\children -> Html "social-links")
+                            [ Markdown.Html.tag "social-links" (\children -> Html "social-links")
                             ]
                         )
                     |> Expect.equal (Ok [ Html "social-links" ])
@@ -81,7 +81,7 @@ suite =
                 """<signup-form button="Sign up now!" />"""
                     |> Markdown.render
                         (testRenderer
-                            [ Markdown.Html.htmlTag "signup-form" (\buttonText children -> Html ("signup-form " ++ buttonText))
+                            [ Markdown.Html.tag "signup-form" (\buttonText children -> Html ("signup-form " ++ buttonText))
                                 |> Markdown.Html.withAttribute "button"
                             ]
                         )
@@ -91,7 +91,7 @@ suite =
                 """<signup-form />"""
                     |> Markdown.render
                         (testRenderer
-                            [ Markdown.Html.htmlTag "signup-form" (\buttonText children -> Html ("signup-form " ++ buttonText))
+                            [ Markdown.Html.tag "signup-form" (\buttonText children -> Html ("signup-form " ++ buttonText))
                                 |> Markdown.Html.withAttribute "button"
                             ]
                         )
@@ -106,9 +106,9 @@ Expecting attribute "button".
                 """<unregistered-tag />"""
                     |> Markdown.render
                         (testRenderer
-                            [ Markdown.Html.htmlTag "signup-form" (\buttonText children -> Html ("signup-form " ++ buttonText))
+                            [ Markdown.Html.tag "signup-form" (\buttonText children -> Html ("signup-form " ++ buttonText))
                                 |> Markdown.Html.withAttribute "button"
-                            , Markdown.Html.htmlTag "signup-form" (\children -> Html "signup-form")
+                            , Markdown.Html.tag "signup-form" (\children -> Html "signup-form")
                             ]
                         )
                     |> Expect.equal (Err """oneOf failed parsing this value:

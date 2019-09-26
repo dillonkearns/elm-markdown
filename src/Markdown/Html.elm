@@ -36,10 +36,10 @@ htmlOneOf decoders =
     in
     List.foldl
         (\decoder soFar ->
-            \tag attributes children ->
-                resultOr (decoder tag attributes children) (soFar tag attributes children)
+            \tagName attributes children ->
+                resultOr (decoder tagName attributes children) (soFar tagName attributes children)
         )
-        (\tag attributes children ->
+        (\tagName attributes children ->
             Err []
         )
         unwrappedDecoders
@@ -108,15 +108,15 @@ tagToString tagName attributes =
     "<" ++ tagName ++ ">"
 
 
-htmlTag : String -> view -> Decoder view
-htmlTag expectedTag a =
+tag : String -> view -> Decoder view
+tag expectedTag a =
     Markdown.Decoder.Decoder
-        (\tag attributes children ->
-            if tag == expectedTag then
+        (\tagName attributes children ->
+            if tagName == expectedTag then
                 Ok a
 
             else
-                Err ("Expected " ++ expectedTag ++ " but was " ++ tag)
+                Err ("Expected " ++ expectedTag ++ " but was " ++ tagName)
         )
 
 

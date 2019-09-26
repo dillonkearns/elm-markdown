@@ -88,12 +88,12 @@ mainView =
                         |> Html.p []
             , htmlDecoder =
                 Markdown.htmlOneOf
-                    [ Markdown.htmlTag "Red"
+                    [ Markdown.tag "Red"
                         (\children ->
                             Html.div [ style "background-color" "red" ]
                                 children
                         )
-                    , Markdown.htmlTag "Blue"
+                    , Markdown.tag "Blue"
                         (\children ->
                             Html.div [ style "background-color" "blue" ]
                                 children
