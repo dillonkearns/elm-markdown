@@ -1,6 +1,7 @@
 module Markdown.Html exposing (..)
 
 import List.Extra
+import Markdown.Block exposing (Block)
 import Markdown.Decoder
 
 

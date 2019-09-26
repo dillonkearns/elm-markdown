@@ -12,10 +12,6 @@ import Parser.Advanced as Advanced exposing ((|.), (|=), Nestable(..), Step(..),
 import XmlParser exposing (Node(..))
 
 
-type alias Decoder a =
-    Markdown.Decoder.Decoder a
-
-
 type alias Renderer view =
     { heading : { level : Int, rawText : String, children : List view } -> view
     , raw : List view -> view
@@ -155,6 +151,24 @@ renderAst renderer astResult =
             )
 
 
+renderHtml :
+    String
+    -> List Attribute
+    -> List Block
+    -> Decoder (List view -> view)
+    -> List (Result String view)
+    -> Result String view
+renderHtml tagName attributes children (Markdown.Decoder.Decoder htmlRenderer) renderedChildren =
+    renderedChildren
+        |> combineResults
+        |> Result.andThen
+            (\okChildren ->
+                htmlRenderer tagName attributes children
+                    |> Result.map
+                        (\myRenderer -> myRenderer okChildren)
+            )
+
+
 combineResults : List (Result x a) -> Result x (List a)
 combineResults =
     List.foldr (Result.map2 (::)) (Ok [])
@@ -220,23 +234,11 @@ problemToString problem =
 
 renderHtmlNode : Renderer view -> String -> List Attribute -> List Block -> Result String view
 renderHtmlNode renderer tag attributes children =
-    useRed tag
+    renderHtml tag
         attributes
         children
         renderer.htmlDecoder
         (renderHelper renderer children)
-
-
-useRed : String -> List Attribute -> List Block -> Decoder (List view -> view) -> List (Result String view) -> Result String view
-useRed tag attributes children (Markdown.Decoder.Decoder redRenderer) renderedChildren =
-    renderedChildren
-        |> combineResults
-        |> Result.andThen
-            (\okChildren ->
-                redRenderer tag attributes children
-                    |> Result.map
-                        (\myRenderer -> myRenderer okChildren)
-            )
 
 
 type alias Parser a =
