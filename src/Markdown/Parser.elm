@@ -1,11 +1,10 @@
-module Markdown.Parser exposing
-    ( Renderer
-    , deadEndToString
-    , deadEndsToString
-    , parse
-    , render
-    , renderAst
-    )
+module Markdown.Parser exposing (Renderer, deadEndToString, deadEndsToString, parse, render, renderAst)
+
+{-|
+
+@docs Renderer, deadEndToString, deadEndsToString, parse, render, renderAst
+
+-}
 
 import Markdown.Block as Block exposing (Block)
 import Markdown.CodeBlock
