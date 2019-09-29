@@ -176,6 +176,8 @@ deadEndsToString deadEnds =
         |> String.join "\n"
 
 
+{-| Turn a parsing problem into the default String representation.
+-}
 deadEndToString : Advanced.DeadEnd String Parser.Problem -> String
 deadEndToString deadEnd =
     "Problem at row " ++ String.fromInt deadEnd.row ++ "\n" ++ problemToString deadEnd.problem
@@ -514,6 +516,27 @@ dropTrailingHashes headingString =
         headingString
 
 
+{-| Try parsing a markdown String into `Markdown.Block.Block`s.
+
+Often you'll want to render these `Block`s directly:
+
+    render renderer markdown =
+        markdown
+            |> Markdown.parse
+            |> Result.mapError deadEndsToString
+            |> Result.andThen (\ast -> Markdown.render renderer ast)
+
+    deadEndsToString deadEnds =
+        deadEnds
+            |> List.map deadEndToString
+            |> String.join "\n"
+
+But you can also do a lot with the `Block`s before passing them through:
+
+  - Transform the `Block`s ([example: make each heading one level deeper](TODO))
+  - Use the blocks to gather metadata about the markdown document ([example: building a table of contents from `Block`s](TODO))
+
+-}
 parse : String -> Result (List (Advanced.DeadEnd String Parser.Problem)) (List Block)
 parse input =
     Advanced.run multiParser input
