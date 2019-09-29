@@ -1,8 +1,8 @@
-module Markdown.Parser exposing (Renderer, deadEndToString, deadEndsToString, parse, render, renderAst)
+module Markdown.Parser exposing (Renderer, deadEndToString, deadEndsToString, parse, render)
 
 {-|
 
-@docs Renderer, deadEndToString, deadEndsToString, parse, render, renderAst
+@docs Renderer, deadEndToString, deadEndsToString, parse, render
 
 -}
 
@@ -17,6 +17,19 @@ import Parser.Advanced as Advanced exposing ((|.), (|=), Nestable(..), Step(..),
 import XmlParser exposing (Node(..))
 
 
+{-| A record with functions that define how to render all possible markdown blocks.
+These renderers are composed together to give you the final rendered output.
+
+You could render to any type you want. Here are some useful things you might render to:
+
+  - `Html` (using the `defaultRenderer` provided by this module)
+  - Custom `Html`
+  - `Element`s from [`mdgriffith/elm-ui`](https://package.elm-lang.org/packages/mdgriffith/elm-ui/latest/)
+  - Types from other custom HTML replacement libraries, like [`rtfeldman/elm-css`](https://package.elm-lang.org/packages/rtfeldman/elm-css/latest/) or [`tesk9/accessible-html`](https://package.elm-lang.org/packages/tesk9/accessible-html/latest/)
+  - Raw `String`s with [ANSI color codes](http://www.lihaoyi.com/post/BuildyourownCommandLinewithANSIescapecodes.html) for setting rich colors in terminal (CLI) output
+  - Plain text with any formatting stripped away (maybe for a String search feature)
+
+-}
 type alias Renderer view =
     { heading : { level : Int, rawText : String, children : List view } -> view
     , raw : List view -> view
@@ -131,21 +144,6 @@ render renderer ast =
     ast
         |> renderHelper renderer
         |> combineResults
-
-
-renderAst :
-    Renderer view
-    -> Result (List (Advanced.DeadEnd String Parser.Problem)) (List Block)
-    -> Result String (List view)
-renderAst renderer astResult =
-    astResult
-        |> Result.mapError deadEndsToString
-        |> Result.andThen
-            (\markdownAst ->
-                markdownAst
-                    |> renderHelper renderer
-                    |> combineResults
-            )
 
 
 renderHtml :
