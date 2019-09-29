@@ -1,6 +1,5 @@
 module Markdown.Parser exposing (..)
 
-import List.Extra
 import Markdown.Block as Block exposing (Block)
 import Markdown.CodeBlock
 import Markdown.Decoder

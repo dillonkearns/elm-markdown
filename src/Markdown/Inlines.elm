@@ -1,8 +1,6 @@
 module Markdown.Inlines exposing (LinkUrl(..), State, Style, StyledString, isUninteresting, nextStepWhenFoundBold, nextStepWhenFoundItalic, nextStepWhenFoundNothing, parse, parseHelp, toString)
 
-import Browser
 import Char
-import Debug
 import Html exposing (Html)
 import Html.Attributes as Attr
 import Markdown.Link as Link exposing (Link)

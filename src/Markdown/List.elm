@@ -1,7 +1,5 @@
 module Markdown.List exposing (..)
 
-import Browser
-import Char
 import Html exposing (Html)
 import Html.Attributes as Attr
 import Markdown.Inlines
