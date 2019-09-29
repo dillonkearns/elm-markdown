@@ -136,6 +136,9 @@ renderHelper renderer blocks =
         blocks
 
 
+{-| Apply a `Markdown.Parser.Renderer` to turn parsed `Block`s into your rendered
+markdown view.
+-}
 render :
     Renderer view
     -> List Block
