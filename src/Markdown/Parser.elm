@@ -125,18 +125,12 @@ renderHelper renderer blocks =
 
 render :
     Renderer view
-    -> String
+    -> List Block
     -> Result String (List view)
-render renderer markdownText =
-    markdownText
-        |> parse
-        |> Result.mapError deadEndsToString
-        |> Result.andThen
-            (\markdownAst ->
-                markdownAst
-                    |> renderHelper renderer
-                    |> combineResults
-            )
+render renderer ast =
+    ast
+        |> renderHelper renderer
+        |> combineResults
 
 
 renderAst :

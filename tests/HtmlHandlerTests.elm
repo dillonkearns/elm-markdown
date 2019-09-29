@@ -19,6 +19,13 @@ parse =
     Markdown.parse
 
 
+render renderer markdown =
+    markdown
+        |> Markdown.parse
+        |> Result.mapError Markdown.deadEndsToString
+        |> Result.andThen (\ast -> Markdown.render renderer ast)
+
+
 type Rendered
     = Unexpected String
     | Html String
@@ -64,7 +71,7 @@ suite =
         [ test "basic html tag" <|
             \() ->
                 "<social-links />"
-                    |> Markdown.render
+                    |> render
                         (testRenderer
                             [ Markdown.Html.tag "social-links" (\children -> Html "social-links")
                             ]
@@ -73,13 +80,13 @@ suite =
         , test "unregistered html tag" <|
             \() ->
                 "<social-links />"
-                    |> Markdown.render
+                    |> render
                         (testRenderer [])
                     |> Expect.equal (Err "Ran into a oneOf with no possibilities!")
         , test "html attribute parser" <|
             \() ->
                 """<signup-form button="Sign up now!" />"""
-                    |> Markdown.render
+                    |> render
                         (testRenderer
                             [ Markdown.Html.tag "signup-form" (\buttonText children -> Html ("signup-form " ++ buttonText))
                                 |> Markdown.Html.withAttribute "button"
@@ -89,7 +96,7 @@ suite =
         , test "fail on missing attribute" <|
             \() ->
                 """<signup-form />"""
-                    |> Markdown.render
+                    |> render
                         (testRenderer
                             [ Markdown.Html.tag "signup-form" (\buttonText children -> Html ("signup-form " ++ buttonText))
                                 |> Markdown.Html.withAttribute "button"
@@ -104,7 +111,7 @@ Expecting attribute "button".
         , test "give details for all failures in oneOf" <|
             \() ->
                 """<unregistered-tag />"""
-                    |> Markdown.render
+                    |> render
                         (testRenderer
                             [ Markdown.Html.tag "signup-form" (\buttonText children -> Html ("signup-form " ++ buttonText))
                                 |> Markdown.Html.withAttribute "button"
