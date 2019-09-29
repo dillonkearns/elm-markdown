@@ -22,8 +22,14 @@ parse =
 render renderer markdown =
     markdown
         |> Markdown.parse
-        |> Result.mapError Markdown.deadEndsToString
+        |> Result.mapError deadEndsToString
         |> Result.andThen (\ast -> Markdown.render renderer ast)
+
+
+deadEndsToString deadEnds =
+    deadEnds
+        |> List.map deadEndToString
+        |> String.join "\n"
 
 
 type Rendered

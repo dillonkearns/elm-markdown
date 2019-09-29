@@ -1,8 +1,8 @@
-module Markdown.Parser exposing (Renderer, deadEndToString, deadEndsToString, parse, render)
+module Markdown.Parser exposing (Renderer, deadEndToString, parse, render)
 
 {-|
 
-@docs Renderer, deadEndToString, deadEndsToString, parse, render
+@docs Renderer, deadEndToString, parse, render
 
 -}
 
