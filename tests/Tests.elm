@@ -52,7 +52,7 @@ suite =
                 """# Heading
 This is just some text
 """
-                    |> Advanced.run multiParser
+                    |> parse
                     |> Expect.equal
                         (Ok
                             [ Block.Heading 1 (unstyledText "Heading")
@@ -63,7 +63,7 @@ This is just some text
             \() ->
                 """# Heading
 This is just some text"""
-                    |> Advanced.run multiParser
+                    |> parse
                     |> Expect.equal
                         (Ok
                             [ Block.Heading 1 (unstyledText "Heading")
@@ -80,7 +80,7 @@ This is just some text.
 
 Body of the subheading.
 """
-                    |> Advanced.run multiParser
+                    |> parse
                     |> Expect.equal
                         (Ok
                             [ Block.Heading 1 (unstyledText "Heading")
@@ -96,7 +96,7 @@ Body of the subheading.
 Hello!
 </div>
 """
-                    |> Advanced.run multiParser
+                    |> parse
                     |> Expect.equal
                         (Ok
                             [ Block.Heading 1 (unstyledText "Heading")
@@ -114,7 +114,7 @@ Hello!
 
 </div>
 """
-                    |> Advanced.run multiParser
+                    |> parse
                     |> Expect.equal
                         (Ok
                             [ Block.Heading 1 (unstyledText "Heading")
@@ -130,7 +130,7 @@ Hello!
 - Two
 - Three
 """
-                    |> Advanced.run multiParser
+                    |> parse
                     |> Expect.equal
                         (Ok
                             [ Block.ListBlock
@@ -146,7 +146,7 @@ Hello!
         , test "thematic break" <|
             \() ->
                 """---"""
-                    |> Advanced.run multiParser
+                    |> parse
                     |> Expect.equal
                         (Ok
                             [ Block.ThematicBreak
@@ -156,7 +156,7 @@ Hello!
             \() ->
                 """---
 """
-                    |> Advanced.run multiParser
+                    |> parse
                     |> Expect.equal
                         (Ok
                             [ Block.ThematicBreak
@@ -171,7 +171,7 @@ Hello!
 
 Text after
 """
-                    |> Advanced.run multiParser
+                    |> parse
                     |> Expect.equal
                         (Ok
                             [ Block.Heading 1 (unstyledText "Title")

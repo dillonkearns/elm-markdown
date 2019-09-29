@@ -40,7 +40,7 @@ suite =
 
 </div>
 """
-                    |> Advanced.run multiParser
+                    |> Markdown.Parser.parse
                     |> Expect.equal
                         (Ok
                             [ Block.Heading 1 (unstyledText "Heading")
@@ -54,7 +54,7 @@ suite =
             \() ->
                 """[Contact](/contact)
 """
-                    |> Advanced.run multiParser
+                    |> Markdown.Parser.parse
                     |> Expect.equal
                         (Ok
                             [ Block.Body
@@ -76,7 +76,7 @@ suite =
         , test "plain text followed by link" <|
             \() ->
                 """This is an intro and [this is a link](/my/page)"""
-                    |> Advanced.run multiParser
+                    |> Markdown.Parser.parse
                     |> Expect.equal
                         (Ok
                             [ Block.Body
