@@ -15,6 +15,7 @@ function runSpecs(title, dir, showCompletionTable, options) {
   describe(title, () => {
     afterAll(() => {
       printStatus();
+      writeFailuresMarkdown(title);
     });
 
     Object.keys(specs).forEach(section => {
@@ -99,4 +100,49 @@ function printStatus() {
     });
   });
   fs.writeFileSync("./spec-results.json", JSON.stringify(passedJson));
+}
+
+function writeFailuresMarkdown(/** @type {string} */ suiteTitle) {
+  /** @typedef { { markdown: string; suiteTitle: string; html: string; example: number; start_line: number; end_line: number; section: string; options: { gfm: boolean; pedantic: boolean; headerIds: boolean; silent: boolean; }; } } Spec */
+  // @ts-ignore
+  /** @type {Spec[]]} */ let failures = global.fails;
+  const failedJson = failures.reduce(function(
+    /** @type {Object} */ accumulator,
+    spec
+  ) {
+    if (spec.suiteTitle === suiteTitle) {
+      accumulator[spec.section] = accumulator[spec.section] || [];
+      accumulator[spec.section].push(spec);
+    }
+    // Pass the object on to the next loop
+    return accumulator;
+  },
+  {});
+
+  /** @type {string} */ let markdown = "";
+  markdown += `## ${suiteTitle}\n\n`;
+  Object.keys(failedJson).forEach(section => {
+    markdown += `### ${section}\n\n`;
+    failedJson[section].sort((
+      /** @type {Spec} */ specA,
+      /** @type {Spec} */ specB
+    ) => {
+      if (specA.example && specB.example) {
+        return specA.example - specB.example;
+      } else {
+        return 0;
+      }
+    });
+    failedJson[section].forEach((/** @type {Spec} */ spec) => {
+      markdown += `Example ${spec.example}
+
+\`\`\`html
+${spec.html}
+\`\`\`
+
+`;
+    });
+  });
+
+  fs.writeFileSync(`./test-results/failing-${suiteTitle}.md`, markdown);
 }
