@@ -1,11 +1,13 @@
-module Markdown.Parser exposing (Renderer, deadEndToString, parse, render)
+module Markdown.Parser exposing (Renderer, defaultHtmlRenderer, deadEndToString, parse, render)
 
 {-|
 
-@docs Renderer, deadEndToString, parse, render
+@docs Renderer, defaultHtmlRenderer, deadEndToString, parse, render
 
 -}
 
+import Html exposing (Html)
+import Html.Attributes as Attr
 import Markdown.Block as Block exposing (Block)
 import Markdown.CodeBlock
 import Markdown.Decoder
@@ -22,7 +24,7 @@ These renderers are composed together to give you the final rendered output.
 
 You could render to any type you want. Here are some useful things you might render to:
 
-  - `Html` (using the `defaultRenderer` provided by this module)
+  - `Html` (using the `defaultHtmlRenderer` provided by this module)
   - Custom `Html`
   - `Element`s from [`mdgriffith/elm-ui`](https://package.elm-lang.org/packages/mdgriffith/elm-ui/latest/)
   - Types from other custom HTML replacement libraries, like [`rtfeldman/elm-css`](https://package.elm-lang.org/packages/rtfeldman/elm-css/latest/) or [`tesk9/accessible-html`](https://package.elm-lang.org/packages/tesk9/accessible-html/latest/)
@@ -43,6 +45,73 @@ type alias Renderer view =
     , list : List view -> view
     , codeBlock : { body : String, language : Maybe String } -> view
     , thematicBreak : view
+    }
+
+
+{-| This renders `Html` in an attempt to be as close as possible to
+the HTML output in <https://github.github.com/gfm/>.
+-}
+defaultHtmlRenderer : Renderer (Html msg)
+defaultHtmlRenderer =
+    { heading =
+        \{ level, children } ->
+            case level of
+                1 ->
+                    Html.h1 [] children
+
+                2 ->
+                    Html.h2 [] children
+
+                3 ->
+                    Html.h3 [] children
+
+                4 ->
+                    Html.h4 [] children
+
+                5 ->
+                    Html.h5 [] children
+
+                6 ->
+                    Html.h6 [] children
+
+                _ ->
+                    Html.text "TODO maye use a type here to clean it up... this will never happen"
+    , raw = Html.p []
+    , bold =
+        \content -> Html.strong [] [ Html.text content ]
+    , italic =
+        \content -> Html.em [] [ Html.text content ]
+    , code =
+        \content -> Html.code [] [ Html.text content ]
+    , link =
+        \link content ->
+            Html.a [ Attr.href link.destination ] content
+                |> Ok
+    , image =
+        \image content ->
+            Html.img [ Attr.src image.src ] [ Html.text content ]
+                |> Ok
+    , plain =
+        Html.text
+    , list =
+        \items ->
+            Html.ul []
+                (items
+                    |> List.map
+                        (\itemBlocks ->
+                            Html.li []
+                                [ itemBlocks ]
+                        )
+                )
+    , htmlDecoder = Markdown.Html.oneOf []
+    , codeBlock =
+        \{ body, language } ->
+            Html.pre []
+                [ Html.code []
+                    [ Html.text body
+                    ]
+                ]
+    , thematicBreak = Html.hr [] []
     }
 
 
