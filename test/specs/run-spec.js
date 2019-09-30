@@ -16,6 +16,7 @@ function runSpecs(title, dir, showCompletionTable, options) {
     afterAll(() => {
       printStatus();
       writeFailuresMarkdown(title);
+      writePassingMarkdown(title);
     });
 
     Object.keys(specs).forEach(section => {
@@ -136,6 +137,14 @@ function writeFailuresMarkdown(/** @type {string} */ suiteTitle) {
     failedJson[section].forEach((/** @type {Spec} */ spec) => {
       markdown += `Example ${spec.example}
 
+This markdown:
+
+\`\`\`markdown
+${spec.markdown}
+\`\`\`
+
+Gives this incorrect output:
+
 \`\`\`html
 ${spec.html}
 \`\`\`
@@ -145,4 +154,59 @@ ${spec.html}
   });
 
   fs.writeFileSync(`./test-results/failing-${suiteTitle}.md`, markdown);
+}
+
+function writePassingMarkdown(/** @type {string} */ suiteTitle) {
+  /** @typedef { { markdown: string; suiteTitle: string; html: string; example: number; start_line: number; end_line: number; section: string; options: { gfm: boolean; pedantic: boolean; headerIds: boolean; silent: boolean; }; } } Spec */
+  // @ts-ignore
+  /** @type {Spec[]]} */ let passes = global.passes;
+  const passedJson = passes.reduce(function(
+    /** @type {Object} */ accumulator,
+    spec
+  ) {
+    if (spec.suiteTitle === suiteTitle) {
+      accumulator[spec.section] = accumulator[spec.section] || [];
+      accumulator[spec.section].push(spec);
+    }
+    // Pass the object on to the next loop
+    return accumulator;
+  },
+  {});
+
+  /** @type {string} */ let markdown = "";
+  markdown += `## ${suiteTitle}\n\n`;
+  Object.keys(passedJson).forEach(section => {
+    markdown += `### ${section}\n\n`;
+    passedJson[section].sort((
+      /** @type {Spec} */ specA,
+      /** @type {Spec} */ specB
+    ) => {
+      if (specA.example && specB.example) {
+        return specA.example - specB.example;
+      } else {
+        return 0;
+      }
+    });
+    passedJson[section].forEach((/** @type {Spec} */ spec) => {
+      markdown += `Example ${spec.example}
+
+This markdown:
+
+
+\`\`\`markdown
+${spec.markdown}
+\`\`\`
+
+Gives this correct output:
+
+
+\`\`\`html
+${spec.html}
+\`\`\`
+
+`;
+    });
+  });
+
+  fs.writeFileSync(`./test-results/passing-${suiteTitle}.md`, markdown);
 }

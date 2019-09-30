@@ -1,8 +1,35 @@
 ## ReDOS
 
+### redos_nolink
+
+Example undefined
+
+This markdown:
+
+```markdown
+![\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]!\
+
+```
+
+Gives this incorrect output:
+
+```html
+<p>![[[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[]!\</p>
+
+```
+
 ### link_redos
 
 Example undefined
+
+This markdown:
+
+```markdown
+* 伪类：[:active](https://developer.mozilla.org/en-US/docs/Web/CSS/:active)、[:any-link](https://developer.mozilla.org/en-US/docs/Web/CSS/:any-link)、[:blank](https://developer.mozilla.org/en-US/docs/Web/CSS/:blank)、[:checked](https://developer.mozilla.org/en-US/docs/Web/CSS/:checked)、[:current](https://developer.mozilla.org/en-US/docs/Web/CSS/:current)、[:default](https://developer.mozilla.org/en-US/docs/Web/CSS/:default)、[:defined](https://developer.mozilla.org/en-US/docs/Web/CSS/:defined)、[:dir()](https://developer.mozilla.org/en-US/docs/Web/CSS/:dir)、[:disabled](https://developer.mozilla.org/en-US/docs/Web/CSS/:disabled)、[:drop](https://developer.mozilla.org/en-US/docs/Web/CSS/:drop)、[:empty](https://developer.mozilla.org/en-US/docs/Web/CSS/:empty)、[:enabled](https://developer.mozilla.org/en-US/docs/Web/CSS/:enabled)、[:first](https://developer.mozilla.org/en-US/docs/Web/CSS/:first)、[:first-child](https://developer.mozilla.org/en-US/docs/Web/CSS/:first-child)、[:first-of-type](https://developer.mozilla.org/en-US/docs/Web/CSS/:first-of-type)、[:fullscreen](https://developer.mozilla.org/en-US/docs/Web/CSS/:fullscreen)、[:future](https://developer.mozilla.org/en-US/docs/Web/CSS/:future)、[:focus](https://developer.mozilla.org/en-US/docs/Web/CSS/:focus)、[:focus-visible](https://developer.mozilla.org/en-US/docs/Web/CSS/:focus-visible)、[:focus-within](https://developer.mozilla.org/en-US/docs/Web/CSS/:focus-within)、[:has()](https://developer.mozilla.org/en-US/docs/Web/CSS/:has)、[:host](https://developer.mozilla.org/en-US/docs/Web/CSS/:host)、[:host()](https://developer.mozilla.org/en-US/docs/Web/CSS/:host())、[:host-context()](https://developer.mozilla.org/en-US/docs/Web/CSS/:host-context())、[:hover](https://developer.mozilla.org/en-US/docs/Web/CSS/:hover)、[:indeterminate](https://developer.mozilla.org/en-US/docs/Web/CSS/:indeterminate)、[:in-range](https://developer.mozilla.org/en-US/docs/Web/CSS/:in-range)、[:invalid](https://developer.mozilla.org/en-US/docs/Web/CSS/:invalid)、[:is()](https://developer.mozilla.org/en-US/docs/Web/CSS/:is)、[:lang()](https://developer.mozilla.org/en-US/docs/Web/CSS/:lang)、[:last-child](https://developer.mozilla.org/en-US/docs/Web/CSS/:last-child)、[:last-of-type](https://developer.mozilla.org/en-US/docs/Web/CSS/:last-of-type)、[:left](https://developer.mozilla.org/en-US/docs/Web/CSS/:left)、[:link](https://developer.mozilla.org/en-US/docs/Web/CSS/:link)、[:local-link](https://developer.mozilla.org/en-US/docs/Web/CSS/:local-link)、[:not()](https://developer.mozilla.org/en-US/docs/Web/CSS/:not)、[:nth-child()](https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-child)、[:nth-col()](https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-col)、[:nth-last-child()](https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-last-child)、[:nth-last-col()](https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-last-col)、[:nth-last-of-type()](https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-last-of-type)、[:nth-of-type()](https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-of-type)、[:only-child](https://developer.mozilla.org/en-US/docs/Web/CSS/:only-child)、[:only-of-type](https://developer.mozilla.org/en-US/docs/Web/CSS/:only-of-type)、[:optional](https://developer.mozilla.org/en-US/docs/Web/CSS/:optional)、[:out-of-range](https://developer.mozilla.org/en-US/docs/Web/CSS/:out-of-range)、[:past](https://developer.mozilla.org/en-US/docs/Web/CSS/:past)、[:placeholder-shown](https://developer.mozilla.org/en-US/docs/Web/CSS/:placeholder-shown)、[:read-only](https://developer.mozilla.org/en-US/docs/Web/CSS/:read-only)、[:read-write](https://developer.mozilla.org/en-US/docs/Web/CSS/:read-write)、[:required](https://developer.mozilla.org/en-US/docs/Web/CSS/:required)、[:right](https://developer.mozilla.org/en-US/docs/Web/CSS/:right)、[:root](https://developer.mozilla.org/en-US/docs/Web/CSS/:root)、[:scope](https://developer.mozilla.org/en-US/docs/Web/CSS/:scope)、[:target](https://developer.mozilla.org/en-US/docs/Web/CSS/:target)、[:target-within](https://developer.mozilla.org/en-US/docs/Web/CSS/:target-within)、[:user-invalid](https://developer.mozilla.org/en-US/docs/Web/CSS/:user-invalid)、[:valid](https://developer.mozilla.org/en-US/docs/Web/CSS/:valid)、[:visited](https://developer.mozilla.org/en-US/docs/Web/CSS/:visited)、[:where()](https://developer.mozilla.org/en-US/docs/Web/CSS/:where)
+* 伪元素：[::after (:after)](https://developer.mozilla.org/en-US/docs/Web/CSS/::after)、[::backdrop](https://developer.mozilla.org/en-US/docs/Web/CSS/::backdrop)、[::before (:before)](https://developer.mozilla.org/en-US/docs/Web/CSS/::before)、[::cue (:cue)](https://developer.mozilla.org/en-US/docs/Web/CSS/::cue)、[::first-letter (:first-letter)](https://developer.mozilla.org/en-US/docs/Web/CSS/::first-letter)、[::first-line (:first-line)](https://developer.mozilla.org/en-US/docs/Web/CSS/::first-line)、[::grammar-error](https://developer.mozilla.org/en-US/docs/Web/CSS/::grammar-error)、[::marker](https://developer.mozilla.org/en-US/docs/Web/CSS/::marker)、[::placeholder](https://developer.mozilla.org/en-US/docs/Web/CSS/::placeholder)、[::selection](https://developer.mozilla.org/en-US/docs/Web/CSS/::selection)、[::slotted()](https://developer.mozilla.org/en-US/docs/Web/CSS/::slotted)、[::spelling-error](https://developer.mozilla.org/en-US/docs/Web/CSS/::spelling-error) 
+```
+
+Gives this incorrect output:
 
 ```html
 <ul>
@@ -13,30 +40,47 @@ Example undefined
 
 ```
 
-### link_code
-
-Example undefined
-
-```html
-<p>INDEX(string, pattern[, start)<code>: searches for the first occurrence of pattern in string, starting from start:</code>INDEX(&quot;123123&quot;, &quot;23&quot;, 3)<code>==</code>5<code></code>INSERT(new, old[, start][, length][, pad])<code>: inserts the new string into the old string after the specified position (default is 0), new string is truncated or padded (default is &quot; &quot;) to the specified length, if start is beyond the end of old old will be padded</code>LASTPOS(pattern, string[, start])<code>: searches backwards for the last occurrence of pattern in string, starting from start:</code>LASTPOS(&quot;123123&quot;, &quot;23&quot;, 4)<code>==</code>2<code></code>LINES(file)<code>: returns the number of lines typed ahead at the interactive stream:</code>push(&quot;a line&quot;); push(&quot;second line&quot;); lines(STDIN); /* == 2 */<code></code>MAX(number, number[, number,...])<code>: obvious</code>MIN(number, number[, number,...])<code>: obvious</code>OPEN(filehandle, filename[, &quot;APPEND&quot;|&quot;READ&quot;|&quot;WRITE&quot;])<code>: opens file, returns boolean for success:</code>OPEN(&quot;MyCon&quot;, &quot;CON:160/50/320/100/MyCon/CDS&quot;)<code>==</code>1<code></code>OVERLAY(new, old[, start][, length][, pad])<code>: overlays new string onto old one at start for length chars padding with pad if necessary:</code>OVERLAY(&quot;4&quot;, &quot;123&quot;, 5, 5)<code>==</code>&quot;123-4----&quot;<code></code>POS(pattern, string[, start])` : same as index</p>
-
-```
-
-### redos_nolink
-
-Example undefined
-
-```html
-<p>![[[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[]!\</p>
-
-```
-
 ### redos_html_closing
 
 Example undefined
 
+This markdown:
+
+```markdown
+<tag  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""<" />a'a
+
+```
+
+Gives this incorrect output:
+
 ```html
 <p>&lt;tag  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;  &quot;&quot;&lt;&quot; /&gt;a&#39;a</p>
+
+```
+
+### link_code
+
+Example undefined
+
+This markdown:
+
+```markdown
+INDEX(string, pattern[, start)` : searches for the first occurrence of pattern in string, starting from start: `INDEX("123123", "23", 3)` == `5`
+`INSERT(new, old[, start][, length][, pad])` : inserts the new string into the old string after the specified position (default is 0), new string is truncated or padded (default is " ") to the specified length, if start is beyond the end of old old will be padded
+`LASTPOS(pattern, string[, start])` : searches backwards for the last occurrence of pattern in string, starting from start: `LASTPOS("123123", "23", 4)` == `2`
+`LINES(file)` : returns the number of lines typed ahead at the interactive stream: `push("a line"); push("second line"); lines(STDIN); /* == 2 */`
+`MAX(number, number[, number,...])` : obvious
+`MIN(number, number[, number,...])` : obvious
+`OPEN(filehandle, filename[, "APPEND"|"READ"|"WRITE"])` : opens file, returns boolean for success: `OPEN("MyCon", "CON:160/50/320/100/MyCon/CDS")` == `1`
+`OVERLAY(new, old[, start][, length][, pad])` : overlays new string onto old one at start for length chars padding with pad if necessary: `OVERLAY("4", "123", 5, 5)` == `"123-4----"`
+`POS(pattern, string[, start])` : same as index
+
+```
+
+Gives this incorrect output:
+
+```html
+<p>INDEX(string, pattern[, start)<code>: searches for the first occurrence of pattern in string, starting from start:</code>INDEX(&quot;123123&quot;, &quot;23&quot;, 3)<code>==</code>5<code></code>INSERT(new, old[, start][, length][, pad])<code>: inserts the new string into the old string after the specified position (default is 0), new string is truncated or padded (default is &quot; &quot;) to the specified length, if start is beyond the end of old old will be padded</code>LASTPOS(pattern, string[, start])<code>: searches backwards for the last occurrence of pattern in string, starting from start:</code>LASTPOS(&quot;123123&quot;, &quot;23&quot;, 4)<code>==</code>2<code></code>LINES(file)<code>: returns the number of lines typed ahead at the interactive stream:</code>push(&quot;a line&quot;); push(&quot;second line&quot;); lines(STDIN); /* == 2 */<code></code>MAX(number, number[, number,...])<code>: obvious</code>MIN(number, number[, number,...])<code>: obvious</code>OPEN(filehandle, filename[, &quot;APPEND&quot;|&quot;READ&quot;|&quot;WRITE&quot;])<code>: opens file, returns boolean for success:</code>OPEN(&quot;MyCon&quot;, &quot;CON:160/50/320/100/MyCon/CDS&quot;)<code>==</code>1<code></code>OVERLAY(new, old[, start][, length][, pad])<code>: overlays new string onto old one at start for length chars padding with pad if necessary:</code>OVERLAY(&quot;4&quot;, &quot;123&quot;, 5, 5)<code>==</code>&quot;123-4----&quot;<code></code>POS(pattern, string[, start])` : same as index</p>
 
 ```
 

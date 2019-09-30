@@ -1,17 +1,40 @@
 ## Security
 
-### sanitizer_bypass_remove_script
+### sanitizer_bypass_remove_generic
 
 Example undefined
 
+This markdown:
+
+```markdown
+<a>a2<a2t>a2</a> b <c>c</c> d
+# ![text](URL)
+```
+
+Gives this incorrect output:
+
 ```html
-<p>AAA</p>
+<p>a2a2 b c d</p>
+<h1 id="text"><img src="URL" alt="text"></h1>
 
 ```
 
 ### sanitizer_bypass
 
 Example undefined
+
+This markdown:
+
+```markdown
+AAA<script> <img <script> src=x onerror=alert(1) />BBB
+
+AAA<sometag> <img <sometag> src=x onerror=alert(1)BBB
+
+<a>a2<a2t>a2</a> b <c>c</c> d
+# ![text](URL)
+```
+
+Gives this incorrect output:
 
 ```html
 <p>AAA&lt;script&gt; &lt;img &lt;script&gt; src=x onerror=alert(1) /&gt;BBB</p>
@@ -23,22 +46,39 @@ Example undefined
 
 ```
 
+### sanitizer_bypass_remove_script
+
+Example undefined
+
+This markdown:
+
+```markdown
+AAA<script> <img <script> src=x onerror=alert(1) />BBB
+
+```
+
+Gives this incorrect output:
+
+```html
+<p>AAA</p>
+
+```
+
 ### sanitizer_bypass_remove_tag
 
 Example undefined
 
-```html
-<p>AAA &lt;img  src=x onerror=alert(1)BBB</p>
+This markdown:
+
+```markdown
+AAA<sometag> <img <sometag> src=x onerror=alert(1)BBB
 
 ```
 
-### sanitizer_bypass_remove_generic
-
-Example undefined
+Gives this incorrect output:
 
 ```html
-<p>a2a2 b c d</p>
-<h1 id="text"><img src="URL" alt="text"></h1>
+<p>AAA &lt;img  src=x onerror=alert(1)BBB</p>
 
 ```
 
