@@ -36,10 +36,23 @@ init flags =
     )
 
 
+render renderer markdown =
+    markdown
+        |> Markdown.parse
+        |> Result.mapError deadEndsToString
+        |> Result.andThen (\ast -> Markdown.render renderer ast)
+
+
+deadEndsToString deadEnds =
+    deadEnds
+        |> List.map Markdown.deadEndToString
+        |> String.join "\n"
+
+
 renderMarkdown : String -> Html
 renderMarkdown markdown =
     markdown
-        |> Markdown.render
+        |> render
             { heading =
                 \{ level, children } ->
                     case level of
