@@ -1,7 +1,7 @@
 module Markdown.Html exposing
     ( Decoder
     , tag, withAttribute
-    , mapDecoder, oneOf
+    , map, oneOf
     )
 
 {-|
@@ -12,7 +12,7 @@ module Markdown.Html exposing
 ## Creating an HTML handler
 
 @docs tag, withAttribute
-@docs mapDecoder, oneOf
+@docs map, oneOf
 
 -}
 
@@ -44,8 +44,8 @@ type alias Attribute =
 
 {-| Map the value of a `Markdown.Html.Handler`.
 -}
-mapDecoder : (a -> b) -> Decoder a -> Decoder b
-mapDecoder function (Markdown.Decoder.Decoder handler) =
+map : (a -> b) -> Decoder a -> Decoder b
+map function (Markdown.Decoder.Decoder handler) =
     (\tagName attributes innerBlocks ->
         handler tagName attributes innerBlocks
             |> Result.map function
