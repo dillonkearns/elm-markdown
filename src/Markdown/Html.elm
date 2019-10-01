@@ -9,7 +9,7 @@ module Markdown.Html exposing
 @docs Renderer
 
 
-## Creating an HTML handler
+## Creating an HTML renderer
 
 @docs tag, withAttribute
 @docs map, oneOf
@@ -21,11 +21,11 @@ import Markdown.Block exposing (Block)
 import Markdown.HtmlRenderer
 
 
-{-| A `Markdown.Html.Handler` is how you register the list of
-valid HTML tags that can be used in your markdown. A `Handler`
+{-| A `Markdown.Html.Renderer` is how you register the list of
+valid HTML tags that can be used in your markdown. A `Renderer`
 also defines how to render itself.
 
-Using an HTML handler feels similar to building a JSON decoder.
+Using an HTML renderer feels similar to building a JSON decoder.
 You're describing what kind of data you expect to have. You
 also provide functions that tell what to do with those bits of data.
 
@@ -42,12 +42,12 @@ type alias Attribute =
     { name : String, value : String }
 
 
-{-| Map the value of a `Markdown.Html.Handler`.
+{-| Map the value of a `Markdown.Html.Renderer`.
 -}
 map : (a -> b) -> Renderer a -> Renderer b
-map function (Markdown.HtmlRenderer.HtmlRenderer handler) =
+map function (Markdown.HtmlRenderer.HtmlRenderer renderer) =
     (\tagName attributes innerBlocks ->
-        handler tagName attributes innerBlocks
+        renderer tagName attributes innerBlocks
             |> Result.map function
     )
         |> Markdown.HtmlRenderer.HtmlRenderer
@@ -148,7 +148,7 @@ tagToString tagName attributes =
     "<" ++ tagName ++ ">"
 
 
-{-| Start a Handler by expecting a tag of a particular type.
+{-| Start a Renderer by expecting a tag of a particular type.
 
     Markdown.Html.tag "contact-button"
         (\children ->
@@ -172,7 +172,7 @@ tag expectedTag a =
         )
 
 
-{-| Expects an attribute. The `Handler` will fail if that attribute doesn't
+{-| Expects an attribute. The `Renderer` will fail if that attribute doesn't
 exist on the tag. You can use the values of all the expected tags in the function
 you define for the tag's renderer.
 
@@ -191,9 +191,9 @@ you define for the tag's renderer.
 
 -}
 withAttribute : String -> Renderer (String -> view) -> Renderer view
-withAttribute attributeName (Markdown.HtmlRenderer.HtmlRenderer handler) =
+withAttribute attributeName (Markdown.HtmlRenderer.HtmlRenderer renderer) =
     (\tagName attributes innerBlocks ->
-        handler tagName attributes innerBlocks
+        renderer tagName attributes innerBlocks
             |> (case
                     attributes
                         |> List.Extra.find

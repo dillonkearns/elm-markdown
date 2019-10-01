@@ -1,4 +1,4 @@
-module HtmlHandlerTests exposing (suite)
+module HtmlRendererTests exposing (suite)
 
 import Expect exposing (Expectation)
 import Markdown.Block as Block exposing (Block)
@@ -73,7 +73,7 @@ testRenderer htmlRenderer =
 
 suite : Test
 suite =
-    describe "html handlers"
+    describe "html renderers"
         [ test "basic html tag" <|
             \() ->
                 "<social-links />"
