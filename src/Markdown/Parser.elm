@@ -497,6 +497,35 @@ multiParser =
         |> map (List.filter (\item -> item /= Block.Body []))
 
 
+multiParser2 : Parser (List Block)
+multiParser2 =
+    loop [ [] ] statementsHelp2
+        |. succeed Advanced.end
+        |> andThen parseAllInlines
+        -- TODO find a more elegant way to exclude empty blocks for each blank lines
+        |> map (List.filter (\item -> item /= Block.Body []))
+
+
+parseAllInlines : List RawBlock -> Parser (List Block)
+parseAllInlines rawBlocks =
+    List.foldl combineBlocks (succeed []) rawBlocks
+
+
+combineBlocks : RawBlock -> Parser (List Block) -> Parser (List Block)
+combineBlocks rawBlock soFar =
+    soFar
+        |> andThen
+            (\parsedBlocks ->
+                parseInlines rawBlock
+                    |> map (\newParsedBlock -> newParsedBlock :: parsedBlocks)
+            )
+
+
+statementsHelp2 : List (List RawBlock) -> Parser (Step (List (List RawBlock)) (List RawBlock))
+statementsHelp2 =
+    Debug.todo ""
+
+
 statementsHelp : List (List Block) -> Parser (Step (List (List Block)) (List Block))
 statementsHelp revStmts =
     oneOf
