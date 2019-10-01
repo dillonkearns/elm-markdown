@@ -1,6 +1,14 @@
-module Markdown.InlineBlock exposing (LinkUrl(..), Style, StyledString)
+module Markdown.InlineBlock exposing (Style, LinkUrl(..), StyledString)
+
+{-| Represents styled inline text. For example, a header can include links, emphasis, etc.
+See `Markdown.Block`.
+
+@docs Style, LinkUrl, StyledString
+
+-}
 
 
+{-| -}
 type alias Style =
     { isCode : Bool
     , isBold : Bool
@@ -9,10 +17,14 @@ type alias Style =
     }
 
 
+{-| A link is either to an image URL or a page URL.
+-}
 type LinkUrl
     = Image String
     | Link String
 
 
+{-| A string and its accompnaying styles.
+-}
 type alias StyledString =
     { style : Style, string : String }
