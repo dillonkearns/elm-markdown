@@ -86,7 +86,7 @@ mainView =
                                 Html.text string
                             )
                         |> Html.p []
-            , htmlDecoder =
+            , html =
                 Markdown.oneOf
                     [ Markdown.tag "Red"
                         (\children ->

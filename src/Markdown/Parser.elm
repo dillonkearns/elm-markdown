@@ -35,7 +35,7 @@ You could render to any type you want. Here are some useful things you might ren
 type alias Renderer view =
     { heading : { level : Int, rawText : String, children : List view } -> view
     , raw : List view -> view
-    , htmlDecoder : Markdown.Html.Renderer (List view -> view)
+    , html : Markdown.Html.Renderer (List view -> view)
     , plain : String -> view
     , code : String -> view
     , bold : String -> view
@@ -103,7 +103,7 @@ defaultHtmlRenderer =
                                 [ itemBlocks ]
                         )
                 )
-    , htmlDecoder = Markdown.Html.oneOf []
+    , html = Markdown.Html.oneOf []
     , codeBlock =
         \{ body, language } ->
             Html.pre []
@@ -306,7 +306,7 @@ renderHtmlNode renderer tag attributes children =
     renderHtml tag
         attributes
         children
-        renderer.htmlDecoder
+        renderer.html
         (renderHelper renderer children)
 
 

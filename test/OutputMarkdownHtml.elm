@@ -103,7 +103,7 @@ renderMarkdown markdown =
                                         [ itemBlocks ]
                                 )
                         )
-            , htmlDecoder = Markdown.Html.oneOf []
+            , html = Markdown.Html.oneOf []
             , codeBlock =
                 \{ body, language } ->
                     Html.pre []

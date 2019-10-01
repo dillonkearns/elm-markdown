@@ -63,7 +63,7 @@ testRenderer htmlHandlers =
     , list =
         \items ->
             Unexpected "String"
-    , htmlDecoder = Markdown.Html.oneOf htmlHandlers
+    , html = Markdown.Html.oneOf htmlHandlers
     , codeBlock =
         \{ body, language } ->
             Unexpected "String"
