@@ -12,7 +12,8 @@ import Markdown.Block as Block exposing (Block)
 import Markdown.CodeBlock
 import Markdown.Html exposing (..)
 import Markdown.HtmlRenderer
-import Markdown.Inlines as Inlines exposing (StyledString)
+import Markdown.InlineBlock as InlineBlock exposing (StyledString)
+import Markdown.Inlines as Inlines
 import Markdown.List
 import Parser
 import Parser.Advanced as Advanced exposing ((|.), (|=), Nestable(..), Step(..), andThen, chompIf, chompUntil, chompWhile, getChompedString, inContext, int, lazy, loop, map, multiComment, oneOf, problem, succeed, symbol, token)
@@ -127,7 +128,7 @@ foldThing renderer { style, string } soFar =
     case style.link of
         Just link ->
             case link.destination of
-                Inlines.Link destination ->
+                InlineBlock.Link destination ->
                     case Advanced.run Inlines.parse string of
                         Ok styledLine ->
                             (renderStyled renderer styledLine
@@ -142,7 +143,7 @@ foldThing renderer { style, string } soFar =
                             (error |> List.map deadEndToString |> List.map Err)
                                 ++ soFar
 
-                Inlines.Image src ->
+                InlineBlock.Image src ->
                     renderer.image { src = src } string
                         :: soFar
 

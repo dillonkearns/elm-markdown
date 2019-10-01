@@ -7,7 +7,7 @@ module Markdown.Block exposing (Block(..))
 -}
 
 import Markdown.CodeBlock
-import Markdown.Inlines as Inlines exposing (StyledString)
+import Markdown.InlineBlock as InlineBlock
 
 
 type alias Attribute =
@@ -43,9 +43,9 @@ In the simplest case, you can pass this directly to a renderer:
 
 -}
 type Block
-    = Heading Int (List StyledString)
-    | Body (List StyledString)
+    = Heading Int (List InlineBlock.StyledString)
+    | Body (List InlineBlock.StyledString)
     | Html String (List Attribute) (List Block)
-    | ListBlock (List (List Inlines.StyledString))
+    | ListBlock (List (List InlineBlock.StyledString))
     | CodeBlock Markdown.CodeBlock.CodeBlock
     | ThematicBreak

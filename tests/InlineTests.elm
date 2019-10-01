@@ -2,6 +2,7 @@ module InlineTests exposing (suite)
 
 import Expect exposing (Expectation)
 import Markdown.Block as Block exposing (Block)
+import Markdown.InlineBlock as InlineBlock
 import Markdown.Inlines as Inlines
 import Markdown.Parser exposing (..)
 import Parser
@@ -65,7 +66,7 @@ suite =
                                         , isItalic = False
                                         , link =
                                             Just
-                                                { destination = Inlines.Link "/contact"
+                                                { destination = InlineBlock.Link "/contact"
                                                 , title = Nothing
                                                 }
                                         }
@@ -95,7 +96,7 @@ suite =
                                         , isItalic = False
                                         , link =
                                             Just
-                                                { destination = Inlines.Link "/my/page"
+                                                { destination = InlineBlock.Link "/my/page"
                                                 , title = Nothing
                                                 }
                                         }
@@ -106,7 +107,7 @@ suite =
         ]
 
 
-unstyledText : String -> List Inlines.StyledString
+unstyledText : String -> List InlineBlock.StyledString
 unstyledText body =
     [ { string = body
       , style =

@@ -1,8 +1,9 @@
-module Markdown.Inlines exposing (LinkUrl(..), State, Style, StyledString, isUninteresting, nextStepWhenFoundBold, nextStepWhenFoundItalic, nextStepWhenFoundNothing, parse, parseHelp, toString)
+module Markdown.Inlines exposing (State, isUninteresting, nextStepWhenFoundBold, nextStepWhenFoundItalic, nextStepWhenFoundNothing, parse, parseHelp, toString)
 
 import Char
 import Html exposing (Html)
 import Html.Attributes as Attr
+import Markdown.InlineBlock exposing (..)
 import Markdown.Link as Link exposing (Link)
 import Parser
 import Parser.Advanced as Advanced exposing (..)
@@ -28,23 +29,6 @@ isUninteresting char =
         /= '['
         && char
         /= '!'
-
-
-type alias Style =
-    { isCode : Bool
-    , isBold : Bool
-    , isItalic : Bool
-    , link : Maybe { title : Maybe String, destination : LinkUrl }
-    }
-
-
-type LinkUrl
-    = Image String
-    | Link String
-
-
-type alias StyledString =
-    { style : Style, string : String }
 
 
 type alias State =

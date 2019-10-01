@@ -2,6 +2,7 @@ module Markdown.List exposing (..)
 
 import Html exposing (Html)
 import Html.Attributes as Attr
+import Markdown.InlineBlock
 import Markdown.Inlines
 import Parser
 import Parser.Advanced as Advanced exposing (..)
@@ -12,7 +13,7 @@ type alias Parser a =
 
 
 type alias ListItem =
-    List Markdown.Inlines.StyledString
+    List Markdown.InlineBlock.StyledString
 
 
 parser : Parser (List ListItem)

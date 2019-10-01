@@ -1,6 +1,7 @@
 module ListTests exposing (suite)
 
 import Expect exposing (Expectation)
+import Markdown.InlineBlock as InlineBlock
 import Markdown.Inlines
 import Markdown.List
 import Markdown.Parser exposing (..)
@@ -33,7 +34,7 @@ suite =
         ]
 
 
-unstyledText : String -> List Markdown.Inlines.StyledString
+unstyledText : String -> List InlineBlock.StyledString
 unstyledText body =
     [ { string = body, style = { isCode = False, isBold = False, isItalic = False, link = Nothing } } ]
 
