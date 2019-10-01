@@ -1,12 +1,12 @@
 module Markdown.Html exposing
-    ( Decoder
+    ( Renderer
     , tag, withAttribute
     , map, oneOf
     )
 
 {-|
 
-@docs Decoder
+@docs Renderer
 
 
 ## Creating an HTML handler
@@ -34,7 +34,7 @@ For example, if you expect to have an attribute called `button-text` for the
 `button-text` attribute to render your `<signup-form` like so
 
 -}
-type alias Decoder a =
+type alias Renderer a =
     Markdown.Decoder.Decoder a
 
 
@@ -44,7 +44,7 @@ type alias Attribute =
 
 {-| Map the value of a `Markdown.Html.Handler`.
 -}
-map : (a -> b) -> Decoder a -> Decoder b
+map : (a -> b) -> Renderer a -> Renderer b
 map function (Markdown.Decoder.Decoder handler) =
     (\tagName attributes innerBlocks ->
         handler tagName attributes innerBlocks
@@ -66,7 +66,7 @@ be using this function when you use this module.
             ]
 
 -}
-oneOf : List (Decoder view) -> Decoder view
+oneOf : List (Renderer view) -> Renderer view
 oneOf decoders =
     let
         unwrappedDecoders =
@@ -160,7 +160,7 @@ tagToString tagName attributes =
         )
 
 -}
-tag : String -> view -> Decoder view
+tag : String -> view -> Renderer view
 tag expectedTag a =
     Markdown.Decoder.Decoder
         (\tagName attributes children ->
@@ -190,7 +190,7 @@ you define for the tag's renderer.
         |> Markdown.Html.withAttribute "color"
 
 -}
-withAttribute : String -> Decoder (String -> view) -> Decoder view
+withAttribute : String -> Renderer (String -> view) -> Renderer view
 withAttribute attributeName (Markdown.Decoder.Decoder handler) =
     (\tagName attributes innerBlocks ->
         handler tagName attributes innerBlocks
