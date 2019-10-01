@@ -23,7 +23,7 @@ import Markdown.HtmlRenderer
 
 {-| A `Markdown.Html.Renderer` is how you register the list of
 valid HTML tags that can be used in your markdown. A `Renderer`
-also defines how to render itself.
+also defines how to render those tags that it accepts.
 
 Using an HTML renderer feels similar to building a JSON decoder.
 You're describing what kind of data you expect to have. You
