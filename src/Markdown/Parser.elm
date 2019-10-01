@@ -319,6 +319,19 @@ type alias Attribute =
     { name : String, value : String }
 
 
+type UnparsedInlines
+    = UnparsedInlines String
+
+
+type RawBlock
+    = Heading Int UnparsedInlines
+    | Body UnparsedInlines
+    | Html String (List Attribute) (List Block)
+    | ListBlock (List UnparsedInlines)
+    | CodeBlock Markdown.CodeBlock.CodeBlock
+    | ThematicBreak
+
+
 plainLine : Parser (List Block)
 plainLine =
     succeed identity
