@@ -66,13 +66,9 @@ longExample =
 compare title markdown =
     Benchmark.compare "long example"
         "elm-markdown-decoder"
-        (\_ -> decoderParse markdown)
+        (\_ -> Markdown.Parser.parse markdown)
         "elm-explorations/markdown"
         (\_ -> explorationsParse markdown)
-
-
-decoderParse =
-    Advanced.run Markdown.Parser.multiParser
 
 
 explorationsParse =
