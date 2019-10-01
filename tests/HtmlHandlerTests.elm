@@ -38,7 +38,7 @@ type Rendered
 
 
 testRenderer : List (Markdown.Html.Renderer (List Rendered -> Rendered)) -> Markdown.Renderer Rendered
-testRenderer htmlHandlers =
+testRenderer htmlRenderer =
     { heading =
         \{ level, children } ->
             Unexpected "heading"
@@ -63,7 +63,7 @@ testRenderer htmlHandlers =
     , list =
         \items ->
             Unexpected "String"
-    , html = Markdown.Html.oneOf htmlHandlers
+    , html = Markdown.Html.oneOf htmlRenderer
     , codeBlock =
         \{ body, language } ->
             Unexpected "String"
