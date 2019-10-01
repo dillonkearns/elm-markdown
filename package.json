@@ -5,7 +5,6 @@
   "scripts": {
     "start": "parcel src/index.html",
     "build": "rm -r dist && parcel build src/index.html --public-url ./",
-    "ete": "cd ete && elm make OutputMarkdownHtml.elm --output elm.js && ./spec_tests.py --spec ../spec.txt --library-dir . --program ./run-elm.js",
     "test": "elm-test",
     "autotest": "elm-test --watch tests/**/*.elm",
     "diff": "git show HEAD:spec-results.json > git-head-spec-results.json && json-diff git-head-spec-results.json spec-results.json",
