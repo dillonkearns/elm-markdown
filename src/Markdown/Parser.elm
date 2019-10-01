@@ -10,8 +10,8 @@ import Html exposing (Html)
 import Html.Attributes as Attr
 import Markdown.Block as Block exposing (Block)
 import Markdown.CodeBlock
-import Markdown.Decoder
 import Markdown.Html exposing (..)
+import Markdown.HtmlRenderer
 import Markdown.Inlines as Inlines exposing (StyledString)
 import Markdown.List
 import Parser
@@ -225,7 +225,7 @@ renderHtml :
     -> Markdown.Html.Renderer (List view -> view)
     -> List (Result String view)
     -> Result String view
-renderHtml tagName attributes children (Markdown.Decoder.Decoder htmlRenderer) renderedChildren =
+renderHtml tagName attributes children (Markdown.HtmlRenderer.HtmlRenderer htmlRenderer) renderedChildren =
     renderedChildren
         |> combineResults
         |> Result.andThen

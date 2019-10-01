@@ -18,7 +18,7 @@ module Markdown.Html exposing
 
 import List.Extra
 import Markdown.Block exposing (Block)
-import Markdown.Decoder
+import Markdown.HtmlRenderer
 
 
 {-| A `Markdown.Html.Handler` is how you register the list of
@@ -35,7 +35,7 @@ For example, if you expect to have an attribute called `button-text` for the
 
 -}
 type alias Renderer a =
-    Markdown.Decoder.Decoder a
+    Markdown.HtmlRenderer.HtmlRenderer a
 
 
 type alias Attribute =
@@ -45,12 +45,12 @@ type alias Attribute =
 {-| Map the value of a `Markdown.Html.Handler`.
 -}
 map : (a -> b) -> Renderer a -> Renderer b
-map function (Markdown.Decoder.Decoder handler) =
+map function (Markdown.HtmlRenderer.HtmlRenderer handler) =
     (\tagName attributes innerBlocks ->
         handler tagName attributes innerBlocks
             |> Result.map function
     )
-        |> Markdown.Decoder.Decoder
+        |> Markdown.HtmlRenderer.HtmlRenderer
 
 
 {-| Usually you want to handle a list of possible HTML
@@ -72,7 +72,7 @@ oneOf decoders =
         unwrappedDecoders =
             decoders
                 |> List.map
-                    (\(Markdown.Decoder.Decoder rawDecoder) -> rawDecoder)
+                    (\(Markdown.HtmlRenderer.HtmlRenderer rawDecoder) -> rawDecoder)
     in
     List.foldl
         (\decoder soFar ->
@@ -124,7 +124,7 @@ Parsing failed in the following 2 ways:
                                             ++ "\n"
                             )
                 )
-                    |> Markdown.Decoder.Decoder
+                    |> Markdown.HtmlRenderer.HtmlRenderer
            )
 
 
@@ -162,7 +162,7 @@ tagToString tagName attributes =
 -}
 tag : String -> view -> Renderer view
 tag expectedTag a =
-    Markdown.Decoder.Decoder
+    Markdown.HtmlRenderer.HtmlRenderer
         (\tagName attributes children ->
             if tagName == expectedTag then
                 Ok a
@@ -191,7 +191,7 @@ you define for the tag's renderer.
 
 -}
 withAttribute : String -> Renderer (String -> view) -> Renderer view
-withAttribute attributeName (Markdown.Decoder.Decoder handler) =
+withAttribute attributeName (Markdown.HtmlRenderer.HtmlRenderer handler) =
     (\tagName attributes innerBlocks ->
         handler tagName attributes innerBlocks
             |> (case
@@ -213,4 +213,4 @@ withAttribute attributeName (Markdown.Decoder.Decoder handler) =
                                 )
                )
     )
-        |> Markdown.Decoder.Decoder
+        |> Markdown.HtmlRenderer.HtmlRenderer
