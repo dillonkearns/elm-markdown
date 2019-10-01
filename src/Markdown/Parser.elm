@@ -332,6 +332,41 @@ type RawBlock
     | ThematicBreak
 
 
+parseInlines : RawBlock -> Parser Block
+parseInlines rawBlock =
+    case rawBlock of
+        Heading int (UnparsedInlines unparsedInlines) ->
+            case Advanced.run Inlines.parse unparsedInlines of
+                Ok styledLine ->
+                    -- succeed (Block.Heading styledLine)
+                    Debug.todo ""
+
+                Err error ->
+                    problem (Parser.Expecting (error |> List.map deadEndToString |> String.join "\n"))
+
+        Body (UnparsedInlines unparsedInlines) ->
+            case Advanced.run Inlines.parse unparsedInlines of
+                Ok styledLine ->
+                    succeed (Block.Body styledLine)
+
+                Err error ->
+                    problem (Parser.Expecting (error |> List.map deadEndToString |> String.join "\n"))
+
+        Html tagName attributes children ->
+            Block.Html tagName attributes children
+                |> succeed
+
+        ListBlock unparsedInlinesList ->
+            Debug.todo ""
+
+        CodeBlock codeBlock ->
+            Block.CodeBlock codeBlock
+                |> succeed
+
+        ThematicBreak ->
+            succeed Block.ThematicBreak
+
+
 plainLine : Parser (List Block)
 plainLine =
     succeed identity
