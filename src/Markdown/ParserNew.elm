@@ -335,11 +335,10 @@ type RawBlock
 parseInlines : RawBlock -> Parser Block
 parseInlines rawBlock =
     case rawBlock of
-        Heading int (UnparsedInlines unparsedInlines) ->
+        Heading level (UnparsedInlines unparsedInlines) ->
             case Advanced.run Inlines.parse unparsedInlines of
                 Ok styledLine ->
-                    -- succeed (Block.Heading styledLine)
-                    Debug.todo ""
+                    succeed (Block.Heading level styledLine)
 
                 Err error ->
                     problem (Parser.Expecting (error |> List.map deadEndToString |> String.join "\n"))
@@ -532,7 +531,7 @@ statementsHelp2 revStmts =
 
                 else
                     Done
-                        (List.reverse (stmts :: revStmts)
+                        ((stmts :: revStmts)
                             |> List.concat
                         )
             )
@@ -547,18 +546,6 @@ statementsHelp2 revStmts =
                 , plainLine
                 ]
             |= Advanced.getOffset
-
-        -- TODO this is causing files to require newlines
-        -- at the end... how do I avoid this?
-        -- |. symbol (Advanced.Token "\n" (Parser.Expecting "newline"))
-        , succeed ()
-            |> map
-                (\_ ->
-                    Done
-                        (List.reverse revStmts
-                            |> List.concat
-                        )
-                )
         ]
 
 
