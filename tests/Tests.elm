@@ -4,7 +4,7 @@ import Expect exposing (Expectation)
 import Markdown.Block as Block exposing (Block)
 import Markdown.InlineBlock as InlineBlock
 import Markdown.Inlines
-import Markdown.Parser exposing (..)
+import Markdown.Parser as Markdown exposing (..)
 import Parser
 import Parser.Advanced as Advanced
 import Test exposing (..)
@@ -16,7 +16,7 @@ type alias Parser a =
 
 parse : String -> Result (List (Advanced.DeadEnd String Parser.Problem)) (List Block)
 parse =
-    Markdown.Parser.parse
+    Markdown.parse
 
 
 suite : Test

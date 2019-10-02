@@ -13,7 +13,7 @@ type alias Parser a =
 
 
 type alias ListItem =
-    List Markdown.InlineBlock.StyledString
+    String
 
 
 parser : Parser (List ListItem)
@@ -31,17 +31,7 @@ singleItemParser =
         identity
         |. Advanced.symbol (Advanced.Token "-" (Parser.ExpectingSymbol "-"))
         |. chompWhile (\c -> c == ' ')
-        |= (Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
-                |> andThen
-                    (\listItemContent ->
-                        case listItemContent |> Advanced.run Markdown.Inlines.parse of
-                            Ok content ->
-                                succeed content
-
-                            Err errors ->
-                                problem (Parser.Expecting "Error parsing inlines TODO")
-                    )
-           )
+        |= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
         |. Advanced.symbol (Advanced.Token "\n" (Parser.ExpectingSymbol "\n"))
 
 

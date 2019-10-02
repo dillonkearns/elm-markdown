@@ -4,7 +4,7 @@ import Html.String as Html
 import Html.String.Attributes as Attr
 import Markdown.Html
 import Markdown.Inlines
-import Markdown.ParserNew as Markdown
+import Markdown.Parser as Markdown
 
 
 port requestHtml : (String -> msg) -> Sub msg

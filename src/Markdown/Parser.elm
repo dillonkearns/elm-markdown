@@ -335,11 +335,10 @@ type RawBlock
 parseInlines : RawBlock -> Parser Block
 parseInlines rawBlock =
     case rawBlock of
-        Heading int (UnparsedInlines unparsedInlines) ->
+        Heading level (UnparsedInlines unparsedInlines) ->
             case Advanced.run Inlines.parse unparsedInlines of
                 Ok styledLine ->
-                    -- succeed (Block.Heading styledLine)
-                    Debug.todo ""
+                    succeed (Block.Heading level styledLine)
 
                 Err error ->
                     problem (Parser.Expecting (error |> List.map deadEndToString |> String.join "\n"))
@@ -356,8 +355,12 @@ parseInlines rawBlock =
             Block.Html tagName attributes children
                 |> succeed
 
-        ListBlock unparsedInlinesList ->
-            Debug.todo ""
+        ListBlock unparsedInlines ->
+            unparsedInlines
+                |> List.map (parseRawInline identity)
+                |> List.reverse
+                |> combine
+                |> map Block.ListBlock
 
         CodeBlock codeBlock ->
             Block.CodeBlock codeBlock
@@ -367,36 +370,37 @@ parseInlines rawBlock =
             succeed Block.ThematicBreak
 
 
-plainLine : Parser (List Block)
+parseRawInline wrap (UnparsedInlines unparsedInlines) =
+    case Advanced.run Inlines.parse unparsedInlines of
+        Ok styledLine ->
+            succeed (wrap styledLine)
+
+        Err error ->
+            problem (Parser.Expecting (error |> List.map deadEndToString |> String.join "\n"))
+
+
+plainLine : Parser (List RawBlock)
 plainLine =
     succeed identity
         |= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
-        |> Advanced.andThen
-            (\line ->
-                case Advanced.run Inlines.parse line of
-                    Ok styledLine ->
-                        succeed styledLine
-
-                    Err error ->
-                        problem (Parser.Expecting (error |> List.map deadEndToString |> String.join "\n"))
-            )
-        |> Advanced.map Block.Body
+        |> Advanced.map (UnparsedInlines >> Body)
         |> Advanced.map List.singleton
 
 
-listBlock : Parser Block
+listBlock : Parser RawBlock
 listBlock =
     Markdown.List.parser
-        |> map Block.ListBlock
+        |> map (List.map UnparsedInlines)
+        |> map ListBlock
 
 
-blankLine : Parser Block
+blankLine : Parser RawBlock
 blankLine =
-    succeed (Block.Body [])
+    succeed (Body (UnparsedInlines ""))
         |. symbol (Advanced.Token "\n" (Parser.Expecting "\n"))
 
 
-htmlParser : Parser Block
+htmlParser : Parser RawBlock
 htmlParser =
     XmlParser.element
         |> xmlNodeToHtmlNode
@@ -407,31 +411,22 @@ toTopLevelHtml tag attributes children =
     Block.Html tag attributes children
 
 
-xmlNodeToHtmlNode : Parser Node -> Parser Block
+xmlNodeToHtmlNode : Parser Node -> Parser RawBlock
 xmlNodeToHtmlNode parser =
     Advanced.andThen
         (\xmlNode ->
             case xmlNode of
                 XmlParser.Text innerText ->
                     -- TODO is this right?
-                    Block.Body
-                        -- TODO remove hardcoding
-                        [ { string = innerText
-                          , style =
-                                { isCode = False
-                                , isBold = False
-                                , isItalic = False
-                                , link = Nothing
-                                }
-                          }
-                        ]
+                    Body
+                        (UnparsedInlines innerText)
                         |> Advanced.succeed
 
                 XmlParser.Element tag attributes children ->
                     Advanced.andThen
                         (\parsedChildren ->
                             Advanced.succeed
-                                (Block.Html tag
+                                (Html tag
                                     attributes
                                     parsedChildren
                                 )
@@ -475,7 +470,7 @@ childToParser node =
                     )
 
         Text innerText ->
-            case Advanced.run multiParser innerText of
+            case Advanced.run multiParser2 innerText of
                 Ok value ->
                     succeed value
 
@@ -487,14 +482,6 @@ childToParser node =
                                 |> String.join "\n"
                             )
                         )
-
-
-multiParser : Parser (List Block)
-multiParser =
-    loop [ [] ] statementsHelp
-        |. succeed Advanced.end
-        -- TODO find a more elegant way to exclude empty blocks for each blank lines
-        |> map (List.filter (\item -> item /= Block.Body []))
 
 
 multiParser2 : Parser (List Block)
@@ -522,12 +509,7 @@ combineBlocks rawBlock soFar =
 
 
 statementsHelp2 : List (List RawBlock) -> Parser (Step (List (List RawBlock)) (List RawBlock))
-statementsHelp2 =
-    Debug.todo ""
-
-
-statementsHelp : List (List Block) -> Parser (Step (List (List Block)) (List Block))
-statementsHelp revStmts =
+statementsHelp2 revStmts =
     oneOf
         [ succeed
             (\offsetBefore stmts offsetAfter ->
@@ -536,17 +518,39 @@ statementsHelp revStmts =
                         offsetAfter > offsetBefore
                 in
                 if madeProgress then
-                    Loop (stmts :: revStmts)
+                    case ( stmts, revStmts ) of
+                        ( [ Body (UnparsedInlines body1) ], [ Body (UnparsedInlines body2) ] :: rest ) ->
+                            let
+                                body1Trimmed =
+                                    String.trim body1
+
+                                body2Trimmed =
+                                    String.trim body2
+                            in
+                            if body1Trimmed == "" || body2Trimmed == "" then
+                                Loop
+                                    ([ Body (UnparsedInlines (body2Trimmed ++ body1Trimmed)) ]
+                                        :: rest
+                                    )
+
+                            else
+                                Loop
+                                    ([ Body (UnparsedInlines (body2Trimmed ++ " " ++ body1Trimmed)) ]
+                                        :: rest
+                                    )
+
+                        _ ->
+                            Loop (stmts :: revStmts)
 
                 else
                     Done
-                        (List.reverse (stmts :: revStmts)
+                        ((stmts :: revStmts)
                             |> List.concat
                         )
             )
             |= Advanced.getOffset
             |= oneOf
-                [ Markdown.CodeBlock.parser |> map Block.CodeBlock |> map List.singleton
+                [ Markdown.CodeBlock.parser |> map CodeBlock |> map List.singleton
                 , thematicBreak |> map List.singleton
                 , listBlock |> map List.singleton
                 , blankLine |> map List.singleton
@@ -555,18 +559,6 @@ statementsHelp revStmts =
                 , plainLine
                 ]
             |= Advanced.getOffset
-
-        -- TODO this is causing files to require newlines
-        -- at the end... how do I avoid this?
-        -- |. symbol (Advanced.Token "\n" (Parser.Expecting "newline"))
-        , succeed ()
-            |> map
-                (\_ ->
-                    Done
-                        (List.reverse revStmts
-                            |> List.concat
-                        )
-                )
         ]
 
 
@@ -583,9 +575,9 @@ zeroOrMore condition =
     chompWhile condition
 
 
-thematicBreak : Parser Block
+thematicBreak : Parser RawBlock
 thematicBreak =
-    succeed Block.ThematicBreak
+    succeed ThematicBreak
         |. oneOf
             [ symbol (Advanced.Token "   " (Parser.Problem "Expecting 3 spaces"))
             , symbol (Advanced.Token "  " (Parser.Problem "Expecting 2 spaces"))
@@ -611,9 +603,9 @@ thematicBreak =
 -- |. chompIf (\c -> c == '\n') (Parser.Problem "Expecting newline")
 
 
-heading : Parser Block
+heading : Parser RawBlock
 heading =
-    succeed Block.Heading
+    succeed Heading
         |. symbol (Advanced.Token "#" (Parser.Expecting "#"))
         |= (getChompedString
                 (succeed ()
@@ -640,18 +632,10 @@ heading =
                 )
                 |> Advanced.andThen
                     (\headingText ->
-                        let
-                            result =
-                                headingText
-                                    |> dropTrailingHashes
-                                    |> Advanced.run Inlines.parse
-                        in
-                        case result of
-                            Ok styled ->
-                                succeed styled
-
-                            Err error ->
-                                problem (Parser.Expecting "TODO")
+                        headingText
+                            |> dropTrailingHashes
+                            |> UnparsedInlines
+                            |> succeed
                     )
            )
 
@@ -689,4 +673,7 @@ But you can also do a lot with the `Block`s before passing them through:
 -}
 parse : String -> Result (List (Advanced.DeadEnd String Parser.Problem)) (List Block)
 parse input =
-    Advanced.run multiParser input
+    Advanced.run
+        multiParser2
+        -- multiParser
+        input

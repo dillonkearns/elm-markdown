@@ -26,17 +26,12 @@ suite =
                     |> Advanced.run Markdown.List.parser
                     |> Expect.equal
                         (Ok
-                            [ unstyledText "Item 1"
-                            , unstyledText "Item 2"
-                            , unstyledText "Item 3"
+                            [ "Item 1"
+                            , "Item 2"
+                            , "Item 3"
                             ]
                         )
         ]
-
-
-unstyledText : String -> List InlineBlock.StyledString
-unstyledText body =
-    [ { string = body, style = { isCode = False, isBold = False, isItalic = False, link = Nothing } } ]
 
 
 parserError : String -> Expect.Expectation
