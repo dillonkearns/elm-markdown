@@ -168,7 +168,7 @@ foldThing renderer { style, string } soFar =
 renderHelper :
     Renderer view
     -> List Block
-    -> List (Result String view)
+    -> List (Result String (Maybe view))
 renderHelper renderer blocks =
     List.map
         (\block ->
@@ -179,14 +179,17 @@ renderHelper renderer blocks =
                             (\children ->
                                 renderer.heading
                                     { level = level, rawText = Inlines.toString content, children = children }
+                                    |> Just
                             )
 
                 Block.Body content ->
                     renderStyled renderer content
                         |> Result.map renderer.raw
+                        |> Result.map Just
 
                 Block.Html tag attributes children ->
                     renderHtmlNode renderer tag attributes children
+                        |> Result.map Just
 
                 Block.ListBlock items ->
                     items
@@ -194,14 +197,19 @@ renderHelper renderer blocks =
                         |> combineResults
                         |> Result.map (List.map renderer.raw)
                         |> Result.map renderer.list
+                        |> Result.map Just
 
                 Block.CodeBlock codeBlock ->
                     codeBlock
                         |> renderer.codeBlock
+                        |> Just
                         |> Ok
 
                 Block.ThematicBreak ->
-                    Ok renderer.thematicBreak
+                    Ok (Just renderer.thematicBreak)
+
+                Block.BlankLine ->
+                    Ok Nothing
         )
         blocks
 
@@ -217,6 +225,7 @@ render renderer ast =
     ast
         |> renderHelper renderer
         |> combineResults
+        |> Result.map (List.filterMap identity)
 
 
 renderHtml :
@@ -224,7 +233,7 @@ renderHtml :
     -> List Attribute
     -> List Block
     -> Markdown.Html.Renderer (List view -> view)
-    -> List (Result String view)
+    -> List (Result String (Maybe view))
     -> Result String view
 renderHtml tagName attributes children (Markdown.HtmlRenderer.HtmlRenderer htmlRenderer) renderedChildren =
     renderedChildren
@@ -233,7 +242,7 @@ renderHtml tagName attributes children (Markdown.HtmlRenderer.HtmlRenderer htmlR
             (\okChildren ->
                 htmlRenderer tagName attributes children
                     |> Result.map
-                        (\myRenderer -> myRenderer okChildren)
+                        (\myRenderer -> myRenderer (okChildren |> List.filterMap identity))
             )
 
 
@@ -311,6 +320,10 @@ renderHtmlNode renderer tag attributes children =
         (renderHelper renderer children)
 
 
+
+-- |> Maybe.withDefault ()
+
+
 type alias Parser a =
     Advanced.Parser String Parser.Problem a
 
@@ -330,6 +343,7 @@ type RawBlock
     | ListBlock (List UnparsedInlines)
     | CodeBlock Markdown.CodeBlock.CodeBlock
     | ThematicBreak
+    | BlankLine
 
 
 parseInlines : RawBlock -> Parser Block
@@ -368,6 +382,9 @@ parseInlines rawBlock =
 
         ThematicBreak ->
             succeed Block.ThematicBreak
+
+        BlankLine ->
+            succeed Block.BlankLine
 
 
 parseRawInline wrap (UnparsedInlines unparsedInlines) =
