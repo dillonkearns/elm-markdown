@@ -508,15 +508,22 @@ statementsHelp2 revStmts =
                 if madeProgress then
                     case ( stmts, revStmts ) of
                         ( [ Body (UnparsedInlines body1) ], [ Body (UnparsedInlines body2) ] :: rest ) ->
-                            if body1 == "" || body2 == "" then
+                            let
+                                body1Trimmed =
+                                    String.trim body1
+
+                                body2Trimmed =
+                                    String.trim body2
+                            in
+                            if body1Trimmed == "" || body2Trimmed == "" then
                                 Loop
-                                    ([ Body (UnparsedInlines (body2 ++ body1)) ]
+                                    ([ Body (UnparsedInlines (body2Trimmed ++ body1Trimmed)) ]
                                         :: rest
                                     )
 
                             else
                                 Loop
-                                    ([ Body (UnparsedInlines (body2 ++ " " ++ body1)) ]
+                                    ([ Body (UnparsedInlines (body2Trimmed ++ " " ++ body1Trimmed)) ]
                                         :: rest
                                     )
 
