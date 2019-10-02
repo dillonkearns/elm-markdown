@@ -3,8 +3,8 @@ port module OutputMarkdownHtml exposing (main)
 import Html.String as Html
 import Html.String.Attributes as Attr
 import Markdown.Html
-import Markdown.Inlines exposing (StyledString)
-import Markdown.Parser as Markdown
+import Markdown.Inlines
+import Markdown.ParserNew as Markdown
 
 
 port requestHtml : (String -> msg) -> Sub msg
