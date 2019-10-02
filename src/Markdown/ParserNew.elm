@@ -355,8 +355,12 @@ parseInlines rawBlock =
             Block.Html tagName attributes children
                 |> succeed
 
-        ListBlock unparsedInlinesList ->
-            Debug.todo ""
+        ListBlock unparsedInlines ->
+            unparsedInlines
+                |> List.map (parseRawInline identity)
+                |> List.reverse
+                |> combine
+                |> map Block.ListBlock
 
         CodeBlock codeBlock ->
             Block.CodeBlock codeBlock
@@ -364,6 +368,15 @@ parseInlines rawBlock =
 
         ThematicBreak ->
             succeed Block.ThematicBreak
+
+
+parseRawInline wrap (UnparsedInlines unparsedInlines) =
+    case Advanced.run Inlines.parse unparsedInlines of
+        Ok styledLine ->
+            succeed (wrap styledLine)
+
+        Err error ->
+            problem (Parser.Expecting (error |> List.map deadEndToString |> String.join "\n"))
 
 
 plainLine : Parser (List RawBlock)
