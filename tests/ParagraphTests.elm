@@ -21,20 +21,28 @@ parse =
 
 suite : Test
 suite =
-    only <|
-        describe "paragraphs"
-            [ test "plain text on multiple lines is in one paragraph" <|
-                \() ->
-                    """Line 1
+    describe "paragraphs"
+        [ test "lines continued without blank lines in between are joined with a space onto one line" <|
+            \() ->
+                """Line 1
 Line 2
+Line 3
+Line 4
+"""
+                    |> parse
+                    |> Expect.equal (Ok [ Block.Body (unstyledText """Line 1 Line 2 Line 3 Line 4""") ])
 
-Line after blank line"""
-                        |> parse
-                        |> Expect.equal (Ok [ Block.Body (unstyledText """Line 1
-Line 2
-
-Line after blank line""") ])
-            ]
+        --         , test "new paragraphs are created by blank lines in between" <|
+        --             \() ->
+        --                 """Line 1
+        -- Line 2
+        --
+        -- Line after blank line"""
+        --                     |> parse
+        --                     |> Expect.equal (Ok [ Block.Body (unstyledText """Line 1 Line 2
+        --
+        -- Line after blank line""") ])
+        ]
 
 
 unstyledText : String -> List InlineBlock.StyledString

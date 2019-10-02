@@ -506,7 +506,22 @@ statementsHelp2 revStmts =
                         offsetAfter > offsetBefore
                 in
                 if madeProgress then
-                    Loop (stmts :: revStmts)
+                    case ( stmts, revStmts ) of
+                        ( [ Body (UnparsedInlines body1) ], [ Body (UnparsedInlines body2) ] :: rest ) ->
+                            if body1 == "" || body2 == "" then
+                                Loop
+                                    ([ Body (UnparsedInlines (body2 ++ body1)) ]
+                                        :: rest
+                                    )
+
+                            else
+                                Loop
+                                    ([ Body (UnparsedInlines (body2 ++ " " ++ body1)) ]
+                                        :: rest
+                                    )
+
+                        _ ->
+                            Loop (stmts :: revStmts)
 
                 else
                     Done
