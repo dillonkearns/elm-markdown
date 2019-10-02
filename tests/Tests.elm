@@ -186,17 +186,6 @@ Text after
                             -- , ListBlock []
                             ]
                         )
-        , test "plain text on multiple lines is in one paragraph" <|
-            \() ->
-                """Line 1
-Line 2
-
-Line after blank line"""
-                    |> parse
-                    |> Expect.equal (Ok [ Block.Body (unstyledText """Line 1
-Line 2
-
-Line after blank line""") ])
         , test "code fence with paragraph and heading below" <|
             \() ->
                 """```shell
