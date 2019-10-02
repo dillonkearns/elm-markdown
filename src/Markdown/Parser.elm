@@ -423,11 +423,6 @@ htmlParser =
         |> xmlNodeToHtmlNode
 
 
-toTopLevelHtml : String -> List Attribute -> List Block -> Block
-toTopLevelHtml tag attributes children =
-    Block.Html tag attributes children
-
-
 xmlNodeToHtmlNode : Parser Node -> Parser RawBlock
 xmlNodeToHtmlNode parser =
     Advanced.andThen
