@@ -396,12 +396,12 @@ parseRawInline wrap (UnparsedInlines unparsedInlines) =
             problem (Parser.Expecting (error |> List.map deadEndToString |> String.join "\n"))
 
 
-plainLine : Parser (List RawBlock)
+plainLine : Parser RawBlock
 plainLine =
-    succeed identity
+    succeed (++)
+        |= Advanced.getChompedString (chompIf (\c -> True) (Parser.Expecting "A single non-newline char."))
         |= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
         |> Advanced.map (UnparsedInlines >> Body)
-        |> Advanced.map List.singleton
 
 
 listBlock : Parser RawBlock
@@ -413,8 +413,21 @@ listBlock =
 
 blankLine : Parser RawBlock
 blankLine =
-    succeed (Body (UnparsedInlines ""))
-        |. symbol (Advanced.Token "\n" (Parser.Expecting "\n"))
+    -- succeed BlankLine
+    -- chompIf (\c -> c == '\n') (Parser.Problem "Expecting newline")
+    --     |. chompIf (\c -> c == '\n') (Parser.Problem "Expecting newline")
+    --     |> map (\() -> BlankLine)
+    token (Advanced.Token "\n\n" (Parser.Expecting "\n"))
+        -- |. chompWhile (\c -> c == '\n') (Parser.Problem "Expecting newline")
+        |. chompWhile (\c -> c == '\n')
+        -- |. chompIf (\c -> c == '\n') (Parser.Problem "Expecting newline")
+        |> map (\() -> BlankLine)
+
+
+
+-- oneOrMore (\c -> c == '\n')
+--     |> map (\() -> BlankLine)
+-- |. symbol (Advanced.Token "\n\n" (Parser.Expecting "\n"))
 
 
 htmlParser : Parser RawBlock
@@ -498,7 +511,7 @@ childToParser node =
 
 multiParser2 : Parser (List Block)
 multiParser2 =
-    loop [ [] ] statementsHelp2
+    loop [] statementsHelp2
         |. succeed Advanced.end
         |> andThen parseAllInlines
         -- TODO find a more elegant way to exclude empty blocks for each blank lines
@@ -520,57 +533,45 @@ combineBlocks rawBlock soFar =
             )
 
 
-statementsHelp2 : List (List RawBlock) -> Parser (Step (List (List RawBlock)) (List RawBlock))
+statementsHelp2 : List RawBlock -> Parser (Step (List RawBlock) (List RawBlock))
 statementsHelp2 revStmts =
+    let
+        keepLooping parser =
+            parser
+                |> map
+                    (\stmts ->
+                        case
+                            ( stmts
+                            , revStmts
+                            )
+                        of
+                            ( Body (UnparsedInlines body1), (Body (UnparsedInlines body2)) :: rest ) ->
+                                let
+                                    body1Trimmed =
+                                        String.trim body1
+
+                                    body2Trimmed =
+                                        String.trim body2
+                                in
+                                Loop
+                                    (Body (UnparsedInlines (body2Trimmed ++ " " ++ body1Trimmed))
+                                        :: rest
+                                    )
+
+                            _ ->
+                                Loop (stmts :: revStmts)
+                    )
+    in
     oneOf
-        [ succeed
-            (\offsetBefore stmts offsetAfter ->
-                let
-                    madeProgress =
-                        offsetAfter > offsetBefore
-                in
-                if madeProgress then
-                    case ( stmts, revStmts ) of
-                        ( [ Body (UnparsedInlines body1) ], [ Body (UnparsedInlines body2) ] :: rest ) ->
-                            let
-                                body1Trimmed =
-                                    String.trim body1
-
-                                body2Trimmed =
-                                    String.trim body2
-                            in
-                            if body1Trimmed == "" || body2Trimmed == "" then
-                                Loop
-                                    ([ Body (UnparsedInlines (body2Trimmed ++ body1Trimmed)) ]
-                                        :: rest
-                                    )
-
-                            else
-                                Loop
-                                    ([ Body (UnparsedInlines (body2Trimmed ++ " " ++ body1Trimmed)) ]
-                                        :: rest
-                                    )
-
-                        _ ->
-                            Loop (stmts :: revStmts)
-
-                else
-                    Done
-                        ((stmts :: revStmts)
-                            |> List.concat
-                        )
-            )
-            |= Advanced.getOffset
-            |= oneOf
-                [ Markdown.CodeBlock.parser |> map CodeBlock |> map List.singleton
-                , thematicBreak |> map List.singleton
-                , listBlock |> map List.singleton
-                , blankLine |> map List.singleton
-                , heading |> map List.singleton
-                , htmlParser |> map List.singleton
-                , plainLine
-                ]
-            |= Advanced.getOffset
+        [ blankLine |> keepLooping
+        , Markdown.CodeBlock.parser |> map CodeBlock |> keepLooping
+        , thematicBreak |> keepLooping
+        , listBlock |> keepLooping
+        , heading |> keepLooping
+        , htmlParser |> keepLooping
+        , Advanced.end (Parser.Expecting "End") |> map (\() -> Done revStmts)
+        , plainLine |> keepLooping
+        , succeed (Done revStmts)
         ]
 
 
@@ -687,5 +688,5 @@ parse : String -> Result (List (Advanced.DeadEnd String Parser.Problem)) (List B
 parse input =
     Advanced.run
         multiParser2
-        -- multiParser
         input
+        |> Result.map (List.filter (\b -> b /= Block.BlankLine))

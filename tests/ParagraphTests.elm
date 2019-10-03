@@ -36,17 +36,19 @@ Line 4
                 "Line 1\t\nLine 2   \nLine 3\nLine 4\n"
                     |> parse
                     |> Expect.equal (Ok [ Block.Body (unstyledText """Line 1 Line 2 Line 3 Line 4""") ])
+        , test "new paragraphs are created by blank lines in between" <|
+            \() ->
+                """Line 1
+Line 2
 
-        --         , test "new paragraphs are created by blank lines in between" <|
-        --             \() ->
-        --                 """Line 1
-        -- Line 2
-        --
-        -- Line after blank line"""
-        --                     |> parse
-        --                     |> Expect.equal (Ok [ Block.Body (unstyledText """Line 1 Line 2
-        --
-        -- Line after blank line""") ])
+Line after blank line"""
+                    |> parse
+                    |> Expect.equal
+                        (Ok
+                            [ Block.Body (unstyledText "Line 1 Line 2")
+                            , Block.Body (unstyledText "Line after blank line")
+                            ]
+                        )
         ]
 
 
