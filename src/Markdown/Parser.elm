@@ -168,7 +168,7 @@ foldThing renderer { style, string } soFar =
 renderHelper :
     Renderer view
     -> List Block
-    -> List (Result String (Maybe view))
+    -> List (Result String view)
 renderHelper renderer blocks =
     List.map
         (\block ->
@@ -179,17 +179,14 @@ renderHelper renderer blocks =
                             (\children ->
                                 renderer.heading
                                     { level = level, rawText = Inlines.toString content, children = children }
-                                    |> Just
                             )
 
                 Block.Body content ->
                     renderStyled renderer content
                         |> Result.map renderer.raw
-                        |> Result.map Just
 
                 Block.Html tag attributes children ->
                     renderHtmlNode renderer tag attributes children
-                        |> Result.map Just
 
                 Block.ListBlock items ->
                     items
@@ -197,16 +194,14 @@ renderHelper renderer blocks =
                         |> combineResults
                         |> Result.map (List.map renderer.raw)
                         |> Result.map renderer.list
-                        |> Result.map Just
 
                 Block.CodeBlock codeBlock ->
                     codeBlock
                         |> renderer.codeBlock
-                        |> Just
                         |> Ok
 
                 Block.ThematicBreak ->
-                    Ok (Just renderer.thematicBreak)
+                    Ok renderer.thematicBreak
         )
         blocks
 
@@ -222,7 +217,6 @@ render renderer ast =
     ast
         |> renderHelper renderer
         |> combineResults
-        |> Result.map (List.filterMap identity)
 
 
 renderHtml :
@@ -230,7 +224,7 @@ renderHtml :
     -> List Attribute
     -> List Block
     -> Markdown.Html.Renderer (List view -> view)
-    -> List (Result String (Maybe view))
+    -> List (Result String view)
     -> Result String view
 renderHtml tagName attributes children (Markdown.HtmlRenderer.HtmlRenderer htmlRenderer) renderedChildren =
     renderedChildren
@@ -239,7 +233,7 @@ renderHtml tagName attributes children (Markdown.HtmlRenderer.HtmlRenderer htmlR
             (\okChildren ->
                 htmlRenderer tagName attributes children
                     |> Result.map
-                        (\myRenderer -> myRenderer (okChildren |> List.filterMap identity))
+                        (\myRenderer -> myRenderer okChildren)
             )
 
 
