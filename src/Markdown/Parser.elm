@@ -398,10 +398,14 @@ parseRawInline wrap (UnparsedInlines unparsedInlines) =
 
 plainLine : Parser RawBlock
 plainLine =
-    succeed (++)
-        |= Advanced.getChompedString (chompIf (\c -> True) (Parser.Expecting "A single non-newline char."))
+    succeed
+        (\rawLine ->
+            rawLine
+                |> UnparsedInlines
+                |> Body
+        )
         |= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
-        |> Advanced.map (UnparsedInlines >> Body)
+        |. Advanced.chompIf (\c -> c == '\n') (Parser.Expecting "A single non-newline char.")
 
 
 listBlock : Parser RawBlock
@@ -563,13 +567,13 @@ statementsHelp2 revStmts =
                     )
     in
     oneOf
-        [ blankLine |> keepLooping
+        [ Advanced.end (Parser.Expecting "End") |> map (\() -> Done revStmts)
+        , blankLine |> keepLooping
         , Markdown.CodeBlock.parser |> map CodeBlock |> keepLooping
         , thematicBreak |> keepLooping
         , listBlock |> keepLooping
         , heading |> keepLooping
         , htmlParser |> keepLooping
-        , Advanced.end (Parser.Expecting "End") |> map (\() -> Done revStmts)
         , plainLine |> keepLooping
         , succeed (Done revStmts)
         ]
