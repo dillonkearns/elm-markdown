@@ -49,4 +49,3 @@ type Block
     | ListBlock (List (List InlineBlock.StyledString))
     | CodeBlock Markdown.CodeBlock.CodeBlock
     | ThematicBreak
-    | BlankLine

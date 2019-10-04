@@ -15,8 +15,9 @@ type alias Parser a =
 
 
 parse : String -> Result (List (Advanced.DeadEnd String Parser.Problem)) (List Block)
-parse =
-    Markdown.parse
+parse markdown =
+    markdown
+        |> Markdown.parse
 
 
 suite : Test

@@ -207,9 +207,6 @@ renderHelper renderer blocks =
 
                 Block.ThematicBreak ->
                     Ok (Just renderer.thematicBreak)
-
-                Block.BlankLine ->
-                    Ok Nothing
         )
         blocks
 
@@ -346,13 +343,13 @@ type RawBlock
     | BlankLine
 
 
-parseInlines : RawBlock -> Parser Block
+parseInlines : RawBlock -> Parser (Maybe Block)
 parseInlines rawBlock =
     case rawBlock of
         Heading level (UnparsedInlines unparsedInlines) ->
             case Advanced.run Inlines.parse unparsedInlines of
                 Ok styledLine ->
-                    succeed (Block.Heading level styledLine)
+                    just (Block.Heading level styledLine)
 
                 Err error ->
                     problem (Parser.Expecting (error |> List.map deadEndToString |> String.join "\n"))
@@ -360,14 +357,14 @@ parseInlines rawBlock =
         Body (UnparsedInlines unparsedInlines) ->
             case Advanced.run Inlines.parse unparsedInlines of
                 Ok styledLine ->
-                    succeed (Block.Body styledLine)
+                    just (Block.Body styledLine)
 
                 Err error ->
                     problem (Parser.Expecting (error |> List.map deadEndToString |> String.join "\n"))
 
         Html tagName attributes children ->
             Block.Html tagName attributes children
-                |> succeed
+                |> just
 
         ListBlock unparsedInlines ->
             unparsedInlines
@@ -375,16 +372,21 @@ parseInlines rawBlock =
                 |> List.reverse
                 |> combine
                 |> map Block.ListBlock
+                |> map Just
 
         CodeBlock codeBlock ->
             Block.CodeBlock codeBlock
-                |> succeed
+                |> just
 
         ThematicBreak ->
-            succeed Block.ThematicBreak
+            just Block.ThematicBreak
 
         BlankLine ->
-            succeed Block.BlankLine
+            succeed Nothing
+
+
+just value =
+    succeed (Just value)
 
 
 parseRawInline wrap (UnparsedInlines unparsedInlines) =
@@ -532,8 +534,17 @@ combineBlocks rawBlock soFar =
     soFar
         |> andThen
             (\parsedBlocks ->
-                parseInlines rawBlock
-                    |> map (\newParsedBlock -> newParsedBlock :: parsedBlocks)
+                rawBlock
+                    |> parseInlines
+                    |> map
+                        (\maybeNewParsedBlock ->
+                            case maybeNewParsedBlock of
+                                Just newParsedBlock ->
+                                    newParsedBlock :: parsedBlocks
+
+                                Nothing ->
+                                    parsedBlocks
+                        )
             )
 
 
@@ -700,4 +711,3 @@ parse input =
     Advanced.run
         multiParser2
         input
-        |> Result.map (List.filter (\b -> b /= Block.BlankLine))
