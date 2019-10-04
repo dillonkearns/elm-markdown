@@ -1,438 +1,356 @@
-## GFM
+# GFM
 
-### Precedence
+## Code spans
 
-Example 12
+### [Example 329](https://github.github.com/gfm/#example-329)
 
 This markdown:
 
 ```markdown
-- `one
-- two`
+`` foo ` bar ``
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<ul>
-<li>`one</li>
-<li>two`</li>
-</ul>
-
+<p><code>foo ` bar</code></p>
 ```
 
-### Thematic breaks
-
-Example 16
-
-This markdown:
-
-```markdown
---
-**
-__
-
-```
-
-Gives this incorrect output:
+But instead was:
 
 ```html
-<p>--
-**
-__</p>
-
+<p>foo<code>bar</code></p>
 ```
-
-Example 19
+### [Example 330](https://github.github.com/gfm/#example-330)
 
 This markdown:
 
 ```markdown
-Foo
-    ***
+` `` `
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>Foo
-***</p>
-
+<p><code>``</code></p>
 ```
 
-Example 21
-
-This markdown:
-
-```markdown
- - - -
-
-```
-
-Gives this incorrect output:
+But instead was:
 
 ```html
-<hr />
-
+<p><code></code><code></code></p>
 ```
-
-Example 22
+### [Example 331](https://github.github.com/gfm/#example-331)
 
 This markdown:
 
 ```markdown
- **  * ** * ** * **
+`  ``  `
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<hr />
-
+<p><code>``</code></p>
 ```
 
-Example 23
-
-This markdown:
-
-```markdown
--     -      -      -
-
-```
-
-Gives this incorrect output:
+But instead was:
 
 ```html
-<hr />
-
+<p><code></code><code></code></p>
 ```
-
-Example 24
+### [Example 335](https://github.github.com/gfm/#example-335)
 
 This markdown:
 
 ```markdown
-- - - -    
-
-```
-
-Gives this incorrect output:
-
-```html
-<hr />
-
-```
-
-Example 25
-
-This markdown:
-
-```markdown
-_ _ _ _ a
-
-a------
-
----a---
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>_ _ _ _ a</p>
-<p>a------</p>
-<p>---a---</p>
-
-```
-
-Example 26
-
-This markdown:
-
-```markdown
- *-*
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><em>-</em></p>
-
-```
-
-Example 27
-
-This markdown:
-
-```markdown
-- foo
-***
-- bar
-
-```
-
-Gives this incorrect output:
-
-```html
-<ul>
-<li>foo</li>
-</ul>
-<hr />
-<ul>
-<li>bar</li>
-</ul>
-
-```
-
-Example 29
-
-This markdown:
-
-```markdown
-Foo
----
-bar
-
-```
-
-Gives this incorrect output:
-
-```html
-<h2>Foo</h2>
-<p>bar</p>
-
-```
-
-Example 30
-
-This markdown:
-
-```markdown
-* Foo
-* * *
-* Bar
-
-```
-
-Gives this incorrect output:
-
-```html
-<ul>
-<li>Foo</li>
-</ul>
-<hr />
-<ul>
-<li>Bar</li>
-</ul>
-
-```
-
-Example 31
-
-This markdown:
-
-```markdown
-- Foo
-- * * *
-
-```
-
-Gives this incorrect output:
-
-```html
-<ul>
-<li>Foo</li>
-<li>
-<hr />
-</li>
-</ul>
-
-```
-
-### ATX headings
-
-Example 33
-
-This markdown:
-
-```markdown
-####### foo
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>####### foo</p>
-
-```
-
-Example 34
-
-This markdown:
-
-```markdown
-#5 bolt
-
-#hashtag
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>#5 bolt</p>
-<p>#hashtag</p>
-
-```
-
-Example 35
-
-This markdown:
-
-```markdown
-\## foo
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>## foo</p>
-
-```
-
-Example 36
-
-This markdown:
-
-```markdown
-# foo *bar* \*baz\*
-
-```
-
-Gives this incorrect output:
-
-```html
-<h1>foo <em>bar</em> *baz*</h1>
-
-```
-
-Example 38
-
-This markdown:
-
-```markdown
- ### foo
-  ## foo
-   # foo
-
-```
-
-Gives this incorrect output:
-
-```html
-<h3>foo</h3>
-<h2>foo</h2>
-<h1>foo</h1>
-
-```
-
-Example 40
-
-This markdown:
-
-```markdown
+``
 foo
-    # bar
+bar  
+baz
+``
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>foo
-# bar</p>
-
+<p><code>foo bar baz</code></p>
 ```
 
-Example 41
+But instead was:
+
+```html
+<p>foo bar baz</p>
+```
+### [Example 336](https://github.github.com/gfm/#example-336)
 
 This markdown:
 
 ```markdown
-## foo ##
-  ###   bar    ###
+``
+foo 
+``
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<h2>foo</h2>
-<h3>bar</h3>
-
+<p><code>foo</code></p>
 ```
 
-Example 43
+But instead was:
+
+```html
+<p>foo</p>
+```
+### [Example 338](https://github.github.com/gfm/#example-338)
 
 This markdown:
 
 ```markdown
-### foo ###     
+`foo\`bar`
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<h3>foo</h3>
-
+<p><code>foo\</code>bar`</p>
 ```
 
-Example 45
+But instead was:
+
+```html
+<p><code>foo\</code>bar</p>
+```
+### [Example 339](https://github.github.com/gfm/#example-339)
 
 This markdown:
 
 ```markdown
-# foo#
+``foo`bar``
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<h1>foo#</h1>
-
+<p><code>foo`bar</code></p>
 ```
 
-Example 46
+But instead was:
+
+```html
+<p>foo<code>bar</code></p>
+```
+### [Example 340](https://github.github.com/gfm/#example-340)
 
 This markdown:
 
 ```markdown
-### foo \###
-## foo #\##
-# foo \#
+` foo `` bar `
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<h3>foo ###</h3>
-<h2>foo ###</h2>
-<h1>foo #</h1>
+<p><code>foo `` bar</code></p>
+```
+
+But instead was:
+
+```html
+<p><code>foo</code><code>bar</code></p>
+```
+### [Example 341](https://github.github.com/gfm/#example-341)
+
+This markdown:
+
+```markdown
+*foo`*`
 
 ```
 
-### Emphasis and strong emphasis
+Should give output:
 
-Example 351
+```html
+<p>*foo<code>*</code></p>
+```
+
+But instead was:
+
+```html
+<p><em>foo</em></p>
+```
+### [Example 342](https://github.github.com/gfm/#example-342)
+
+This markdown:
+
+```markdown
+[not a `link](/foo`)
+
+```
+
+Should give output:
+
+```html
+<p>[not a<code>link](/foo</code>)</p>
+```
+
+But instead was:
+
+```html
+<p><a href="/foo`">not a<code>link</code></a></p>
+```
+### [Example 343](https://github.github.com/gfm/#example-343)
+
+This markdown:
+
+```markdown
+`<a href="`">`
+
+```
+
+Should give output:
+
+```html
+<p><code>&lt;a href=&quot;</code>&quot;&gt;`</p>
+```
+
+But instead was:
+
+```html
+<p><code>&lt;a href=&quot;</code>&quot;&gt;</p>
+```
+### [Example 344](https://github.github.com/gfm/#example-344)
+
+This markdown:
+
+```markdown
+<a href="`">`
+
+```
+
+Should give output:
+
+```html
+<p><a href="`">`</p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 2 Expecting symbol
+```
+### [Example 345](https://github.github.com/gfm/#example-345)
+
+This markdown:
+
+```markdown
+`<http://foo.bar.`baz>`
+
+```
+
+Should give output:
+
+```html
+<p><code>&lt;http://foo.bar.</code>baz&gt;`</p>
+```
+
+But instead was:
+
+```html
+<p><code>&lt;http://foo.bar.</code>baz&gt;</p>
+```
+### [Example 346](https://github.github.com/gfm/#example-346)
+
+This markdown:
+
+```markdown
+<http://foo.bar.`baz>`
+
+```
+
+Should give output:
+
+```html
+<p><a href="http://foo.bar.%60baz">http://foo.bar.`baz</a>`</p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting symbol /&gt; Problem at row 1 Expecting symbol &gt;
+```
+### [Example 347](https://github.github.com/gfm/#example-347)
+
+This markdown:
+
+```markdown
+```foo``
+
+```
+
+Should give output:
+
+```html
+<p>```foo``</p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 3 Expecting symbol ```
+```
+### [Example 348](https://github.github.com/gfm/#example-348)
+
+This markdown:
+
+```markdown
+`foo
+
+```
+
+Should give output:
+
+```html
+<p>`foo</p>
+```
+
+But instead was:
+
+```html
+<p><code>foo</code></p>
+```
+### [Example 349](https://github.github.com/gfm/#example-349)
+
+This markdown:
+
+```markdown
+`foo``bar``
+
+```
+
+Should give output:
+
+```html
+<p>`foo<code>bar</code></p>
+```
+
+But instead was:
+
+```html
+<p><code>foo</code><code>bar</code></p>
+```
+## Emphasis and strong emphasis
+
+### [Example 351](https://github.github.com/gfm/#example-351)
 
 This markdown:
 
@@ -441,14 +359,18 @@ a * foo bar*
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p>a * foo bar*</p>
-
 ```
 
-Example 352
+But instead was:
+
+```html
+<p>a<em>foo bar</em></p>
+```
+### [Example 352](https://github.github.com/gfm/#example-352)
 
 This markdown:
 
@@ -457,14 +379,18 @@ a*"foo"*
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p>a*&quot;foo&quot;*</p>
-
 ```
 
-Example 353
+But instead was:
+
+```html
+<p>a<em>&quot;foo&quot;</em></p>
+```
+### [Example 353](https://github.github.com/gfm/#example-353)
 
 This markdown:
 
@@ -473,14 +399,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>* a *</p>
-
+<p>* a *</p>
 ```
 
-Example 356
+But instead was:
+
+```html
+<p><em>a</em></p>
+```
+### [Example 356](https://github.github.com/gfm/#example-356)
 
 This markdown:
 
@@ -489,14 +419,18 @@ _foo bar_
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p><em>foo bar</em></p>
-
 ```
 
-Example 363
+But instead was:
+
+```html
+<p>_foo bar_</p>
+```
+### [Example 363](https://github.github.com/gfm/#example-363)
 
 This markdown:
 
@@ -505,14 +439,18 @@ foo-_(bar)_
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p>foo-<em>(bar)</em></p>
-
 ```
 
-Example 364
+But instead was:
+
+```html
+<p>foo-_(bar)_</p>
+```
+### [Example 364](https://github.github.com/gfm/#example-364)
 
 This markdown:
 
@@ -521,14 +459,18 @@ _foo*
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p>_foo*</p>
-
 ```
 
-Example 365
+But instead was:
+
+```html
+<p>_foo</p>
+```
+### [Example 365](https://github.github.com/gfm/#example-365)
 
 This markdown:
 
@@ -537,14 +479,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p>*foo bar *</p>
-
 ```
 
-Example 366
+But instead was:
+
+```html
+<p><em>foo bar</em></p>
+```
+### [Example 366](https://github.github.com/gfm/#example-366)
 
 This markdown:
 
@@ -554,15 +500,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>*foo bar
-*</p>
-
+<p>*foo bar *</p>
 ```
 
-Example 367
+But instead was:
+
+```html
+<p><em>foo bar</em></p>
+```
+### [Example 367](https://github.github.com/gfm/#example-367)
 
 This markdown:
 
@@ -571,14 +520,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p>*(*foo)</p>
-
 ```
 
-Example 368
+But instead was:
+
+```html
+<p><em>(</em>foo)</p>
+```
+### [Example 368](https://github.github.com/gfm/#example-368)
 
 This markdown:
 
@@ -587,14 +540,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p><em>(<em>foo</em>)</em></p>
-
 ```
 
-Example 372
+But instead was:
+
+```html
+<p><em>(</em>foo<em>)</em></p>
+```
+### [Example 372](https://github.github.com/gfm/#example-372)
 
 This markdown:
 
@@ -603,14 +560,18 @@ _(_foo_)_
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p><em>(<em>foo</em>)</em></p>
-
 ```
 
-Example 375
+But instead was:
+
+```html
+<p>_(_foo_)_</p>
+```
+### [Example 375](https://github.github.com/gfm/#example-375)
 
 This markdown:
 
@@ -619,14 +580,18 @@ _foo_bar_baz_
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p><em>foo_bar_baz</em></p>
-
 ```
 
-Example 376
+But instead was:
+
+```html
+<p>_foo_bar_baz_</p>
+```
+### [Example 376](https://github.github.com/gfm/#example-376)
 
 This markdown:
 
@@ -635,14 +600,18 @@ _(bar)_.
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p><em>(bar)</em>.</p>
-
 ```
 
-Example 378
+But instead was:
+
+```html
+<p>_(bar)_.</p>
+```
+### [Example 378](https://github.github.com/gfm/#example-378)
 
 This markdown:
 
@@ -651,14 +620,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p>** foo bar**</p>
-
 ```
 
-Example 379
+But instead was:
+
+```html
+<p><strong>foo bar</strong></p>
+```
+### [Example 379](https://github.github.com/gfm/#example-379)
 
 This markdown:
 
@@ -667,14 +640,18 @@ a**"foo"**
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p>a**&quot;foo&quot;**</p>
-
 ```
 
-Example 381
+But instead was:
+
+```html
+<p>a<strong>&quot;foo&quot;</strong></p>
+```
+### [Example 381](https://github.github.com/gfm/#example-381)
 
 This markdown:
 
@@ -683,32 +660,18 @@ __foo bar__
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p><strong>foo bar</strong></p>
-
 ```
 
-Example 383
-
-This markdown:
-
-```markdown
-__
-foo bar__
-
-```
-
-Gives this incorrect output:
+But instead was:
 
 ```html
-<p>__
-foo bar__</p>
-
+<p>__foo bar__</p>
 ```
-
-Example 388
+### [Example 388](https://github.github.com/gfm/#example-388)
 
 This markdown:
 
@@ -717,14 +680,18 @@ __foo, __bar__, baz__
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p><strong>foo, <strong>bar</strong>, baz</strong></p>
-
+<p><strong>foo,<strong>bar</strong>, baz</strong></p>
 ```
 
-Example 389
+But instead was:
+
+```html
+<p>__foo, __bar__, baz__</p>
+```
+### [Example 389](https://github.github.com/gfm/#example-389)
 
 This markdown:
 
@@ -733,14 +700,18 @@ foo-__(bar)__
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p>foo-<strong>(bar)</strong></p>
-
 ```
 
-Example 390
+But instead was:
+
+```html
+<p>foo-__(bar)__</p>
+```
+### [Example 390](https://github.github.com/gfm/#example-390)
 
 This markdown:
 
@@ -749,14 +720,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p>**foo bar **</p>
-
 ```
 
-Example 391
+But instead was:
+
+```html
+<p><strong>foo bar</strong></p>
+```
+### [Example 391](https://github.github.com/gfm/#example-391)
 
 This markdown:
 
@@ -765,14 +740,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p>**(**foo)</p>
-
 ```
 
-Example 392
+But instead was:
+
+```html
+<p><strong>(</strong>foo)</p>
+```
+### [Example 392](https://github.github.com/gfm/#example-392)
 
 This markdown:
 
@@ -781,14 +760,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p><em>(<strong>foo</strong>)</em></p>
-
 ```
 
-Example 393
+But instead was:
+
+```html
+<p><em>(</em><strong>foo</strong><em>)</em></p>
+```
+### [Example 393](https://github.github.com/gfm/#example-393)
 
 This markdown:
 
@@ -798,15 +781,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p><strong>Gomphocarpus (<em>Gomphocarpus physocarpus</em>, syn.
-<em>Asclepias physocarpa</em>)</strong></p>
-
+<p><strong>Gomphocarpus (<em>Gomphocarpus physocarpus</em>, syn.<em>Asclepias physocarpa</em>)</strong></p>
 ```
 
-Example 394
+But instead was:
+
+```html
+<p><strong>Gomphocarpus (</strong><strong>Gomphocarpus physocarpus</strong><strong>, syn.</strong><strong>Asclepias physocarpa</strong><strong>)</strong></p>
+```
+### [Example 394](https://github.github.com/gfm/#example-394)
 
 This markdown:
 
@@ -815,14 +801,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p><strong>foo &quot;<em>bar</em>&quot; foo</strong></p>
-
 ```
 
-Example 398
+But instead was:
+
+```html
+<p><strong>foo &quot;</strong><strong>bar</strong><strong>&quot; foo</strong></p>
+```
+### [Example 398](https://github.github.com/gfm/#example-398)
 
 This markdown:
 
@@ -831,14 +821,18 @@ _(__foo__)_
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p><em>(<strong>foo</strong>)</em></p>
-
 ```
 
-Example 401
+But instead was:
+
+```html
+<p>_(__foo__)_</p>
+```
+### [Example 401](https://github.github.com/gfm/#example-401)
 
 This markdown:
 
@@ -847,14 +841,18 @@ __foo__bar__baz__
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p><strong>foo__bar__baz</strong></p>
-
 ```
 
-Example 402
+But instead was:
+
+```html
+<p>__foo__bar__baz__</p>
+```
+### [Example 402](https://github.github.com/gfm/#example-402)
 
 This markdown:
 
@@ -863,14 +861,18 @@ __(bar)__.
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p><strong>(bar)</strong>.</p>
-
 ```
 
-Example 403
+But instead was:
+
+```html
+<p>__(bar)__.</p>
+```
+### [Example 403](https://github.github.com/gfm/#example-403)
 
 This markdown:
 
@@ -879,32 +881,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p><em>foo <a href="/url">bar</a></em></p>
-
+<p><em>foo<a href="/url">bar</a></em></p>
 ```
 
-Example 404
-
-This markdown:
-
-```markdown
-*foo
-bar*
-
-```
-
-Gives this incorrect output:
+But instead was:
 
 ```html
-<p><em>foo
-bar</em></p>
-
+<p><em>foo</em><a href="/url">bar</a></p>
 ```
-
-Example 405
+### [Example 405](https://github.github.com/gfm/#example-405)
 
 This markdown:
 
@@ -913,14 +901,18 @@ _foo __bar__ baz_
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p><em>foo <strong>bar</strong> baz</em></p>
-
+<p><em>foo<strong>bar</strong>baz</em></p>
 ```
 
-Example 406
+But instead was:
+
+```html
+<p>_foo __bar__ baz_</p>
+```
+### [Example 406](https://github.github.com/gfm/#example-406)
 
 This markdown:
 
@@ -929,14 +921,18 @@ _foo _bar_ baz_
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p><em>foo <em>bar</em> baz</em></p>
-
+<p><em>foo<em>bar</em>baz</em></p>
 ```
 
-Example 407
+But instead was:
+
+```html
+<p>_foo _bar_ baz_</p>
+```
+### [Example 407](https://github.github.com/gfm/#example-407)
 
 This markdown:
 
@@ -945,14 +941,18 @@ __foo_ bar_
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p><em><em>foo</em> bar</em></p>
-
+<p><em><em>foo</em>bar</em></p>
 ```
 
-Example 408
+But instead was:
+
+```html
+<p>__foo_ bar_</p>
+```
+### [Example 408](https://github.github.com/gfm/#example-408)
 
 This markdown:
 
@@ -961,14 +961,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p><em>foo <em>bar</em></em></p>
-
+<p><em>foo<em>bar</em></em></p>
 ```
 
-Example 409
+But instead was:
+
+```html
+<p><em>foo</em>bar</p>
+```
+### [Example 409](https://github.github.com/gfm/#example-409)
 
 This markdown:
 
@@ -977,14 +981,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p><em>foo <strong>bar</strong> baz</em></p>
-
+<p><em>foo<strong>bar</strong>baz</em></p>
 ```
 
-Example 410
+But instead was:
+
+```html
+<p><em>foo</em><strong>bar</strong><em>baz</em></p>
+```
+### [Example 410](https://github.github.com/gfm/#example-410)
 
 This markdown:
 
@@ -993,14 +1001,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p><em>foo<strong>bar</strong>baz</em></p>
-
 ```
 
-Example 411
+But instead was:
+
+```html
+<p><em>foo</em><strong>bar</strong><em>baz</em></p>
+```
+### [Example 411](https://github.github.com/gfm/#example-411)
 
 This markdown:
 
@@ -1009,14 +1021,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p><em>foo**bar</em></p>
-
 ```
 
-Example 412
+But instead was:
+
+```html
+<p><em>foo</em><strong>bar</strong></p>
+```
+### [Example 412](https://github.github.com/gfm/#example-412)
 
 This markdown:
 
@@ -1025,14 +1041,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p><em><strong>foo</strong> bar</em></p>
-
+<p><em><strong>foo</strong>bar</em></p>
 ```
 
-Example 413
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting end Problem at row 1 Expecting newline
+```
+### [Example 413](https://github.github.com/gfm/#example-413)
 
 This markdown:
 
@@ -1041,14 +1061,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p><em>foo <strong>bar</strong></em></p>
-
+<p><em>foo<strong>bar</strong></em></p>
 ```
 
-Example 414
+But instead was:
+
+```html
+<p><em>foo</em><strong>bar</strong></p>
+```
+### [Example 414](https://github.github.com/gfm/#example-414)
 
 This markdown:
 
@@ -1057,14 +1081,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p><em>foo<strong>bar</strong></em></p>
-
 ```
 
-Example 415
+But instead was:
+
+```html
+<p><em>foo</em><strong>bar</strong></p>
+```
+### [Example 415](https://github.github.com/gfm/#example-415)
 
 This markdown:
 
@@ -1073,14 +1101,18 @@ foo***bar***baz
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p>foo<em><strong>bar</strong></em>baz</p>
-
 ```
 
-Example 416
+But instead was:
+
+```html
+<p>foo<strong>bar</strong>baz</p>
+```
+### [Example 416](https://github.github.com/gfm/#example-416)
 
 This markdown:
 
@@ -1089,14 +1121,18 @@ foo******bar*********baz
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p>foo<strong><strong><strong>bar</strong></strong></strong>***baz</p>
-
 ```
 
-Example 417
+But instead was:
+
+```html
+<p>foo<strong>bar</strong><strong>baz</strong></p>
+```
+### [Example 417](https://github.github.com/gfm/#example-417)
 
 This markdown:
 
@@ -1105,14 +1141,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p><em>foo <strong>bar <em>baz</em> bim</strong> bop</em></p>
-
+<p><em>foo<strong>bar<em>baz</em>bim</strong>bop</em></p>
 ```
 
-Example 418
+But instead was:
+
+```html
+<p><em>foo</em><strong>bar</strong><strong>baz</strong><strong>bim</strong><em>bop</em></p>
+```
+### [Example 418](https://github.github.com/gfm/#example-418)
 
 This markdown:
 
@@ -1121,14 +1161,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p><em>foo <a href="/url"><em>bar</em></a></em></p>
-
+<p><em>foo<a href="/url"><em>bar</em></a></em></p>
 ```
 
-Example 419
+But instead was:
+
+```html
+<p><em>foo</em><a href="/url"><em>bar</em></a></p>
+```
+### [Example 419](https://github.github.com/gfm/#example-419)
 
 This markdown:
 
@@ -1137,14 +1181,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p>** is not an empty emphasis</p>
-
 ```
 
-Example 420
+But instead was:
+
+```html
+<p><strong>is not an empty emphasis</strong></p>
+```
+### [Example 420](https://github.github.com/gfm/#example-420)
 
 This markdown:
 
@@ -1153,14 +1201,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p>**** is not an empty strong emphasis</p>
-
 ```
 
-Example 421
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting end Problem at row 1 Expecting newline
+```
+### [Example 421](https://github.github.com/gfm/#example-421)
 
 This markdown:
 
@@ -1169,32 +1221,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p><strong>foo <a href="/url">bar</a></strong></p>
-
+<p><strong>foo<a href="/url">bar</a></strong></p>
 ```
 
-Example 422
-
-This markdown:
-
-```markdown
-**foo
-bar**
-
-```
-
-Gives this incorrect output:
+But instead was:
 
 ```html
-<p><strong>foo
-bar</strong></p>
-
+<p><strong>foo</strong><a href="/url">bar</a></p>
 ```
-
-Example 423
+### [Example 423](https://github.github.com/gfm/#example-423)
 
 This markdown:
 
@@ -1203,14 +1241,18 @@ __foo _bar_ baz__
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p><strong>foo <em>bar</em> baz</strong></p>
-
+<p><strong>foo<em>bar</em>baz</strong></p>
 ```
 
-Example 424
+But instead was:
+
+```html
+<p>__foo _bar_ baz__</p>
+```
+### [Example 424](https://github.github.com/gfm/#example-424)
 
 This markdown:
 
@@ -1219,14 +1261,18 @@ __foo __bar__ baz__
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p><strong>foo <strong>bar</strong> baz</strong></p>
-
+<p><strong>foo<strong>bar</strong>baz</strong></p>
 ```
 
-Example 425
+But instead was:
+
+```html
+<p>__foo __bar__ baz__</p>
+```
+### [Example 425](https://github.github.com/gfm/#example-425)
 
 This markdown:
 
@@ -1235,14 +1281,18 @@ ____foo__ bar__
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p><strong><strong>foo</strong> bar</strong></p>
-
+<p><strong><strong>foo</strong>bar</strong></p>
 ```
 
-Example 426
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting end Problem at row 1 Expecting newline
+```
+### [Example 426](https://github.github.com/gfm/#example-426)
 
 This markdown:
 
@@ -1251,14 +1301,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p><strong>foo <strong>bar</strong></strong></p>
-
+<p><strong>foo<strong>bar</strong></strong></p>
 ```
 
-Example 427
+But instead was:
+
+```html
+<p><strong>foo</strong>bar</p>
+```
+### [Example 427](https://github.github.com/gfm/#example-427)
 
 This markdown:
 
@@ -1267,14 +1321,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p><strong>foo <em>bar</em> baz</strong></p>
-
+<p><strong>foo<em>bar</em>baz</strong></p>
 ```
 
-Example 428
+But instead was:
+
+```html
+<p><strong>foo</strong><strong>bar</strong><strong>baz</strong></p>
+```
+### [Example 428](https://github.github.com/gfm/#example-428)
 
 This markdown:
 
@@ -1283,14 +1341,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p><strong>foo<em>bar</em>baz</strong></p>
-
 ```
 
-Example 429
+But instead was:
+
+```html
+<p><strong>foo</strong><strong>bar</strong><strong>baz</strong></p>
+```
+### [Example 429](https://github.github.com/gfm/#example-429)
 
 This markdown:
 
@@ -1299,14 +1361,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p><strong><em>foo</em> bar</strong></p>
-
+<p><strong><em>foo</em>bar</strong></p>
 ```
 
-Example 430
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting end Problem at row 1 Expecting newline
+```
+### [Example 430](https://github.github.com/gfm/#example-430)
 
 This markdown:
 
@@ -1315,14 +1381,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p><strong>foo <em>bar</em></strong></p>
-
+<p><strong>foo<em>bar</em></strong></p>
 ```
 
-Example 431
+But instead was:
+
+```html
+<p><strong>foo</strong><strong>bar</strong></p>
+```
+### [Example 431](https://github.github.com/gfm/#example-431)
 
 This markdown:
 
@@ -1332,15 +1402,18 @@ bim* bop**
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p><strong>foo <em>bar <strong>baz</strong>
-bim</em> bop</strong></p>
-
+<p><strong>foo<em>bar<strong>baz</strong>bim</em>bop</strong></p>
 ```
 
-Example 432
+But instead was:
+
+```html
+<p><strong>foo</strong><strong>bar</strong><em>baz</em><strong>bim</strong><strong>bop</strong></p>
+```
+### [Example 432](https://github.github.com/gfm/#example-432)
 
 This markdown:
 
@@ -1349,14 +1422,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p><strong>foo <a href="/url"><em>bar</em></a></strong></p>
-
+<p><strong>foo<a href="/url"><em>bar</em></a></strong></p>
 ```
 
-Example 434
+But instead was:
+
+```html
+<p><strong>foo</strong><a href="/url"><em>bar</em></a></p>
+```
+### [Example 434](https://github.github.com/gfm/#example-434)
 
 This markdown:
 
@@ -1365,14 +1442,18 @@ ____ is not an empty strong emphasis
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p>____ is not an empty strong emphasis</p>
-
 ```
 
-Example 435
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting end Problem at row 1 Expecting newline
+```
+### [Example 435](https://github.github.com/gfm/#example-435)
 
 This markdown:
 
@@ -1381,14 +1462,18 @@ foo ***
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p>foo ***</p>
-
 ```
 
-Example 436
+But instead was:
+
+```html
+<p>foo</p>
+```
+### [Example 436](https://github.github.com/gfm/#example-436)
 
 This markdown:
 
@@ -1397,14 +1482,18 @@ foo *\**
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>foo <em>*</em></p>
-
+<p>foo<em>*</em></p>
 ```
 
-Example 438
+But instead was:
+
+```html
+<p>foo<em>\</em></p>
+```
+### [Example 438](https://github.github.com/gfm/#example-438)
 
 This markdown:
 
@@ -1413,14 +1502,18 @@ foo *****
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p>foo *****</p>
-
 ```
 
-Example 439
+But instead was:
+
+```html
+<p>foo</p>
+```
+### [Example 439](https://github.github.com/gfm/#example-439)
 
 This markdown:
 
@@ -1429,14 +1522,18 @@ foo **\***
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>foo <strong>*</strong></p>
-
+<p>foo<strong>*</strong></p>
 ```
 
-Example 441
+But instead was:
+
+```html
+<p>foo<strong>\</strong></p>
+```
+### [Example 441](https://github.github.com/gfm/#example-441)
 
 This markdown:
 
@@ -1445,14 +1542,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p>*<em>foo</em></p>
-
 ```
 
-Example 442
+But instead was:
+
+```html
+<p><strong>foo</strong></p>
+```
+### [Example 442](https://github.github.com/gfm/#example-442)
 
 This markdown:
 
@@ -1461,14 +1562,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p><em>foo</em>*</p>
-
 ```
 
-Example 443
+But instead was:
+
+```html
+<p><em>foo</em></p>
+```
+### [Example 443](https://github.github.com/gfm/#example-443)
 
 This markdown:
 
@@ -1477,14 +1582,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p>*<strong>foo</strong></p>
-
 ```
 
-Example 444
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting end Problem at row 1 Expecting newline
+```
+### [Example 444](https://github.github.com/gfm/#example-444)
 
 This markdown:
 
@@ -1493,14 +1602,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p>***<em>foo</em></p>
-
 ```
 
-Example 445
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting end Problem at row 1 Expecting newline
+```
+### [Example 445](https://github.github.com/gfm/#example-445)
 
 This markdown:
 
@@ -1509,14 +1622,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p><strong>foo</strong>*</p>
-
 ```
 
-Example 446
+But instead was:
+
+```html
+<p><strong>foo</strong></p>
+```
+### [Example 446](https://github.github.com/gfm/#example-446)
 
 This markdown:
 
@@ -1525,14 +1642,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p><em>foo</em>***</p>
-
 ```
 
-Example 448
+But instead was:
+
+```html
+<p><em>foo</em></p>
+```
+### [Example 448](https://github.github.com/gfm/#example-448)
 
 This markdown:
 
@@ -1541,14 +1662,18 @@ foo _\__
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>foo <em>_</em></p>
-
+<p>foo<em>_</em></p>
 ```
 
-Example 449
+But instead was:
+
+```html
+<p>foo _\__</p>
+```
+### [Example 449](https://github.github.com/gfm/#example-449)
 
 This markdown:
 
@@ -1557,14 +1682,18 @@ foo _*_
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>foo <em>*</em></p>
-
+<p>foo<em>*</em></p>
 ```
 
-Example 451
+But instead was:
+
+```html
+<p>foo _<em>_</em></p>
+```
+### [Example 451](https://github.github.com/gfm/#example-451)
 
 This markdown:
 
@@ -1573,14 +1702,18 @@ foo __\___
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>foo <strong>_</strong></p>
-
+<p>foo<strong>_</strong></p>
 ```
 
-Example 452
+But instead was:
+
+```html
+<p>foo __\___</p>
+```
+### [Example 452](https://github.github.com/gfm/#example-452)
 
 This markdown:
 
@@ -1589,14 +1722,18 @@ foo __*__
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>foo <strong>*</strong></p>
-
+<p>foo<strong>*</strong></p>
 ```
 
-Example 453
+But instead was:
+
+```html
+<p>foo __<em>__</em></p>
+```
+### [Example 453](https://github.github.com/gfm/#example-453)
 
 This markdown:
 
@@ -1605,14 +1742,18 @@ __foo_
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p>_<em>foo</em></p>
-
 ```
 
-Example 454
+But instead was:
+
+```html
+<p>__foo_</p>
+```
+### [Example 454](https://github.github.com/gfm/#example-454)
 
 This markdown:
 
@@ -1621,14 +1762,18 @@ _foo__
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p><em>foo</em>_</p>
-
 ```
 
-Example 455
+But instead was:
+
+```html
+<p>_foo__</p>
+```
+### [Example 455](https://github.github.com/gfm/#example-455)
 
 This markdown:
 
@@ -1637,14 +1782,18 @@ ___foo__
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p>_<strong>foo</strong></p>
-
 ```
 
-Example 456
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting end Problem at row 1 Expecting newline
+```
+### [Example 456](https://github.github.com/gfm/#example-456)
 
 This markdown:
 
@@ -1653,14 +1802,18 @@ ____foo_
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p>___<em>foo</em></p>
-
 ```
 
-Example 457
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting end Problem at row 1 Expecting newline
+```
+### [Example 457](https://github.github.com/gfm/#example-457)
 
 This markdown:
 
@@ -1669,14 +1822,18 @@ __foo___
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p><strong>foo</strong>_</p>
-
 ```
 
-Example 458
+But instead was:
+
+```html
+<p>__foo___</p>
+```
+### [Example 458](https://github.github.com/gfm/#example-458)
 
 This markdown:
 
@@ -1685,14 +1842,18 @@ _foo____
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p><em>foo</em>___</p>
-
 ```
 
-Example 460
+But instead was:
+
+```html
+<p>_foo____</p>
+```
+### [Example 460](https://github.github.com/gfm/#example-460)
 
 This markdown:
 
@@ -1701,14 +1862,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p><em><em>foo</em></em></p>
-
 ```
 
-Example 461
+But instead was:
+
+```html
+<p><em>_foo_</em></p>
+```
+### [Example 461](https://github.github.com/gfm/#example-461)
 
 This markdown:
 
@@ -1717,14 +1882,18 @@ __foo__
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p><strong>foo</strong></p>
-
 ```
 
-Example 462
+But instead was:
+
+```html
+<p>__foo__</p>
+```
+### [Example 462](https://github.github.com/gfm/#example-462)
 
 This markdown:
 
@@ -1733,14 +1902,18 @@ _*foo*_
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p><em><em>foo</em></em></p>
-
 ```
 
-Example 463
+But instead was:
+
+```html
+<p>_<em>foo</em>_</p>
+```
+### [Example 463](https://github.github.com/gfm/#example-463)
 
 This markdown:
 
@@ -1749,14 +1922,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p><strong><strong>foo</strong></strong></p>
-
 ```
 
-Example 464
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting end Problem at row 1 Expecting newline
+```
+### [Example 464](https://github.github.com/gfm/#example-464)
 
 This markdown:
 
@@ -1765,14 +1942,18 @@ ____foo____
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p><strong><strong>foo</strong></strong></p>
-
 ```
 
-Example 465
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting end Problem at row 1 Expecting newline
+```
+### [Example 465](https://github.github.com/gfm/#example-465)
 
 This markdown:
 
@@ -1781,14 +1962,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p><strong><strong><strong>foo</strong></strong></strong></p>
-
 ```
 
-Example 466
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting end Problem at row 1 Expecting newline
+```
+### [Example 466](https://github.github.com/gfm/#example-466)
 
 This markdown:
 
@@ -1797,14 +1982,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p><em><strong>foo</strong></em></p>
-
 ```
 
-Example 467
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting end Problem at row 1 Expecting newline
+```
+### [Example 467](https://github.github.com/gfm/#example-467)
 
 This markdown:
 
@@ -1813,14 +2002,18 @@ _____foo_____
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p><em><strong><strong>foo</strong></strong></em></p>
-
 ```
 
-Example 469
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting end Problem at row 1 Expecting newline
+```
+### [Example 469](https://github.github.com/gfm/#example-469)
 
 This markdown:
 
@@ -1829,14 +2022,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p><em>foo <strong>bar *baz bim</strong> bam</em></p>
-
+<p><em>foo<strong>bar *baz bim</strong>bam</em></p>
 ```
 
-Example 470
+But instead was:
+
+```html
+<p><em>foo __bar</em>baz bim__ bam</p>
+```
+### [Example 470](https://github.github.com/gfm/#example-470)
 
 This markdown:
 
@@ -1845,14 +2042,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>**foo <strong>bar baz</strong></p>
-
+<p>**foo<strong>bar baz</strong></p>
 ```
 
-Example 471
+But instead was:
+
+```html
+<p><strong>foo</strong>bar baz</p>
+```
+### [Example 471](https://github.github.com/gfm/#example-471)
 
 This markdown:
 
@@ -1861,14 +2062,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>*foo <em>bar baz</em></p>
-
+<p>*foo<em>bar baz</em></p>
 ```
 
-Example 472
+But instead was:
+
+```html
+<p><em>foo</em>bar baz</p>
+```
+### [Example 472](https://github.github.com/gfm/#example-472)
 
 This markdown:
 
@@ -1877,14 +2082,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p>*<a href="/url">bar*</a></p>
-
 ```
 
-Example 474
+But instead was:
+
+```html
+<p><a href="/url">bar</a></p>
+```
+### [Example 474](https://github.github.com/gfm/#example-474)
 
 This markdown:
 
@@ -1893,14 +2102,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>*<img src="foo" title="*"/></p>
-
+<p>*<img src="foo" title="*"></p>
 ```
 
-Example 475
+But instead was:
+
+```html
+<p><em>&lt;img src=&quot;foo&quot; title=&quot;</em>&quot;/&gt;</p>
+```
+### [Example 475](https://github.github.com/gfm/#example-475)
 
 This markdown:
 
@@ -1909,14 +2122,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p>**<a href="**"></p>
-
 ```
 
-Example 476
+But instead was:
+
+```html
+<p><strong>&lt;a href=&quot;</strong>&quot;&gt;</p>
+```
+### [Example 476](https://github.github.com/gfm/#example-476)
 
 This markdown:
 
@@ -1925,14 +2142,18 @@ __<a href="__">
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p>__<a href="__"></p>
-
 ```
 
-Example 477
+But instead was:
+
+```html
+<p>__&lt;a href=&quot;__&quot;&gt;</p>
+```
+### [Example 477](https://github.github.com/gfm/#example-477)
 
 This markdown:
 
@@ -1941,14 +2162,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p><em>a <code>*</code></em></p>
-
+<p><em>a<code>*</code></em></p>
 ```
 
-Example 478
+But instead was:
+
+```html
+<p><em>a</em></p>
+```
+### [Example 478](https://github.github.com/gfm/#example-478)
 
 This markdown:
 
@@ -1957,14 +2182,18 @@ _a `_`_
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p><em>a <code>_</code></em></p>
-
+<p><em>a<code>_</code></em></p>
 ```
 
-Example 479
+But instead was:
+
+```html
+<p>_a<code>_</code>_</p>
+```
+### [Example 479](https://github.github.com/gfm/#example-479)
 
 This markdown:
 
@@ -1973,14 +2202,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p>**a<a href="http://foo.bar/?q=**">http://foo.bar/?q=**</a></p>
-
 ```
 
-Example 480
+But instead was:
+
+```html
+<p><strong>a&lt;http://foo.bar/?q=</strong>&gt;</p>
+```
+### [Example 480](https://github.github.com/gfm/#example-480)
 
 This markdown:
 
@@ -1989,3240 +2222,919 @@ __a<http://foo.bar/?q=__>
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p>__a<a href="http://foo.bar/?q=__">http://foo.bar/?q=__</a></p>
-
 ```
 
-### Inlines
+But instead was:
 
-Example 297
+```html
+<p>__a&lt;http://foo.bar/?q=__&gt;</p>
+```
+## Entity and numeric character references
+
+### [Example 311](https://github.github.com/gfm/#example-311)
 
 This markdown:
 
 ```markdown
-`hi`lo`
+&nbsp; &amp; &copy; &AElig; &Dcaron;
+&frac34; &HilbertSpace; &DifferentialD;
+&ClockwiseContourIntegral; &ngE;
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p><code>hi</code>lo`</p>
-
+<p>&amp; © Æ Ď ¾ ℋ ⅆ ∲ ≧̸</p>
 ```
 
-### Backslash escapes
+But instead was:
 
-Example 298
+```html
+<p>&amp;nbsp; &amp;amp; &amp;copy; &amp;AElig; &amp;Dcaron; &amp;frac34; &amp;HilbertSpace; &amp;DifferentialD; &amp;ClockwiseContourIntegral; &amp;ngE;</p>
+```
+### [Example 312](https://github.github.com/gfm/#example-312)
 
 This markdown:
 
 ```markdown
-\!\"\#\$\%\&\'\(\)\*\+\,\-\.\/\:\;\<\=\>\?\@\[\\\]\^\_\`\{\|\}\~
+&#35; &#1234; &#992; &#0;
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>!&quot;#$%&amp;'()*+,-./:;&lt;=&gt;?@[\]^_`{|}~</p>
-
+<p># Ӓ Ϡ �</p>
 ```
 
-Example 300
+But instead was:
+
+```html
+<p>&amp;#35; &amp;#1234; &amp;#992; &amp;#0;</p>
+```
+### [Example 313](https://github.github.com/gfm/#example-313)
 
 This markdown:
 
 ```markdown
-\*not emphasized*
-\<br/> not a tag
-\[not a link](/foo)
-\`not code`
-1\. not a list
-\* not a list
-\# not a heading
-\[foo]: /url "not a reference"
-\&ouml; not a character entity
+&#X22; &#XD06; &#xcab;
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>*not emphasized*
-&lt;br/&gt; not a tag
-[not a link](/foo)
-`not code`
-1. not a list
-* not a list
-# not a heading
-[foo]: /url &quot;not a reference&quot;
-&amp;ouml; not a character entity</p>
-
+<p>&quot; ആ ಫ</p>
 ```
 
-Example 301
+But instead was:
+
+```html
+<p>&amp;#X22; &amp;#XD06; &amp;#xcab;</p>
+```
+### [Example 317](https://github.github.com/gfm/#example-317)
 
 This markdown:
 
 ```markdown
-\\*emphasis*
+<a href="&ouml;&ouml;.html">
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>\<em>emphasis</em></p>
+<a href="öö.html">
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 1 No entity named &quot;ö&quot; found.
+```
+### [Example 318](https://github.github.com/gfm/#example-318)
+
+This markdown:
+
+```markdown
+[foo](/f&ouml;&ouml; "f&ouml;&ouml;")
 
 ```
 
-Example 302
+Should give output:
+
+```html
+<p><a href="/f%C3%B6%C3%B6" title="föö">foo</a></p>
+```
+
+But instead was:
+
+```html
+<p><a f&ouml;&ouml;\""="" href="/föö \">foo</a></p>
+```
+### [Example 319](https://github.github.com/gfm/#example-319)
+
+This markdown:
+
+```markdown
+[foo]
+
+[foo]: /f&ouml;&ouml; "f&ouml;&ouml;"
+
+```
+
+Should give output:
+
+```html
+<p><a href="/f%C3%B6%C3%B6" title="föö">foo</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 320](https://github.github.com/gfm/#example-320)
+
+This markdown:
+
+```markdown
+``` f&ouml;&ouml;
+foo
+```
+
+```
+
+Should give output:
+
+```html
+<pre><code class="language-föö">foo</code></pre>
+```
+
+But instead was:
+
+```html
+<pre><code>foo</code></pre>
+```
+### [Example 323](https://github.github.com/gfm/#example-323)
+
+This markdown:
+
+```markdown
+&#42;foo&#42;
+*foo*
+
+```
+
+Should give output:
+
+```html
+<p>*foo*<em>foo</em></p>
+```
+
+But instead was:
+
+```html
+<p>&amp;#42;foo&amp;#42;<em>foo</em></p>
+```
+### [Example 324](https://github.github.com/gfm/#example-324)
+
+This markdown:
+
+```markdown
+&#42; foo
+
+* foo
+
+```
+
+Should give output:
+
+```html
+<p>* foo</p><ul><li>foo</li></ul>
+```
+
+But instead was:
+
+```html
+<p>&amp;#42; foo</p><p><em>foo</em></p>
+```
+### [Example 325](https://github.github.com/gfm/#example-325)
+
+This markdown:
+
+```markdown
+foo&#10;&#10;bar
+
+```
+
+Should give output:
+
+```html
+<p>foo bar</p>
+```
+
+But instead was:
+
+```html
+<p>foo&amp;#10;&amp;#10;bar</p>
+```
+### [Example 326](https://github.github.com/gfm/#example-326)
+
+This markdown:
+
+```markdown
+&#9;foo
+
+```
+
+Should give output:
+
+```html
+<p>foo</p>
+```
+
+But instead was:
+
+```html
+<p>&amp;#9;foo</p>
+```
+### [Example 327](https://github.github.com/gfm/#example-327)
+
+This markdown:
+
+```markdown
+[a](url &quot;tit&quot;)
+
+```
+
+Should give output:
+
+```html
+<p>[a](url &quot;tit&quot;)</p>
+```
+
+But instead was:
+
+```html
+<p><a href="url &quot;tit&quot;">a</a></p>
+```
+## Raw HTML
+
+### [Example 609](https://github.github.com/gfm/#example-609)
+
+This markdown:
+
+```markdown
+<a><bab><c2c>
+
+```
+
+Should give output:
+
+```html
+<p><a><bab><c2c></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 2 Expecting symbol
+```
+### [Example 610](https://github.github.com/gfm/#example-610)
+
+This markdown:
+
+```markdown
+<a/><b2/>
+
+```
+
+Should give output:
+
+```html
+<p><a><b2></p>
+```
+
+But instead was:
+
+```html
+ERROR Ran into a oneOf with no possibilities!
+```
+### [Example 611](https://github.github.com/gfm/#example-611)
+
+This markdown:
+
+```markdown
+<a  /><b2
+data="foo" >
+
+```
+
+Should give output:
+
+```html
+<p><a><b2 data="foo"></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 3 Expecting symbol
+```
+### [Example 612](https://github.github.com/gfm/#example-612)
+
+This markdown:
+
+```markdown
+<a foo="bar" bam = 'baz <em>"</em>'
+_boolean zoop:33=zoop:33 />
+
+```
+
+Should give output:
+
+```html
+<p><a _boolean="" bam="baz &lt;em&gt;&quot;&lt;/em&gt;" foo="bar" zoop:33="zoop:33"></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 2 Expecting symbol =
+```
+### [Example 613](https://github.github.com/gfm/#example-613)
+
+This markdown:
+
+```markdown
+Foo <responsive-image src="foo.jpg" />
+
+```
+
+Should give output:
+
+```html
+<p>Foo<responsive-image src="foo.jpg"></p>
+```
+
+But instead was:
+
+```html
+<p>Foo &lt;responsive-image src=&quot;foo.jpg&quot; /&gt;</p>
+```
+### [Example 614](https://github.github.com/gfm/#example-614)
+
+This markdown:
+
+```markdown
+<33> <__>
+
+```
+
+Should give output:
+
+```html
+<p>&lt;33&gt; &lt;__&gt;</p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 2 Expecting symbol
+```
+### [Example 615](https://github.github.com/gfm/#example-615)
+
+This markdown:
+
+```markdown
+<a h*#ref="hi">
+
+```
+
+Should give output:
+
+```html
+<p>&lt;a h*#ref=&quot;hi&quot;&gt;</p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 2 Expecting symbol
+```
+### [Example 616](https://github.github.com/gfm/#example-616)
+
+This markdown:
+
+```markdown
+<a href="hi'> <a href=hi'>
+
+```
+
+Should give output:
+
+```html
+<p>&lt;a href=&quot;hi&#39;&gt; &lt;a href=hi&#39;&gt;</p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 2 Expecting symbol &quot;
+```
+### [Example 617](https://github.github.com/gfm/#example-617)
+
+This markdown:
+
+```markdown
+< a><
+foo><bar/ >
+<foo bar=baz
+bim!bop />
+
+```
+
+Should give output:
+
+```html
+<p>&lt; a&gt;&lt; foo&gt;&lt;bar/ &gt; &lt;foo bar=baz bim!bop /&gt;</p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 1 Bad repeat
+```
+### [Example 618](https://github.github.com/gfm/#example-618)
+
+This markdown:
+
+```markdown
+<a href='bar'title=title>
+
+```
+
+Should give output:
+
+```html
+<p>&lt;a href=&#39;bar&#39;title=title&gt;</p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting symbol &quot; Problem at row 1 Expecting symbol &#39;
+```
+### [Example 619](https://github.github.com/gfm/#example-619)
+
+This markdown:
+
+```markdown
+</a></foo >
+
+```
+
+Should give output:
+
+```html
+<p></a></foo></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 1 Bad repeat
+```
+### [Example 620](https://github.github.com/gfm/#example-620)
+
+This markdown:
+
+```markdown
+</a href="foo">
+
+```
+
+Should give output:
+
+```html
+<p>&lt;/a href=&quot;foo&quot;&gt;</p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 1 Bad repeat
+```
+### [Example 621](https://github.github.com/gfm/#example-621)
+
+This markdown:
+
+```markdown
+foo <!-- this is a
+comment - with hyphen -->
+
+```
+
+Should give output:
+
+```html
+<p>foo</p>
+```
+
+But instead was:
+
+```html
+<p>foo &lt;!-- this is a comment - with hyphen --&gt;</p>
+```
+### [Example 624](https://github.github.com/gfm/#example-624)
+
+This markdown:
+
+```markdown
+foo <?php echo $a; ?>
+
+```
+
+Should give output:
+
+```html
+<p>foo</p>
+```
+
+But instead was:
+
+```html
+<p>foo &lt;?php echo $a; ?&gt;</p>
+```
+### [Example 625](https://github.github.com/gfm/#example-625)
+
+This markdown:
+
+```markdown
+foo <!ELEMENT br EMPTY>
+
+```
+
+Should give output:
+
+```html
+<p>foo</p>
+```
+
+But instead was:
+
+```html
+<p>foo &lt;!ELEMENT br EMPTY&gt;</p>
+```
+### [Example 626](https://github.github.com/gfm/#example-626)
+
+This markdown:
+
+```markdown
+foo <![CDATA[>&<]]>
+
+```
+
+Should give output:
+
+```html
+<p>foo&amp;&lt;]]&gt;</p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 3 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 627](https://github.github.com/gfm/#example-627)
+
+This markdown:
+
+```markdown
+foo <a href="&ouml;">
+
+```
+
+Should give output:
+
+```html
+<p>foo<a href="ö"></p>
+```
+
+But instead was:
+
+```html
+<p>foo &lt;a href=&quot;&amp;ouml;&quot;&gt;</p>
+```
+### [Example 628](https://github.github.com/gfm/#example-628)
+
+This markdown:
+
+```markdown
+foo <a href="\*">
+
+```
+
+Should give output:
+
+```html
+<p>foo<a href="\*"></p>
+```
+
+But instead was:
+
+```html
+<p>foo &lt;a href=&quot;\<em>&quot;&gt;</em></p>
+```
+### [Example 629](https://github.github.com/gfm/#example-629)
+
+This markdown:
+
+```markdown
+<a href="\"">
+
+```
+
+Should give output:
+
+```html
+<p>&lt;a href=&quot;&quot;&quot;&gt;</p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting symbol /&gt; Problem at row 1 Expecting symbol &gt;
+```
+## Hard line breaks
+
+### [Example 630](https://github.github.com/gfm/#example-630)
+
+This markdown:
+
+```markdown
+foo  
+baz
+
+```
+
+Should give output:
+
+```html
+<p>foo<br>baz</p>
+```
+
+But instead was:
+
+```html
+<p>foo baz</p>
+```
+### [Example 631](https://github.github.com/gfm/#example-631)
 
 This markdown:
 
 ```markdown
 foo\
-bar
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>foo<br />
-bar</p>
-
-```
-
-Example 303
-
-This markdown:
-
-```markdown
-`` \[\` ``
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><code>\[\`</code></p>
-
-```
-
-Example 306
-
-This markdown:
-
-```markdown
-<http://example.com?find=\*>
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="http://example.com?find=%5C*">http://example.com?find=\*</a></p>
-
-```
-
-Example 307
-
-This markdown:
-
-```markdown
-<a href="/bar\/)">
-
-```
-
-Gives this incorrect output:
-
-```html
-<a href="/bar\/)">
-
-```
-
-Example 308
-
-This markdown:
-
-```markdown
-[foo](/bar\* "ti\*tle")
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="/bar*" title="ti*tle">foo</a></p>
-
-```
-
-Example 309
-
-This markdown:
-
-```markdown
-[foo]
-
-[foo]: /bar\* "ti\*tle"
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="/bar*" title="ti*tle">foo</a></p>
-
-```
-
-Example 310
-
-This markdown:
-
-```markdown
-``` foo\+bar
-foo
-```
-
-```
-
-Gives this incorrect output:
-
-```html
-<pre><code class="language-foo+bar">foo
-</code></pre>
-
-```
-
-### Images
-
-Example 568
-
-This markdown:
-
-```markdown
-![foo](/url "title")
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><img src="/url" alt="foo" title="title" /></p>
-
-```
-
-Example 569
-
-This markdown:
-
-```markdown
-![foo *bar*]
-
-[foo *bar*]: train.jpg "train & tracks"
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><img src="train.jpg" alt="foo bar" title="train &amp; tracks" /></p>
-
-```
-
-Example 570
-
-This markdown:
-
-```markdown
-![foo ![bar](/url)](/url2)
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><img src="/url2" alt="foo bar" /></p>
-
-```
-
-Example 571
-
-This markdown:
-
-```markdown
-![foo [bar](/url)](/url2)
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><img src="/url2" alt="foo bar" /></p>
-
-```
-
-Example 572
-
-This markdown:
-
-```markdown
-![foo *bar*][]
-
-[foo *bar*]: train.jpg "train & tracks"
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><img src="train.jpg" alt="foo bar" title="train &amp; tracks" /></p>
-
-```
-
-Example 573
-
-This markdown:
-
-```markdown
-![foo *bar*][foobar]
-
-[FOOBAR]: train.jpg "train & tracks"
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><img src="train.jpg" alt="foo bar" title="train &amp; tracks" /></p>
-
-```
-
-Example 574
-
-This markdown:
-
-```markdown
-![foo](train.jpg)
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><img src="train.jpg" alt="foo" /></p>
-
-```
-
-Example 575
-
-This markdown:
-
-```markdown
-My ![foo bar](/path/to/train.jpg  "title"   )
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>My <img src="/path/to/train.jpg" alt="foo bar" title="title" /></p>
-
-```
-
-Example 576
-
-This markdown:
-
-```markdown
-![foo](<url>)
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><img src="url" alt="foo" /></p>
-
-```
-
-Example 577
-
-This markdown:
-
-```markdown
-![](/url)
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><img src="/url" alt="" /></p>
-
-```
-
-Example 578
-
-This markdown:
-
-```markdown
-![foo][bar]
-
-[bar]: /url
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><img src="/url" alt="foo" /></p>
-
-```
-
-Example 579
-
-This markdown:
-
-```markdown
-![foo][bar]
-
-[BAR]: /url
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><img src="/url" alt="foo" /></p>
-
-```
-
-Example 580
-
-This markdown:
-
-```markdown
-![foo][]
-
-[foo]: /url "title"
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><img src="/url" alt="foo" title="title" /></p>
-
-```
-
-Example 581
-
-This markdown:
-
-```markdown
-![*foo* bar][]
-
-[*foo* bar]: /url "title"
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><img src="/url" alt="foo bar" title="title" /></p>
-
-```
-
-Example 582
-
-This markdown:
-
-```markdown
-![Foo][]
-
-[foo]: /url "title"
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><img src="/url" alt="Foo" title="title" /></p>
-
-```
-
-Example 583
-
-This markdown:
-
-```markdown
-![foo] 
-[]
-
-[foo]: /url "title"
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><img src="/url" alt="foo" title="title" />
-[]</p>
-
-```
-
-Example 584
-
-This markdown:
-
-```markdown
-![foo]
-
-[foo]: /url "title"
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><img src="/url" alt="foo" title="title" /></p>
-
-```
-
-Example 585
-
-This markdown:
-
-```markdown
-![*foo* bar]
-
-[*foo* bar]: /url "title"
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><img src="/url" alt="foo bar" title="title" /></p>
-
-```
-
-Example 586
-
-This markdown:
-
-```markdown
-![[foo]]
-
-[[foo]]: /url "title"
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>![[foo]]</p>
-<p>[[foo]]: /url &quot;title&quot;</p>
-
-```
-
-Example 587
-
-This markdown:
-
-```markdown
-![Foo]
-
-[foo]: /url "title"
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><img src="/url" alt="Foo" title="title" /></p>
-
-```
-
-Example 588
-
-This markdown:
-
-```markdown
-!\[foo]
-
-[foo]: /url "title"
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>![foo]</p>
-
-```
-
-Example 589
-
-This markdown:
-
-```markdown
-\![foo]
-
-[foo]: /url "title"
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>!<a href="/url" title="title">foo</a></p>
-
-```
-
-### List items
-
-Example 223
-
-This markdown:
-
-```markdown
-A paragraph
-with two lines.
-
-    indented code
-
-> A block quote.
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>A paragraph
-with two lines.</p>
-<pre><code>indented code
-</code></pre>
-<blockquote>
-<p>A block quote.</p>
-</blockquote>
-
-```
-
-Example 224
-
-This markdown:
-
-```markdown
-1.  A paragraph
-    with two lines.
-
-        indented code
-
-    > A block quote.
-
-```
-
-Gives this incorrect output:
-
-```html
-<ol>
-<li>
-<p>A paragraph
-with two lines.</p>
-<pre><code>indented code
-</code></pre>
-<blockquote>
-<p>A block quote.</p>
-</blockquote>
-</li>
-</ol>
-
-```
-
-Example 225
-
-This markdown:
-
-```markdown
-- one
-
- two
-
-```
-
-Gives this incorrect output:
-
-```html
-<ul>
-<li>one</li>
-</ul>
-<p>two</p>
-
-```
-
-Example 226
-
-This markdown:
-
-```markdown
-- one
-
-  two
-
-```
-
-Gives this incorrect output:
-
-```html
-<ul>
-<li>
-<p>one</p>
-<p>two</p>
-</li>
-</ul>
-
-```
-
-Example 227
-
-This markdown:
-
-```markdown
- -    one
-
-     two
-
-```
-
-Gives this incorrect output:
-
-```html
-<ul>
-<li>one</li>
-</ul>
-<pre><code> two
-</code></pre>
-
-```
-
-Example 228
-
-This markdown:
-
-```markdown
- -    one
-
-      two
-
-```
-
-Gives this incorrect output:
-
-```html
-<ul>
-<li>
-<p>one</p>
-<p>two</p>
-</li>
-</ul>
-
-```
-
-Example 229
-
-This markdown:
-
-```markdown
-   > > 1.  one
->>
->>     two
-
-```
-
-Gives this incorrect output:
-
-```html
-<blockquote>
-<blockquote>
-<ol>
-<li>
-<p>one</p>
-<p>two</p>
-</li>
-</ol>
-</blockquote>
-</blockquote>
-
-```
-
-Example 230
-
-This markdown:
-
-```markdown
->>- one
->>
-  >  > two
-
-```
-
-Gives this incorrect output:
-
-```html
-<blockquote>
-<blockquote>
-<ul>
-<li>one</li>
-</ul>
-<p>two</p>
-</blockquote>
-</blockquote>
-
-```
-
-Example 231
-
-This markdown:
-
-```markdown
--one
-
-2.two
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>-one</p>
-<p>2.two</p>
-
-```
-
-Example 232
-
-This markdown:
-
-```markdown
-- foo
-
-
-  bar
-
-```
-
-Gives this incorrect output:
-
-```html
-<ul>
-<li>
-<p>foo</p>
-<p>bar</p>
-</li>
-</ul>
-
-```
-
-Example 233
-
-This markdown:
-
-```markdown
-1.  foo
-
-    ```
-    bar
-    ```
-
-    baz
-
-    > bam
-
-```
-
-Gives this incorrect output:
-
-```html
-<ol>
-<li>
-<p>foo</p>
-<pre><code>bar
-</code></pre>
-<p>baz</p>
-<blockquote>
-<p>bam</p>
-</blockquote>
-</li>
-</ol>
-
-```
-
-Example 234
-
-This markdown:
-
-```markdown
-- Foo
-
-      bar
-
-
-      baz
-
-```
-
-Gives this incorrect output:
-
-```html
-<ul>
-<li>
-<p>Foo</p>
-<pre><code>bar
-
-
 baz
-</code></pre>
-</li>
-</ul>
 
 ```
 
-Example 235
+Should give output:
 
-This markdown:
-
-```markdown
-123456789. ok
-
-```
-
-Gives this incorrect output:
-
-```html
-<ol start="123456789">
-<li>ok</li>
-</ol>
-
-```
-
-Example 237
-
-This markdown:
-
-```markdown
-0. ok
-
-```
-
-Gives this incorrect output:
-
-```html
-<ol start="0">
-<li>ok</li>
-</ol>
-
-```
-
-Example 238
-
-This markdown:
-
-```markdown
-003. ok
-
-```
-
-Gives this incorrect output:
-
-```html
-<ol start="3">
-<li>ok</li>
-</ol>
-
-```
-
-Example 239
-
-This markdown:
-
-```markdown
--1. not ok
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>-1. not ok</p>
-
-```
-
-Example 240
-
-This markdown:
-
-```markdown
-- foo
-
-      bar
-
-```
-
-Gives this incorrect output:
-
-```html
-<ul>
-<li>
-<p>foo</p>
-<pre><code>bar
-</code></pre>
-</li>
-</ul>
-
-```
-
-Example 241
-
-This markdown:
-
-```markdown
-  10.  foo
-
-           bar
-
-```
-
-Gives this incorrect output:
-
-```html
-<ol start="10">
-<li>
-<p>foo</p>
-<pre><code>bar
-</code></pre>
-</li>
-</ol>
-
-```
-
-Example 243
-
-This markdown:
-
-```markdown
-1.     indented code
-
-   paragraph
-
-       more code
-
-```
-
-Gives this incorrect output:
-
-```html
-<ol>
-<li>
-<pre><code>indented code
-</code></pre>
-<p>paragraph</p>
-<pre><code>more code
-</code></pre>
-</li>
-</ol>
-
-```
-
-Example 244
-
-This markdown:
-
-```markdown
-1.      indented code
-
-   paragraph
-
-       more code
-
-```
-
-Gives this incorrect output:
-
-```html
-<ol>
-<li>
-<pre><code> indented code
-</code></pre>
-<p>paragraph</p>
-<pre><code>more code
-</code></pre>
-</li>
-</ol>
-
-```
-
-Example 245
-
-This markdown:
-
-```markdown
-   foo
-
-bar
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>foo</p>
-<p>bar</p>
-
-```
-
-Example 246
-
-This markdown:
-
-```markdown
--    foo
-
-  bar
-
-```
-
-Gives this incorrect output:
-
-```html
-<ul>
-<li>foo</li>
-</ul>
-<p>bar</p>
-
-```
-
-Example 247
-
-This markdown:
-
-```markdown
--  foo
-
-   bar
-
-```
-
-Gives this incorrect output:
-
-```html
-<ul>
-<li>
-<p>foo</p>
-<p>bar</p>
-</li>
-</ul>
-
-```
-
-Example 248
-
-This markdown:
-
-```markdown
--
-  foo
--
-  ```
-  bar
-  ```
--
-      baz
-
-```
-
-Gives this incorrect output:
-
-```html
-<ul>
-<li>foo</li>
-<li>
-<pre><code>bar
-</code></pre>
-</li>
-<li>
-<pre><code>baz
-</code></pre>
-</li>
-</ul>
-
-```
-
-Example 249
-
-This markdown:
-
-```markdown
--   
-  foo
-
-```
-
-Gives this incorrect output:
-
-```html
-<ul>
-<li>foo</li>
-</ul>
-
-```
-
-Example 250
-
-This markdown:
-
-```markdown
--
-
-  foo
-
-```
-
-Gives this incorrect output:
-
-```html
-<ul>
-<li></li>
-</ul>
-<p>foo</p>
-
-```
-
-Example 251
-
-This markdown:
-
-```markdown
-- foo
--
-- bar
-
-```
-
-Gives this incorrect output:
-
-```html
-<ul>
-<li>foo</li>
-<li></li>
-<li>bar</li>
-</ul>
-
-```
-
-Example 252
-
-This markdown:
-
-```markdown
-- foo
--   
-- bar
-
-```
-
-Gives this incorrect output:
-
-```html
-<ul>
-<li>foo</li>
-<li></li>
-<li>bar</li>
-</ul>
-
-```
-
-Example 253
-
-This markdown:
-
-```markdown
-1. foo
-2.
-3. bar
-
-```
-
-Gives this incorrect output:
-
-```html
-<ol>
-<li>foo</li>
-<li></li>
-<li>bar</li>
-</ol>
-
-```
-
-Example 254
-
-This markdown:
-
-```markdown
-*
-
-```
-
-Gives this incorrect output:
-
-```html
-<ul>
-<li></li>
-</ul>
-
-```
-
-Example 255
-
-This markdown:
-
-```markdown
-foo
-*
-
-foo
-1.
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>foo
-*</p>
-<p>foo
-1.</p>
-
-```
-
-Example 256
-
-This markdown:
-
-```markdown
- 1.  A paragraph
-     with two lines.
-
-         indented code
-
-     > A block quote.
-
-```
-
-Gives this incorrect output:
-
-```html
-<ol>
-<li>
-<p>A paragraph
-with two lines.</p>
-<pre><code>indented code
-</code></pre>
-<blockquote>
-<p>A block quote.</p>
-</blockquote>
-</li>
-</ol>
-
-```
-
-Example 257
-
-This markdown:
-
-```markdown
-  1.  A paragraph
-      with two lines.
-
-          indented code
-
-      > A block quote.
-
-```
-
-Gives this incorrect output:
-
-```html
-<ol>
-<li>
-<p>A paragraph
-with two lines.</p>
-<pre><code>indented code
-</code></pre>
-<blockquote>
-<p>A block quote.</p>
-</blockquote>
-</li>
-</ol>
-
-```
-
-Example 258
-
-This markdown:
-
-```markdown
-   1.  A paragraph
-       with two lines.
-
-           indented code
-
-       > A block quote.
-
-```
-
-Gives this incorrect output:
-
-```html
-<ol>
-<li>
-<p>A paragraph
-with two lines.</p>
-<pre><code>indented code
-</code></pre>
-<blockquote>
-<p>A block quote.</p>
-</blockquote>
-</li>
-</ol>
-
-```
-
-Example 259
-
-This markdown:
-
-```markdown
-    1.  A paragraph
-        with two lines.
-
-            indented code
-
-        > A block quote.
-
-```
-
-Gives this incorrect output:
-
-```html
-<pre><code>1.  A paragraph
-    with two lines.
-
-        indented code
-
-    &gt; A block quote.
-</code></pre>
-
-```
-
-Example 260
-
-This markdown:
-
-```markdown
-  1.  A paragraph
-with two lines.
-
-          indented code
-
-      > A block quote.
-
-```
-
-Gives this incorrect output:
-
-```html
-<ol>
-<li>
-<p>A paragraph
-with two lines.</p>
-<pre><code>indented code
-</code></pre>
-<blockquote>
-<p>A block quote.</p>
-</blockquote>
-</li>
-</ol>
-
-```
-
-Example 261
-
-This markdown:
-
-```markdown
-  1.  A paragraph
-    with two lines.
-
-```
-
-Gives this incorrect output:
-
-```html
-<ol>
-<li>A paragraph
-with two lines.</li>
-</ol>
-
-```
-
-Example 262
-
-This markdown:
-
-```markdown
-> 1. > Blockquote
-continued here.
-
-```
-
-Gives this incorrect output:
-
-```html
-<blockquote>
-<ol>
-<li>
-<blockquote>
-<p>Blockquote
-continued here.</p>
-</blockquote>
-</li>
-</ol>
-</blockquote>
-
-```
-
-Example 263
-
-This markdown:
-
-```markdown
-> 1. > Blockquote
-> continued here.
-
-```
-
-Gives this incorrect output:
-
-```html
-<blockquote>
-<ol>
-<li>
-<blockquote>
-<p>Blockquote
-continued here.</p>
-</blockquote>
-</li>
-</ol>
-</blockquote>
-
-```
-
-Example 264
-
-This markdown:
-
-```markdown
-- foo
-  - bar
-    - baz
-      - boo
-
-```
-
-Gives this incorrect output:
-
-```html
-<ul>
-<li>foo
-<ul>
-<li>bar
-<ul>
-<li>baz
-<ul>
-<li>boo</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-
-```
-
-Example 265
-
-This markdown:
-
-```markdown
-- foo
- - bar
-  - baz
-   - boo
-
-```
-
-Gives this incorrect output:
-
-```html
-<ul>
-<li>foo</li>
-<li>bar</li>
-<li>baz</li>
-<li>boo</li>
-</ul>
-
-```
-
-Example 266
-
-This markdown:
-
-```markdown
-10) foo
-    - bar
-
-```
-
-Gives this incorrect output:
-
-```html
-<ol start="10">
-<li>foo
-<ul>
-<li>bar</li>
-</ul>
-</li>
-</ol>
-
-```
-
-Example 267
-
-This markdown:
-
-```markdown
-10) foo
-   - bar
-
-```
-
-Gives this incorrect output:
-
-```html
-<ol start="10">
-<li>foo</li>
-</ol>
-<ul>
-<li>bar</li>
-</ul>
-
-```
-
-Example 268
-
-This markdown:
-
-```markdown
-- - foo
-
-```
-
-Gives this incorrect output:
-
-```html
-<ul>
-<li>
-<ul>
-<li>foo</li>
-</ul>
-</li>
-</ul>
-
-```
-
-Example 269
-
-This markdown:
-
-```markdown
-1. - 2. foo
-
-```
-
-Gives this incorrect output:
-
-```html
-<ol>
-<li>
-<ul>
-<li>
-<ol start="2">
-<li>foo</li>
-</ol>
-</li>
-</ul>
-</li>
-</ol>
-
-```
-
-Example 270
-
-This markdown:
-
-```markdown
-- # Foo
-- Bar
-  ---
-  baz
-
-```
-
-Gives this incorrect output:
-
-```html
-<ul>
-<li>
-<h1>Foo</h1>
-</li>
-<li>
-<h2>Bar</h2>
-baz</li>
-</ul>
-
-```
-
-### [extension] Strikethrough
-
-Example 491
-
-This markdown:
-
-```markdown
-~~Hi~~ Hello, world!
-```
-
-Gives this incorrect output:
-
-```html
-<p><del>Hi</del> Hello, world!</p>
-```
-
-### Blank lines
-
-Example 197
-
-This markdown:
-
-```markdown
-  
-
-aaa
-  
-
-# aaa
-
-  
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>aaa</p>
-<h1>aaa</h1>
-
-```
-
-### Links
-
-Example 481
-
-This markdown:
-
-```markdown
-[link](/uri "title")
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="/uri" title="title">link</a></p>
-
-```
-
-Example 484
-
-This markdown:
-
-```markdown
-[link](<>)
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="">link</a></p>
-
-```
-
-Example 485
-
-This markdown:
-
-```markdown
-[link](/my uri)
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>[link](/my uri)</p>
-
-```
-
-Example 486
-
-This markdown:
-
-```markdown
-[link](</my uri>)
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="/my%20uri">link</a></p>
-
-```
-
-Example 487
-
-This markdown:
-
-```markdown
-[link](foo
-bar)
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>[link](foo
-bar)</p>
-
-```
-
-Example 488
-
-This markdown:
-
-```markdown
-[link](<foo
-bar>)
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>[link](<foo
-bar>)</p>
-
-```
-
-Example 489
-
-This markdown:
-
-```markdown
-[a](<b)c>)
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="b)c">a</a></p>
-
-```
-
-Example 490
-
-This markdown:
-
-```markdown
-[link](<foo\>)
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>[link](&lt;foo&gt;)</p>
-
-```
-
-Example 491
-
-This markdown:
-
-```markdown
-[a](<b)c
-[a](<b)c>
-[a](<b>c)
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>[a](&lt;b)c
-[a](&lt;b)c&gt;
-[a](<b>c)</p>
-
-```
-
-Example 492
-
-This markdown:
-
-```markdown
-[link](\(foo\))
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="(foo)">link</a></p>
-
-```
-
-Example 493
-
-This markdown:
-
-```markdown
-[link](foo(and(bar)))
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="foo(and(bar))">link</a></p>
-
-```
-
-Example 494
-
-This markdown:
-
-```markdown
-[link](foo\(and\(bar\))
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="foo(and(bar)">link</a></p>
-
-```
-
-Example 495
-
-This markdown:
-
-```markdown
-[link](<foo(and(bar)>)
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="foo(and(bar)">link</a></p>
-
-```
-
-Example 496
-
-This markdown:
-
-```markdown
-[link](foo\)\:)
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="foo):">link</a></p>
-
-```
-
-Example 498
-
-This markdown:
-
-```markdown
-[link](foo\bar)
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="foo%5Cbar">link</a></p>
-
-```
-
-Example 499
-
-This markdown:
-
-```markdown
-[link](foo%20b&auml;)
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="foo%20b%C3%A4">link</a></p>
-
-```
-
-Example 500
-
-This markdown:
-
-```markdown
-[link]("title")
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="%22title%22">link</a></p>
-
-```
-
-Example 501
-
-This markdown:
-
-```markdown
-[link](/url "title")
-[link](/url 'title')
-[link](/url (title))
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="/url" title="title">link</a>
-<a href="/url" title="title">link</a>
-<a href="/url" title="title">link</a></p>
-
-```
-
-Example 502
-
-This markdown:
-
-```markdown
-[link](/url "title \"&quot;")
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="/url" title="title &quot;&quot;">link</a></p>
-
-```
-
-Example 503
-
-This markdown:
-
-```markdown
-[link](/url "title")
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="/url%C2%A0%22title%22">link</a></p>
-
-```
-
-Example 504
-
-This markdown:
-
-```markdown
-[link](/url "title "and" title")
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>[link](/url &quot;title &quot;and&quot; title&quot;)</p>
-
-```
-
-Example 505
-
-This markdown:
-
-```markdown
-[link](/url 'title "and" title')
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="/url" title="title &quot;and&quot; title">link</a></p>
-
-```
-
-Example 506
-
-This markdown:
-
-```markdown
-[link](   /uri
-  "title"  )
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="/uri" title="title">link</a></p>
-
-```
-
-Example 507
-
-This markdown:
-
-```markdown
-[link] (/uri)
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>[link] (/uri)</p>
-
-```
-
-Example 508
-
-This markdown:
-
-```markdown
-[link [foo [bar]]](/uri)
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="/uri">link [foo [bar]]</a></p>
-
-```
-
-Example 509
-
-This markdown:
-
-```markdown
-[link] bar](/uri)
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>[link] bar](/uri)</p>
-
-```
-
-Example 510
-
-This markdown:
-
-```markdown
-[link [bar](/uri)
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>[link <a href="/uri">bar</a></p>
-
-```
-
-Example 511
-
-This markdown:
-
-```markdown
-[link \[bar](/uri)
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="/uri">link [bar</a></p>
-
-```
-
-Example 512
-
-This markdown:
-
-```markdown
-[link *foo **bar** `#`*](/uri)
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="/uri">link <em>foo <strong>bar</strong> <code>#</code></em></a></p>
-
-```
-
-Example 513
-
-This markdown:
-
-```markdown
-[![moon](moon.jpg)](/uri)
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="/uri"><img src="moon.jpg" alt="moon" /></a></p>
-
-```
-
-Example 514
-
-This markdown:
-
-```markdown
-[foo [bar](/uri)](/uri)
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>[foo <a href="/uri">bar</a>](/uri)</p>
-
-```
-
-Example 515
-
-This markdown:
-
-```markdown
-[foo *[bar [baz](/uri)](/uri)*](/uri)
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>[foo <em>[bar <a href="/uri">baz</a>](/uri)</em>](/uri)</p>
-
-```
-
-Example 516
-
-This markdown:
-
-```markdown
-![[[foo](uri1)](uri2)](uri3)
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><img src="uri3" alt="[foo](uri2)" /></p>
-
-```
-
-Example 517
-
-This markdown:
-
-```markdown
-*[foo*](/uri)
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>*<a href="/uri">foo*</a></p>
-
-```
-
-Example 518
-
-This markdown:
-
-```markdown
-[foo *bar](baz*)
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="baz*">foo *bar</a></p>
-
-```
-
-Example 519
-
-This markdown:
-
-```markdown
-*foo [bar* baz]
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><em>foo [bar</em> baz]</p>
-
-```
-
-Example 520
-
-This markdown:
-
-```markdown
-[foo <bar attr="](baz)">
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>[foo <bar attr="](baz)"></p>
-
-```
-
-Example 521
-
-This markdown:
-
-```markdown
-[foo`](/uri)`
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>[foo<code>](/uri)</code></p>
-
-```
-
-Example 522
-
-This markdown:
-
-```markdown
-[foo<http://example.com/?search=](uri)>
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>[foo<a href="http://example.com/?search=%5D(uri)">http://example.com/?search=](uri)</a></p>
-
-```
-
-Example 523
-
-This markdown:
-
-```markdown
-[foo][bar]
-
-[bar]: /url "title"
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="/url" title="title">foo</a></p>
-
-```
-
-Example 524
-
-This markdown:
-
-```markdown
-[link [foo [bar]]][ref]
-
-[ref]: /uri
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="/uri">link [foo [bar]]</a></p>
-
-```
-
-Example 525
-
-This markdown:
-
-```markdown
-[link \[bar][ref]
-
-[ref]: /uri
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="/uri">link [bar</a></p>
-
-```
-
-Example 526
-
-This markdown:
-
-```markdown
-[link *foo **bar** `#`*][ref]
-
-[ref]: /uri
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="/uri">link <em>foo <strong>bar</strong> <code>#</code></em></a></p>
-
-```
-
-Example 527
-
-This markdown:
-
-```markdown
-[![moon](moon.jpg)][ref]
-
-[ref]: /uri
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="/uri"><img src="moon.jpg" alt="moon" /></a></p>
-
-```
-
-Example 528
-
-This markdown:
-
-```markdown
-[foo [bar](/uri)][ref]
-
-[ref]: /uri
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>[foo <a href="/uri">bar</a>]<a href="/uri">ref</a></p>
-
-```
-
-Example 529
-
-This markdown:
-
-```markdown
-[foo *bar [baz][ref]*][ref]
-
-[ref]: /uri
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>[foo <em>bar <a href="/uri">baz</a></em>]<a href="/uri">ref</a></p>
-
-```
-
-Example 530
-
-This markdown:
-
-```markdown
-*[foo*][ref]
-
-[ref]: /uri
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>*<a href="/uri">foo*</a></p>
-
-```
-
-Example 531
-
-This markdown:
-
-```markdown
-[foo *bar][ref]
-
-[ref]: /uri
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="/uri">foo *bar</a></p>
-
-```
-
-Example 532
-
-This markdown:
-
-```markdown
-[foo <bar attr="][ref]">
-
-[ref]: /uri
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>[foo <bar attr="][ref]"></p>
-
-```
-
-Example 533
-
-This markdown:
-
-```markdown
-[foo`][ref]`
-
-[ref]: /uri
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>[foo<code>][ref]</code></p>
-
-```
-
-Example 534
-
-This markdown:
-
-```markdown
-[foo<http://example.com/?search=][ref]>
-
-[ref]: /uri
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>[foo<a href="http://example.com/?search=%5D%5Bref%5D">http://example.com/?search=][ref]</a></p>
-
-```
-
-Example 535
-
-This markdown:
-
-```markdown
-[foo][BaR]
-
-[bar]: /url "title"
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="/url" title="title">foo</a></p>
-
-```
-
-Example 536
-
-This markdown:
-
-```markdown
-[Толпой][Толпой] is a Russian word.
-
-[ТОЛПОЙ]: /url
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="/url">Толпой</a> is a Russian word.</p>
-
-```
-
-Example 537
-
-This markdown:
-
-```markdown
-[Foo
-  bar]: /url
-
-[Baz][Foo bar]
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="/url">Baz</a></p>
-
-```
-
-Example 538
-
-This markdown:
-
-```markdown
-[foo] [bar]
-
-[bar]: /url "title"
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>[foo] <a href="/url" title="title">bar</a></p>
-
-```
-
-Example 539
-
-This markdown:
-
-```markdown
-[foo]
-[bar]
-
-[bar]: /url "title"
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>[foo]
-<a href="/url" title="title">bar</a></p>
-
-```
-
-Example 540
-
-This markdown:
-
-```markdown
-[foo]: /url1
-
-[foo]: /url2
-
-[bar][foo]
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="/url1">bar</a></p>
-
-```
-
-Example 541
-
-This markdown:
-
-```markdown
-[bar][foo\!]
-
-[foo!]: /url
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>[bar][foo!]</p>
-
-```
-
-Example 542
-
-This markdown:
-
-```markdown
-[foo][ref[]
-
-[ref[]: /uri
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>[foo][ref[]</p>
-<p>[ref[]: /uri</p>
-
-```
-
-Example 543
-
-This markdown:
-
-```markdown
-[foo][ref[bar]]
-
-[ref[bar]]: /uri
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>[foo][ref[bar]]</p>
-<p>[ref[bar]]: /uri</p>
-
-```
-
-Example 544
-
-This markdown:
-
-```markdown
-[[[foo]]]
-
-[[[foo]]]: /url
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>[[[foo]]]</p>
-<p>[[[foo]]]: /url</p>
-
-```
-
-Example 545
-
-This markdown:
-
-```markdown
-[foo][ref\[]
-
-[ref\[]: /uri
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="/uri">foo</a></p>
-
-```
-
-Example 546
-
-This markdown:
-
-```markdown
-[bar\\]: /uri
-
-[bar\\]
-
-```
-
-Gives this incorrect output:
-
 ```html
-<p><a href="/uri">bar\</a></p>
-
-```
-
-Example 547
-
-This markdown:
-
-```markdown
-[]
-
-[]: /uri
-
+<p>foo<br>baz</p>
 ```
 
-Gives this incorrect output:
+But instead was:
 
 ```html
-<p>[]</p>
-<p>[]: /uri</p>
-
+<p>foo\ baz</p>
 ```
+### [Example 632](https://github.github.com/gfm/#example-632)
 
-Example 548
-
 This markdown:
 
 ```markdown
-[
- ]
-
-[
- ]: /uri
+foo       
+baz
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>[
-]</p>
-<p>[
-]: /uri</p>
-
-```
-
-Example 549
-
-This markdown:
-
-```markdown
-[foo][]
-
-[foo]: /url "title"
-
+<p>foo<br>baz</p>
 ```
 
-Gives this incorrect output:
+But instead was:
 
 ```html
-<p><a href="/url" title="title">foo</a></p>
-
+<p>foo baz</p>
 ```
+### [Example 633](https://github.github.com/gfm/#example-633)
 
-Example 550
-
 This markdown:
 
 ```markdown
-[*foo* bar][]
-
-[*foo* bar]: /url "title"
+foo  
+     bar
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p><a href="/url" title="title"><em>foo</em> bar</a></p>
-
-```
-
-Example 551
-
-This markdown:
-
-```markdown
-[Foo][]
-
-[foo]: /url "title"
-
+<p>foo<br>bar</p>
 ```
 
-Gives this incorrect output:
+But instead was:
 
 ```html
-<p><a href="/url" title="title">Foo</a></p>
-
+<p>foo</p><pre><code>bar</code></pre>
 ```
+### [Example 634](https://github.github.com/gfm/#example-634)
 
-Example 552
-
 This markdown:
 
 ```markdown
-[foo] 
-[]
-
-[foo]: /url "title"
+foo\
+     bar
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p><a href="/url" title="title">foo</a>
-[]</p>
-
-```
-
-Example 553
-
-This markdown:
-
-```markdown
-[foo]
-
-[foo]: /url "title"
-
+<p>foo<br>bar</p>
 ```
 
-Gives this incorrect output:
+But instead was:
 
 ```html
-<p><a href="/url" title="title">foo</a></p>
-
+<p>foo\</p><pre><code>bar</code></pre>
 ```
+### [Example 635](https://github.github.com/gfm/#example-635)
 
-Example 554
-
 This markdown:
 
 ```markdown
-[*foo* bar]
-
-[*foo* bar]: /url "title"
+*foo  
+bar*
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p><a href="/url" title="title"><em>foo</em> bar</a></p>
-
-```
-
-Example 555
-
-This markdown:
-
-```markdown
-[[*foo* bar]]
-
-[*foo* bar]: /url "title"
-
+<p><em>foo<br>bar</em></p>
 ```
 
-Gives this incorrect output:
+But instead was:
 
 ```html
-<p>[<a href="/url" title="title"><em>foo</em> bar</a>]</p>
-
+<p><em>foo bar</em></p>
 ```
+### [Example 636](https://github.github.com/gfm/#example-636)
 
-Example 556
-
 This markdown:
 
 ```markdown
-[[bar [foo]
-
-[foo]: /url
+*foo\
+bar*
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>[[bar <a href="/url">foo</a></p>
-
-```
-
-Example 557
-
-This markdown:
-
-```markdown
-[Foo]
-
-[foo]: /url "title"
-
+<p><em>foo<br>bar</em></p>
 ```
 
-Gives this incorrect output:
+But instead was:
 
 ```html
-<p><a href="/url" title="title">Foo</a></p>
-
+<p><em>foo\ bar</em></p>
 ```
+### [Example 639](https://github.github.com/gfm/#example-639)
 
-Example 558
-
 This markdown:
 
 ```markdown
-[foo] bar
-
-[foo]: /url
+<a href="foo  
+bar">
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p><a href="/url">foo</a> bar</p>
-
-```
-
-Example 559
-
-This markdown:
-
-```markdown
-\[foo]
-
-[foo]: /url "title"
-
+<p><a href="foo  
+bar"></p>
 ```
 
-Gives this incorrect output:
+But instead was:
 
 ```html
-<p>[foo]</p>
-
+ERROR Problem at row 3 Expecting symbol
 ```
+### [Example 640](https://github.github.com/gfm/#example-640)
 
-Example 560
-
 This markdown:
 
 ```markdown
-[foo*]: /url
-
-*[foo*]
+<a href="foo\
+bar">
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>*<a href="/url">foo*</a></p>
-
-```
-
-Example 561
-
-This markdown:
-
-```markdown
-[foo][bar]
-
-[foo]: /url1
-[bar]: /url2
-
+<p><a href="foo\
+bar"></p>
 ```
 
-Gives this incorrect output:
+But instead was:
 
 ```html
-<p><a href="/url2">foo</a></p>
-
+ERROR Problem at row 3 Expecting symbol
 ```
+## [extension] Task list items
 
-Example 562
+### [Example 279](https://github.github.com/gfm/#example-279)
 
 This markdown:
 
 ```markdown
-[foo][]
-
-[foo]: /url1
-
+- [ ] foo
+- [x] bar
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p><a href="/url1">foo</a></p>
-
-```
-
-Example 563
-
-This markdown:
-
-```markdown
-[foo]()
-
-[foo]: /url1
-
+<ul><li><input disabled="" type="checkbox">foo</li><li><input checked="" disabled="" type="checkbox">bar</li></ul>
 ```
 
-Gives this incorrect output:
+But instead was:
 
 ```html
-<p><a href="">foo</a></p>
-
+ERROR Problem at row 3 Expecting symbol
 ```
+### [Example 280](https://github.github.com/gfm/#example-280)
 
-Example 564
-
 This markdown:
 
 ```markdown
-[foo](not a link)
-
-[foo]: /url1
-
+- [x] foo
+  - [ ] bar
+  - [x] baz
+- [ ] bim
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p><a href="/url1">foo</a>(not a link)</p>
-
-```
-
-Example 565
-
-This markdown:
-
-```markdown
-[foo][bar][baz]
-
-[baz]: /url
-
+<ul><li><input checked="" disabled="" type="checkbox">foo<ul><li><input disabled="" type="checkbox">bar</li><li><input checked="" disabled="" type="checkbox">baz</li></ul></li><li><input disabled="" type="checkbox">bim</li></ul>
 ```
 
-Gives this incorrect output:
+But instead was:
 
 ```html
-<p>[foo]<a href="/url">bar</a></p>
-
+ERROR Problem at row 3 Expecting --- Problem at row 3 Expecting *** Problem at row 3 Expecting ___
 ```
+## Precedence
 
-Example 566
+### [Example 12](https://github.github.com/gfm/#example-12)
 
 This markdown:
 
 ```markdown
-[foo][bar][baz]
-
-[baz]: /url1
-[bar]: /url2
+- `one
+- two`
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p><a href="/url2">foo</a><a href="/url1">baz</a></p>
-
-```
-
-Example 567
-
-This markdown:
-
-```markdown
-[foo][bar][baz]
-
-[baz]: /url1
-[foo]: /url2
-
+<ul><li>`one</li><li>two`</li></ul>
 ```
 
-Gives this incorrect output:
+But instead was:
 
 ```html
-<p>[foo]<a href="/url1">bar</a></p>
-
+<ul><li><p><code>one</code></p></li><li><p>two</p></li></ul>
 ```
-
-### Lists
+## Lists
 
-Example 271
+### [Example 271](https://github.github.com/gfm/#example-271)
 
 This markdown:
 
@@ -5233,20 +3145,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<ul>
-<li>foo</li>
-<li>bar</li>
-</ul>
-<ul>
-<li>baz</li>
-</ul>
-
+<ul><li>foo</li><li>bar</li></ul><ul><li>baz</li></ul>
 ```
 
-Example 272
+But instead was:
+
+```html
+<ul><li><p>foo</p></li><li><p>bar</p></li></ul><p>+ baz</p>
+```
+### [Example 272](https://github.github.com/gfm/#example-272)
 
 This markdown:
 
@@ -5257,20 +3167,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<ol>
-<li>foo</li>
-<li>bar</li>
-</ol>
-<ol start="3">
-<li>baz</li>
-</ol>
-
+<ol><li>foo</li><li>bar</li></ol><ol start="3"><li>baz</li></ol>
 ```
 
-Example 273
+But instead was:
+
+```html
+<p>1. foo 2. bar 3) baz</p>
+```
+### [Example 273](https://github.github.com/gfm/#example-273)
 
 This markdown:
 
@@ -5281,36 +3189,18 @@ Foo
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>Foo</p>
-<ul>
-<li>bar</li>
-<li>baz</li>
-</ul>
-
+<p>Foo</p><ul><li>bar</li><li>baz</li></ul>
 ```
 
-Example 274
-
-This markdown:
-
-```markdown
-The number of windows in my house is
-14.  The number of doors is 6.
-
-```
-
-Gives this incorrect output:
+But instead was:
 
 ```html
-<p>The number of windows in my house is
-14.  The number of doors is 6.</p>
-
+<p>Foo</p><ul><li><p>bar</p></li><li><p>baz</p></li></ul>
 ```
-
-Example 275
+### [Example 275](https://github.github.com/gfm/#example-275)
 
 This markdown:
 
@@ -5320,17 +3210,18 @@ The number of windows in my house is
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>The number of windows in my house is</p>
-<ol>
-<li>The number of doors is 6.</li>
-</ol>
-
+<p>The number of windows in my house is</p><ol><li>The number of doors is 6.</li></ol>
 ```
 
-Example 276
+But instead was:
+
+```html
+<p>The number of windows in my house is 1. The number of doors is 6.</p>
+```
+### [Example 276](https://github.github.com/gfm/#example-276)
 
 This markdown:
 
@@ -5344,24 +3235,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<ul>
-<li>
-<p>foo</p>
-</li>
-<li>
-<p>bar</p>
-</li>
-<li>
-<p>baz</p>
-</li>
-</ul>
-
+<ul><li><p>foo</p></li><li><p>bar</p></li><li><p>baz</p></li></ul>
 ```
 
-Example 277
+But instead was:
+
+```html
+<ul><li><p>foo</p></li></ul><ul><li><p>bar</p></li></ul><ul><li><p>baz</p></li></ul>
+```
+### [Example 277](https://github.github.com/gfm/#example-277)
 
 This markdown:
 
@@ -5375,27 +3260,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<ul>
-<li>foo
-<ul>
-<li>bar
-<ul>
-<li>
-<p>baz</p>
-<p>bim</p>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-
+<ul><li>foo<ul><li>bar<ul><li><p>baz</p><p>bim</p></li></ul></li></ul></li></ul>
 ```
 
-Example 278
+But instead was:
+
+```html
+ERROR Problem at row 3 Expecting --- Problem at row 3 Expecting *** Problem at row 3 Expecting ___
+```
+### [Example 278](https://github.github.com/gfm/#example-278)
 
 This markdown:
 
@@ -5410,22 +3286,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<ul>
-<li>foo</li>
-<li>bar</li>
-</ul>
-<!-- -->
-<ul>
-<li>baz</li>
-<li>bim</li>
-</ul>
-
+<ul><li>foo</li><li>bar</li></ul><ul><li>baz</li><li>bim</li></ul>
 ```
 
-Example 279
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting symbol =
+```
+### [Example 279](https://github.github.com/gfm/#example-279)
 
 This markdown:
 
@@ -5442,25 +3314,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<ul>
-<li>
-<p>foo</p>
-<p>notcode</p>
-</li>
-<li>
-<p>foo</p>
-</li>
-</ul>
-<!-- -->
-<pre><code>code
-</code></pre>
-
+<ul><li><p>foo</p><p>notcode</p></li><li><p>foo</p></li></ul><pre><code>code</code></pre>
 ```
 
-Example 280
+But instead was:
+
+```html
+ERROR Problem at row 10 Expecting symbol =
+```
+### [Example 280](https://github.github.com/gfm/#example-280)
 
 This markdown:
 
@@ -5475,22 +3340,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<ul>
-<li>a</li>
-<li>b</li>
-<li>c</li>
-<li>d</li>
-<li>e</li>
-<li>f</li>
-<li>g</li>
-</ul>
-
+<ul><li>a</li><li>b</li><li>c</li><li>d</li><li>e</li><li>f</li><li>g</li></ul>
 ```
 
-Example 281
+But instead was:
+
+```html
+ERROR Problem at row 3 Expecting --- Problem at row 3 Expecting *** Problem at row 3 Expecting ___
+```
+### [Example 281](https://github.github.com/gfm/#example-281)
 
 This markdown:
 
@@ -5503,24 +3364,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<ol>
-<li>
-<p>a</p>
-</li>
-<li>
-<p>b</p>
-</li>
-<li>
-<p>c</p>
-</li>
-</ol>
-
+<ol><li><p>a</p></li><li><p>b</p></li><li><p>c</p></li></ol>
 ```
 
-Example 282
+But instead was:
+
+```html
+ERROR Problem at row 4 Expecting --- Problem at row 4 Expecting *** Problem at row 4 Expecting ___
+```
+### [Example 282](https://github.github.com/gfm/#example-282)
 
 This markdown:
 
@@ -5533,20 +3388,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<ul>
-<li>a</li>
-<li>b</li>
-<li>c</li>
-<li>d
-- e</li>
-</ul>
-
+<ul><li>a</li><li>b</li><li>c</li><li>d - e</li></ul>
 ```
 
-Example 283
+But instead was:
+
+```html
+ERROR Problem at row 3 Expecting --- Problem at row 3 Expecting *** Problem at row 3 Expecting ___
+```
+### [Example 283](https://github.github.com/gfm/#example-283)
 
 This markdown:
 
@@ -5559,23 +3412,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<ol>
-<li>
-<p>a</p>
-</li>
-<li>
-<p>b</p>
-</li>
-</ol>
-<pre><code>3. c
-</code></pre>
-
+<ol><li><p>a</p></li><li><p>b</p></li></ol><pre><code>3. c</code></pre>
 ```
 
-Example 284
+But instead was:
+
+```html
+ERROR Problem at row 4 Expecting --- Problem at row 4 Expecting *** Problem at row 4 Expecting ___
+```
+### [Example 284](https://github.github.com/gfm/#example-284)
 
 This markdown:
 
@@ -5587,24 +3435,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<ul>
-<li>
-<p>a</p>
-</li>
-<li>
-<p>b</p>
-</li>
-<li>
-<p>c</p>
-</li>
-</ul>
-
+<ul><li><p>a</p></li><li><p>b</p></li><li><p>c</p></li></ul>
 ```
 
-Example 285
+But instead was:
+
+```html
+<ul><li><p>a</p></li><li><p>b</p></li></ul><ul><li><p>c</p></li></ul>
+```
+### [Example 285](https://github.github.com/gfm/#example-285)
 
 This markdown:
 
@@ -5616,22 +3458,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<ul>
-<li>
-<p>a</p>
-</li>
-<li></li>
-<li>
-<p>c</p>
-</li>
-</ul>
-
+<ul><li><p>a</p></li><li></li><li><p>c</p></li></ul>
 ```
 
-Example 286
+But instead was:
+
+```html
+<p><em>a</em></p><p><em>c</em></p>
+```
+### [Example 286](https://github.github.com/gfm/#example-286)
 
 This markdown:
 
@@ -5644,25 +3482,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<ul>
-<li>
-<p>a</p>
-</li>
-<li>
-<p>b</p>
-<p>c</p>
-</li>
-<li>
-<p>d</p>
-</li>
-</ul>
-
+<ul><li><p>a</p></li><li><p>b</p><p>c</p></li><li><p>d</p></li></ul>
 ```
 
-Example 287
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting --- Problem at row 6 Expecting *** Problem at row 6 Expecting ___
+```
+### [Example 287](https://github.github.com/gfm/#example-287)
 
 This markdown:
 
@@ -5675,24 +3506,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<ul>
-<li>
-<p>a</p>
-</li>
-<li>
-<p>b</p>
-</li>
-<li>
-<p>d</p>
-</li>
-</ul>
-
+<ul><li><p>a</p></li><li><p>b</p></li><li><p>d</p></li></ul>
 ```
 
-Example 288
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting --- Problem at row 6 Expecting *** Problem at row 6 Expecting ___
+```
+### [Example 288](https://github.github.com/gfm/#example-288)
 
 This markdown:
 
@@ -5707,23 +3532,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<ul>
-<li>a</li>
-<li>
-<pre><code>b
-
-
-</code></pre>
-</li>
-<li>c</li>
-</ul>
-
+<ul><li>a</li><li><pre><code>b</code></pre></li><li>c</li></ul>
 ```
 
-Example 289
+But instead was:
+
+```html
+ERROR Problem at row 5 Expecting --- Problem at row 5 Expecting *** Problem at row 5 Expecting ___
+```
+### [Example 289](https://github.github.com/gfm/#example-289)
 
 This markdown:
 
@@ -5736,24 +3556,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<ul>
-<li>a
-<ul>
-<li>
-<p>b</p>
-<p>c</p>
-</li>
-</ul>
-</li>
-<li>d</li>
-</ul>
-
+<ul><li>a<ul><li><p>b</p><p>c</p></li></ul></li><li>d</li></ul>
 ```
 
-Example 290
+But instead was:
+
+```html
+ERROR Problem at row 3 Expecting --- Problem at row 3 Expecting *** Problem at row 3 Expecting ___
+```
+### [Example 290](https://github.github.com/gfm/#example-290)
 
 This markdown:
 
@@ -5765,21 +3579,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<ul>
-<li>a
-<blockquote>
-<p>b</p>
-</blockquote>
-</li>
-<li>c</li>
-</ul>
-
+<ul><li>a<blockquote><p>b</p></blockquote></li><li>c</li></ul>
 ```
 
-Example 291
+But instead was:
+
+```html
+ERROR Problem at row 3 Expecting --- Problem at row 3 Expecting *** Problem at row 3 Expecting ___
+```
+### [Example 291](https://github.github.com/gfm/#example-291)
 
 This markdown:
 
@@ -5793,23 +3604,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<ul>
-<li>a
-<blockquote>
-<p>b</p>
-</blockquote>
-<pre><code>c
-</code></pre>
-</li>
-<li>d</li>
-</ul>
-
+<ul><li>a<blockquote><p>b</p></blockquote><pre><code>c</code></pre></li><li>d</li></ul>
 ```
 
-Example 292
+But instead was:
+
+```html
+ERROR Problem at row 3 Expecting --- Problem at row 3 Expecting *** Problem at row 3 Expecting ___
+```
+### [Example 292](https://github.github.com/gfm/#example-292)
 
 This markdown:
 
@@ -5818,16 +3624,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<ul>
-<li>a</li>
-</ul>
-
+<ul><li>a</li></ul>
 ```
 
-Example 293
+But instead was:
+
+```html
+<ul><li><p>a</p></li></ul>
+```
+### [Example 293](https://github.github.com/gfm/#example-293)
 
 This markdown:
 
@@ -5837,20 +3645,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<ul>
-<li>a
-<ul>
-<li>b</li>
-</ul>
-</li>
-</ul>
-
+<ul><li>a<ul><li>b</li></ul></li></ul>
 ```
 
-Example 294
+But instead was:
+
+```html
+ERROR Problem at row 3 Expecting --- Problem at row 3 Expecting *** Problem at row 3 Expecting ___
+```
+### [Example 294](https://github.github.com/gfm/#example-294)
 
 This markdown:
 
@@ -5863,20 +3669,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<ol>
-<li>
-<pre><code>foo
-</code></pre>
-<p>bar</p>
-</li>
-</ol>
-
+<ol><li><pre><code>foo</code></pre><p>bar</p></li></ol>
 ```
 
-Example 295
+But instead was:
+
+```html
+ERROR Problem at row 3 Expecting --- Problem at row 3 Expecting *** Problem at row 3 Expecting ___
+```
+### [Example 295](https://github.github.com/gfm/#example-295)
 
 This markdown:
 
@@ -5888,22 +3692,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<ul>
-<li>
-<p>foo</p>
-<ul>
-<li>bar</li>
-</ul>
-<p>baz</p>
-</li>
-</ul>
-
+<ul><li><p>foo</p><ul><li>bar</li></ul><p>baz</p></li></ul>
 ```
 
-Example 296
+But instead was:
+
+```html
+ERROR Problem at row 3 Expecting --- Problem at row 3 Expecting *** Problem at row 3 Expecting ___
+```
+### [Example 296](https://github.github.com/gfm/#example-296)
 
 This markdown:
 
@@ -5918,1729 +3718,1059 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<ul>
-<li>
-<p>a</p>
-<ul>
-<li>b</li>
-<li>c</li>
-</ul>
-</li>
-<li>
-<p>d</p>
-<ul>
-<li>e</li>
-<li>f</li>
-</ul>
-</li>
-</ul>
-
+<ul><li><p>a</p><ul><li>b</li><li>c</li></ul></li><li><p>d</p><ul><li>e</li><li>f</li></ul></li></ul>
 ```
 
-### Raw HTML
+But instead was:
 
-Example 609
+```html
+ERROR Problem at row 3 Expecting --- Problem at row 3 Expecting *** Problem at row 3 Expecting ___
+```
+## List items
+
+### [Example 223](https://github.github.com/gfm/#example-223)
 
 This markdown:
 
 ```markdown
-<a><bab><c2c>
+A paragraph
+with two lines.
+
+    indented code
+
+> A block quote.
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p><a><bab><c2c></p>
-
+<p>A paragraph with two lines.</p><pre><code>indented code</code></pre><blockquote><p>A block quote.</p></blockquote>
 ```
 
-Example 610
+But instead was:
+
+```html
+<p>A paragraph with two lines.</p><pre><code>indented code</code></pre><p>&gt; A block quote.</p>
+```
+### [Example 224](https://github.github.com/gfm/#example-224)
 
 This markdown:
 
 ```markdown
-<a/><b2/>
+1.  A paragraph
+    with two lines.
+
+        indented code
+
+    > A block quote.
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p><a/><b2/></p>
-
+<ol><li><p>A paragraph with two lines.</p><pre><code>indented code</code></pre><blockquote><p>A block quote.</p></blockquote></li></ol>
 ```
 
-Example 611
+But instead was:
+
+```html
+<p>1. A paragraph</p><pre><code>with two lines.</code></pre><pre><code>indented code</code></pre><pre><code>&gt; A block quote.</code></pre>
+```
+### [Example 225](https://github.github.com/gfm/#example-225)
 
 This markdown:
 
 ```markdown
-<a  /><b2
-data="foo" >
+- one
+
+ two
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p><a  /><b2
-data="foo" ></p>
-
+<ul><li>one</li></ul><p>two</p>
 ```
 
-Example 612
+But instead was:
+
+```html
+ERROR Problem at row 4 Expecting --- Problem at row 4 Expecting *** Problem at row 4 Expecting ___
+```
+### [Example 226](https://github.github.com/gfm/#example-226)
 
 This markdown:
 
 ```markdown
-<a foo="bar" bam = 'baz <em>"</em>'
-_boolean zoop:33=zoop:33 />
+- one
+
+  two
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p><a foo="bar" bam = 'baz <em>"</em>'
-_boolean zoop:33=zoop:33 /></p>
-
+<ul><li><p>one</p><p>two</p></li></ul>
 ```
 
-Example 613
+But instead was:
+
+```html
+ERROR Problem at row 4 Expecting --- Problem at row 4 Expecting *** Problem at row 4 Expecting ___
+```
+### [Example 227](https://github.github.com/gfm/#example-227)
 
 This markdown:
 
 ```markdown
-Foo <responsive-image src="foo.jpg" />
+ -    one
+
+     two
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>Foo <responsive-image src="foo.jpg" /></p>
-
+<ul><li>one</li></ul><pre><code>two</code></pre>
 ```
 
-Example 614
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+```
+### [Example 228](https://github.github.com/gfm/#example-228)
 
 This markdown:
 
 ```markdown
-<33> <__>
+ -    one
+
+      two
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>&lt;33&gt; &lt;__&gt;</p>
-
+<ul><li><p>one</p><p>two</p></li></ul>
 ```
 
-Example 615
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+```
+### [Example 229](https://github.github.com/gfm/#example-229)
 
 This markdown:
 
 ```markdown
-<a h*#ref="hi">
+   > > 1.  one
+>>
+>>     two
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>&lt;a h*#ref=&quot;hi&quot;&gt;</p>
-
+<blockquote><blockquote><ol><li><p>one</p><p>two</p></li></ol></blockquote></blockquote>
 ```
 
-Example 616
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+```
+### [Example 230](https://github.github.com/gfm/#example-230)
 
 This markdown:
 
 ```markdown
-<a href="hi'> <a href=hi'>
+>>- one
+>>
+  >  > two
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>&lt;a href=&quot;hi'&gt; &lt;a href=hi'&gt;</p>
-
+<blockquote><blockquote><ul><li>one</li></ul><p>two</p></blockquote></blockquote>
 ```
 
-Example 617
+But instead was:
+
+```html
+ERROR Problem at row 5 Expecting --- Problem at row 5 Expecting *** Problem at row 5 Expecting ___
+```
+### [Example 231](https://github.github.com/gfm/#example-231)
 
 This markdown:
 
 ```markdown
-< a><
-foo><bar/ >
-<foo bar=baz
-bim!bop />
+-one
+
+2.two
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>&lt; a&gt;&lt;
-foo&gt;&lt;bar/ &gt;
-&lt;foo bar=baz
-bim!bop /&gt;</p>
-
+<p>-one</p><p>2.two</p>
 ```
 
-Example 618
+But instead was:
+
+```html
+<ul><li><p>one</p></li></ul><p>2.two</p>
+```
+### [Example 232](https://github.github.com/gfm/#example-232)
 
 This markdown:
 
 ```markdown
-<a href='bar'title=title>
+- foo
+
+
+  bar
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>&lt;a href='bar'title=title&gt;</p>
-
+<ul><li><p>foo</p><p>bar</p></li></ul>
 ```
 
-Example 619
+But instead was:
+
+```html
+ERROR Problem at row 5 Expecting --- Problem at row 5 Expecting *** Problem at row 5 Expecting ___
+```
+### [Example 233](https://github.github.com/gfm/#example-233)
 
 This markdown:
 
 ```markdown
-</a></foo >
+1.  foo
+
+    ```
+    bar
+    ```
+
+    baz
+
+    > bam
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p></a></foo ></p>
-
+<ol><li><p>foo</p><pre><code>bar</code></pre><p>baz</p><blockquote><p>bam</p></blockquote></li></ol>
 ```
 
-Example 620
+But instead was:
+
+```html
+<p>1. foo</p><pre><code>```</code></pre><pre><code>bar</code></pre><pre><code>```</code></pre><pre><code>baz</code></pre><pre><code>&gt; bam</code></pre>
+```
+### [Example 234](https://github.github.com/gfm/#example-234)
 
 This markdown:
 
 ```markdown
-</a href="foo">
+- Foo
+
+      bar
+
+
+      baz
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>&lt;/a href=&quot;foo&quot;&gt;</p>
-
+<ul><li><p>Foo</p><pre><code>bar baz</code></pre></li></ul>
 ```
 
-Example 621
+But instead was:
+
+```html
+<ul><li><p>Foo</p></li></ul><pre><code>bar</code></pre><pre><code>baz</code></pre>
+```
+### [Example 235](https://github.github.com/gfm/#example-235)
 
 This markdown:
 
 ```markdown
-foo <!-- this is a
-comment - with hyphen -->
+123456789. ok
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>foo <!-- this is a
-comment - with hyphen --></p>
-
+<ol start="123456789"><li>ok</li></ol>
 ```
 
-Example 624
+But instead was:
+
+```html
+<p>123456789. ok</p>
+```
+### [Example 237](https://github.github.com/gfm/#example-237)
 
 This markdown:
 
 ```markdown
-foo <?php echo $a; ?>
+0. ok
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>foo <?php echo $a; ?></p>
-
+<ol start="0"><li>ok</li></ol>
 ```
 
-Example 625
+But instead was:
+
+```html
+<p>0. ok</p>
+```
+### [Example 238](https://github.github.com/gfm/#example-238)
 
 This markdown:
 
 ```markdown
-foo <!ELEMENT br EMPTY>
+003. ok
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>foo <!ELEMENT br EMPTY></p>
-
+<ol start="3"><li>ok</li></ol>
 ```
 
-Example 626
+But instead was:
+
+```html
+<p>003. ok</p>
+```
+### [Example 239](https://github.github.com/gfm/#example-239)
 
 This markdown:
 
 ```markdown
-foo <![CDATA[>&<]]>
+-1. not ok
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>foo <![CDATA[>&<]]></p>
-
+<p>-1. not ok</p>
 ```
 
-Example 627
+But instead was:
+
+```html
+<ul><li><p>1. not ok</p></li></ul>
+```
+### [Example 240](https://github.github.com/gfm/#example-240)
 
 This markdown:
 
 ```markdown
-foo <a href="&ouml;">
+- foo
+
+      bar
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>foo <a href="&ouml;"></p>
-
+<ul><li><p>foo</p><pre><code>bar</code></pre></li></ul>
 ```
 
-Example 628
+But instead was:
+
+```html
+<ul><li><p>foo</p></li></ul><pre><code>bar</code></pre>
+```
+### [Example 241](https://github.github.com/gfm/#example-241)
 
 This markdown:
 
 ```markdown
-foo <a href="\*">
+  10.  foo
+
+           bar
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>foo <a href="\*"></p>
-
+<ol start="10"><li><p>foo</p><pre><code>bar</code></pre></li></ol>
 ```
 
-Example 629
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+```
+### [Example 243](https://github.github.com/gfm/#example-243)
 
 This markdown:
 
 ```markdown
-<a href="\"">
+1.     indented code
+
+   paragraph
+
+       more code
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>&lt;a href=&quot;&quot;&quot;&gt;</p>
-
+<ol><li><pre><code>indented code</code></pre><p>paragraph</p><pre><code>more code</code></pre></li></ol>
 ```
 
-### Link reference definitions
+But instead was:
 
-Example 161
+```html
+ERROR Problem at row 4 Expecting --- Problem at row 4 Expecting *** Problem at row 4 Expecting ___
+```
+### [Example 244](https://github.github.com/gfm/#example-244)
 
 This markdown:
 
 ```markdown
-[foo]: /url "title"
+1.      indented code
 
-[foo]
+   paragraph
+
+       more code
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p><a href="/url" title="title">foo</a></p>
-
+<ol><li><pre><code>indented code</code></pre><p>paragraph</p><pre><code>more code</code></pre></li></ol>
 ```
 
-Example 162
+But instead was:
+
+```html
+ERROR Problem at row 4 Expecting --- Problem at row 4 Expecting *** Problem at row 4 Expecting ___
+```
+### [Example 245](https://github.github.com/gfm/#example-245)
 
 This markdown:
 
 ```markdown
-   [foo]: 
-      /url  
-           'the title'  
+   foo
 
-[foo]
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="/url" title="the title">foo</a></p>
-
-```
-
-Example 163
-
-This markdown:
-
-```markdown
-[Foo*bar\]]:my_(url) 'title (with parens)'
-
-[Foo*bar\]]
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="my_(url)" title="title (with parens)">Foo*bar]</a></p>
-
-```
-
-Example 164
-
-This markdown:
-
-```markdown
-[Foo bar]:
-<my url>
-'title'
-
-[Foo bar]
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="my%20url" title="title">Foo bar</a></p>
-
-```
-
-Example 165
-
-This markdown:
-
-```markdown
-[foo]: /url '
-title
-line1
-line2
-'
-
-[foo]
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="/url" title="
-title
-line1
-line2
-">foo</a></p>
-
-```
-
-Example 166
-
-This markdown:
-
-```markdown
-[foo]: /url 'title
-
-with blank line'
-
-[foo]
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>[foo]: /url 'title</p>
-<p>with blank line'</p>
-<p>[foo]</p>
-
-```
-
-Example 167
-
-This markdown:
-
-```markdown
-[foo]:
-/url
-
-[foo]
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="/url">foo</a></p>
-
-```
-
-Example 168
-
-This markdown:
-
-```markdown
-[foo]:
-
-[foo]
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>[foo]:</p>
-<p>[foo]</p>
-
-```
-
-Example 169
-
-This markdown:
-
-```markdown
-[foo]: <>
-
-[foo]
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="">foo</a></p>
-
-```
-
-Example 170
-
-This markdown:
-
-```markdown
-[foo]: <bar>(baz)
-
-[foo]
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>[foo]: <bar>(baz)</p>
-<p>[foo]</p>
-
-```
-
-Example 171
-
-This markdown:
-
-```markdown
-[foo]: /url\bar\*baz "foo\"bar\baz"
-
-[foo]
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="/url%5Cbar*baz" title="foo&quot;bar\baz">foo</a></p>
-
-```
-
-Example 172
-
-This markdown:
-
-```markdown
-[foo]
-
-[foo]: url
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="url">foo</a></p>
-
-```
-
-Example 173
-
-This markdown:
-
-```markdown
-[foo]
-
-[foo]: first
-[foo]: second
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="first">foo</a></p>
-
-```
-
-Example 174
-
-This markdown:
-
-```markdown
-[FOO]: /url
-
-[Foo]
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="/url">Foo</a></p>
-
-```
-
-Example 175
-
-This markdown:
-
-```markdown
-[ΑΓΩ]: /φου
-
-[αγω]
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="/%CF%86%CE%BF%CF%85">αγω</a></p>
-
-```
-
-Example 176
-
-This markdown:
-
-```markdown
-[foo]: /url
-
-```
-
-Gives this incorrect output:
-
-```html
-
-```
-
-Example 177
-
-This markdown:
-
-```markdown
-[
-foo
-]: /url
 bar
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>bar</p>
-
+<p>foo</p><p>bar</p>
 ```
 
-Example 178
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+```
+### [Example 246](https://github.github.com/gfm/#example-246)
 
 This markdown:
 
 ```markdown
-[foo]: /url "title" ok
+-    foo
+
+  bar
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>[foo]: /url &quot;title&quot; ok</p>
-
+<ul><li>foo</li></ul><p>bar</p>
 ```
 
-Example 179
+But instead was:
+
+```html
+ERROR Problem at row 4 Expecting --- Problem at row 4 Expecting *** Problem at row 4 Expecting ___
+```
+### [Example 247](https://github.github.com/gfm/#example-247)
 
 This markdown:
 
 ```markdown
-[foo]: /url
-"title" ok
+-  foo
+
+   bar
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>&quot;title&quot; ok</p>
-
+<ul><li><p>foo</p><p>bar</p></li></ul>
 ```
 
-Example 180
+But instead was:
+
+```html
+ERROR Problem at row 4 Expecting --- Problem at row 4 Expecting *** Problem at row 4 Expecting ___
+```
+### [Example 248](https://github.github.com/gfm/#example-248)
 
 This markdown:
 
 ```markdown
-    [foo]: /url "title"
-
-[foo]
+-
+  foo
+-
+  ```
+  bar
+  ```
+-
+      baz
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<pre><code>[foo]: /url &quot;title&quot;
-</code></pre>
-<p>[foo]</p>
-
+<ul><li>foo</li><li><pre><code>bar</code></pre></li><li><pre><code>baz</code></pre></li></ul>
 ```
 
-Example 181
+But instead was:
+
+```html
+ERROR Problem at row 3 Expecting --- Problem at row 3 Expecting *** Problem at row 3 Expecting ___
+```
+### [Example 249](https://github.github.com/gfm/#example-249)
 
 This markdown:
 
 ```markdown
-```
-[foo]: /url
-```
-
-[foo]
+-   
+  foo
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<pre><code>[foo]: /url
-</code></pre>
-<p>[foo]</p>
-
+<ul><li>foo</li></ul>
 ```
 
-Example 182
+But instead was:
+
+```html
+ERROR Problem at row 3 Expecting --- Problem at row 3 Expecting *** Problem at row 3 Expecting ___
+```
+### [Example 250](https://github.github.com/gfm/#example-250)
 
 This markdown:
 
 ```markdown
-Foo
-[bar]: /baz
+-
 
-[bar]
+  foo
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>Foo
-[bar]: /baz</p>
-<p>[bar]</p>
-
+<ul><li></li></ul><p>foo</p>
 ```
 
-Example 183
+But instead was:
+
+```html
+ERROR Problem at row 4 Expecting --- Problem at row 4 Expecting *** Problem at row 4 Expecting ___
+```
+### [Example 251](https://github.github.com/gfm/#example-251)
 
 This markdown:
 
 ```markdown
-# [Foo]
-[foo]: /url
-> bar
-
-```
-
-Gives this incorrect output:
-
-```html
-<h1><a href="/url">Foo</a></h1>
-<blockquote>
-<p>bar</p>
-</blockquote>
-
-```
-
-Example 184
-
-This markdown:
-
-```markdown
-[foo]: /url
-bar
-===
-[foo]
-
-```
-
-Gives this incorrect output:
-
-```html
-<h1>bar</h1>
-<p><a href="/url">foo</a></p>
-
-```
-
-Example 185
-
-This markdown:
-
-```markdown
-[foo]: /url
-===
-[foo]
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>===
-<a href="/url">foo</a></p>
-
-```
-
-Example 186
-
-This markdown:
-
-```markdown
-[foo]: /foo-url "foo"
-[bar]: /bar-url
-  "bar"
-[baz]: /baz-url
-
-[foo],
-[bar],
-[baz]
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="/foo-url" title="foo">foo</a>,
-<a href="/bar-url" title="bar">bar</a>,
-<a href="/baz-url">baz</a></p>
-
-```
-
-Example 187
-
-This markdown:
-
-```markdown
-[foo]
-
-> [foo]: /url
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="/url">foo</a></p>
-<blockquote>
-</blockquote>
-
-```
-
-Example 188
-
-This markdown:
-
-```markdown
-[foo]: /url
-
-```
-
-Gives this incorrect output:
-
-```html
-
-```
-
-### [extension] Disallowed Raw HTML
-
-Example 653
-
-This markdown:
-
-```markdown
-<strong> <title> <style> <em>
-
-<blockquote>
-  <xmp> is disallowed.  <XMP> is also disallowed.
-</blockquote>
-```
-
-Gives this incorrect output:
-
-```html
-<p><strong> &lt;title> &lt;style> <em></p>
-<blockquote>
-  &lt;xmp> is disallowed.  &lt;XMP> is also disallowed.
-</blockquote>
-```
-
-### Block quotes
-
-Example 198
-
-This markdown:
-
-```markdown
-> # Foo
-> bar
-> baz
-
-```
-
-Gives this incorrect output:
-
-```html
-<blockquote>
-<h1>Foo</h1>
-<p>bar
-baz</p>
-</blockquote>
-
-```
-
-Example 199
-
-This markdown:
-
-```markdown
-># Foo
->bar
-> baz
-
-```
-
-Gives this incorrect output:
-
-```html
-<blockquote>
-<h1>Foo</h1>
-<p>bar
-baz</p>
-</blockquote>
-
-```
-
-Example 200
-
-This markdown:
-
-```markdown
-   > # Foo
-   > bar
- > baz
-
-```
-
-Gives this incorrect output:
-
-```html
-<blockquote>
-<h1>Foo</h1>
-<p>bar
-baz</p>
-</blockquote>
-
-```
-
-Example 201
-
-This markdown:
-
-```markdown
-    > # Foo
-    > bar
-    > baz
-
-```
-
-Gives this incorrect output:
-
-```html
-<pre><code>&gt; # Foo
-&gt; bar
-&gt; baz
-</code></pre>
-
-```
-
-Example 202
-
-This markdown:
-
-```markdown
-> # Foo
-> bar
-baz
-
-```
-
-Gives this incorrect output:
-
-```html
-<blockquote>
-<h1>Foo</h1>
-<p>bar
-baz</p>
-</blockquote>
-
-```
-
-Example 203
-
-This markdown:
-
-```markdown
-> bar
-baz
-> foo
-
-```
-
-Gives this incorrect output:
-
-```html
-<blockquote>
-<p>bar
-baz
-foo</p>
-</blockquote>
-
-```
-
-Example 204
-
-This markdown:
-
-```markdown
-> foo
----
-
-```
-
-Gives this incorrect output:
-
-```html
-<blockquote>
-<p>foo</p>
-</blockquote>
-<hr />
-
-```
-
-Example 205
-
-This markdown:
-
-```markdown
-> - foo
+- foo
+-
 - bar
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<blockquote>
-<ul>
-<li>foo</li>
-</ul>
-</blockquote>
-<ul>
-<li>bar</li>
-</ul>
-
+<ul><li>foo</li><li></li><li>bar</li></ul>
 ```
 
-Example 206
+But instead was:
+
+```html
+<ul><li><p>foo</p></li><li><p></p></li><li><p>bar</p></li></ul>
+```
+### [Example 252](https://github.github.com/gfm/#example-252)
 
 This markdown:
 
 ```markdown
->     foo
-    bar
+- foo
+-   
+- bar
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<blockquote>
-<pre><code>foo
-</code></pre>
-</blockquote>
-<pre><code>bar
-</code></pre>
-
+<ul><li>foo</li><li></li><li>bar</li></ul>
 ```
 
-Example 207
+But instead was:
+
+```html
+<ul><li><p>foo</p></li><li><p></p></li><li><p>bar</p></li></ul>
+```
+### [Example 253](https://github.github.com/gfm/#example-253)
 
 This markdown:
 
 ```markdown
-> ```
+1. foo
+2.
+3. bar
+
+```
+
+Should give output:
+
+```html
+<ol><li>foo</li><li></li><li>bar</li></ol>
+```
+
+But instead was:
+
+```html
+<p>1. foo 2. 3. bar</p>
+```
+### [Example 254](https://github.github.com/gfm/#example-254)
+
+This markdown:
+
+```markdown
+*
+
+```
+
+Should give output:
+
+```html
+<ul><li></li></ul>
+```
+
+But instead was:
+
+```html
+
+```
+### [Example 255](https://github.github.com/gfm/#example-255)
+
+This markdown:
+
+```markdown
 foo
-```
+*
+
+foo
+1.
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<blockquote>
-<pre><code></code></pre>
-</blockquote>
-<p>foo</p>
-<pre><code></code></pre>
-
+<p>foo *</p><p>foo 1.</p>
 ```
 
-Example 208
+But instead was:
+
+```html
+<p>foo</p><p>foo 1.</p>
+```
+### [Example 256](https://github.github.com/gfm/#example-256)
 
 This markdown:
 
 ```markdown
-> foo
+ 1.  A paragraph
+     with two lines.
+
+         indented code
+
+     > A block quote.
+
+```
+
+Should give output:
+
+```html
+<ol><li><p>A paragraph with two lines.</p><pre><code>indented code</code></pre><blockquote><p>A block quote.</p></blockquote></li></ol>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+```
+### [Example 257](https://github.github.com/gfm/#example-257)
+
+This markdown:
+
+```markdown
+  1.  A paragraph
+      with two lines.
+
+          indented code
+
+      > A block quote.
+
+```
+
+Should give output:
+
+```html
+<ol><li><p>A paragraph with two lines.</p><pre><code>indented code</code></pre><blockquote><p>A block quote.</p></blockquote></li></ol>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+```
+### [Example 258](https://github.github.com/gfm/#example-258)
+
+This markdown:
+
+```markdown
+   1.  A paragraph
+       with two lines.
+
+           indented code
+
+       > A block quote.
+
+```
+
+Should give output:
+
+```html
+<ol><li><p>A paragraph with two lines.</p><pre><code>indented code</code></pre><blockquote><p>A block quote.</p></blockquote></li></ol>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+```
+### [Example 259](https://github.github.com/gfm/#example-259)
+
+This markdown:
+
+```markdown
+    1.  A paragraph
+        with two lines.
+
+            indented code
+
+        > A block quote.
+
+```
+
+Should give output:
+
+```html
+<pre><code>1. A paragraph with two lines. indented code &gt; A block quote.</code></pre>
+```
+
+But instead was:
+
+```html
+<pre><code>1. A paragraph</code></pre><pre><code>with two lines.</code></pre><pre><code>indented code</code></pre><pre><code>&gt; A block quote.</code></pre>
+```
+### [Example 260](https://github.github.com/gfm/#example-260)
+
+This markdown:
+
+```markdown
+  1.  A paragraph
+with two lines.
+
+          indented code
+
+      > A block quote.
+
+```
+
+Should give output:
+
+```html
+<ol><li><p>A paragraph with two lines.</p><pre><code>indented code</code></pre><blockquote><p>A block quote.</p></blockquote></li></ol>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+```
+### [Example 261](https://github.github.com/gfm/#example-261)
+
+This markdown:
+
+```markdown
+  1.  A paragraph
+    with two lines.
+
+```
+
+Should give output:
+
+```html
+<ol><li>A paragraph with two lines.</li></ol>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+```
+### [Example 262](https://github.github.com/gfm/#example-262)
+
+This markdown:
+
+```markdown
+> 1. > Blockquote
+continued here.
+
+```
+
+Should give output:
+
+```html
+<blockquote><ol><li><blockquote><p>Blockquote continued here.</p></blockquote></li></ol></blockquote>
+```
+
+But instead was:
+
+```html
+<p>&gt; 1. &gt; Blockquote continued here.</p>
+```
+### [Example 263](https://github.github.com/gfm/#example-263)
+
+This markdown:
+
+```markdown
+> 1. > Blockquote
+> continued here.
+
+```
+
+Should give output:
+
+```html
+<blockquote><ol><li><blockquote><p>Blockquote continued here.</p></blockquote></li></ol></blockquote>
+```
+
+But instead was:
+
+```html
+<p>&gt; 1. &gt; Blockquote &gt; continued here.</p>
+```
+### [Example 264](https://github.github.com/gfm/#example-264)
+
+This markdown:
+
+```markdown
+- foo
+  - bar
+    - baz
+      - boo
+
+```
+
+Should give output:
+
+```html
+<ul><li>foo<ul><li>bar<ul><li>baz<ul><li>boo</li></ul></li></ul></li></ul></li></ul>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 3 Expecting --- Problem at row 3 Expecting *** Problem at row 3 Expecting ___
+```
+### [Example 265](https://github.github.com/gfm/#example-265)
+
+This markdown:
+
+```markdown
+- foo
+ - bar
+  - baz
+   - boo
+
+```
+
+Should give output:
+
+```html
+<ul><li>foo</li><li>bar</li><li>baz</li><li>boo</li></ul>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 3 Expecting --- Problem at row 3 Expecting *** Problem at row 3 Expecting ___
+```
+### [Example 266](https://github.github.com/gfm/#example-266)
+
+This markdown:
+
+```markdown
+10) foo
     - bar
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<blockquote>
-<p>foo
-- bar</p>
-</blockquote>
-
+<ol start="10"><li>foo<ul><li>bar</li></ul></li></ol>
 ```
 
-Example 209
+But instead was:
+
+```html
+<p>10) foo</p><pre><code>- bar</code></pre>
+```
+### [Example 267](https://github.github.com/gfm/#example-267)
 
 This markdown:
 
 ```markdown
->
+10) foo
+   - bar
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<blockquote>
-</blockquote>
-
+<ol start="10"><li>foo</li></ol><ul><li>bar</li></ul>
 ```
 
-Example 210
+But instead was:
+
+```html
+ERROR Problem at row 3 Expecting --- Problem at row 3 Expecting *** Problem at row 3 Expecting ___
+```
+### [Example 268](https://github.github.com/gfm/#example-268)
 
 This markdown:
 
 ```markdown
->
->  
-> 
+- - foo
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<blockquote>
-</blockquote>
-
+<ul><li><ul><li>foo</li></ul></li></ul>
 ```
 
-Example 211
+But instead was:
+
+```html
+<ul><li><p>- foo</p></li></ul>
+```
+### [Example 269](https://github.github.com/gfm/#example-269)
 
 This markdown:
 
 ```markdown
->
-> foo
->  
+1. - 2. foo
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<blockquote>
-<p>foo</p>
-</blockquote>
-
+<ol><li><ul><li><ol start="2"><li>foo</li></ol></li></ul></li></ol>
 ```
 
-Example 212
+But instead was:
+
+```html
+<p>1. - 2. foo</p>
+```
+### [Example 270](https://github.github.com/gfm/#example-270)
 
 This markdown:
 
 ```markdown
-> foo
-
-> bar
+- # Foo
+- Bar
+  ---
+  baz
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<blockquote>
-<p>foo</p>
-</blockquote>
-<blockquote>
-<p>bar</p>
-</blockquote>
-
+<ul><li><h1>Foo</h1></li><li><h2>Bar</h2>baz</li></ul>
 ```
 
-Example 213
-
-This markdown:
-
-```markdown
-> foo
-> bar
-
-```
-
-Gives this incorrect output:
+But instead was:
 
 ```html
-<blockquote>
-<p>foo
-bar</p>
-</blockquote>
-
+ERROR Problem at row 6 Expecting --- Problem at row 6 Expecting *** Problem at row 6 Expecting ___
 ```
+## Setext headings
 
-Example 214
-
-This markdown:
-
-```markdown
-> foo
->
-> bar
-
-```
-
-Gives this incorrect output:
-
-```html
-<blockquote>
-<p>foo</p>
-<p>bar</p>
-</blockquote>
-
-```
-
-Example 215
-
-This markdown:
-
-```markdown
-foo
-> bar
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>foo</p>
-<blockquote>
-<p>bar</p>
-</blockquote>
-
-```
-
-Example 216
-
-This markdown:
-
-```markdown
-> aaa
-***
-> bbb
-
-```
-
-Gives this incorrect output:
-
-```html
-<blockquote>
-<p>aaa</p>
-</blockquote>
-<hr />
-<blockquote>
-<p>bbb</p>
-</blockquote>
-
-```
-
-Example 217
-
-This markdown:
-
-```markdown
-> bar
-baz
-
-```
-
-Gives this incorrect output:
-
-```html
-<blockquote>
-<p>bar
-baz</p>
-</blockquote>
-
-```
-
-Example 218
-
-This markdown:
-
-```markdown
-> bar
-
-baz
-
-```
-
-Gives this incorrect output:
-
-```html
-<blockquote>
-<p>bar</p>
-</blockquote>
-<p>baz</p>
-
-```
-
-Example 219
-
-This markdown:
-
-```markdown
-> bar
->
-baz
-
-```
-
-Gives this incorrect output:
-
-```html
-<blockquote>
-<p>bar</p>
-</blockquote>
-<p>baz</p>
-
-```
-
-Example 220
-
-This markdown:
-
-```markdown
-> > > foo
-bar
-
-```
-
-Gives this incorrect output:
-
-```html
-<blockquote>
-<blockquote>
-<blockquote>
-<p>foo
-bar</p>
-</blockquote>
-</blockquote>
-</blockquote>
-
-```
-
-Example 221
-
-This markdown:
-
-```markdown
->>> foo
-> bar
->>baz
-
-```
-
-Gives this incorrect output:
-
-```html
-<blockquote>
-<blockquote>
-<blockquote>
-<p>foo
-bar
-baz</p>
-</blockquote>
-</blockquote>
-</blockquote>
-
-```
-
-Example 222
-
-This markdown:
-
-```markdown
->     code
-
->    not code
-
-```
-
-Gives this incorrect output:
-
-```html
-<blockquote>
-<pre><code>code
-</code></pre>
-</blockquote>
-<blockquote>
-<p>not code</p>
-</blockquote>
-
-```
-
-### Autolinks
-
-Example 590
-
-This markdown:
-
-```markdown
-<http://foo.bar.baz>
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="http://foo.bar.baz">http://foo.bar.baz</a></p>
-
-```
-
-Example 591
-
-This markdown:
-
-```markdown
-<http://foo.bar.baz/test?q=hello&id=22&boolean>
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="http://foo.bar.baz/test?q=hello&amp;id=22&amp;boolean">http://foo.bar.baz/test?q=hello&amp;id=22&amp;boolean</a></p>
-
-```
-
-Example 592
-
-This markdown:
-
-```markdown
-<irc://foo.bar:2233/baz>
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="irc://foo.bar:2233/baz">irc://foo.bar:2233/baz</a></p>
-
-```
-
-Example 593
-
-This markdown:
-
-```markdown
-<MAILTO:FOO@BAR.BAZ>
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="MAILTO:FOO@BAR.BAZ">MAILTO:FOO@BAR.BAZ</a></p>
-
-```
-
-Example 594
-
-This markdown:
-
-```markdown
-<a+b+c:d>
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="a+b+c:d">a+b+c:d</a></p>
-
-```
-
-Example 595
-
-This markdown:
-
-```markdown
-<made-up-scheme://foo,bar>
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="made-up-scheme://foo,bar">made-up-scheme://foo,bar</a></p>
-
-```
-
-Example 596
-
-This markdown:
-
-```markdown
-<http://../>
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="http://../">http://../</a></p>
-
-```
-
-Example 597
-
-This markdown:
-
-```markdown
-<localhost:5001/foo>
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="localhost:5001/foo">localhost:5001/foo</a></p>
-
-```
-
-Example 598
-
-This markdown:
-
-```markdown
-<http://foo.bar/baz bim>
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>&lt;http://foo.bar/baz bim&gt;</p>
-
-```
-
-Example 599
-
-This markdown:
-
-```markdown
-<http://example.com/\[\>
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="http://example.com/%5C%5B%5C">http://example.com/\[\</a></p>
-
-```
-
-Example 600
-
-This markdown:
-
-```markdown
-<foo@bar.example.com>
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="mailto:foo@bar.example.com">foo@bar.example.com</a></p>
-
-```
-
-Example 601
-
-This markdown:
-
-```markdown
-<foo+special@Bar.baz-bar0.com>
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="mailto:foo+special@Bar.baz-bar0.com">foo+special@Bar.baz-bar0.com</a></p>
-
-```
-
-Example 602
-
-This markdown:
-
-```markdown
-<foo\+@bar.example.com>
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>&lt;foo+@bar.example.com&gt;</p>
-
-```
-
-Example 603
-
-This markdown:
-
-```markdown
-<>
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>&lt;&gt;</p>
-
-```
-
-Example 604
-
-This markdown:
-
-```markdown
-< http://foo.bar >
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>&lt; http://foo.bar &gt;</p>
-
-```
-
-Example 605
-
-This markdown:
-
-```markdown
-<m:abc>
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>&lt;m:abc&gt;</p>
-
-```
-
-Example 606
-
-This markdown:
-
-```markdown
-<foo.bar.baz>
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>&lt;foo.bar.baz&gt;</p>
-
-```
-
-### Setext headings
-
-Example 50
+### [Example 50](https://github.github.com/gfm/#example-50)
 
 This markdown:
 
@@ -7653,15 +4783,18 @@ Foo *bar*
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<h1>Foo <em>bar</em></h1>
-<h2>Foo <em>bar</em></h2>
-
+<h1>Foo<em>bar</em></h1><h2>Foo<em>bar</em></h2>
 ```
 
-Example 51
+But instead was:
+
+```html
+<p>Foo<em>bar</em>=========</p><p>Foo<em>bar</em></p><hr>
+```
+### [Example 51](https://github.github.com/gfm/#example-51)
 
 This markdown:
 
@@ -7672,15 +4805,18 @@ baz*
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<h1>Foo <em>bar
-baz</em></h1>
-
+<h1>Foo<em>bar baz</em></h1>
 ```
 
-Example 52
+But instead was:
+
+```html
+<p>Foo<em>bar baz</em>====</p>
+```
+### [Example 52](https://github.github.com/gfm/#example-52)
 
 This markdown:
 
@@ -7691,15 +4827,18 @@ baz*
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<h1>Foo <em>bar
-baz</em></h1>
-
+<h1>Foo<em>bar baz</em></h1>
 ```
 
-Example 53
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+```
+### [Example 53](https://github.github.com/gfm/#example-53)
 
 This markdown:
 
@@ -7712,15 +4851,18 @@ Foo
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<h2>Foo</h2>
-<h1>Foo</h1>
-
+<h2>Foo</h2><h1>Foo</h1>
 ```
 
-Example 54
+But instead was:
+
+```html
+<p>Foo</p><hr><p>Foo =</p>
+```
+### [Example 54](https://github.github.com/gfm/#example-54)
 
 This markdown:
 
@@ -7736,16 +4878,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<h2>Foo</h2>
-<h2>Foo</h2>
-<h1>Foo</h1>
-
+<h2>Foo</h2><h2>Foo</h2><h1>Foo</h1>
 ```
 
-Example 55
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+```
+### [Example 55](https://github.github.com/gfm/#example-55)
 
 This markdown:
 
@@ -7758,19 +4902,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<pre><code>Foo
----
-
-Foo
-</code></pre>
-<hr />
-
+<pre><code>Foo --- Foo</code></pre><hr>
 ```
 
-Example 56
+But instead was:
+
+```html
+<pre><code>Foo</code></pre><pre><code>---</code></pre><pre><code>Foo</code></pre><hr>
+```
+### [Example 56](https://github.github.com/gfm/#example-56)
 
 This markdown:
 
@@ -7780,14 +4923,18 @@ Foo
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <h2>Foo</h2>
-
 ```
 
-Example 57
+But instead was:
+
+```html
+<p>Foo</p><hr>
+```
+### [Example 57](https://github.github.com/gfm/#example-57)
 
 This markdown:
 
@@ -7797,15 +4944,18 @@ Foo
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>Foo
----</p>
-
+<p>Foo ---</p>
 ```
 
-Example 58
+But instead was:
+
+```html
+<p>Foo</p><pre><code>---</code></pre>
+```
+### [Example 58](https://github.github.com/gfm/#example-58)
 
 This markdown:
 
@@ -7818,17 +4968,18 @@ Foo
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>Foo
-= =</p>
-<p>Foo</p>
-<hr />
-
+<p>Foo = =</p><p>Foo</p><hr>
 ```
 
-Example 59
+But instead was:
+
+```html
+ERROR Problem at row 8 Expecting end Problem at row 8 Expecting newline
+```
+### [Example 59](https://github.github.com/gfm/#example-59)
 
 This markdown:
 
@@ -7838,14 +4989,18 @@ Foo
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <h2>Foo</h2>
-
 ```
 
-Example 60
+But instead was:
+
+```html
+<p>Foo</p><hr>
+```
+### [Example 60](https://github.github.com/gfm/#example-60)
 
 This markdown:
 
@@ -7855,14 +5010,18 @@ Foo\
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <h2>Foo\</h2>
-
 ```
 
-Example 61
+But instead was:
+
+```html
+<p>Foo\</p><hr>
+```
+### [Example 61](https://github.github.com/gfm/#example-61)
 
 This markdown:
 
@@ -7877,17 +5036,18 @@ of dashes"/>
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<h2>`Foo</h2>
-<p>`</p>
-<h2>&lt;a title=&quot;a lot</h2>
-<p>of dashes&quot;/&gt;</p>
-
+<h2>`Foo</h2><p>`</p><h2>&lt;a title=&quot;a lot</h2><p>of dashes&quot;/&gt;</p>
 ```
 
-Example 62
+But instead was:
+
+```html
+ERROR Ran into a oneOf with no possibilities!
+```
+### [Example 62](https://github.github.com/gfm/#example-62)
 
 This markdown:
 
@@ -7897,17 +5057,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<blockquote>
-<p>Foo</p>
-</blockquote>
-<hr />
-
+<blockquote><p>Foo</p></blockquote><hr>
 ```
 
-Example 63
+But instead was:
+
+```html
+<p>&gt; Foo</p><hr>
+```
+### [Example 63](https://github.github.com/gfm/#example-63)
 
 This markdown:
 
@@ -7918,18 +5079,18 @@ bar
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<blockquote>
-<p>foo
-bar
-===</p>
-</blockquote>
-
+<blockquote><p>foo bar ===</p></blockquote>
 ```
 
-Example 64
+But instead was:
+
+```html
+<p>&gt; foo bar ===</p>
+```
+### [Example 64](https://github.github.com/gfm/#example-64)
 
 This markdown:
 
@@ -7939,17 +5100,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<ul>
-<li>Foo</li>
-</ul>
-<hr />
-
+<ul><li>Foo</li></ul><hr>
 ```
 
-Example 65
+But instead was:
+
+```html
+<ul><li><p>Foo</p></li><li><p>--</p></li></ul>
+```
+### [Example 65](https://github.github.com/gfm/#example-65)
 
 This markdown:
 
@@ -7960,15 +5122,18 @@ Bar
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<h2>Foo
-Bar</h2>
-
+<h2>Foo Bar</h2>
 ```
 
-Example 66
+But instead was:
+
+```html
+<p>Foo Bar</p><hr>
+```
+### [Example 66](https://github.github.com/gfm/#example-66)
 
 This markdown:
 
@@ -7982,17 +5147,18 @@ Baz
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<hr />
-<h2>Foo</h2>
-<h2>Bar</h2>
-<p>Baz</p>
-
+<hr><h2>Foo</h2><h2>Bar</h2><p>Baz</p>
 ```
 
-Example 69
+But instead was:
+
+```html
+<hr><p>Foo</p><hr><p>Bar</p><hr><p>Baz</p>
+```
+### [Example 69](https://github.github.com/gfm/#example-69)
 
 This markdown:
 
@@ -8002,17 +5168,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<ul>
-<li>foo</li>
-</ul>
-<hr />
-
+<ul><li>foo</li></ul><hr>
 ```
 
-Example 71
+But instead was:
+
+```html
+<ul><li><p>foo</p></li><li><p>----</p></li></ul>
+```
+### [Example 71](https://github.github.com/gfm/#example-71)
 
 This markdown:
 
@@ -8022,17 +5189,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<blockquote>
-<p>foo</p>
-</blockquote>
-<hr />
-
+<blockquote><p>foo</p></blockquote><hr>
 ```
 
-Example 72
+But instead was:
+
+```html
+<p>&gt; foo</p><hr>
+```
+### [Example 72](https://github.github.com/gfm/#example-72)
 
 This markdown:
 
@@ -8042,14 +5210,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <h2>&gt; foo</h2>
-
 ```
 
-Example 73
+But instead was:
+
+```html
+<p>\&gt; foo</p><hr>
+```
+### [Example 73](https://github.github.com/gfm/#example-73)
 
 This markdown:
 
@@ -8062,40 +5234,18 @@ baz
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>Foo</p>
-<h2>bar</h2>
-<p>baz</p>
-
+<p>Foo</p><h2>bar</h2><p>baz</p>
 ```
 
-Example 74
-
-This markdown:
-
-```markdown
-Foo
-bar
-
----
-
-baz
-
-```
-
-Gives this incorrect output:
+But instead was:
 
 ```html
-<p>Foo
-bar</p>
-<hr />
-<p>baz</p>
-
+<p>Foo</p><p>bar</p><hr><p>baz</p>
 ```
-
-Example 75
+### [Example 75](https://github.github.com/gfm/#example-75)
 
 This markdown:
 
@@ -8107,17 +5257,18 @@ baz
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>Foo
-bar</p>
-<hr />
-<p>baz</p>
-
+<p>Foo bar</p><hr><p>baz</p>
 ```
 
-Example 76
+But instead was:
+
+```html
+<p>Foo bar<em></em><em>baz</em></p>
+```
+### [Example 76](https://github.github.com/gfm/#example-76)
 
 This markdown:
 
@@ -8129,342 +5280,389 @@ baz
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>Foo
+<p>Foo bar --- baz</p>
+```
+
+But instead was:
+
+```html
+<p>Foo bar \--- baz</p>
+```
+## Backslash escapes
+
+### [Example 298](https://github.github.com/gfm/#example-298)
+
+This markdown:
+
+```markdown
+\!\"\#\$\%\&\'\(\)\*\+\,\-\.\/\:\;\<\=\>\?\@\[\\\]\^\_\`\{\|\}\~
+
+```
+
+Should give output:
+
+```html
+<p>!&quot;#$%&amp;&#39;()*+,-./:;&lt;=&gt;?@[\]^_`{|}~</p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 3 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 300](https://github.github.com/gfm/#example-300)
+
+This markdown:
+
+```markdown
+\*not emphasized*
+\<br/> not a tag
+\[not a link](/foo)
+\`not code`
+1\. not a list
+\* not a list
+\# not a heading
+\[foo]: /url "not a reference"
+\&ouml; not a character entity
+
+```
+
+Should give output:
+
+```html
+<p>*not emphasized* &lt;br/&gt; not a tag [not a link](/foo) `not code` 1. not a list * not a list # not a heading [foo]: /url &quot;not a reference&quot; &amp;ouml; not a character entity</p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 19 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 301](https://github.github.com/gfm/#example-301)
+
+This markdown:
+
+```markdown
+\\*emphasis*
+
+```
+
+Should give output:
+
+```html
+<p>\<em>emphasis</em></p>
+```
+
+But instead was:
+
+```html
+<p>\\<em>emphasis</em></p>
+```
+### [Example 302](https://github.github.com/gfm/#example-302)
+
+This markdown:
+
+```markdown
+foo\
 bar
----
-baz</p>
 
 ```
 
-### Paragraphs
-
-Example 190
-
-This markdown:
-
-```markdown
-aaa
-bbb
-
-ccc
-ddd
-
-```
-
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>aaa
-bbb</p>
-<p>ccc
-ddd</p>
-
+<p>foo<br>bar</p>
 ```
 
-Example 192
-
-This markdown:
-
-```markdown
-  aaa
- bbb
-
-```
-
-Gives this incorrect output:
+But instead was:
 
 ```html
-<p>aaa
-bbb</p>
-
+<p>foo\ bar</p>
 ```
-
-Example 193
+### [Example 303](https://github.github.com/gfm/#example-303)
 
 This markdown:
 
 ```markdown
-aaa
-             bbb
-                                       ccc
+`` \[\` ``
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>aaa
-bbb
-ccc</p>
-
+<p><code>\[\`</code></p>
 ```
 
-Example 194
-
-This markdown:
-
-```markdown
-   aaa
-bbb
-
-```
-
-Gives this incorrect output:
+But instead was:
 
 ```html
-<p>aaa
-bbb</p>
-
+ERROR Problem at row 3 Expecting Problem at row 1 Expecting symbol ]
 ```
-
-Example 196
+### [Example 306](https://github.github.com/gfm/#example-306)
 
 This markdown:
 
 ```markdown
-aaa     
-bbb     
+<http://example.com?find=\*>
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>aaa<br />
-bbb</p>
-
+<p><a href="http://example.com?find=%5C*">http://example.com?find=\*</a></p>
 ```
 
-### [extension] Autolinks
-
-Example 621
-
-This markdown:
-
-```markdown
-www.commonmark.org
-```
-
-Gives this incorrect output:
+But instead was:
 
 ```html
-<p><a href="http://www.commonmark.org">www.commonmark.org</a></p>
+ERROR Problem at row 1 Expecting symbol /&gt; Problem at row 1 Expecting symbol &gt;
 ```
-
-Example 622
+### [Example 307](https://github.github.com/gfm/#example-307)
 
 This markdown:
 
 ```markdown
-Visit www.commonmark.org/help for more information.
+<a href="/bar\/)">
+
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>Visit <a href="http://www.commonmark.org/help">www.commonmark.org/help</a> for more information.</p>
+<a href="/bar\/)">
 ```
 
-Example 623
-
-This markdown:
-
-```markdown
-Visit www.commonmark.org.
-
-Visit www.commonmark.org/a.b.
-```
-
-Gives this incorrect output:
+But instead was:
 
 ```html
-<p>Visit <a href="http://www.commonmark.org">www.commonmark.org</a>.</p>
-<p>Visit <a href="http://www.commonmark.org/a.b">www.commonmark.org/a.b</a>.</p>
+ERROR Problem at row 2 Expecting symbol
 ```
-
-Example 624
+### [Example 308](https://github.github.com/gfm/#example-308)
 
 This markdown:
 
 ```markdown
-www.google.com/search?q=Markup+(business)
+[foo](/bar\* "ti\*tle")
 
-www.google.com/search?q=Markup+(business)))
-
-(www.google.com/search?q=Markup+(business))
-
-(www.google.com/search?q=Markup+(business)
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p><a href="http://www.google.com/search?q=Markup+(business)">www.google.com/search?q=Markup+(business)</a></p>
-<p><a href="http://www.google.com/search?q=Markup+(business)">www.google.com/search?q=Markup+(business)</a>))</p>
-<p>(<a href="http://www.google.com/search?q=Markup+(business)">www.google.com/search?q=Markup+(business)</a>)</p>
-<p>(<a href="http://www.google.com/search?q=Markup+(business)">www.google.com/search?q=Markup+(business)</a></p>
+<p><a href="/bar*" title="ti*tle">foo</a></p>
 ```
 
-Example 625
-
-This markdown:
-
-```markdown
-www.google.com/search?q=(business))+ok
-```
-
-Gives this incorrect output:
+But instead was:
 
 ```html
-<p><a href="http://www.google.com/search?q=(business))+ok">www.google.com/search?q=(business))+ok</a></p>
+<p><a href="/bar\* \" ti\*tle\""="">foo</a></p>
 ```
-
-Example 626
+### [Example 309](https://github.github.com/gfm/#example-309)
 
 This markdown:
 
 ```markdown
-www.google.com/search?q=commonmark&hl=en
+[foo]
 
-www.google.com/search?q=commonmark&hl;
+[foo]: /bar\* "ti\*tle"
+
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p><a href="http://www.google.com/search?q=commonmark&amp;hl=en">www.google.com/search?q=commonmark&amp;hl=en</a></p>
-<p><a href="http://www.google.com/search?q=commonmark">www.google.com/search?q=commonmark</a>&amp;hl;</p>
+<p><a href="/bar*" title="ti*tle">foo</a></p>
 ```
 
-Example 627
-
-This markdown:
-
-```markdown
-www.commonmark.org/he<lp
-```
-
-Gives this incorrect output:
+But instead was:
 
 ```html
-<p><a href="http://www.commonmark.org/he">www.commonmark.org/he</a>&lt;lp</p>
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
 ```
-
-Example 628
+### [Example 310](https://github.github.com/gfm/#example-310)
 
 This markdown:
 
 ```markdown
-http://commonmark.org
-
-(Visit https://encrypted.google.com/search?q=Markup+(business))
-
-Anonymous FTP is available at ftp://foo.bar.baz.
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="http://commonmark.org">http://commonmark.org</a></p>
-<p>(Visit <a href="https://encrypted.google.com/search?q=Markup+(business)">https://encrypted.google.com/search?q=Markup+(business)</a>)</p>
-<p>Anonymous FTP is available at <a href="ftp://foo.bar.baz">ftp://foo.bar.baz</a>.</p>
-```
-
-Example 629
-
-This markdown:
-
-```markdown
-foo@bar.baz
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="mailto:foo@bar.baz">foo@bar.baz</a></p>
-```
-
-Example 630
-
-This markdown:
-
-```markdown
-hello@mail+xyz.example isn't valid, but hello+xyz@mail.example is.
-```
-
-Gives this incorrect output:
-
-```html
-<p>hello@mail+xyz.example isn't valid, but <a href="mailto:hello+xyz@mail.example">hello+xyz@mail.example</a> is.</p>
-```
-
-Example 631
-
-This markdown:
-
-```markdown
-a.b-c_d@a.b
-
-a.b-c_d@a.b.
-
-a.b-c_d@a.b-
-
-a.b-c_d@a.b_
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="mailto:a.b-c_d@a.b">a.b-c_d@a.b</a></p>
-<p><a href="mailto:a.b-c_d@a.b">a.b-c_d@a.b</a>.</p>
-<p>a.b-c_d@a.b-</p>
-<p>a.b-c_d@a.b_</p>
-```
-
-### Soft line breaks
-
-Example 645
-
-This markdown:
-
-```markdown
+``` foo\+bar
 foo
-baz
+```
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>foo
-baz</p>
-
+<pre><code class="language-foo+bar">foo</code></pre>
 ```
 
-Example 646
+But instead was:
+
+```html
+<pre><code>foo</code></pre>
+```
+## [extension] Tables
+
+### [Example 198](https://github.github.com/gfm/#example-198)
 
 This markdown:
 
 ```markdown
-foo 
- baz
-
+| foo | bar |
+| --- | --- |
+| baz | bim |
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>foo
-baz</p>
-
+<table><thead><tr><th>foo</th><th>bar</th></tr></thead><tbody><tr><td>baz</td><td>bim</td></tr></tbody></table>
 ```
 
-### Indented code blocks
+But instead was:
 
-Example 77
+```html
+<p>| foo | bar | | --- | --- | | baz | bim |</p>
+```
+### [Example 199](https://github.github.com/gfm/#example-199)
+
+This markdown:
+
+```markdown
+| abc | defghi |
+:-: | -----------:
+bar | baz
+```
+
+Should give output:
+
+```html
+<table><thead><tr><th align="center">abc</th><th align="right">defghi</th></tr></thead><tbody><tr><td align="center">bar</td><td align="right">baz</td></tr></tbody></table>
+```
+
+But instead was:
+
+```html
+<p>| abc | defghi | :-: | -----------: bar | baz</p>
+```
+### [Example 200](https://github.github.com/gfm/#example-200)
+
+This markdown:
+
+```markdown
+| f\|oo  |
+| ------ |
+| b `\|` az |
+| b **\|** im |
+```
+
+Should give output:
+
+```html
+<table><thead><tr><th>f|oo</th></tr></thead><tbody><tr><td>b<code>|</code>az</td></tr><tr><td>b<strong>|</strong>im</td></tr></tbody></table>
+```
+
+But instead was:
+
+```html
+<p>| f\|oo | | ------ | | b<code>\|</code>az | | b<strong>\|</strong>im |</p>
+```
+### [Example 201](https://github.github.com/gfm/#example-201)
+
+This markdown:
+
+```markdown
+| abc | def |
+| --- | --- |
+| bar | baz |
+> bar
+```
+
+Should give output:
+
+```html
+<table><thead><tr><th>abc</th><th>def</th></tr></thead><tbody><tr><td>bar</td><td>baz</td></tr></tbody></table><blockquote><p>bar</p></blockquote>
+```
+
+But instead was:
+
+```html
+<p>| abc | def | | --- | --- | | bar | baz | &gt; bar</p>
+```
+### [Example 202](https://github.github.com/gfm/#example-202)
+
+This markdown:
+
+```markdown
+| abc | def |
+| --- | --- |
+| bar | baz |
+bar
+
+bar
+```
+
+Should give output:
+
+```html
+<table><thead><tr><th>abc</th><th>def</th></tr></thead><tbody><tr><td>bar</td><td>baz</td></tr><tr><td>bar</td><td></td></tr></tbody></table><p>bar</p>
+```
+
+But instead was:
+
+```html
+<p>| abc | def | | --- | --- | | bar | baz | bar</p><p>bar</p>
+```
+### [Example 204](https://github.github.com/gfm/#example-204)
+
+This markdown:
+
+```markdown
+| abc | def |
+| --- | --- |
+| bar |
+| bar | baz | boo |
+```
+
+Should give output:
+
+```html
+<table><thead><tr><th>abc</th><th>def</th></tr></thead><tbody><tr><td>bar</td><td></td></tr><tr><td>bar</td><td>baz</td></tr></tbody></table>
+```
+
+But instead was:
+
+```html
+<p>| abc | def | | --- | --- | | bar | | bar | baz | boo |</p>
+```
+### [Example 205](https://github.github.com/gfm/#example-205)
+
+This markdown:
+
+```markdown
+| abc | def |
+| --- | --- |
+```
+
+Should give output:
+
+```html
+<table><thead><tr><th>abc</th><th>def</th></tr></thead></table>
+```
+
+But instead was:
+
+```html
+<p>| abc | def | | --- | --- |</p>
+```
+## Indented code blocks
+
+### [Example 77](https://github.github.com/gfm/#example-77)
 
 This markdown:
 
@@ -8474,16 +5672,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<pre><code>a simple
-  indented code block
-</code></pre>
-
+<pre><code>a simple indented code block</code></pre>
 ```
 
-Example 78
+But instead was:
+
+```html
+<pre><code>a simple</code></pre><pre><code>indented code block</code></pre>
+```
+### [Example 78](https://github.github.com/gfm/#example-78)
 
 This markdown:
 
@@ -8494,19 +5694,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<ul>
-<li>
-<p>foo</p>
-<p>bar</p>
-</li>
-</ul>
-
+<ul><li><p>foo</p><p>bar</p></li></ul>
 ```
 
-Example 79
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+```
+### [Example 79](https://github.github.com/gfm/#example-79)
 
 This markdown:
 
@@ -8517,21 +5716,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<ol>
-<li>
-<p>foo</p>
-<ul>
-<li>bar</li>
-</ul>
-</li>
-</ol>
-
+<ol><li><p>foo</p><ul><li>bar</li></ul></li></ol>
 ```
 
-Example 80
+But instead was:
+
+```html
+<p>1. foo</p><pre><code>- bar</code></pre>
+```
+### [Example 80](https://github.github.com/gfm/#example-80)
 
 This markdown:
 
@@ -8543,18 +5739,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<pre><code>&lt;a/&gt;
-*hi*
-
-- one
-</code></pre>
-
+<pre><code>&lt;a/&gt; *hi* - one</code></pre>
 ```
 
-Example 81
+But instead was:
+
+```html
+<pre><code>&lt;a/&gt;</code></pre><pre><code>*hi*</code></pre><pre><code>- one</code></pre>
+```
+### [Example 81](https://github.github.com/gfm/#example-81)
 
 This markdown:
 
@@ -8569,21 +5765,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<pre><code>chunk1
-
-chunk2
-
-
-
-chunk3
-</code></pre>
-
+<pre><code>chunk1 chunk2 chunk3</code></pre>
 ```
 
-Example 82
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting --- Problem at row 6 Expecting *** Problem at row 6 Expecting ___
+```
+### [Example 82](https://github.github.com/gfm/#example-82)
 
 This markdown:
 
@@ -8594,17 +5787,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<pre><code>chunk1
-  
-  chunk2
-</code></pre>
-
+<pre><code>chunk1 chunk2</code></pre>
 ```
 
-Example 83
+But instead was:
+
+```html
+<pre><code>chunk1</code></pre><pre><code></code></pre><pre><code>chunk2</code></pre>
+```
+### [Example 83](https://github.github.com/gfm/#example-83)
 
 This markdown:
 
@@ -8615,15 +5809,18 @@ Foo
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>Foo
-bar</p>
-
+<p>Foo bar</p>
 ```
 
-Example 85
+But instead was:
+
+```html
+<p>Foo</p><pre><code>bar</code></pre>
+```
+### [Example 85](https://github.github.com/gfm/#example-85)
 
 This markdown:
 
@@ -8637,20 +5834,18 @@ Heading
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<h1>Heading</h1>
-<pre><code>foo
-</code></pre>
-<h2>Heading</h2>
-<pre><code>foo
-</code></pre>
-<hr />
-
+<h1>Heading</h1><pre><code>foo</code></pre><h2>Heading</h2><pre><code>foo</code></pre><hr>
 ```
 
-Example 86
+But instead was:
+
+```html
+<h1>Heading</h1><pre><code>foo</code></pre><p>Heading</p><hr><pre><code>foo</code></pre><hr>
+```
+### [Example 86](https://github.github.com/gfm/#example-86)
 
 This markdown:
 
@@ -8660,16 +5855,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<pre><code>    foo
-bar
-</code></pre>
-
+<pre><code>foo bar</code></pre>
 ```
 
-Example 87
+But instead was:
+
+```html
+<pre><code>foo</code></pre><pre><code>bar</code></pre>
+```
+### [Example 87](https://github.github.com/gfm/#example-87)
 
 This markdown:
 
@@ -8682,450 +5879,1888 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<pre><code>foo
-</code></pre>
-
+<pre><code>foo</code></pre>
 ```
 
-### Hard line breaks
+But instead was:
 
-Example 630
+```html
+<pre><code></code></pre><pre><code>foo</code></pre><pre><code></code></pre>
+```
+## Inlines
+
+### [Example 297](https://github.github.com/gfm/#example-297)
 
 This markdown:
 
 ```markdown
-foo  
-baz
+`hi`lo`
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>foo<br />
-baz</p>
-
+<p><code>hi</code>lo`</p>
 ```
 
-Example 631
+But instead was:
+
+```html
+<p><code>hi</code>lo</p>
+```
+## [extension] Disallowed Raw HTML
+
+### [Example 653](https://github.github.com/gfm/#example-653)
 
 This markdown:
 
 ```markdown
-foo\
-baz
+<strong> <title> <style> <em>
 
-```
-
-Gives this incorrect output:
-
-```html
-<p>foo<br />
-baz</p>
-
-```
-
-Example 632
-
-This markdown:
-
-```markdown
-foo       
-baz
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>foo<br />
-baz</p>
-
-```
-
-Example 633
-
-This markdown:
-
-```markdown
-foo  
-     bar
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>foo<br />
-bar</p>
-
-```
-
-Example 634
-
-This markdown:
-
-```markdown
-foo\
-     bar
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>foo<br />
-bar</p>
-
-```
-
-Example 635
-
-This markdown:
-
-```markdown
-*foo  
-bar*
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><em>foo<br />
-bar</em></p>
-
-```
-
-Example 636
-
-This markdown:
-
-```markdown
-*foo\
-bar*
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><em>foo<br />
-bar</em></p>
-
-```
-
-Example 637
-
-This markdown:
-
-```markdown
-`code 
-span`
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><code>code  span</code></p>
-
-```
-
-Example 638
-
-This markdown:
-
-```markdown
-`code\
-span`
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><code>code\ span</code></p>
-
-```
-
-Example 639
-
-This markdown:
-
-```markdown
-<a href="foo  
-bar">
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="foo  
-bar"></p>
-
-```
-
-Example 640
-
-This markdown:
-
-```markdown
-<a href="foo\
-bar">
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="foo\
-bar"></p>
-
-```
-
-### [extension] Tables
-
-Example 198
-
-This markdown:
-
-```markdown
-| foo | bar |
-| --- | --- |
-| baz | bim |
-```
-
-Gives this incorrect output:
-
-```html
-<table>
-<thead>
-<tr>
-<th>foo</th>
-<th>bar</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>baz</td>
-<td>bim</td>
-</tr>
-</tbody>
-</table>
-```
-
-Example 199
-
-This markdown:
-
-```markdown
-| abc | defghi |
-:-: | -----------:
-bar | baz
-```
-
-Gives this incorrect output:
-
-```html
-<table>
-<thead>
-<tr>
-<th align="center">abc</th>
-<th align="right">defghi</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td align="center">bar</td>
-<td align="right">baz</td>
-</tr>
-</tbody>
-</table>
-```
-
-Example 200
-
-This markdown:
-
-```markdown
-| f\|oo  |
-| ------ |
-| b `\|` az |
-| b **\|** im |
-```
-
-Gives this incorrect output:
-
-```html
-<table>
-<thead>
-<tr>
-<th>f|oo</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>b <code>|</code> az</td>
-</tr>
-<tr>
-<td>b <strong>|</strong> im</td>
-</tr>
-</tbody>
-</table>
-```
-
-Example 201
-
-This markdown:
-
-```markdown
-| abc | def |
-| --- | --- |
-| bar | baz |
-> bar
-```
-
-Gives this incorrect output:
-
-```html
-<table>
-<thead>
-<tr>
-<th>abc</th>
-<th>def</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>bar</td>
-<td>baz</td>
-</tr>
-</tbody>
-</table>
 <blockquote>
-<p>bar</p>
+  <xmp> is disallowed.  <XMP> is also disallowed.
 </blockquote>
 ```
 
-Example 202
+Should give output:
+
+```html
+<p><strong>&lt;title&gt; &lt;style&gt;<em></p><blockquote>&lt;xmp&gt; is disallowed. &lt;XMP&gt; is also disallowed.</blockquote>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 5 tag name mismatch: XMP and blockquote
+```
+## Autolinks
+
+### [Example 590](https://github.github.com/gfm/#example-590)
 
 This markdown:
 
 ```markdown
-| abc | def |
-| --- | --- |
-| bar | baz |
-bar
+<http://foo.bar.baz>
 
-bar
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<table>
-<thead>
-<tr>
-<th>abc</th>
-<th>def</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>bar</td>
-<td>baz</td>
-</tr>
-<tr>
-<td>bar</td>
-<td></td>
-</tr>
-</tbody>
-</table>
+<p><a href="http://foo.bar.baz">http://foo.bar.baz</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting symbol /&gt; Problem at row 1 Expecting symbol &gt;
+```
+### [Example 591](https://github.github.com/gfm/#example-591)
+
+This markdown:
+
+```markdown
+<http://foo.bar.baz/test?q=hello&id=22&boolean>
+
+```
+
+Should give output:
+
+```html
+<p><a href="http://foo.bar.baz/test?q=hello&amp;id=22&amp;boolean">http://foo.bar.baz/test?q=hello&amp;id=22&amp;boolean</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting symbol /&gt; Problem at row 1 Expecting symbol &gt;
+```
+### [Example 592](https://github.github.com/gfm/#example-592)
+
+This markdown:
+
+```markdown
+<irc://foo.bar:2233/baz>
+
+```
+
+Should give output:
+
+```html
+<p><a href="irc://foo.bar:2233/baz">irc://foo.bar:2233/baz</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting symbol /&gt; Problem at row 1 Expecting symbol &gt;
+```
+### [Example 593](https://github.github.com/gfm/#example-593)
+
+This markdown:
+
+```markdown
+<MAILTO:FOO@BAR.BAZ>
+
+```
+
+Should give output:
+
+```html
+<p><a href="MAILTO:FOO@BAR.BAZ">MAILTO:FOO@BAR.BAZ</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 2 Expecting symbol
+```
+### [Example 594](https://github.github.com/gfm/#example-594)
+
+This markdown:
+
+```markdown
+<a+b+c:d>
+
+```
+
+Should give output:
+
+```html
+<p><a href="a+b+c:d">a+b+c:d</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 2 Expecting symbol
+```
+### [Example 595](https://github.github.com/gfm/#example-595)
+
+This markdown:
+
+```markdown
+<made-up-scheme://foo,bar>
+
+```
+
+Should give output:
+
+```html
+<p><a href="made-up-scheme://foo,bar">made-up-scheme://foo,bar</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting symbol /&gt; Problem at row 1 Expecting symbol &gt;
+```
+### [Example 596](https://github.github.com/gfm/#example-596)
+
+This markdown:
+
+```markdown
+<http://../>
+
+```
+
+Should give output:
+
+```html
+<p><a href="http://../">http://../</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting symbol /&gt; Problem at row 1 Expecting symbol &gt;
+```
+### [Example 597](https://github.github.com/gfm/#example-597)
+
+This markdown:
+
+```markdown
+<localhost:5001/foo>
+
+```
+
+Should give output:
+
+```html
+<p><a href="localhost:5001/foo">localhost:5001/foo</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting symbol /&gt; Problem at row 1 Expecting symbol &gt;
+```
+### [Example 598](https://github.github.com/gfm/#example-598)
+
+This markdown:
+
+```markdown
+<http://foo.bar/baz bim>
+
+```
+
+Should give output:
+
+```html
+<p>&lt;http://foo.bar/baz bim&gt;</p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting symbol /&gt; Problem at row 1 Expecting symbol &gt;
+```
+### [Example 599](https://github.github.com/gfm/#example-599)
+
+This markdown:
+
+```markdown
+<http://example.com/\[\>
+
+```
+
+Should give output:
+
+```html
+<p><a href="http://example.com/%5C%5B%5C">http://example.com/\[\</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting symbol /&gt; Problem at row 1 Expecting symbol &gt;
+```
+### [Example 600](https://github.github.com/gfm/#example-600)
+
+This markdown:
+
+```markdown
+<foo@bar.example.com>
+
+```
+
+Should give output:
+
+```html
+<p><a href="mailto:foo@bar.example.com">foo@bar.example.com</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 2 Expecting symbol
+```
+### [Example 601](https://github.github.com/gfm/#example-601)
+
+This markdown:
+
+```markdown
+<foo+special@Bar.baz-bar0.com>
+
+```
+
+Should give output:
+
+```html
+<p><a href="mailto:foo+special@Bar.baz-bar0.com">foo+special@Bar.baz-bar0.com</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 2 Expecting symbol
+```
+### [Example 602](https://github.github.com/gfm/#example-602)
+
+This markdown:
+
+```markdown
+<foo\+@bar.example.com>
+
+```
+
+Should give output:
+
+```html
+<p>&lt;foo+@bar.example.com&gt;</p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 2 Expecting symbol
+```
+### [Example 603](https://github.github.com/gfm/#example-603)
+
+This markdown:
+
+```markdown
+<>
+
+```
+
+Should give output:
+
+```html
+<p>&lt;&gt;</p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 1 Bad repeat
+```
+### [Example 604](https://github.github.com/gfm/#example-604)
+
+This markdown:
+
+```markdown
+< http://foo.bar >
+
+```
+
+Should give output:
+
+```html
+<p>&lt; http://foo.bar &gt;</p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 1 Bad repeat
+```
+### [Example 605](https://github.github.com/gfm/#example-605)
+
+This markdown:
+
+```markdown
+<m:abc>
+
+```
+
+Should give output:
+
+```html
+<p>&lt;m:abc&gt;</p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 2 Expecting symbol
+```
+### [Example 606](https://github.github.com/gfm/#example-606)
+
+This markdown:
+
+```markdown
+<foo.bar.baz>
+
+```
+
+Should give output:
+
+```html
+<p>&lt;foo.bar.baz&gt;</p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 2 Expecting symbol
+```
+## Paragraphs
+
+### [Example 192](https://github.github.com/gfm/#example-192)
+
+This markdown:
+
+```markdown
+  aaa
+ bbb
+
+```
+
+Should give output:
+
+```html
+<p>aaa bbb</p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+```
+### [Example 193](https://github.github.com/gfm/#example-193)
+
+This markdown:
+
+```markdown
+aaa
+             bbb
+                                       ccc
+
+```
+
+Should give output:
+
+```html
+<p>aaa bbb ccc</p>
+```
+
+But instead was:
+
+```html
+<p>aaa</p><pre><code>bbb</code></pre><pre><code>ccc</code></pre>
+```
+### [Example 194](https://github.github.com/gfm/#example-194)
+
+This markdown:
+
+```markdown
+   aaa
+bbb
+
+```
+
+Should give output:
+
+```html
+<p>aaa bbb</p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+```
+### [Example 196](https://github.github.com/gfm/#example-196)
+
+This markdown:
+
+```markdown
+aaa     
+bbb     
+
+```
+
+Should give output:
+
+```html
+<p>aaa<br>bbb</p>
+```
+
+But instead was:
+
+```html
+<p>aaa bbb</p>
+```
+## Link reference definitions
+
+### [Example 161](https://github.github.com/gfm/#example-161)
+
+This markdown:
+
+```markdown
+[foo]: /url "title"
+
+[foo]
+
+```
+
+Should give output:
+
+```html
+<p><a href="/url" title="title">foo</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 162](https://github.github.com/gfm/#example-162)
+
+This markdown:
+
+```markdown
+   [foo]: 
+      /url  
+           'the title'  
+
+[foo]
+
+```
+
+Should give output:
+
+```html
+<p><a href="/url" title="the title">foo</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+```
+### [Example 163](https://github.github.com/gfm/#example-163)
+
+This markdown:
+
+```markdown
+[Foo*bar\]]:my_(url) 'title (with parens)'
+
+[Foo*bar\]]
+
+```
+
+Should give output:
+
+```html
+<p><a href="my_(url)" title="title (with parens)">Foo*bar]</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 164](https://github.github.com/gfm/#example-164)
+
+This markdown:
+
+```markdown
+[Foo bar]:
+<my url>
+'title'
+
+[Foo bar]
+
+```
+
+Should give output:
+
+```html
+<p><a href="my%20url" title="title">Foo bar</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 3 Expecting symbol =
+```
+### [Example 165](https://github.github.com/gfm/#example-165)
+
+This markdown:
+
+```markdown
+[foo]: /url '
+title
+line1
+line2
+'
+
+[foo]
+
+```
+
+Should give output:
+
+```html
+<p><a href="/url" title="
+title
+line1
+line2
+">foo</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 14 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 166](https://github.github.com/gfm/#example-166)
+
+This markdown:
+
+```markdown
+[foo]: /url 'title
+
+with blank line'
+
+[foo]
+
+```
+
+Should give output:
+
+```html
+<p>[foo]: /url &#39;title</p><p>with blank line&#39;</p><p>[foo]</p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 9 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 167](https://github.github.com/gfm/#example-167)
+
+This markdown:
+
+```markdown
+[foo]:
+/url
+
+[foo]
+
+```
+
+Should give output:
+
+```html
+<p><a href="/url">foo</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 8 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 168](https://github.github.com/gfm/#example-168)
+
+This markdown:
+
+```markdown
+[foo]:
+
+[foo]
+
+```
+
+Should give output:
+
+```html
+<p>[foo]:</p><p>[foo]</p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 169](https://github.github.com/gfm/#example-169)
+
+This markdown:
+
+```markdown
+[foo]: <>
+
+[foo]
+
+```
+
+Should give output:
+
+```html
+<p><a href="">foo</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 170](https://github.github.com/gfm/#example-170)
+
+This markdown:
+
+```markdown
+[foo]: <bar>(baz)
+
+[foo]
+
+```
+
+Should give output:
+
+```html
+<p>[foo]:<bar>(baz)</p><p>[foo]</p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 171](https://github.github.com/gfm/#example-171)
+
+This markdown:
+
+```markdown
+[foo]: /url\bar\*baz "foo\"bar\baz"
+
+[foo]
+
+```
+
+Should give output:
+
+```html
+<p><a href="/url%5Cbar*baz" title="foo&quot;bar\baz">foo</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 172](https://github.github.com/gfm/#example-172)
+
+This markdown:
+
+```markdown
+[foo]
+
+[foo]: url
+
+```
+
+Should give output:
+
+```html
+<p><a href="url">foo</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 173](https://github.github.com/gfm/#example-173)
+
+This markdown:
+
+```markdown
+[foo]
+
+[foo]: first
+[foo]: second
+
+```
+
+Should give output:
+
+```html
+<p><a href="first">foo</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 8 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 174](https://github.github.com/gfm/#example-174)
+
+This markdown:
+
+```markdown
+[FOO]: /url
+
+[Foo]
+
+```
+
+Should give output:
+
+```html
+<p><a href="/url">Foo</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 175](https://github.github.com/gfm/#example-175)
+
+This markdown:
+
+```markdown
+[ΑΓΩ]: /φου
+
+[αγω]
+
+```
+
+Should give output:
+
+```html
+<p><a href="/%CF%86%CE%BF%CF%85">αγω</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 176](https://github.github.com/gfm/#example-176)
+
+This markdown:
+
+```markdown
+[foo]: /url
+
+```
+
+Should give output:
+
+```html
+
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 3 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 177](https://github.github.com/gfm/#example-177)
+
+This markdown:
+
+```markdown
+[
+foo
+]: /url
+bar
+
+```
+
+Should give output:
+
+```html
 <p>bar</p>
 ```
 
-Example 203
+But instead was:
+
+```html
+ERROR Problem at row 9 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 178](https://github.github.com/gfm/#example-178)
 
 This markdown:
 
 ```markdown
-| abc | def |
-| --- |
-| bar |
+[foo]: /url "title" ok
+
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>| abc | def |
-| --- |
-| bar |</p>
+<p>[foo]: /url &quot;title&quot; ok</p>
 ```
 
-Example 204
+But instead was:
+
+```html
+ERROR Problem at row 3 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 179](https://github.github.com/gfm/#example-179)
 
 This markdown:
 
 ```markdown
-| abc | def |
-| --- | --- |
-| bar |
-| bar | baz | boo |
+[foo]: /url
+"title" ok
+
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<table>
-<thead>
-<tr>
-<th>abc</th>
-<th>def</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>bar</td>
-<td></td>
-</tr>
-<tr>
-<td>bar</td>
-<td>baz</td>
-</tr>
-</tbody>
-</table>
+<p>&quot;title&quot; ok</p>
 ```
 
-Example 205
+But instead was:
+
+```html
+ERROR Problem at row 5 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 180](https://github.github.com/gfm/#example-180)
 
 This markdown:
 
 ```markdown
-| abc | def |
-| --- | --- |
+    [foo]: /url "title"
+
+[foo]
+
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<table>
-<thead>
-<tr>
-<th>abc</th>
-<th>def</th>
-</tr>
-</thead>
-</table>
+<pre><code>[foo]: /url &quot;title&quot;</code></pre><p>[foo]</p>
 ```
 
-### Fenced code blocks
+But instead was:
 
-Example 91
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 181](https://github.github.com/gfm/#example-181)
+
+This markdown:
+
+```markdown
+```
+[foo]: /url
+```
+
+[foo]
+
+```
+
+Should give output:
+
+```html
+<pre><code>[foo]: /url</code></pre><p>[foo]</p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 9 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 182](https://github.github.com/gfm/#example-182)
+
+This markdown:
+
+```markdown
+Foo
+[bar]: /baz
+
+[bar]
+
+```
+
+Should give output:
+
+```html
+<p>Foo [bar]: /baz</p><p>[bar]</p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 8 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 183](https://github.github.com/gfm/#example-183)
+
+This markdown:
+
+```markdown
+# [Foo]
+[foo]: /url
+> bar
+
+```
+
+Should give output:
+
+```html
+<h1><a href="/url">Foo</a></h1><blockquote><p>bar</p></blockquote>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 7 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 184](https://github.github.com/gfm/#example-184)
+
+This markdown:
+
+```markdown
+[foo]: /url
+bar
+===
+[foo]
+
+```
+
+Should give output:
+
+```html
+<h1>bar</h1><p><a href="/url">foo</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 9 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 185](https://github.github.com/gfm/#example-185)
+
+This markdown:
+
+```markdown
+[foo]: /url
+===
+[foo]
+
+```
+
+Should give output:
+
+```html
+<p>===<a href="/url">foo</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 7 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 186](https://github.github.com/gfm/#example-186)
+
+This markdown:
+
+```markdown
+[foo]: /foo-url "foo"
+[bar]: /bar-url
+  "bar"
+[baz]: /baz-url
+
+[foo],
+[bar],
+[baz]
+
+```
+
+Should give output:
+
+```html
+<p><a href="/foo-url" title="foo">foo</a>,<a href="/bar-url" title="bar">bar</a>,<a href="/baz-url">baz</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 5 Expecting --- Problem at row 5 Expecting *** Problem at row 5 Expecting ___
+```
+### [Example 187](https://github.github.com/gfm/#example-187)
+
+This markdown:
+
+```markdown
+[foo]
+
+> [foo]: /url
+
+```
+
+Should give output:
+
+```html
+<p><a href="/url">foo</a></p><blockquote></blockquote>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 188](https://github.github.com/gfm/#example-188)
+
+This markdown:
+
+```markdown
+[foo]: /url
+
+```
+
+Should give output:
+
+```html
+
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 3 Expecting Problem at row 1 Expecting symbol (
+```
+## Tabs
+
+### [Example 2](https://github.github.com/gfm/#example-2)
+
+This markdown:
+
+```markdown
+  	foo	baz		bim
+
+```
+
+Should give output:
+
+```html
+<pre><code>foo baz bim</code></pre>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+```
+### [Example 3](https://github.github.com/gfm/#example-3)
+
+This markdown:
+
+```markdown
+    a	a
+    ὐ	a
+
+```
+
+Should give output:
+
+```html
+<pre><code>a a ὐ a</code></pre>
+```
+
+But instead was:
+
+```html
+<pre><code>a a</code></pre><pre><code>ὐ a</code></pre>
+```
+### [Example 4](https://github.github.com/gfm/#example-4)
+
+This markdown:
+
+```markdown
+  - foo
+
+	bar
+
+```
+
+Should give output:
+
+```html
+<ul><li><p>foo</p><p>bar</p></li></ul>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+```
+### [Example 5](https://github.github.com/gfm/#example-5)
+
+This markdown:
+
+```markdown
+- foo
+
+		bar
+
+```
+
+Should give output:
+
+```html
+<ul><li><p>foo</p><pre><code>bar</code></pre></li></ul>
+```
+
+But instead was:
+
+```html
+<ul><li><p>foo</p></li></ul><pre><code>bar</code></pre>
+```
+### [Example 6](https://github.github.com/gfm/#example-6)
+
+This markdown:
+
+```markdown
+>		foo
+
+```
+
+Should give output:
+
+```html
+<blockquote><pre><code>foo</code></pre></blockquote>
+```
+
+But instead was:
+
+```html
+<p>&gt; foo</p>
+```
+### [Example 7](https://github.github.com/gfm/#example-7)
+
+This markdown:
+
+```markdown
+-		foo
+
+```
+
+Should give output:
+
+```html
+<ul><li><pre><code>foo</code></pre></li></ul>
+```
+
+But instead was:
+
+```html
+<ul><li><p>foo</p></li></ul>
+```
+### [Example 8](https://github.github.com/gfm/#example-8)
+
+This markdown:
+
+```markdown
+    foo
+	bar
+
+```
+
+Should give output:
+
+```html
+<pre><code>foo bar</code></pre>
+```
+
+But instead was:
+
+```html
+<pre><code>foo</code></pre><pre><code>bar</code></pre>
+```
+### [Example 9](https://github.github.com/gfm/#example-9)
+
+This markdown:
+
+```markdown
+ - foo
+   - bar
+	 - baz
+
+```
+
+Should give output:
+
+```html
+<ul><li>foo<ul><li>bar<ul><li>baz</li></ul></li></ul></li></ul>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+```
+### [Example 11](https://github.github.com/gfm/#example-11)
+
+This markdown:
+
+```markdown
+*	*	*	
+
+```
+
+Should give output:
+
+```html
+<hr>
+```
+
+But instead was:
+
+```html
+<p><em></em><em></em></p>
+```
+## Soft line breaks
+
+### [Example 646](https://github.github.com/gfm/#example-646)
+
+This markdown:
+
+```markdown
+foo 
+ baz
+
+```
+
+Should give output:
+
+```html
+<p>foo baz</p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 3 Expecting --- Problem at row 3 Expecting *** Problem at row 3 Expecting ___
+```
+## Block quotes
+
+### [Example 198](https://github.github.com/gfm/#example-198)
+
+This markdown:
+
+```markdown
+> # Foo
+> bar
+> baz
+
+```
+
+Should give output:
+
+```html
+<blockquote><h1>Foo</h1><p>bar baz</p></blockquote>
+```
+
+But instead was:
+
+```html
+<p>&gt; # Foo &gt; bar &gt; baz</p>
+```
+### [Example 199](https://github.github.com/gfm/#example-199)
+
+This markdown:
+
+```markdown
+># Foo
+>bar
+> baz
+
+```
+
+Should give output:
+
+```html
+<blockquote><h1>Foo</h1><p>bar baz</p></blockquote>
+```
+
+But instead was:
+
+```html
+<p>&gt;# Foo &gt;bar &gt; baz</p>
+```
+### [Example 200](https://github.github.com/gfm/#example-200)
+
+This markdown:
+
+```markdown
+   > # Foo
+   > bar
+ > baz
+
+```
+
+Should give output:
+
+```html
+<blockquote><h1>Foo</h1><p>bar baz</p></blockquote>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+```
+### [Example 201](https://github.github.com/gfm/#example-201)
+
+This markdown:
+
+```markdown
+    > # Foo
+    > bar
+    > baz
+
+```
+
+Should give output:
+
+```html
+<pre><code>&gt; # Foo &gt; bar &gt; baz</code></pre>
+```
+
+But instead was:
+
+```html
+<pre><code>&gt; # Foo</code></pre><pre><code>&gt; bar</code></pre><pre><code>&gt; baz</code></pre>
+```
+### [Example 202](https://github.github.com/gfm/#example-202)
+
+This markdown:
+
+```markdown
+> # Foo
+> bar
+baz
+
+```
+
+Should give output:
+
+```html
+<blockquote><h1>Foo</h1><p>bar baz</p></blockquote>
+```
+
+But instead was:
+
+```html
+<p>&gt; # Foo &gt; bar baz</p>
+```
+### [Example 203](https://github.github.com/gfm/#example-203)
+
+This markdown:
+
+```markdown
+> bar
+baz
+> foo
+
+```
+
+Should give output:
+
+```html
+<blockquote><p>bar baz foo</p></blockquote>
+```
+
+But instead was:
+
+```html
+<p>&gt; bar baz &gt; foo</p>
+```
+### [Example 204](https://github.github.com/gfm/#example-204)
+
+This markdown:
+
+```markdown
+> foo
+---
+
+```
+
+Should give output:
+
+```html
+<blockquote><p>foo</p></blockquote><hr>
+```
+
+But instead was:
+
+```html
+<p>&gt; foo</p><hr>
+```
+### [Example 205](https://github.github.com/gfm/#example-205)
+
+This markdown:
+
+```markdown
+> - foo
+- bar
+
+```
+
+Should give output:
+
+```html
+<blockquote><ul><li>foo</li></ul></blockquote><ul><li>bar</li></ul>
+```
+
+But instead was:
+
+```html
+<p>&gt; - foo</p><ul><li><p>bar</p></li></ul>
+```
+### [Example 206](https://github.github.com/gfm/#example-206)
+
+This markdown:
+
+```markdown
+>     foo
+    bar
+
+```
+
+Should give output:
+
+```html
+<blockquote><pre><code>foo</code></pre></blockquote><pre><code>bar</code></pre>
+```
+
+But instead was:
+
+```html
+<p>&gt; foo</p><pre><code>bar</code></pre>
+```
+### [Example 207](https://github.github.com/gfm/#example-207)
+
+This markdown:
+
+```markdown
+> ```
+foo
+```
+
+```
+
+Should give output:
+
+```html
+<blockquote><pre><code></code></pre></blockquote><p>foo</p><pre><code></code></pre>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 7 Expecting symbol ```
+```
+### [Example 208](https://github.github.com/gfm/#example-208)
+
+This markdown:
+
+```markdown
+> foo
+    - bar
+
+```
+
+Should give output:
+
+```html
+<blockquote><p>foo - bar</p></blockquote>
+```
+
+But instead was:
+
+```html
+<p>&gt; foo</p><pre><code>- bar</code></pre>
+```
+### [Example 209](https://github.github.com/gfm/#example-209)
+
+This markdown:
+
+```markdown
+>
+
+```
+
+Should give output:
+
+```html
+<blockquote></blockquote>
+```
+
+But instead was:
+
+```html
+<p>&gt;</p>
+```
+### [Example 210](https://github.github.com/gfm/#example-210)
+
+This markdown:
+
+```markdown
+>
+>  
+> 
+
+```
+
+Should give output:
+
+```html
+<blockquote></blockquote>
+```
+
+But instead was:
+
+```html
+<p>&gt; &gt; &gt;</p>
+```
+### [Example 211](https://github.github.com/gfm/#example-211)
+
+This markdown:
+
+```markdown
+>
+> foo
+>  
+
+```
+
+Should give output:
+
+```html
+<blockquote><p>foo</p></blockquote>
+```
+
+But instead was:
+
+```html
+<p>&gt; &gt; foo &gt;</p>
+```
+### [Example 212](https://github.github.com/gfm/#example-212)
+
+This markdown:
+
+```markdown
+> foo
+
+> bar
+
+```
+
+Should give output:
+
+```html
+<blockquote><p>foo</p></blockquote><blockquote><p>bar</p></blockquote>
+```
+
+But instead was:
+
+```html
+<p>&gt; foo</p><p>&gt; bar</p>
+```
+### [Example 213](https://github.github.com/gfm/#example-213)
+
+This markdown:
+
+```markdown
+> foo
+> bar
+
+```
+
+Should give output:
+
+```html
+<blockquote><p>foo bar</p></blockquote>
+```
+
+But instead was:
+
+```html
+<p>&gt; foo &gt; bar</p>
+```
+### [Example 214](https://github.github.com/gfm/#example-214)
+
+This markdown:
+
+```markdown
+> foo
+>
+> bar
+
+```
+
+Should give output:
+
+```html
+<blockquote><p>foo</p><p>bar</p></blockquote>
+```
+
+But instead was:
+
+```html
+<p>&gt; foo &gt; &gt; bar</p>
+```
+### [Example 215](https://github.github.com/gfm/#example-215)
+
+This markdown:
+
+```markdown
+foo
+> bar
+
+```
+
+Should give output:
+
+```html
+<p>foo</p><blockquote><p>bar</p></blockquote>
+```
+
+But instead was:
+
+```html
+<p>foo &gt; bar</p>
+```
+### [Example 216](https://github.github.com/gfm/#example-216)
+
+This markdown:
+
+```markdown
+> aaa
+***
+> bbb
+
+```
+
+Should give output:
+
+```html
+<blockquote><p>aaa</p></blockquote><hr><blockquote><p>bbb</p></blockquote>
+```
+
+But instead was:
+
+```html
+<p>&gt; aaa</p><hr><p>&gt; bbb</p>
+```
+### [Example 217](https://github.github.com/gfm/#example-217)
+
+This markdown:
+
+```markdown
+> bar
+baz
+
+```
+
+Should give output:
+
+```html
+<blockquote><p>bar baz</p></blockquote>
+```
+
+But instead was:
+
+```html
+<p>&gt; bar baz</p>
+```
+### [Example 218](https://github.github.com/gfm/#example-218)
+
+This markdown:
+
+```markdown
+> bar
+
+baz
+
+```
+
+Should give output:
+
+```html
+<blockquote><p>bar</p></blockquote><p>baz</p>
+```
+
+But instead was:
+
+```html
+<p>&gt; bar</p><p>baz</p>
+```
+### [Example 219](https://github.github.com/gfm/#example-219)
+
+This markdown:
+
+```markdown
+> bar
+>
+baz
+
+```
+
+Should give output:
+
+```html
+<blockquote><p>bar</p></blockquote><p>baz</p>
+```
+
+But instead was:
+
+```html
+<p>&gt; bar &gt; baz</p>
+```
+### [Example 220](https://github.github.com/gfm/#example-220)
+
+This markdown:
+
+```markdown
+> > > foo
+bar
+
+```
+
+Should give output:
+
+```html
+<blockquote><blockquote><blockquote><p>foo bar</p></blockquote></blockquote></blockquote>
+```
+
+But instead was:
+
+```html
+<p>&gt; &gt; &gt; foo bar</p>
+```
+### [Example 221](https://github.github.com/gfm/#example-221)
+
+This markdown:
+
+```markdown
+>>> foo
+> bar
+>>baz
+
+```
+
+Should give output:
+
+```html
+<blockquote><blockquote><blockquote><p>foo bar baz</p></blockquote></blockquote></blockquote>
+```
+
+But instead was:
+
+```html
+<p>&gt;&gt;&gt; foo &gt; bar &gt;&gt;baz</p>
+```
+### [Example 222](https://github.github.com/gfm/#example-222)
+
+This markdown:
+
+```markdown
+>     code
+
+>    not code
+
+```
+
+Should give output:
+
+```html
+<blockquote><pre><code>code</code></pre></blockquote><blockquote><p>not code</p></blockquote>
+```
+
+But instead was:
+
+```html
+<p>&gt; code</p><p>&gt; not code</p>
+```
+## Fenced code blocks
+
+### [Example 91](https://github.github.com/gfm/#example-91)
 
 This markdown:
 
@@ -9136,14 +7771,18 @@ foo
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p><code>foo</code></p>
-
 ```
 
-Example 94
+But instead was:
+
+```html
+<p>foo</p>
+```
+### [Example 94](https://github.github.com/gfm/#example-94)
 
 This markdown:
 
@@ -9155,16 +7794,18 @@ aaa
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<pre><code>aaa
-```
-</code></pre>
-
+<pre><code>aaa ```</code></pre>
 ```
 
-Example 95
+But instead was:
+
+```html
+ERROR Problem at row 8 Expecting symbol ```
+```
+### [Example 95](https://github.github.com/gfm/#example-95)
 
 This markdown:
 
@@ -9176,16 +7817,18 @@ aaa
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<pre><code>aaa
-~~~
-</code></pre>
-
+<pre><code>aaa ~~~</code></pre>
 ```
 
-Example 96
+But instead was:
+
+```html
+ERROR Problem at row 8 Expecting symbol ~~~
+```
+### [Example 96](https://github.github.com/gfm/#example-96)
 
 This markdown:
 
@@ -9194,14 +7837,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <pre><code></code></pre>
-
 ```
 
-Example 97
+But instead was:
+
+```html
+ERROR Problem at row 3 Expecting symbol ```
+```
+### [Example 97](https://github.github.com/gfm/#example-97)
 
 This markdown:
 
@@ -9213,17 +7860,18 @@ aaa
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<pre><code>
-```
-aaa
-</code></pre>
-
+<pre><code>``` aaa</code></pre>
 ```
 
-Example 98
+But instead was:
+
+```html
+<pre><code></code></pre><p>aaa</p>
+```
+### [Example 98](https://github.github.com/gfm/#example-98)
 
 This markdown:
 
@@ -9235,18 +7883,18 @@ bbb
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<blockquote>
-<pre><code>aaa
-</code></pre>
-</blockquote>
-<p>bbb</p>
-
+<blockquote><pre><code>aaa</code></pre></blockquote><p>bbb</p>
 ```
 
-Example 100
+But instead was:
+
+```html
+<p>&gt;<code>&gt; aaa</code></p><p>bbb</p>
+```
+### [Example 100](https://github.github.com/gfm/#example-100)
 
 This markdown:
 
@@ -9256,14 +7904,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <pre><code></code></pre>
-
 ```
 
-Example 101
+But instead was:
+
+```html
+ERROR Problem at row 4 Expecting symbol ```
+```
+### [Example 101](https://github.github.com/gfm/#example-101)
 
 This markdown:
 
@@ -9275,16 +7927,18 @@ aaa
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<pre><code>aaa
-aaa
-</code></pre>
-
+<pre><code>aaa aaa</code></pre>
 ```
 
-Example 102
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+```
+### [Example 102](https://github.github.com/gfm/#example-102)
 
 This markdown:
 
@@ -9297,17 +7951,18 @@ aaa
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<pre><code>aaa
-aaa
-aaa
-</code></pre>
-
+<pre><code>aaa aaa aaa</code></pre>
 ```
 
-Example 103
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+```
+### [Example 103](https://github.github.com/gfm/#example-103)
 
 This markdown:
 
@@ -9320,17 +7975,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<pre><code>aaa
- aaa
-aaa
-</code></pre>
-
+<pre><code>aaa aaa aaa</code></pre>
 ```
 
-Example 104
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+```
+### [Example 104](https://github.github.com/gfm/#example-104)
 
 This markdown:
 
@@ -9341,17 +7997,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<pre><code>```
-aaa
-```
-</code></pre>
-
+<pre><code>``` aaa ```</code></pre>
 ```
 
-Example 105
+But instead was:
+
+```html
+<pre><code>```</code></pre><pre><code>aaa</code></pre><pre><code>```</code></pre>
+```
+### [Example 105](https://github.github.com/gfm/#example-105)
 
 This markdown:
 
@@ -9362,15 +8019,18 @@ aaa
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<pre><code>aaa
-</code></pre>
-
+<pre><code>aaa</code></pre>
 ```
 
-Example 106
+But instead was:
+
+```html
+ERROR Problem at row 5 Expecting symbol ```
+```
+### [Example 106](https://github.github.com/gfm/#example-106)
 
 This markdown:
 
@@ -9381,15 +8041,18 @@ aaa
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<pre><code>aaa
-</code></pre>
-
+<pre><code>aaa</code></pre>
 ```
 
-Example 107
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+```
+### [Example 107](https://github.github.com/gfm/#example-107)
 
 This markdown:
 
@@ -9400,16 +8063,18 @@ aaa
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<pre><code>aaa
-    ```
-</code></pre>
-
+<pre><code>aaa ```</code></pre>
 ```
 
-Example 108
+But instead was:
+
+```html
+ERROR Problem at row 5 Expecting symbol ```
+```
+### [Example 108](https://github.github.com/gfm/#example-108)
 
 This markdown:
 
@@ -9419,15 +8084,18 @@ aaa
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p><code> </code>
-aaa</p>
-
+<p><code></code>aaa</p>
 ```
 
-Example 109
+But instead was:
+
+```html
+ERROR Problem at row 4 Expecting symbol ```
+```
+### [Example 109](https://github.github.com/gfm/#example-109)
 
 This markdown:
 
@@ -9438,16 +8106,18 @@ aaa
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<pre><code>aaa
-~~~ ~~
-</code></pre>
-
+<pre><code>aaa ~~~ ~~</code></pre>
 ```
 
-Example 111
+But instead was:
+
+```html
+ERROR Problem at row 5 Expecting --- Problem at row 5 Expecting *** Problem at row 5 Expecting ___
+```
+### [Example 111](https://github.github.com/gfm/#example-111)
 
 This markdown:
 
@@ -9461,17 +8131,18 @@ bar
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<h2>foo</h2>
-<pre><code>bar
-</code></pre>
-<h1>baz</h1>
-
+<h2>foo</h2><pre><code>bar</code></pre><h1>baz</h1>
 ```
 
-Example 112
+But instead was:
+
+```html
+<p>foo</p><hr><pre><code>bar</code></pre><h1>baz</h1>
+```
+### [Example 112](https://github.github.com/gfm/#example-112)
 
 This markdown:
 
@@ -9484,17 +8155,18 @@ end
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<pre><code class="language-ruby">def foo(x)
-  return 3
-end
-</code></pre>
-
+<pre><code class="language-ruby">def foo(x) return 3 end</code></pre>
 ```
 
-Example 113
+But instead was:
+
+```html
+<pre><code>def foo(x) return 3 end</code></pre>
+```
+### [Example 113](https://github.github.com/gfm/#example-113)
 
 This markdown:
 
@@ -9507,17 +8179,18 @@ end
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<pre><code class="language-ruby">def foo(x)
-  return 3
-end
-</code></pre>
-
+<pre><code class="language-ruby">def foo(x) return 3 end</code></pre>
 ```
 
-Example 114
+But instead was:
+
+```html
+ERROR Problem at row 9 Expecting symbol ~~~
+```
+### [Example 114](https://github.github.com/gfm/#example-114)
 
 This markdown:
 
@@ -9527,14 +8200,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <pre><code class="language-;"></code></pre>
-
 ```
 
-Example 115
+But instead was:
+
+```html
+ERROR Problem at row 4 Expecting symbol ```
+```
+### [Example 115](https://github.github.com/gfm/#example-115)
 
 This markdown:
 
@@ -9544,15 +8221,18 @@ foo
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p><code>aa</code>
-foo</p>
-
+<p><code>aa</code>foo</p>
 ```
 
-Example 116
+But instead was:
+
+```html
+ERROR Problem at row 4 Expecting symbol ```
+```
+### [Example 116](https://github.github.com/gfm/#example-116)
 
 This markdown:
 
@@ -9563,17 +8243,753 @@ foo
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<pre><code class="language-aa">foo
-</code></pre>
+<pre><code class="language-aa">foo</code></pre>
+```
+
+But instead was:
+
+```html
+<pre><code>foo</code></pre>
+```
+## Images
+
+### [Example 568](https://github.github.com/gfm/#example-568)
+
+This markdown:
+
+```markdown
+![foo](/url "title")
 
 ```
 
-### HTML blocks
+Should give output:
 
-Example 118
+```html
+<p><img alt="foo" src="/url" title="title"></p>
+```
+
+But instead was:
+
+```html
+<p><img src="/url \" title\""=""></p>
+```
+### [Example 569](https://github.github.com/gfm/#example-569)
+
+This markdown:
+
+```markdown
+![foo *bar*]
+
+[foo *bar*]: train.jpg "train & tracks"
+
+```
+
+Should give output:
+
+```html
+<p><img alt="foo bar" src="train.jpg" title="train &amp; tracks"></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 570](https://github.github.com/gfm/#example-570)
+
+This markdown:
+
+```markdown
+![foo ![bar](/url)](/url2)
+
+```
+
+Should give output:
+
+```html
+<p><img alt="foo bar" src="/url2"></p>
+```
+
+But instead was:
+
+```html
+<p><img src="/url">](/url2)</p>
+```
+### [Example 571](https://github.github.com/gfm/#example-571)
+
+This markdown:
+
+```markdown
+![foo [bar](/url)](/url2)
+
+```
+
+Should give output:
+
+```html
+<p><img alt="foo bar" src="/url2"></p>
+```
+
+But instead was:
+
+```html
+<p><img src="/url">](/url2)</p>
+```
+### [Example 572](https://github.github.com/gfm/#example-572)
+
+This markdown:
+
+```markdown
+![foo *bar*][]
+
+[foo *bar*]: train.jpg "train & tracks"
+
+```
+
+Should give output:
+
+```html
+<p><img alt="foo bar" src="train.jpg" title="train &amp; tracks"></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 573](https://github.github.com/gfm/#example-573)
+
+This markdown:
+
+```markdown
+![foo *bar*][foobar]
+
+[FOOBAR]: train.jpg "train & tracks"
+
+```
+
+Should give output:
+
+```html
+<p><img alt="foo bar" src="train.jpg" title="train &amp; tracks"></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 574](https://github.github.com/gfm/#example-574)
+
+This markdown:
+
+```markdown
+![foo](train.jpg)
+
+```
+
+Should give output:
+
+```html
+<p><img alt="foo" src="train.jpg"></p>
+```
+
+But instead was:
+
+```html
+<p><img src="train.jpg"></p>
+```
+### [Example 575](https://github.github.com/gfm/#example-575)
+
+This markdown:
+
+```markdown
+My ![foo bar](/path/to/train.jpg  "title"   )
+
+```
+
+Should give output:
+
+```html
+<p>My<img alt="foo bar" src="/path/to/train.jpg" title="title"></p>
+```
+
+But instead was:
+
+```html
+<p>My<img "="" src="/path/to/train.jpg  \" title\"=""></p>
+```
+### [Example 576](https://github.github.com/gfm/#example-576)
+
+This markdown:
+
+```markdown
+![foo](<url>)
+
+```
+
+Should give output:
+
+```html
+<p><img alt="foo" src="url"></p>
+```
+
+But instead was:
+
+```html
+<p><img src="&lt;url&gt;"></p>
+```
+### [Example 577](https://github.github.com/gfm/#example-577)
+
+This markdown:
+
+```markdown
+![](/url)
+
+```
+
+Should give output:
+
+```html
+<p><img alt="" src="/url"></p>
+```
+
+But instead was:
+
+```html
+
+```
+### [Example 578](https://github.github.com/gfm/#example-578)
+
+This markdown:
+
+```markdown
+![foo][bar]
+
+[bar]: /url
+
+```
+
+Should give output:
+
+```html
+<p><img alt="foo" src="/url"></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 579](https://github.github.com/gfm/#example-579)
+
+This markdown:
+
+```markdown
+![foo][bar]
+
+[BAR]: /url
+
+```
+
+Should give output:
+
+```html
+<p><img alt="foo" src="/url"></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 580](https://github.github.com/gfm/#example-580)
+
+This markdown:
+
+```markdown
+![foo][]
+
+[foo]: /url "title"
+
+```
+
+Should give output:
+
+```html
+<p><img alt="foo" src="/url" title="title"></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 581](https://github.github.com/gfm/#example-581)
+
+This markdown:
+
+```markdown
+![*foo* bar][]
+
+[*foo* bar]: /url "title"
+
+```
+
+Should give output:
+
+```html
+<p><img alt="foo bar" src="/url" title="title"></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 582](https://github.github.com/gfm/#example-582)
+
+This markdown:
+
+```markdown
+![Foo][]
+
+[foo]: /url "title"
+
+```
+
+Should give output:
+
+```html
+<p><img alt="Foo" src="/url" title="title"></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 583](https://github.github.com/gfm/#example-583)
+
+This markdown:
+
+```markdown
+![foo] 
+[]
+
+[foo]: /url "title"
+
+```
+
+Should give output:
+
+```html
+<p><img alt="foo" src="/url" title="title">[]</p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 8 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 584](https://github.github.com/gfm/#example-584)
+
+This markdown:
+
+```markdown
+![foo]
+
+[foo]: /url "title"
+
+```
+
+Should give output:
+
+```html
+<p><img alt="foo" src="/url" title="title"></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 585](https://github.github.com/gfm/#example-585)
+
+This markdown:
+
+```markdown
+![*foo* bar]
+
+[*foo* bar]: /url "title"
+
+```
+
+Should give output:
+
+```html
+<p><img alt="foo bar" src="/url" title="title"></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 586](https://github.github.com/gfm/#example-586)
+
+This markdown:
+
+```markdown
+![[foo]]
+
+[[foo]]: /url "title"
+
+```
+
+Should give output:
+
+```html
+<p>![[foo]]</p><p>[[foo]]: /url &quot;title&quot;</p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 587](https://github.github.com/gfm/#example-587)
+
+This markdown:
+
+```markdown
+![Foo]
+
+[foo]: /url "title"
+
+```
+
+Should give output:
+
+```html
+<p><img alt="Foo" src="/url" title="title"></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 588](https://github.github.com/gfm/#example-588)
+
+This markdown:
+
+```markdown
+!\[foo]
+
+[foo]: /url "title"
+
+```
+
+Should give output:
+
+```html
+<p>![foo]</p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 589](https://github.github.com/gfm/#example-589)
+
+This markdown:
+
+```markdown
+\![foo]
+
+[foo]: /url "title"
+
+```
+
+Should give output:
+
+```html
+<p>!<a href="/url" title="title">foo</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+## Blank lines
+
+### [Example 197](https://github.github.com/gfm/#example-197)
+
+This markdown:
+
+```markdown
+  
+
+aaa
+  
+
+# aaa
+
+  
+
+```
+
+Should give output:
+
+```html
+<p>aaa</p><h1>aaa</h1>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+```
+## [extension] Autolinks
+
+### [Example 621](https://github.github.com/gfm/#example-621)
+
+This markdown:
+
+```markdown
+www.commonmark.org
+```
+
+Should give output:
+
+```html
+<p><a href="http://www.commonmark.org">www.commonmark.org</a></p>
+```
+
+But instead was:
+
+```html
+<p>www.commonmark.org</p>
+```
+### [Example 622](https://github.github.com/gfm/#example-622)
+
+This markdown:
+
+```markdown
+Visit www.commonmark.org/help for more information.
+```
+
+Should give output:
+
+```html
+<p>Visit<a href="http://www.commonmark.org/help">www.commonmark.org/help</a>for more information.</p>
+```
+
+But instead was:
+
+```html
+<p>Visit www.commonmark.org/help for more information.</p>
+```
+### [Example 623](https://github.github.com/gfm/#example-623)
+
+This markdown:
+
+```markdown
+Visit www.commonmark.org.
+
+Visit www.commonmark.org/a.b.
+```
+
+Should give output:
+
+```html
+<p>Visit<a href="http://www.commonmark.org">www.commonmark.org</a>.</p><p>Visit<a href="http://www.commonmark.org/a.b">www.commonmark.org/a.b</a>.</p>
+```
+
+But instead was:
+
+```html
+<p>Visit www.commonmark.org.</p><p>Visit www.commonmark.org/a.b.</p>
+```
+### [Example 624](https://github.github.com/gfm/#example-624)
+
+This markdown:
+
+```markdown
+www.google.com/search?q=Markup+(business)
+
+www.google.com/search?q=Markup+(business)))
+
+(www.google.com/search?q=Markup+(business))
+
+(www.google.com/search?q=Markup+(business)
+```
+
+Should give output:
+
+```html
+<p><a href="http://www.google.com/search?q=Markup+(business)">www.google.com/search?q=Markup+(business)</a></p><p><a href="http://www.google.com/search?q=Markup+(business)">www.google.com/search?q=Markup+(business)</a>))</p><p>(<a href="http://www.google.com/search?q=Markup+(business)">www.google.com/search?q=Markup+(business)</a>)</p><p>(<a href="http://www.google.com/search?q=Markup+(business)">www.google.com/search?q=Markup+(business)</a></p>
+```
+
+But instead was:
+
+```html
+<p>www.google.com/search?q=Markup+(business)</p><p>www.google.com/search?q=Markup+(business)))</p><p>(www.google.com/search?q=Markup+(business))</p><p>(www.google.com/search?q=Markup+(business)</p>
+```
+### [Example 625](https://github.github.com/gfm/#example-625)
+
+This markdown:
+
+```markdown
+www.google.com/search?q=(business))+ok
+```
+
+Should give output:
+
+```html
+<p><a href="http://www.google.com/search?q=(business))+ok">www.google.com/search?q=(business))+ok</a></p>
+```
+
+But instead was:
+
+```html
+<p>www.google.com/search?q=(business))+ok</p>
+```
+### [Example 626](https://github.github.com/gfm/#example-626)
+
+This markdown:
+
+```markdown
+www.google.com/search?q=commonmark&hl=en
+
+www.google.com/search?q=commonmark&hl;
+```
+
+Should give output:
+
+```html
+<p><a href="http://www.google.com/search?q=commonmark&amp;hl=en">www.google.com/search?q=commonmark&amp;hl=en</a></p><p><a href="http://www.google.com/search?q=commonmark">www.google.com/search?q=commonmark</a>&amp;hl;</p>
+```
+
+But instead was:
+
+```html
+<p>www.google.com/search?q=commonmark&amp;hl=en</p><p>www.google.com/search?q=commonmark&amp;hl;</p>
+```
+### [Example 627](https://github.github.com/gfm/#example-627)
+
+This markdown:
+
+```markdown
+www.commonmark.org/he<lp
+```
+
+Should give output:
+
+```html
+<p><a href="http://www.commonmark.org/he">www.commonmark.org/he</a>&lt;lp</p>
+```
+
+But instead was:
+
+```html
+<p>www.commonmark.org/he&lt;lp</p>
+```
+### [Example 628](https://github.github.com/gfm/#example-628)
+
+This markdown:
+
+```markdown
+http://commonmark.org
+
+(Visit https://encrypted.google.com/search?q=Markup+(business))
+
+Anonymous FTP is available at ftp://foo.bar.baz.
+```
+
+Should give output:
+
+```html
+<p><a href="http://commonmark.org">http://commonmark.org</a></p><p>(Visit<a href="https://encrypted.google.com/search?q=Markup+(business)">https://encrypted.google.com/search?q=Markup+(business)</a>)</p><p>Anonymous FTP is available at<a href="ftp://foo.bar.baz">ftp://foo.bar.baz</a>.</p>
+```
+
+But instead was:
+
+```html
+<p>http://commonmark.org</p><p>(Visit https://encrypted.google.com/search?q=Markup+(business))</p><p>Anonymous FTP is available at ftp://foo.bar.baz.</p>
+```
+### [Example 629](https://github.github.com/gfm/#example-629)
+
+This markdown:
+
+```markdown
+foo@bar.baz
+```
+
+Should give output:
+
+```html
+<p><a href="mailto:foo@bar.baz">foo@bar.baz</a></p>
+```
+
+But instead was:
+
+```html
+<p>foo@bar.baz</p>
+```
+### [Example 630](https://github.github.com/gfm/#example-630)
+
+This markdown:
+
+```markdown
+hello@mail+xyz.example isn't valid, but hello+xyz@mail.example is.
+```
+
+Should give output:
+
+```html
+<p>hello@mail+xyz.example isn&#39;t valid, but<a href="mailto:hello+xyz@mail.example">hello+xyz@mail.example</a>is.</p>
+```
+
+But instead was:
+
+```html
+<p>hello@mail+xyz.example isn&#39;t valid, but hello+xyz@mail.example is.</p>
+```
+### [Example 631](https://github.github.com/gfm/#example-631)
+
+This markdown:
+
+```markdown
+a.b-c_d@a.b
+
+a.b-c_d@a.b.
+
+a.b-c_d@a.b-
+
+a.b-c_d@a.b_
+```
+
+Should give output:
+
+```html
+<p><a href="mailto:a.b-c_d@a.b">a.b-c_d@a.b</a></p><p><a href="mailto:a.b-c_d@a.b">a.b-c_d@a.b</a>.</p><p>a.b-c_d@a.b-</p><p>a.b-c_d@a.b_</p>
+```
+
+But instead was:
+
+```html
+<p>a.b-c_d@a.b</p><p>a.b-c_d@a.b.</p><p>a.b-c_d@a.b-</p><p>a.b-c_d@a.b_</p>
+```
+## HTML blocks
+
+### [Example 118](https://github.github.com/gfm/#example-118)
 
 This markdown:
 
@@ -9588,19 +9004,18 @@ _world_.
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<table><tr><td>
-<pre>
-**Hello**,
-<p><em>world</em>.
-</pre></p>
-</td></tr></table>
-
+<table><tr><td><pre>**Hello**,<p><em>world</em>.</pre></p></td></tr></table>
 ```
 
-Example 119
+But instead was:
+
+```html
+ERROR Ran into a oneOf with no possibilities!
+```
+### [Example 119](https://github.github.com/gfm/#example-119)
 
 This markdown:
 
@@ -9617,21 +9032,18 @@ okay.
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<table>
-  <tr>
-    <td>
-           hi
-    </td>
-  </tr>
-</table>
-<p>okay.</p>
-
+<table><tr><td>hi</td></tr></table><p>okay.</p>
 ```
 
-Example 120
+But instead was:
+
+```html
+ERROR Problem at row 7 Expecting Problem at row 2 Expecting --- Problem at row 2 Expecting *** Problem at row 2 Expecting ___
+```
+### [Example 120](https://github.github.com/gfm/#example-120)
 
 This markdown:
 
@@ -9642,16 +9054,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
- <div>
-  *hello*
-         <foo><a>
-
+<div>*hello*<foo><a>
 ```
 
-Example 121
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+```
+### [Example 121](https://github.github.com/gfm/#example-121)
 
 This markdown:
 
@@ -9661,15 +9075,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-</div>
-*foo*
-
+</div>*foo*
 ```
 
-Example 122
+But instead was:
+
+```html
+ERROR Problem at row 1 Bad repeat
+```
+### [Example 122](https://github.github.com/gfm/#example-122)
 
 This markdown:
 
@@ -9682,16 +9099,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<DIV CLASS="foo">
-<p><em>Markdown</em></p>
-</DIV>
-
+<div class="foo"><p><em>Markdown</em></p></div>
 ```
 
-Example 123
+But instead was:
+
+```html
+ERROR Ran into a oneOf with no possibilities!
+```
+### [Example 123](https://github.github.com/gfm/#example-123)
 
 This markdown:
 
@@ -9702,16 +9121,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<div id="foo"
-  class="bar">
-</div>
-
+<div class="bar" id="foo"></div>
 ```
 
-Example 124
+But instead was:
+
+```html
+ERROR Ran into a oneOf with no possibilities!
+```
+### [Example 124](https://github.github.com/gfm/#example-124)
 
 This markdown:
 
@@ -9722,16 +9143,19 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<div id="foo" class="bar
-  baz">
-</div>
-
+<div class="bar
+ baz" id="foo"></div>
 ```
 
-Example 125
+But instead was:
+
+```html
+ERROR Ran into a oneOf with no possibilities!
+```
+### [Example 125](https://github.github.com/gfm/#example-125)
 
 This markdown:
 
@@ -9743,16 +9167,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<div>
-*foo*
-<p><em>bar</em></p>
-
+<div>*foo*<p><em>bar</em></p>
 ```
 
-Example 126
+But instead was:
+
+```html
+ERROR Problem at row 5 Expecting symbol
+```
+### [Example 126](https://github.github.com/gfm/#example-126)
 
 This markdown:
 
@@ -9762,15 +9188,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<div id="foo"
-*hi*
 
 ```
 
-Example 127
+But instead was:
+
+```html
+ERROR Problem at row 3 Expecting symbol =
+```
+### [Example 127](https://github.github.com/gfm/#example-127)
 
 This markdown:
 
@@ -9780,15 +9209,18 @@ foo
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<div class
-foo
 
 ```
 
-Example 128
+But instead was:
+
+```html
+ERROR Problem at row 2 Expecting symbol =
+```
+### [Example 128](https://github.github.com/gfm/#example-128)
 
 This markdown:
 
@@ -9798,15 +9230,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<div *???-&&&-<---
-*foo*
 
 ```
 
-Example 129
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting symbol =
+```
+### [Example 129](https://github.github.com/gfm/#example-129)
 
 This markdown:
 
@@ -9815,14 +9250,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <div><a href="bar">*foo*</a></div>
-
 ```
 
-Example 130
+But instead was:
+
+```html
+ERROR Ran into a oneOf with no possibilities!
+```
+### [Example 130](https://github.github.com/gfm/#example-130)
 
 This markdown:
 
@@ -9833,16 +9272,18 @@ foo
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<table><tr><td>
-foo
-</td></tr></table>
-
+<table><tr><td>foo</td></tr></table>
 ```
 
-Example 131
+But instead was:
+
+```html
+ERROR Ran into a oneOf with no possibilities!
+```
+### [Example 131](https://github.github.com/gfm/#example-131)
 
 This markdown:
 
@@ -9854,17 +9295,18 @@ int x = 33;
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<div></div>
-``` c
-int x = 33;
+<div></div>``` c int x = 33; ```
 ```
 
-```
+But instead was:
 
-Example 132
+```html
+ERROR Ran into a oneOf with no possibilities!
+```
+### [Example 132](https://github.github.com/gfm/#example-132)
 
 This markdown:
 
@@ -9875,16 +9317,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<a href="foo">
-*bar*
-</a>
-
+<a href="foo">*bar*</a>
 ```
 
-Example 133
+But instead was:
+
+```html
+ERROR Ran into a oneOf with no possibilities!
+```
+### [Example 133](https://github.github.com/gfm/#example-133)
 
 This markdown:
 
@@ -9895,16 +9339,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<Warning>
-*bar*
-</Warning>
-
+<warning>*bar*</warning>
 ```
 
-Example 134
+But instead was:
+
+```html
+ERROR Ran into a oneOf with no possibilities!
+```
+### [Example 134](https://github.github.com/gfm/#example-134)
 
 This markdown:
 
@@ -9915,16 +9361,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<i class="foo">
-*bar*
-</i>
-
+<i class="foo">*bar*</i>
 ```
 
-Example 135
+But instead was:
+
+```html
+ERROR Ran into a oneOf with no possibilities!
+```
+### [Example 135](https://github.github.com/gfm/#example-135)
 
 This markdown:
 
@@ -9934,15 +9382,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-</ins>
-*bar*
-
+</ins>*bar*
 ```
 
-Example 136
+But instead was:
+
+```html
+ERROR Problem at row 1 Bad repeat
+```
+### [Example 136](https://github.github.com/gfm/#example-136)
 
 This markdown:
 
@@ -9953,16 +9404,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<del>
-*foo*
-</del>
-
+<del>*foo*</del>
 ```
 
-Example 137
+But instead was:
+
+```html
+ERROR Ran into a oneOf with no possibilities!
+```
+### [Example 137](https://github.github.com/gfm/#example-137)
 
 This markdown:
 
@@ -9975,16 +9428,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<del>
-<p><em>foo</em></p>
-</del>
-
+<del><p><em>foo</em></p></del>
 ```
 
-Example 138
+But instead was:
+
+```html
+ERROR Ran into a oneOf with no possibilities!
+```
+### [Example 138](https://github.github.com/gfm/#example-138)
 
 This markdown:
 
@@ -9993,14 +9448,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
 <p><del><em>foo</em></del></p>
-
 ```
 
-Example 139
+But instead was:
+
+```html
+ERROR Ran into a oneOf with no possibilities!
+```
+### [Example 139](https://github.github.com/gfm/#example-139)
 
 This markdown:
 
@@ -10015,20 +9474,18 @@ okay
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<pre language="haskell"><code>
-import Text.HTML.TagSoup
-
-main :: IO ()
-main = print $ parseTags tags
-</code></pre>
-<p>okay</p>
-
+<pre language="haskell"><code>import Text.HTML.TagSoup main :: IO () main = print $ parseTags tags</code></pre><p>okay</p>
 ```
 
-Example 140
+But instead was:
+
+```html
+ERROR Ran into a oneOf with no possibilities!
+```
+### [Example 140](https://github.github.com/gfm/#example-140)
 
 This markdown:
 
@@ -10042,19 +9499,18 @@ okay
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<script type="text/javascript">
-// JavaScript example
-
-document.getElementById("demo").innerHTML = "Hello JavaScript!";
-</script>
-<p>okay</p>
-
+<script type="text/javascript">// JavaScript example document.getElementById(&quot;demo&quot;).innerHTML = &quot;Hello JavaScript!&quot;;</script><p>okay</p>
 ```
 
-Example 141
+But instead was:
+
+```html
+ERROR Ran into a oneOf with no possibilities!
+```
+### [Example 141](https://github.github.com/gfm/#example-141)
 
 This markdown:
 
@@ -10069,20 +9525,18 @@ okay
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<style
-  type="text/css">
-h1 {color:red;}
-
-p {color:blue;}
-</style>
-<p>okay</p>
-
+<style type="text/css">h1 {color:red;} p {color:blue;}</style><p>okay</p>
 ```
 
-Example 142
+But instead was:
+
+```html
+ERROR Ran into a oneOf with no possibilities!
+```
+### [Example 142](https://github.github.com/gfm/#example-142)
 
 This markdown:
 
@@ -10094,17 +9548,18 @@ foo
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<style
-  type="text/css">
-
-foo
-
+<style type="text/css">foo
 ```
 
-Example 143
+But instead was:
+
+```html
+ERROR Problem at row 5 Expecting symbol
+```
+### [Example 143](https://github.github.com/gfm/#example-143)
 
 This markdown:
 
@@ -10116,18 +9571,18 @@ bar
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<blockquote>
-<div>
-foo
-</blockquote>
-<p>bar</p>
-
+<blockquote><div>foo</blockquote><p>bar</p>
 ```
 
-Example 144
+But instead was:
+
+```html
+<p>&gt; &lt;div&gt; &gt; foo</p><p>bar</p>
+```
+### [Example 144](https://github.github.com/gfm/#example-144)
 
 This markdown:
 
@@ -10137,19 +9592,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<ul>
-<li>
-<div>
-</li>
-<li>foo</li>
-</ul>
-
+<ul><li><div></li><li>foo</li></ul>
 ```
 
-Example 145
+But instead was:
+
+```html
+<ul><li><p>&lt;div&gt;</p></li><li><p>foo</p></li></ul>
+```
+### [Example 145](https://github.github.com/gfm/#example-145)
 
 This markdown:
 
@@ -10159,15 +9613,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<style>p{color:red;}</style>
-<p><em>foo</em></p>
-
+<style>p{color:red;}</style><p><em>foo</em></p>
 ```
 
-Example 146
+But instead was:
+
+```html
+ERROR Ran into a oneOf with no possibilities!
+```
+### [Example 146](https://github.github.com/gfm/#example-146)
 
 This markdown:
 
@@ -10177,15 +9634,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<!-- foo -->*bar*
-<p><em>baz</em></p>
-
+*bar*<p><em>baz</em></p>
 ```
 
-Example 147
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting symbol =
+```
+### [Example 147](https://github.github.com/gfm/#example-147)
 
 This markdown:
 
@@ -10196,16 +9656,18 @@ foo
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<script>
-foo
-</script>1. *bar*
-
+<script>foo</script>1. *bar*
 ```
 
-Example 148
+But instead was:
+
+```html
+ERROR Ran into a oneOf with no possibilities!
+```
+### [Example 148](https://github.github.com/gfm/#example-148)
 
 This markdown:
 
@@ -10218,18 +9680,18 @@ okay
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<!-- Foo
-
-bar
-   baz -->
 <p>okay</p>
-
 ```
 
-Example 149
+But instead was:
+
+```html
+ERROR Problem at row 3 Expecting symbol =
+```
+### [Example 149](https://github.github.com/gfm/#example-149)
 
 This markdown:
 
@@ -10243,19 +9705,18 @@ okay
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<?php
-
-  echo '>';
-
-?>
-<p>okay</p>
-
+&#39;; ?&gt;<p>okay</p>
 ```
 
-Example 150
+But instead was:
+
+```html
+ERROR Problem at row 3 Expecting symbol =
+```
+### [Example 150](https://github.github.com/gfm/#example-150)
 
 This markdown:
 
@@ -10264,14 +9725,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<!DOCTYPE html>
-
+<!DOCTYPE HTML>
 ```
 
-Example 151
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting symbol =
+```
+### [Example 151](https://github.github.com/gfm/#example-151)
 
 This markdown:
 
@@ -10292,26 +9757,18 @@ okay
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<![CDATA[
-function matchwo(a,b)
-{
-  if (a < b && a < 0) then {
-    return 1;
-
-  } else {
-
-    return 0;
-  }
-}
-]]>
 <p>okay</p>
-
 ```
 
-Example 152
+But instead was:
+
+```html
+ERROR Problem at row 2 Expecting symbol =
+```
+### [Example 152](https://github.github.com/gfm/#example-152)
 
 This markdown:
 
@@ -10322,16 +9779,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-  <!-- foo -->
-<pre><code>&lt;!-- foo --&gt;
-</code></pre>
-
+<pre><code>&lt;!-- foo --&gt;</code></pre>
 ```
 
-Example 153
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+```
+### [Example 153](https://github.github.com/gfm/#example-153)
 
 This markdown:
 
@@ -10342,16 +9801,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-  <div>
-<pre><code>&lt;div&gt;
-</code></pre>
-
+<div><pre><code>&lt;div&gt;</code></pre>
 ```
 
-Example 154
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+```
+### [Example 154](https://github.github.com/gfm/#example-154)
 
 This markdown:
 
@@ -10363,17 +9824,18 @@ bar
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>Foo</p>
-<div>
-bar
-</div>
-
+<p>Foo</p><div>bar</div>
 ```
 
-Example 155
+But instead was:
+
+```html
+ERROR Ran into a oneOf with no possibilities!
+```
+### [Example 155](https://github.github.com/gfm/#example-155)
 
 This markdown:
 
@@ -10385,17 +9847,18 @@ bar
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<div>
-bar
-</div>
-*foo*
-
+<div>bar</div>*foo*
 ```
 
-Example 156
+But instead was:
+
+```html
+ERROR Ran into a oneOf with no possibilities!
+```
+### [Example 156](https://github.github.com/gfm/#example-156)
 
 This markdown:
 
@@ -10406,16 +9869,18 @@ baz
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>Foo
-<a href="bar">
-baz</p>
-
+<p>Foo<a href="bar">baz</p>
 ```
 
-Example 157
+But instead was:
+
+```html
+ERROR Problem at row 5 Expecting symbol
+```
+### [Example 157](https://github.github.com/gfm/#example-157)
 
 This markdown:
 
@@ -10428,16 +9893,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<div>
-<p><em>Emphasized</em> text.</p>
-</div>
-
+<div><p><em>Emphasized</em>text.</p></div>
 ```
 
-Example 158
+But instead was:
+
+```html
+ERROR Ran into a oneOf with no possibilities!
+```
+### [Example 158](https://github.github.com/gfm/#example-158)
 
 This markdown:
 
@@ -10448,16 +9915,18 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<div>
-*Emphasized* text.
-</div>
-
+<div>*Emphasized* text.</div>
 ```
 
-Example 159
+But instead was:
+
+```html
+ERROR Ran into a oneOf with no possibilities!
+```
+### [Example 159](https://github.github.com/gfm/#example-159)
 
 This markdown:
 
@@ -10476,20 +9945,18 @@ Hi
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<table>
-<tr>
-<td>
-Hi
-</td>
-</tr>
-</table>
-
+<table><tr><td>Hi</td></tr></table>
 ```
 
-Example 160
+But instead was:
+
+```html
+ERROR Ran into a oneOf with no possibilities!
+```
+### [Example 160](https://github.github.com/gfm/#example-160)
 
 This markdown:
 
@@ -10508,799 +9975,2290 @@ This markdown:
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<table>
-  <tr>
-<pre><code>&lt;td&gt;
-  Hi
-&lt;/td&gt;
-</code></pre>
-  </tr>
-</table>
-
+<table><tr><pre><code>&lt;td&gt; Hi &lt;/td&gt;</code></pre></tr></table>
 ```
 
-### Tabs
+But instead was:
 
-Example 2
+```html
+ERROR Problem at row 11 Expecting Problem at row 3 Expecting --- Problem at row 3 Expecting *** Problem at row 3 Expecting ___
+```
+## [extension] Strikethrough
+
+### [Example 491](https://github.github.com/gfm/#example-491)
 
 This markdown:
 
 ```markdown
-  	foo	baz		bim
-
+~~Hi~~ Hello, world!
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<pre><code>foo	baz		bim
-</code></pre>
-
+<p><del>Hi</del>Hello, world!</p>
 ```
 
-Example 3
+But instead was:
+
+```html
+<p>~~Hi~~ Hello, world!</p>
+```
+## Links
+
+### [Example 481](https://github.github.com/gfm/#example-481)
 
 This markdown:
 
 ```markdown
-    a	a
-    ὐ	a
+[link](/uri "title")
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<pre><code>a	a
-ὐ	a
-</code></pre>
-
+<p><a href="/uri" title="title">link</a></p>
 ```
 
-Example 4
+But instead was:
+
+```html
+<p><a href="/uri \" title\""="">link</a></p>
+```
+### [Example 484](https://github.github.com/gfm/#example-484)
 
 This markdown:
 
 ```markdown
-  - foo
-
-	bar
+[link](<>)
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<ul>
-<li>
-<p>foo</p>
-<p>bar</p>
-</li>
-</ul>
-
+<p><a href="">link</a></p>
 ```
 
-Example 5
+But instead was:
+
+```html
+<p><a href="&lt;&gt;">link</a></p>
+```
+### [Example 485](https://github.github.com/gfm/#example-485)
 
 This markdown:
 
 ```markdown
-- foo
-
-		bar
+[link](/my uri)
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<ul>
-<li>
-<p>foo</p>
-<pre><code>  bar
-</code></pre>
-</li>
-</ul>
-
+<p>[link](/my uri)</p>
 ```
 
-Example 6
+But instead was:
+
+```html
+<p><a href="/my uri">link</a></p>
+```
+### [Example 486](https://github.github.com/gfm/#example-486)
 
 This markdown:
 
 ```markdown
->		foo
+[link](</my uri>)
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<blockquote>
-<pre><code>  foo
-</code></pre>
-</blockquote>
-
+<p><a href="/my%20uri">link</a></p>
 ```
 
-Example 7
+But instead was:
+
+```html
+<p><a href="&lt;/my uri&gt;">link</a></p>
+```
+### [Example 487](https://github.github.com/gfm/#example-487)
 
 This markdown:
 
 ```markdown
--		foo
+[link](foo
+bar)
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<ul>
-<li>
-<pre><code>  foo
-</code></pre>
-</li>
-</ul>
-
+<p>[link](foo bar)</p>
 ```
 
-Example 8
+But instead was:
+
+```html
+<p><a href="foo bar">link</a></p>
+```
+### [Example 488](https://github.github.com/gfm/#example-488)
 
 This markdown:
 
 ```markdown
-    foo
-	bar
+[link](<foo
+bar>)
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<pre><code>foo
-bar
-</code></pre>
-
+<p>[link](<foo bar="">)</p>
 ```
 
-Example 9
+But instead was:
+
+```html
+<p><a href="&lt;foo bar&gt;">link</a></p>
+```
+### [Example 489](https://github.github.com/gfm/#example-489)
 
 This markdown:
 
 ```markdown
- - foo
-   - bar
-	 - baz
+[a](<b)c>)
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<ul>
-<li>foo
-<ul>
-<li>bar
-<ul>
-<li>baz</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-
+<p><a href="b)c">a</a></p>
 ```
 
-Example 11
+But instead was:
+
+```html
+<p><a href="&lt;b">a</a>c&gt;)</p>
+```
+### [Example 490](https://github.github.com/gfm/#example-490)
 
 This markdown:
 
 ```markdown
-*	*	*	
+[link](<foo\>)
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<hr />
-
+<p>[link](&lt;foo&gt;)</p>
 ```
 
-### [extension] Task list items
+But instead was:
 
-Example 279
+```html
+<p><a href="&lt;foo\&gt;">link</a></p>
+```
+### [Example 491](https://github.github.com/gfm/#example-491)
 
 This markdown:
 
 ```markdown
-- [ ] foo
-- [x] bar
+[a](<b)c
+[a](<b)c>
+[a](<b>c)
+
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<ul>
-<li><input disabled="" type="checkbox"> foo</li>
-<li><input checked="" disabled="" type="checkbox"> bar</li>
-</ul>
+<p>[a](&lt;b)c [a](&lt;b)c&gt; [a](<b>c)</p>
 ```
 
-Example 280
+But instead was:
+
+```html
+<p><a href="&lt;b">a</a>c<a href="&lt;b">a</a>c&gt;<a href="&lt;b&gt;c">a</a></p>
+```
+### [Example 492](https://github.github.com/gfm/#example-492)
 
 This markdown:
 
 ```markdown
-- [x] foo
-  - [ ] bar
-  - [x] baz
-- [ ] bim
+[link](\(foo\))
+
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<ul>
-<li><input checked="" disabled="" type="checkbox"> foo
-<ul>
-<li><input disabled="" type="checkbox"> bar</li>
-<li><input checked="" disabled="" type="checkbox"> baz</li>
-</ul>
-</li>
-<li><input disabled="" type="checkbox"> bim</li>
-</ul>
+<p><a href="(foo)">link</a></p>
 ```
 
-### Entity and numeric character references
+But instead was:
 
-Example 311
+```html
+<p><a href="\(foo\">link</a>)</p>
+```
+### [Example 493](https://github.github.com/gfm/#example-493)
 
 This markdown:
 
 ```markdown
-&nbsp; &amp; &copy; &AElig; &Dcaron;
-&frac34; &HilbertSpace; &DifferentialD;
-&ClockwiseContourIntegral; &ngE;
+[link](foo(and(bar)))
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>  &amp; © Æ Ď
-¾ ℋ ⅆ
-∲ ≧̸</p>
-
+<p><a href="foo(and(bar))">link</a></p>
 ```
 
-Example 312
+But instead was:
+
+```html
+<p><a href="foo(and(bar">link</a>))</p>
+```
+### [Example 494](https://github.github.com/gfm/#example-494)
 
 This markdown:
 
 ```markdown
-&#35; &#1234; &#992; &#0;
+[link](foo\(and\(bar\))
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p># Ӓ Ϡ �</p>
-
+<p><a href="foo(and(bar)">link</a></p>
 ```
 
-Example 313
+But instead was:
+
+```html
+<p><a href="foo\(and\(bar\">link</a>)</p>
+```
+### [Example 495](https://github.github.com/gfm/#example-495)
 
 This markdown:
 
 ```markdown
-&#X22; &#XD06; &#xcab;
+[link](<foo(and(bar)>)
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>&quot; ആ ಫ</p>
-
+<p><a href="foo(and(bar)">link</a></p>
 ```
 
-Example 314
+But instead was:
+
+```html
+<p><a href="&lt;foo(and(bar">link</a>&gt;)</p>
+```
+### [Example 496](https://github.github.com/gfm/#example-496)
 
 This markdown:
 
 ```markdown
-&nbsp &x; &#; &#x;
-&#987654321;
-&#abcdef0;
-&ThisIsNotDefined; &hi?;
+[link](foo\)\:)
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>&amp;nbsp &amp;x; &amp;#; &amp;#x;
-&amp;#987654321;
-&amp;#abcdef0;
-&amp;ThisIsNotDefined; &amp;hi?;</p>
-
+<p><a href="foo):">link</a></p>
 ```
 
-Example 317
+But instead was:
+
+```html
+<p><a href="foo\">link</a>\:)</p>
+```
+### [Example 498](https://github.github.com/gfm/#example-498)
 
 This markdown:
 
 ```markdown
-<a href="&ouml;&ouml;.html">
+[link](foo\bar)
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<a href="&ouml;&ouml;.html">
-
+<p><a href="foo%5Cbar">link</a></p>
 ```
 
-Example 318
+But instead was:
+
+```html
+<p><a href="foo\bar">link</a></p>
+```
+### [Example 499](https://github.github.com/gfm/#example-499)
 
 This markdown:
 
 ```markdown
-[foo](/f&ouml;&ouml; "f&ouml;&ouml;")
+[link](foo%20b&auml;)
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p><a href="/f%C3%B6%C3%B6" title="föö">foo</a></p>
+<p><a href="foo%20b%C3%A4">link</a></p>
+```
+
+But instead was:
+
+```html
+<p><a href="foo%20bä">link</a></p>
+```
+### [Example 500](https://github.github.com/gfm/#example-500)
+
+This markdown:
+
+```markdown
+[link]("title")
 
 ```
 
-Example 319
+Should give output:
+
+```html
+<p><a href="%22title%22">link</a></p>
+```
+
+But instead was:
+
+```html
+<p><a href="\" title\""="">link</a></p>
+```
+### [Example 501](https://github.github.com/gfm/#example-501)
+
+This markdown:
+
+```markdown
+[link](/url "title")
+[link](/url 'title')
+[link](/url (title))
+
+```
+
+Should give output:
+
+```html
+<p><a href="/url" title="title">link</a><a href="/url" title="title">link</a><a href="/url" title="title">link</a></p>
+```
+
+But instead was:
+
+```html
+<p><a href="/url \" title\""="">link</a><a href="/url &#39;title&#39;">link</a><a href="/url (title">link</a>)</p>
+```
+### [Example 502](https://github.github.com/gfm/#example-502)
+
+This markdown:
+
+```markdown
+[link](/url "title \"&quot;")
+
+```
+
+Should give output:
+
+```html
+<p><a href="/url" title="title &quot;&quot;">link</a></p>
+```
+
+But instead was:
+
+```html
+<p><a \\"&quot;\""="" href="/url \" title="">link</a></p>
+```
+### [Example 503](https://github.github.com/gfm/#example-503)
+
+This markdown:
+
+```markdown
+[link](/url "title")
+
+```
+
+Should give output:
+
+```html
+<p><a href="/url%C2%A0%22title%22">link</a></p>
+```
+
+But instead was:
+
+```html
+<p><a href="/url \" title\""="">link</a></p>
+```
+### [Example 504](https://github.github.com/gfm/#example-504)
+
+This markdown:
+
+```markdown
+[link](/url "title "and" title")
+
+```
+
+Should give output:
+
+```html
+<p>[link](/url &quot;title &quot;and&quot; title&quot;)</p>
+```
+
+But instead was:
+
+```html
+<p><a \"and\"="" href="/url \" title="" title\""="">link</a></p>
+```
+### [Example 505](https://github.github.com/gfm/#example-505)
+
+This markdown:
+
+```markdown
+[link](/url 'title "and" title')
+
+```
+
+Should give output:
+
+```html
+<p><a href="/url" title="title &quot;and&quot; title">link</a></p>
+```
+
+But instead was:
+
+```html
+<p><a and\"="" href="/url &#39;title \" title'"="">link</a></p>
+```
+### [Example 506](https://github.github.com/gfm/#example-506)
+
+This markdown:
+
+```markdown
+[link](   /uri
+  "title"  )
+
+```
+
+Should give output:
+
+```html
+<p><a href="/uri" title="title">link</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 3 Expecting --- Problem at row 3 Expecting *** Problem at row 3 Expecting ___
+```
+### [Example 507](https://github.github.com/gfm/#example-507)
+
+This markdown:
+
+```markdown
+[link] (/uri)
+
+```
+
+Should give output:
+
+```html
+<p>[link] (/uri)</p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 3 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 508](https://github.github.com/gfm/#example-508)
+
+This markdown:
+
+```markdown
+[link [foo [bar]]](/uri)
+
+```
+
+Should give output:
+
+```html
+<p><a href="/uri">link [foo [bar]]</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 3 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 509](https://github.github.com/gfm/#example-509)
+
+This markdown:
+
+```markdown
+[link] bar](/uri)
+
+```
+
+Should give output:
+
+```html
+<p>[link] bar](/uri)</p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 3 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 510](https://github.github.com/gfm/#example-510)
+
+This markdown:
+
+```markdown
+[link [bar](/uri)
+
+```
+
+Should give output:
+
+```html
+<p>[link<a href="/uri">bar</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting symbol ]
+```
+### [Example 511](https://github.github.com/gfm/#example-511)
+
+This markdown:
+
+```markdown
+[link \[bar](/uri)
+
+```
+
+Should give output:
+
+```html
+<p><a href="/uri">link [bar</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting symbol ]
+```
+### [Example 512](https://github.github.com/gfm/#example-512)
+
+This markdown:
+
+```markdown
+[link *foo **bar** `#`*](/uri)
+
+```
+
+Should give output:
+
+```html
+<p><a href="/uri">link<em>foo<strong>bar</strong><code>#</code></em></a></p>
+```
+
+But instead was:
+
+```html
+<p><a href="/uri">link<em>foo</em><strong>bar</strong><em></em><em>#</em></a></p>
+```
+### [Example 513](https://github.github.com/gfm/#example-513)
+
+This markdown:
+
+```markdown
+[![moon](moon.jpg)](/uri)
+
+```
+
+Should give output:
+
+```html
+<p><a href="/uri"><img alt="moon" src="moon.jpg"></a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting symbol ]
+```
+### [Example 514](https://github.github.com/gfm/#example-514)
+
+This markdown:
+
+```markdown
+[foo [bar](/uri)](/uri)
+
+```
+
+Should give output:
+
+```html
+<p>[foo<a href="/uri">bar</a>](/uri)</p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting symbol ]
+```
+### [Example 515](https://github.github.com/gfm/#example-515)
+
+This markdown:
+
+```markdown
+[foo *[bar [baz](/uri)](/uri)*](/uri)
+
+```
+
+Should give output:
+
+```html
+<p>[foo<em>[bar<a href="/uri">baz</a>](/uri)</em>](/uri)</p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting symbol ]
+```
+### [Example 516](https://github.github.com/gfm/#example-516)
+
+This markdown:
+
+```markdown
+![[[foo](uri1)](uri2)](uri3)
+
+```
+
+Should give output:
+
+```html
+<p><img alt="[foo](uri2)" src="uri3"></p>
+```
+
+But instead was:
+
+```html
+<p><img src="uri1">](uri2)](uri3)</p>
+```
+### [Example 517](https://github.github.com/gfm/#example-517)
+
+This markdown:
+
+```markdown
+*[foo*](/uri)
+
+```
+
+Should give output:
+
+```html
+<p>*<a href="/uri">foo*</a></p>
+```
+
+But instead was:
+
+```html
+<p><a href="/uri">foo</a></p>
+```
+### [Example 518](https://github.github.com/gfm/#example-518)
+
+This markdown:
+
+```markdown
+[foo *bar](baz*)
+
+```
+
+Should give output:
+
+```html
+<p><a href="baz*">foo *bar</a></p>
+```
+
+But instead was:
+
+```html
+<p><a href="baz*">foo<em>bar</em></a></p>
+```
+### [Example 519](https://github.github.com/gfm/#example-519)
+
+This markdown:
+
+```markdown
+*foo [bar* baz]
+
+```
+
+Should give output:
+
+```html
+<p><em>foo [bar</em>baz]</p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 3 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 520](https://github.github.com/gfm/#example-520)
+
+This markdown:
+
+```markdown
+[foo <bar attr="](baz)">
+
+```
+
+Should give output:
+
+```html
+<p>[foo<bar attr="](baz)"></p>
+```
+
+But instead was:
+
+```html
+<p><a href="baz">foo &lt;bar attr=&quot;</a>&quot;&gt;</p>
+```
+### [Example 521](https://github.github.com/gfm/#example-521)
+
+This markdown:
+
+```markdown
+[foo`](/uri)`
+
+```
+
+Should give output:
+
+```html
+<p>[foo<code>](/uri)</code></p>
+```
+
+But instead was:
+
+```html
+<p><a href="/uri">foo</a></p>
+```
+### [Example 522](https://github.github.com/gfm/#example-522)
+
+This markdown:
+
+```markdown
+[foo<http://example.com/?search=](uri)>
+
+```
+
+Should give output:
+
+```html
+<p>[foo<a href="http://example.com/?search=%5D(uri)">http://example.com/?search=](uri)</a></p>
+```
+
+But instead was:
+
+```html
+<p><a href="uri">foo&lt;http://example.com/?search=</a>&gt;</p>
+```
+### [Example 523](https://github.github.com/gfm/#example-523)
+
+This markdown:
+
+```markdown
+[foo][bar]
+
+[bar]: /url "title"
+
+```
+
+Should give output:
+
+```html
+<p><a href="/url" title="title">foo</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 524](https://github.github.com/gfm/#example-524)
+
+This markdown:
+
+```markdown
+[link [foo [bar]]][ref]
+
+[ref]: /uri
+
+```
+
+Should give output:
+
+```html
+<p><a href="/uri">link [foo [bar]]</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 525](https://github.github.com/gfm/#example-525)
+
+This markdown:
+
+```markdown
+[link \[bar][ref]
+
+[ref]: /uri
+
+```
+
+Should give output:
+
+```html
+<p><a href="/uri">link [bar</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 526](https://github.github.com/gfm/#example-526)
+
+This markdown:
+
+```markdown
+[link *foo **bar** `#`*][ref]
+
+[ref]: /uri
+
+```
+
+Should give output:
+
+```html
+<p><a href="/uri">link<em>foo<strong>bar</strong><code>#</code></em></a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 527](https://github.github.com/gfm/#example-527)
+
+This markdown:
+
+```markdown
+[![moon](moon.jpg)][ref]
+
+[ref]: /uri
+
+```
+
+Should give output:
+
+```html
+<p><a href="/uri"><img alt="moon" src="moon.jpg"></a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 528](https://github.github.com/gfm/#example-528)
+
+This markdown:
+
+```markdown
+[foo [bar](/uri)][ref]
+
+[ref]: /uri
+
+```
+
+Should give output:
+
+```html
+<p>[foo<a href="/uri">bar</a>]<a href="/uri">ref</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 529](https://github.github.com/gfm/#example-529)
+
+This markdown:
+
+```markdown
+[foo *bar [baz][ref]*][ref]
+
+[ref]: /uri
+
+```
+
+Should give output:
+
+```html
+<p>[foo<em>bar<a href="/uri">baz</a></em>]<a href="/uri">ref</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 530](https://github.github.com/gfm/#example-530)
+
+This markdown:
+
+```markdown
+*[foo*][ref]
+
+[ref]: /uri
+
+```
+
+Should give output:
+
+```html
+<p>*<a href="/uri">foo*</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 531](https://github.github.com/gfm/#example-531)
+
+This markdown:
+
+```markdown
+[foo *bar][ref]
+
+[ref]: /uri
+
+```
+
+Should give output:
+
+```html
+<p><a href="/uri">foo *bar</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 532](https://github.github.com/gfm/#example-532)
+
+This markdown:
+
+```markdown
+[foo <bar attr="][ref]">
+
+[ref]: /uri
+
+```
+
+Should give output:
+
+```html
+<p>[foo<bar attr="][ref]"></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 533](https://github.github.com/gfm/#example-533)
+
+This markdown:
+
+```markdown
+[foo`][ref]`
+
+[ref]: /uri
+
+```
+
+Should give output:
+
+```html
+<p>[foo<code>][ref]</code></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 534](https://github.github.com/gfm/#example-534)
+
+This markdown:
+
+```markdown
+[foo<http://example.com/?search=][ref]>
+
+[ref]: /uri
+
+```
+
+Should give output:
+
+```html
+<p>[foo<a href="http://example.com/?search=%5D%5Bref%5D">http://example.com/?search=][ref]</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 535](https://github.github.com/gfm/#example-535)
+
+This markdown:
+
+```markdown
+[foo][BaR]
+
+[bar]: /url "title"
+
+```
+
+Should give output:
+
+```html
+<p><a href="/url" title="title">foo</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 536](https://github.github.com/gfm/#example-536)
+
+This markdown:
+
+```markdown
+[Толпой][Толпой] is a Russian word.
+
+[ТОЛПОЙ]: /url
+
+```
+
+Should give output:
+
+```html
+<p><a href="/url">Толпой</a>is a Russian word.</p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 537](https://github.github.com/gfm/#example-537)
+
+This markdown:
+
+```markdown
+[Foo
+  bar]: /url
+
+[Baz][Foo bar]
+
+```
+
+Should give output:
+
+```html
+<p><a href="/url">Baz</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 3 Expecting --- Problem at row 3 Expecting *** Problem at row 3 Expecting ___
+```
+### [Example 538](https://github.github.com/gfm/#example-538)
+
+This markdown:
+
+```markdown
+[foo] [bar]
+
+[bar]: /url "title"
+
+```
+
+Should give output:
+
+```html
+<p>[foo]<a href="/url" title="title">bar</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 539](https://github.github.com/gfm/#example-539)
+
+This markdown:
+
+```markdown
+[foo]
+[bar]
+
+[bar]: /url "title"
+
+```
+
+Should give output:
+
+```html
+<p>[foo]<a href="/url" title="title">bar</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 8 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 540](https://github.github.com/gfm/#example-540)
+
+This markdown:
+
+```markdown
+[foo]: /url1
+
+[foo]: /url2
+
+[bar][foo]
+
+```
+
+Should give output:
+
+```html
+<p><a href="/url1">bar</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 9 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 541](https://github.github.com/gfm/#example-541)
+
+This markdown:
+
+```markdown
+[bar][foo\!]
+
+[foo!]: /url
+
+```
+
+Should give output:
+
+```html
+<p>[bar][foo!]</p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 542](https://github.github.com/gfm/#example-542)
+
+This markdown:
+
+```markdown
+[foo][ref[]
+
+[ref[]: /uri
+
+```
+
+Should give output:
+
+```html
+<p>[foo][ref[]</p><p>[ref[]: /uri</p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 543](https://github.github.com/gfm/#example-543)
+
+This markdown:
+
+```markdown
+[foo][ref[bar]]
+
+[ref[bar]]: /uri
+
+```
+
+Should give output:
+
+```html
+<p>[foo][ref[bar]]</p><p>[ref[bar]]: /uri</p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 544](https://github.github.com/gfm/#example-544)
+
+This markdown:
+
+```markdown
+[[[foo]]]
+
+[[[foo]]]: /url
+
+```
+
+Should give output:
+
+```html
+<p>[[[foo]]]</p><p>[[[foo]]]: /url</p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 545](https://github.github.com/gfm/#example-545)
+
+This markdown:
+
+```markdown
+[foo][ref\[]
+
+[ref\[]: /uri
+
+```
+
+Should give output:
+
+```html
+<p><a href="/uri">foo</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 546](https://github.github.com/gfm/#example-546)
+
+This markdown:
+
+```markdown
+[bar\\]: /uri
+
+[bar\\]
+
+```
+
+Should give output:
+
+```html
+<p><a href="/uri">bar\</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 547](https://github.github.com/gfm/#example-547)
+
+This markdown:
+
+```markdown
+[]
+
+[]: /uri
+
+```
+
+Should give output:
+
+```html
+<p>[]</p><p>[]: /uri</p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 548](https://github.github.com/gfm/#example-548)
+
+This markdown:
+
+```markdown
+[
+ ]
+
+[
+ ]: /uri
+
+```
+
+Should give output:
+
+```html
+<p>[ ]</p><p>[ ]: /uri</p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 3 Expecting --- Problem at row 3 Expecting *** Problem at row 3 Expecting ___
+```
+### [Example 549](https://github.github.com/gfm/#example-549)
+
+This markdown:
+
+```markdown
+[foo][]
+
+[foo]: /url "title"
+
+```
+
+Should give output:
+
+```html
+<p><a href="/url" title="title">foo</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 550](https://github.github.com/gfm/#example-550)
+
+This markdown:
+
+```markdown
+[*foo* bar][]
+
+[*foo* bar]: /url "title"
+
+```
+
+Should give output:
+
+```html
+<p><a href="/url" title="title"><em>foo</em>bar</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 551](https://github.github.com/gfm/#example-551)
+
+This markdown:
+
+```markdown
+[Foo][]
+
+[foo]: /url "title"
+
+```
+
+Should give output:
+
+```html
+<p><a href="/url" title="title">Foo</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 552](https://github.github.com/gfm/#example-552)
+
+This markdown:
+
+```markdown
+[foo] 
+[]
+
+[foo]: /url "title"
+
+```
+
+Should give output:
+
+```html
+<p><a href="/url" title="title">foo</a>[]</p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 8 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 553](https://github.github.com/gfm/#example-553)
 
 This markdown:
 
 ```markdown
 [foo]
 
-[foo]: /f&ouml;&ouml; "f&ouml;&ouml;"
+[foo]: /url "title"
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p><a href="/f%C3%B6%C3%B6" title="föö">foo</a></p>
-
+<p><a href="/url" title="title">foo</a></p>
 ```
 
-Example 320
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 554](https://github.github.com/gfm/#example-554)
 
 This markdown:
 
 ```markdown
-``` f&ouml;&ouml;
+[*foo* bar]
+
+[*foo* bar]: /url "title"
+
+```
+
+Should give output:
+
+```html
+<p><a href="/url" title="title"><em>foo</em>bar</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 555](https://github.github.com/gfm/#example-555)
+
+This markdown:
+
+```markdown
+[[*foo* bar]]
+
+[*foo* bar]: /url "title"
+
+```
+
+Should give output:
+
+```html
+<p>[<a href="/url" title="title"><em>foo</em>bar</a>]</p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 556](https://github.github.com/gfm/#example-556)
+
+This markdown:
+
+```markdown
+[[bar [foo]
+
+[foo]: /url
+
+```
+
+Should give output:
+
+```html
+<p>[[bar<a href="/url">foo</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 557](https://github.github.com/gfm/#example-557)
+
+This markdown:
+
+```markdown
+[Foo]
+
+[foo]: /url "title"
+
+```
+
+Should give output:
+
+```html
+<p><a href="/url" title="title">Foo</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 558](https://github.github.com/gfm/#example-558)
+
+This markdown:
+
+```markdown
+[foo] bar
+
+[foo]: /url
+
+```
+
+Should give output:
+
+```html
+<p><a href="/url">foo</a>bar</p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 559](https://github.github.com/gfm/#example-559)
+
+This markdown:
+
+```markdown
+\[foo]
+
+[foo]: /url "title"
+
+```
+
+Should give output:
+
+```html
+<p>[foo]</p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 560](https://github.github.com/gfm/#example-560)
+
+This markdown:
+
+```markdown
+[foo*]: /url
+
+*[foo*]
+
+```
+
+Should give output:
+
+```html
+<p>*<a href="/url">foo*</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 561](https://github.github.com/gfm/#example-561)
+
+This markdown:
+
+```markdown
+[foo][bar]
+
+[foo]: /url1
+[bar]: /url2
+
+```
+
+Should give output:
+
+```html
+<p><a href="/url2">foo</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 8 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 562](https://github.github.com/gfm/#example-562)
+
+This markdown:
+
+```markdown
+[foo][]
+
+[foo]: /url1
+
+```
+
+Should give output:
+
+```html
+<p><a href="/url1">foo</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 563](https://github.github.com/gfm/#example-563)
+
+This markdown:
+
+```markdown
+[foo]()
+
+[foo]: /url1
+
+```
+
+Should give output:
+
+```html
+<p><a href="">foo</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 564](https://github.github.com/gfm/#example-564)
+
+This markdown:
+
+```markdown
+[foo](not a link)
+
+[foo]: /url1
+
+```
+
+Should give output:
+
+```html
+<p><a href="/url1">foo</a>(not a link)</p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 565](https://github.github.com/gfm/#example-565)
+
+This markdown:
+
+```markdown
+[foo][bar][baz]
+
+[baz]: /url
+
+```
+
+Should give output:
+
+```html
+<p>[foo]<a href="/url">bar</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 566](https://github.github.com/gfm/#example-566)
+
+This markdown:
+
+```markdown
+[foo][bar][baz]
+
+[baz]: /url1
+[bar]: /url2
+
+```
+
+Should give output:
+
+```html
+<p><a href="/url2">foo</a><a href="/url1">baz</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 8 Expecting Problem at row 1 Expecting symbol (
+```
+### [Example 567](https://github.github.com/gfm/#example-567)
+
+This markdown:
+
+```markdown
+[foo][bar][baz]
+
+[baz]: /url1
+[foo]: /url2
+
+```
+
+Should give output:
+
+```html
+<p>[foo]<a href="/url1">bar</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 8 Expecting Problem at row 1 Expecting symbol (
+```
+## Thematic breaks
+
+### [Example 16](https://github.github.com/gfm/#example-16)
+
+This markdown:
+
+```markdown
+--
+**
+__
+
+```
+
+Should give output:
+
+```html
+<p>-- ** __</p>
+```
+
+But instead was:
+
+```html
+<ul><li><p>-</p></li></ul><p><strong>__</strong></p>
+```
+### [Example 19](https://github.github.com/gfm/#example-19)
+
+This markdown:
+
+```markdown
+Foo
+    ***
+
+```
+
+Should give output:
+
+```html
+<p>Foo ***</p>
+```
+
+But instead was:
+
+```html
+<p>Foo</p><pre><code>***</code></pre>
+```
+### [Example 21](https://github.github.com/gfm/#example-21)
+
+This markdown:
+
+```markdown
+ - - -
+
+```
+
+Should give output:
+
+```html
+<hr>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+```
+### [Example 22](https://github.github.com/gfm/#example-22)
+
+This markdown:
+
+```markdown
+ **  * ** * ** * **
+
+```
+
+Should give output:
+
+```html
+<hr>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+```
+### [Example 23](https://github.github.com/gfm/#example-23)
+
+This markdown:
+
+```markdown
+-     -      -      -
+
+```
+
+Should give output:
+
+```html
+<hr>
+```
+
+But instead was:
+
+```html
+<ul><li><p>- - -</p></li></ul>
+```
+### [Example 24](https://github.github.com/gfm/#example-24)
+
+This markdown:
+
+```markdown
+- - - -    
+
+```
+
+Should give output:
+
+```html
+<hr>
+```
+
+But instead was:
+
+```html
+<ul><li><p>- - -</p></li></ul>
+```
+### [Example 25](https://github.github.com/gfm/#example-25)
+
+This markdown:
+
+```markdown
+_ _ _ _ a
+
+a------
+
+---a---
+
+```
+
+Should give output:
+
+```html
+<p>_ _ _ _ a</p><p>a------</p><p>---a---</p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 7 Expecting end Problem at row 7 Expecting newline
+```
+### [Example 26](https://github.github.com/gfm/#example-26)
+
+This markdown:
+
+```markdown
+ *-*
+
+```
+
+Should give output:
+
+```html
+<p><em>-</em></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+```
+### [Example 27](https://github.github.com/gfm/#example-27)
+
+This markdown:
+
+```markdown
+- foo
+***
+- bar
+
+```
+
+Should give output:
+
+```html
+<ul><li>foo</li></ul><hr><ul><li>bar</li></ul>
+```
+
+But instead was:
+
+```html
+<ul><li><p>foo</p></li></ul><hr><ul><li><p>bar</p></li></ul>
+```
+### [Example 29](https://github.github.com/gfm/#example-29)
+
+This markdown:
+
+```markdown
+Foo
+---
+bar
+
+```
+
+Should give output:
+
+```html
+<h2>Foo</h2><p>bar</p>
+```
+
+But instead was:
+
+```html
+<p>Foo</p><hr><p>bar</p>
+```
+### [Example 30](https://github.github.com/gfm/#example-30)
+
+This markdown:
+
+```markdown
+* Foo
+* * *
+* Bar
+
+```
+
+Should give output:
+
+```html
+<ul><li>Foo</li></ul><hr><ul><li>Bar</li></ul>
+```
+
+But instead was:
+
+```html
+<p><em>Foo</em><em></em><em>Bar</em></p>
+```
+### [Example 31](https://github.github.com/gfm/#example-31)
+
+This markdown:
+
+```markdown
+- Foo
+- * * *
+
+```
+
+Should give output:
+
+```html
+<ul><li>Foo</li><li><hr></li></ul>
+```
+
+But instead was:
+
+```html
+<ul><li><p>Foo</p></li><li><p><em></em></p></li></ul>
+```
+## ATX headings
+
+### [Example 33](https://github.github.com/gfm/#example-33)
+
+This markdown:
+
+```markdown
+####### foo
+
+```
+
+Should give output:
+
+```html
+<p>####### foo</p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting heading with &lt; 7 #&#39;s
+```
+### [Example 34](https://github.github.com/gfm/#example-34)
+
+This markdown:
+
+```markdown
+#5 bolt
+
+#hashtag
+
+```
+
+Should give output:
+
+```html
+<p>#5 bolt</p><p>#hashtag</p>
+```
+
+But instead was:
+
+```html
+<h1>5 bolt</h1><h1>hashtag</h1>
+```
+### [Example 35](https://github.github.com/gfm/#example-35)
+
+This markdown:
+
+```markdown
+\## foo
+
+```
+
+Should give output:
+
+```html
+<p>## foo</p>
+```
+
+But instead was:
+
+```html
+<p>\## foo</p>
+```
+### [Example 36](https://github.github.com/gfm/#example-36)
+
+This markdown:
+
+```markdown
+# foo *bar* \*baz\*
+
+```
+
+Should give output:
+
+```html
+<h1>foo<em>bar</em>*baz*</h1>
+```
+
+But instead was:
+
+```html
+<h1>foo<em>bar</em>\<em>baz\</em></h1>
+```
+### [Example 38](https://github.github.com/gfm/#example-38)
+
+This markdown:
+
+```markdown
+ ### foo
+  ## foo
+   # foo
+
+```
+
+Should give output:
+
+```html
+<h3>foo</h3><h2>foo</h2><h1>foo</h1>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+```
+### [Example 40](https://github.github.com/gfm/#example-40)
+
+This markdown:
+
+```markdown
 foo
-```
+    # bar
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<pre><code class="language-föö">foo
-</code></pre>
-
+<p>foo # bar</p>
 ```
 
-Example 323
+But instead was:
+
+```html
+<p>foo</p><pre><code># bar</code></pre>
+```
+### [Example 41](https://github.github.com/gfm/#example-41)
 
 This markdown:
 
 ```markdown
-&#42;foo&#42;
-*foo*
+## foo ##
+  ###   bar    ###
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>*foo*
-<em>foo</em></p>
-
+<h2>foo</h2><h3>bar</h3>
 ```
 
-Example 324
+But instead was:
+
+```html
+ERROR Problem at row 3 Expecting --- Problem at row 3 Expecting *** Problem at row 3 Expecting ___
+```
+### [Example 43](https://github.github.com/gfm/#example-43)
 
 This markdown:
 
 ```markdown
-&#42; foo
-
-* foo
+### foo ###     
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>* foo</p>
-<ul>
-<li>foo</li>
-</ul>
-
+<h3>foo</h3>
 ```
 
-Example 325
+But instead was:
+
+```html
+<h3>foo ###</h3>
+```
+### [Example 45](https://github.github.com/gfm/#example-45)
 
 This markdown:
 
 ```markdown
-foo&#10;&#10;bar
+# foo#
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>foo
-
-bar</p>
-
+<h1>foo#</h1>
 ```
 
-Example 326
+But instead was:
+
+```html
+<h1>foo</h1>
+```
+### [Example 46](https://github.github.com/gfm/#example-46)
 
 This markdown:
 
 ```markdown
-&#9;foo
+### foo \###
+## foo #\##
+# foo \#
 
 ```
 
-Gives this incorrect output:
+Should give output:
 
 ```html
-<p>	foo</p>
-
+<h3>foo ###</h3><h2>foo ###</h2><h1>foo #</h1>
 ```
 
-Example 327
-
-This markdown:
-
-```markdown
-[a](url &quot;tit&quot;)
-
-```
-
-Gives this incorrect output:
+But instead was:
 
 ```html
-<p>[a](url &quot;tit&quot;)</p>
-
+<h3>foo \</h3><h2>foo #\</h2><h1>foo \</h1>
 ```
-
-### Code spans
-
-Example 329
-
-This markdown:
-
-```markdown
-`` foo ` bar ``
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><code>foo ` bar</code></p>
-
-```
-
-Example 330
-
-This markdown:
-
-```markdown
-` `` `
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><code>``</code></p>
-
-```
-
-Example 331
-
-This markdown:
-
-```markdown
-`  ``  `
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><code> `` </code></p>
-
-```
-
-Example 334
-
-This markdown:
-
-```markdown
-` `
-`  `
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><code> </code>
-<code>  </code></p>
-
-```
-
-Example 335
-
-This markdown:
-
-```markdown
-``
-foo
-bar  
-baz
-``
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><code>foo bar   baz</code></p>
-
-```
-
-Example 336
-
-This markdown:
-
-```markdown
-``
-foo 
-``
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><code>foo </code></p>
-
-```
-
-Example 337
-
-This markdown:
-
-```markdown
-`foo   bar 
-baz`
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><code>foo   bar  baz</code></p>
-
-```
-
-Example 338
-
-This markdown:
-
-```markdown
-`foo\`bar`
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><code>foo\</code>bar`</p>
-
-```
-
-Example 339
-
-This markdown:
-
-```markdown
-``foo`bar``
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><code>foo`bar</code></p>
-
-```
-
-Example 340
-
-This markdown:
-
-```markdown
-` foo `` bar `
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><code>foo `` bar</code></p>
-
-```
-
-Example 341
-
-This markdown:
-
-```markdown
-*foo`*`
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>*foo<code>*</code></p>
-
-```
-
-Example 342
-
-This markdown:
-
-```markdown
-[not a `link](/foo`)
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>[not a <code>link](/foo</code>)</p>
-
-```
-
-Example 343
-
-This markdown:
-
-```markdown
-`<a href="`">`
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><code>&lt;a href=&quot;</code>&quot;&gt;`</p>
-
-```
-
-Example 344
-
-This markdown:
-
-```markdown
-<a href="`">`
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="`">`</p>
-
-```
-
-Example 345
-
-This markdown:
-
-```markdown
-`<http://foo.bar.`baz>`
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><code>&lt;http://foo.bar.</code>baz&gt;`</p>
-
-```
-
-Example 346
-
-This markdown:
-
-```markdown
-<http://foo.bar.`baz>`
-
-```
-
-Gives this incorrect output:
-
-```html
-<p><a href="http://foo.bar.%60baz">http://foo.bar.`baz</a>`</p>
-
-```
-
-Example 347
-
-This markdown:
-
-```markdown
-```foo``
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>```foo``</p>
-
-```
-
-Example 348
-
-This markdown:
-
-```markdown
-`foo
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>`foo</p>
-
-```
-
-Example 349
-
-This markdown:
-
-```markdown
-`foo``bar``
-
-```
-
-Gives this incorrect output:
-
-```html
-<p>`foo<code>bar</code></p>
-
-```
-
