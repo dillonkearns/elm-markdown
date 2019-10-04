@@ -7,9 +7,8 @@ import Element.Font as Font
 import Element.Region
 import Html exposing (Attribute, Html)
 import Html.Attributes
-import Markdown.Block exposing (Block)
+import Markdown.Block exposing (Block, Inline, InlineStyle)
 import Markdown.Html
-import Markdown.InlineBlock
 import Markdown.Parser
 
 
@@ -134,13 +133,13 @@ buildToc blocks =
             )
 
 
-styledToString : List Markdown.InlineBlock.StyledString -> String
+styledToString : List Inline -> String
 styledToString list =
     List.map .string list
         |> String.join "-"
 
 
-gatherHeadings : List Block -> List ( Int, List Markdown.InlineBlock.StyledString )
+gatherHeadings : List Block -> List ( Int, List Inline )
 gatherHeadings blocks =
     List.filterMap
         (\block ->

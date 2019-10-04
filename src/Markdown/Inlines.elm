@@ -3,13 +3,13 @@ module Markdown.Inlines exposing (State, isUninteresting, nextStepWhenFoundBold,
 import Char
 import Html exposing (Html)
 import Html.Attributes as Attr
-import Markdown.InlineBlock exposing (..)
+import Markdown.Block as Block exposing (Inline, InlineStyle)
 import Markdown.Link as Link exposing (Link)
 import Parser
 import Parser.Advanced as Advanced exposing (..)
 
 
-toString : List StyledString -> String
+toString : List Inline -> String
 toString list =
     List.map .string list
         |> String.join "-"
@@ -32,10 +32,10 @@ isUninteresting char =
 
 
 type alias State =
-    ( Style, List StyledString, Maybe String )
+    ( InlineStyle, List Inline, Maybe String )
 
 
-nextStepWhenFoundBold : State -> String -> Step State (List StyledString)
+nextStepWhenFoundBold : State -> String -> Step State (List Inline)
 nextStepWhenFoundBold ( currStyle, revStyledStrings, _ ) string =
     Loop
         ( { currStyle | isBold = not currStyle.isBold }
@@ -44,13 +44,13 @@ nextStepWhenFoundBold ( currStyle, revStyledStrings, _ ) string =
         )
 
 
-nextStepWhenFoundLink : Link -> State -> String -> Step State (List StyledString)
+nextStepWhenFoundLink : Link -> State -> String -> Step State (List Inline)
 nextStepWhenFoundLink link ( currStyle, revStyledStrings, _ ) string =
     case link of
         Link.Link record ->
             Loop
                 ( currStyle
-                , { style = { currStyle | link = Just { title = record.title, destination = Link record.destination } }, string = record.description }
+                , { style = { currStyle | link = Just { title = record.title, destination = Block.Link record.destination } }, string = record.description }
                     :: { style = currStyle, string = string }
                     :: revStyledStrings
                 , Nothing
@@ -59,14 +59,14 @@ nextStepWhenFoundLink link ( currStyle, revStyledStrings, _ ) string =
         Link.Image record ->
             Loop
                 ( currStyle
-                , { style = { currStyle | link = Just { title = Nothing, destination = Image record.src } }, string = record.alt }
+                , { style = { currStyle | link = Just { title = Nothing, destination = Block.Image record.src } }, string = record.alt }
                     :: { style = currStyle, string = string }
                     :: revStyledStrings
                 , Nothing
                 )
 
 
-nextStepWhenFoundCode : State -> String -> Step State (List StyledString)
+nextStepWhenFoundCode : State -> String -> Step State (List Inline)
 nextStepWhenFoundCode ( currStyle, revStyledStrings, _ ) string =
     Loop
         ( { currStyle | isCode = not currStyle.isCode }
@@ -75,7 +75,7 @@ nextStepWhenFoundCode ( currStyle, revStyledStrings, _ ) string =
         )
 
 
-nextStepWhenFoundItalic : State -> String -> Step State (List StyledString)
+nextStepWhenFoundItalic : State -> String -> Step State (List Inline)
 nextStepWhenFoundItalic ( currStyle, revStyledStrings, _ ) string =
     Loop
         ( { currStyle | isItalic = not currStyle.isItalic }
@@ -84,7 +84,7 @@ nextStepWhenFoundItalic ( currStyle, revStyledStrings, _ ) string =
         )
 
 
-nextStepWhenFoundNothing : State -> String -> Step State (List StyledString)
+nextStepWhenFoundNothing : State -> String -> Step State (List Inline)
 nextStepWhenFoundNothing ( currStyle, revStyledStrings, _ ) string =
     Done
         (List.reverse
@@ -93,13 +93,13 @@ nextStepWhenFoundNothing ( currStyle, revStyledStrings, _ ) string =
         )
 
 
-nextStepWhenAllFailed : State -> String -> Step State (List StyledString)
+nextStepWhenAllFailed : State -> String -> Step State (List Inline)
 nextStepWhenAllFailed ( currStyle, revStyledStrings, _ ) string =
     Loop
         ( currStyle, revStyledStrings, Just string )
 
 
-parse : Parser (List StyledString)
+parse : Parser (List Inline)
 parse =
     loop
         ( { isCode = False
@@ -113,7 +113,7 @@ parse =
         parseHelp
 
 
-parseHelp : State -> Parser (Step State (List StyledString))
+parseHelp : State -> Parser (Step State (List Inline))
 parseHelp (( _, _, allFailed ) as state) =
     andThen
         (\chompedString ->

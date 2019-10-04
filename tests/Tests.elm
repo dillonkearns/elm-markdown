@@ -2,7 +2,6 @@ module Tests exposing (suite)
 
 import Expect exposing (Expectation)
 import Markdown.Block as Block exposing (Block)
-import Markdown.InlineBlock as InlineBlock
 import Markdown.Inlines
 import Markdown.Parser as Markdown exposing (..)
 import Parser
@@ -241,7 +240,7 @@ qwer
                                         { isBold = False
                                         , isCode = False
                                         , isItalic = False
-                                        , link = Just { destination = InlineBlock.Image "/my/image.jpg", title = Nothing }
+                                        , link = Just { destination = Block.Image "/my/image.jpg", title = Nothing }
                                         }
                                   }
                                 ]
@@ -250,7 +249,7 @@ qwer
         ]
 
 
-unstyledText : String -> List InlineBlock.StyledString
+unstyledText : String -> List Block.Inline
 unstyledText body =
     [ { string = body
       , style =
@@ -263,7 +262,7 @@ unstyledText body =
     ]
 
 
-unstyledTextSingle : String -> InlineBlock.StyledString
+unstyledTextSingle : String -> Block.Inline
 unstyledTextSingle body =
     { string = body
     , style =

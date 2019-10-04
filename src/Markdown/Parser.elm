@@ -8,11 +8,10 @@ module Markdown.Parser exposing (Renderer, defaultHtmlRenderer, deadEndToString,
 
 import Html exposing (Html)
 import Html.Attributes as Attr
-import Markdown.Block as Block exposing (Block)
+import Markdown.Block as Block exposing (Block, Inline)
 import Markdown.CodeBlock
 import Markdown.Html exposing (..)
 import Markdown.HtmlRenderer
-import Markdown.InlineBlock as InlineBlock exposing (StyledString)
 import Markdown.Inlines as Inlines
 import Markdown.List
 import Parser
@@ -116,19 +115,19 @@ defaultHtmlRenderer =
     }
 
 
-renderStyled : Renderer view -> List StyledString -> Result String (List view)
+renderStyled : Renderer view -> List Inline -> Result String (List view)
 renderStyled renderer styledStrings =
     styledStrings
         |> List.foldr (foldThing renderer) []
         |> combineResults
 
 
-foldThing : Renderer view -> StyledString -> List (Result String view) -> List (Result String view)
+foldThing : Renderer view -> Inline -> List (Result String view) -> List (Result String view)
 foldThing renderer { style, string } soFar =
     case style.link of
         Just link ->
             case link.destination of
-                InlineBlock.Link destination ->
+                Block.Link destination ->
                     case Advanced.run Inlines.parse string of
                         Ok styledLine ->
                             (renderStyled renderer styledLine
@@ -143,7 +142,7 @@ foldThing renderer { style, string } soFar =
                             (error |> List.map deadEndToString |> List.map Err)
                                 ++ soFar
 
-                InlineBlock.Image src ->
+                Block.Image src ->
                     renderer.image { src = src } string
                         :: soFar
 

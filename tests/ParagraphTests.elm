@@ -2,7 +2,6 @@ module ParagraphTests exposing (suite)
 
 import Expect exposing (Expectation)
 import Markdown.Block as Block exposing (Block)
-import Markdown.InlineBlock as InlineBlock
 import Markdown.Inlines
 import Markdown.Parser exposing (..)
 import Parser
@@ -52,7 +51,7 @@ Line after blank line"""
         ]
 
 
-unstyledText : String -> List InlineBlock.StyledString
+unstyledText : String -> List Block.Inline
 unstyledText body =
     [ { string = body
       , style =
@@ -65,7 +64,7 @@ unstyledText body =
     ]
 
 
-unstyledTextSingle : String -> InlineBlock.StyledString
+unstyledTextSingle : String -> Block.Inline
 unstyledTextSingle body =
     { string = body
     , style =

@@ -1,7 +1,6 @@
 module ListTests exposing (suite)
 
 import Expect exposing (Expectation)
-import Markdown.InlineBlock as InlineBlock
 import Markdown.Inlines
 import Markdown.List
 import Markdown.Parser exposing (..)

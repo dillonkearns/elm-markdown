@@ -8,7 +8,7 @@
     "test": "elm-test",
     "autotest": "elm-test --watch tests/**/*.elm",
     "diff": "git show HEAD:spec-results.json > git-head-spec-results.json && json-diff git-head-spec-results.json spec-results.json",
-    "specs:marked": "cd test && elm make OutputMarkdownHtml.elm --output elm.js && cd .. && jasmine --config=jasmine.json test/specs/**/*-spec.js"
+    "specs:marked": "cd test && npx elm make OutputMarkdownHtml.elm --output elm.js && cd .. && jasmine --config=jasmine.json test/specs/**/*-spec.js"
   },
   "author": "Dillon Kearns",
   "dependencies": {},
