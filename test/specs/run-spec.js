@@ -143,12 +143,17 @@ This markdown:
 ${spec.markdown}
 \`\`\`
 
-Gives this incorrect output:
+Should give output:
 
 \`\`\`html
-${spec.html}
+${spec.diff.expected}
 \`\`\`
 
+But instead was:
+
+\`\`\`html
+${spec.diff.actual}
+\`\`\`
 `;
     });
   });

@@ -8,7 +8,7 @@ global.fails = fails;
 // @ts-ignore
 global.passes = passes;
 
-/** @typedef { { markdown: string; html: string; example: number; start_line: number; end_line: number; section: string; options: { gfm: boolean; pedantic: boolean; headerIds: boolean; silent: boolean; }; } } Spec */
+/** @typedef { { markdown: string; diff: string; html: string; example: number; start_line: number; end_line: number; section: string; options: { gfm: boolean; pedantic: boolean; headerIds: boolean; silent: boolean; }; } } Spec */
 
 let example = {
   markdown: "> aaa\n***\n> bbb\n",
@@ -32,6 +32,7 @@ beforeEach(() => {
           if (result.pass) {
             passes.push(spec);
           } else {
+            spec.diff = diff;
             fails.push(spec);
           }
 
