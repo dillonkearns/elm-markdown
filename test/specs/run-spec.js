@@ -121,9 +121,9 @@ function writeFailuresMarkdown(/** @type {string} */ suiteTitle) {
   {});
 
   /** @type {string} */ let markdown = "";
-  markdown += `## ${suiteTitle}\n\n`;
+  markdown += `# ${suiteTitle}\n\n`;
   Object.keys(failedJson).forEach(section => {
-    markdown += `### ${section}\n\n`;
+    markdown += `## ${section}\n\n`;
     failedJson[section].sort((
       /** @type {Spec} */ specA,
       /** @type {Spec} */ specB
@@ -135,7 +135,15 @@ function writeFailuresMarkdown(/** @type {string} */ suiteTitle) {
       }
     });
     failedJson[section].forEach((/** @type {Spec} */ spec) => {
-      markdown += `Example ${spec.example}
+      if (suiteTitle === "GFM" && spec.example) {
+        markdown += `### [Example ${spec.example}](https://github.github.com/gfm/#example-${spec.example})`;
+      } else if (suiteTitle === "CommonMark" && spec.example) {
+        markdown += `### [Example ${spec.example}](https://spec.commonmark.org/0.29/#example-${spec.example})`;
+      } else {
+        markdown += `### Example ${spec.example}`;
+      }
+
+      markdown += `
 
 This markdown:
 
@@ -179,9 +187,9 @@ function writePassingMarkdown(/** @type {string} */ suiteTitle) {
   {});
 
   /** @type {string} */ let markdown = "";
-  markdown += `## ${suiteTitle}\n\n`;
+  markdown += `# ${suiteTitle}\n\n`;
   Object.keys(passedJson).forEach(section => {
-    markdown += `### ${section}\n\n`;
+    markdown += `## ${section}\n\n`;
     passedJson[section].sort((
       /** @type {Spec} */ specA,
       /** @type {Spec} */ specB
@@ -193,7 +201,14 @@ function writePassingMarkdown(/** @type {string} */ suiteTitle) {
       }
     });
     passedJson[section].forEach((/** @type {Spec} */ spec) => {
-      markdown += `Example ${spec.example}
+      if (suiteTitle === "GFM" && spec.example) {
+        markdown += `### [Example ${spec.example}](https://github.github.com/gfm/#example-${spec.example})`;
+      } else if (suiteTitle === "CommonMark" && spec.example) {
+        markdown += `### [Example ${spec.example}](https://spec.commonmark.org/0.29/#example-${spec.example})`;
+      } else {
+        markdown += `### Example ${spec.example}`;
+      }
+      markdown += `
 
 This markdown:
 
