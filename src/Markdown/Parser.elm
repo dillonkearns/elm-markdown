@@ -557,10 +557,17 @@ statementsHelp2 revStmts =
                                     body2Trimmed =
                                         String.trim body2
                                 in
-                                Loop
-                                    (Body (UnparsedInlines (body2Trimmed ++ " " ++ body1Trimmed))
-                                        :: rest
-                                    )
+                                if body1Trimmed == "" || body2Trimmed == "" then
+                                    Loop
+                                        (Body (UnparsedInlines (body2Trimmed ++ body1Trimmed))
+                                            :: rest
+                                        )
+
+                                else
+                                    Loop
+                                        (Body (UnparsedInlines (body2Trimmed ++ " " ++ body1Trimmed))
+                                            :: rest
+                                        )
 
                             _ ->
                                 Loop (stmts :: revStmts)
