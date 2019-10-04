@@ -416,21 +416,9 @@ listBlock =
 
 blankLine : Parser RawBlock
 blankLine =
-    -- succeed BlankLine
-    -- chompIf (\c -> c == '\n') (Parser.Problem "Expecting newline")
-    --     |. chompIf (\c -> c == '\n') (Parser.Problem "Expecting newline")
-    --     |> map (\() -> BlankLine)
-    token (Advanced.Token "\n\n" (Parser.Expecting "\n"))
-        -- |. chompWhile (\c -> c == '\n') (Parser.Problem "Expecting newline")
+    token (Advanced.Token "\n" (Parser.Expecting "\n"))
         |. chompWhile (\c -> c == '\n')
-        -- |. chompIf (\c -> c == '\n') (Parser.Problem "Expecting newline")
         |> map (\() -> BlankLine)
-
-
-
--- oneOrMore (\c -> c == '\n')
---     |> map (\() -> BlankLine)
--- |. symbol (Advanced.Token "\n\n" (Parser.Expecting "\n"))
 
 
 htmlParser : Parser RawBlock
