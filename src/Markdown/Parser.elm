@@ -401,7 +401,10 @@ plainLine =
                 |> Body
         )
         |= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
-        |. Advanced.chompIf (\c -> c == '\n') (Parser.Expecting "A single non-newline char.")
+        |. oneOf
+            [ Advanced.chompIf (\c -> c == '\n') (Parser.Expecting "A single non-newline char.")
+            , Advanced.end (Parser.Expecting "End")
+            ]
 
 
 listBlock : Parser RawBlock
