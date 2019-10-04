@@ -166,7 +166,7 @@ ${spec.diff.actual}
     });
   });
 
-  fs.writeFileSync(`./test-results/failing-${suiteTitle}.md`, markdown);
+  fs.writeFileSync(`./test-results/failing-${suiteTitle}/index.md`, markdown);
 }
 
 function writePassingMarkdown(/** @type {string} */ suiteTitle) {
@@ -228,5 +228,5 @@ ${spec.html}
     });
   });
 
-  fs.writeFileSync(`./test-results/passing-${suiteTitle}.md`, markdown);
+  fs.writeFileSync(`./test-results/passing-${suiteTitle}/index.md`, markdown);
 }
