@@ -1,5 +1,6 @@
 module CustomHtmlBlockSignupForm exposing (main)
 
+import Browser
 import Element exposing (Element)
 import Element.Background
 import Element.Border
@@ -10,24 +11,6 @@ import Html.Attributes
 import Markdown.Block exposing (Block, Inline, InlineStyle)
 import Markdown.Html
 import Markdown.Parser
-
-
-main : Html msg
-main =
-    Element.layout []
-        (case view markdownBody of
-            Ok rendered ->
-                Element.column
-                    [ Element.spacing 30
-                    , Element.padding 80
-                    , Element.width (Element.fill |> Element.maximum 1000)
-                    , Element.centerX
-                    ]
-                    rendered
-
-            Err errors ->
-                Element.text errors
-        )
 
 
 markdownBody =
@@ -107,8 +90,34 @@ type alias TableOfContents =
     List { anchorId : String, name : String, level : Int }
 
 
-view : String -> Result String (List (Element msg))
-view markdown =
+type alias Model =
+    String
+
+
+view : Model -> { title : String, body : List (Html msg) }
+view model =
+    { title = "dillonkearns/elm-markdown demo"
+    , body =
+        [ Element.layout []
+            (case markdownView model of
+                Ok rendered ->
+                    Element.column
+                        [ Element.spacing 30
+                        , Element.padding 80
+                        , Element.width (Element.fill |> Element.maximum 1000)
+                        , Element.centerX
+                        ]
+                        rendered
+
+                Err errors ->
+                    Element.text errors
+            )
+        ]
+    }
+
+
+markdownView : String -> Result String (List (Element msg))
+markdownView markdown =
     markdown
         |> Markdown.Parser.parse
         |> Result.mapError (\error -> error |> List.map Markdown.Parser.deadEndToString |> String.join "\n")
@@ -303,3 +312,21 @@ codeBlock details =
             ]
         ]
         (Element.text details.body)
+
+
+type alias Msg =
+    ()
+
+
+type alias Flags =
+    ()
+
+
+main : Platform.Program Flags Model Msg
+main =
+    Browser.document
+        { init = \flags -> ( markdownBody, Cmd.none )
+        , view = view
+        , update = \msg model -> ( model, Cmd.none )
+        , subscriptions = \model -> Sub.none
+        }
