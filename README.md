@@ -34,6 +34,7 @@ your HTML renderer, so you get all of your rendered lists, code blocks, links, e
 
 - [Custom HTML Block Rendering (with `elm-ui`)](https://ellie-app.com/6QtXzdqDdmSa1)
 - [Extracting a table of contents from the parsed Markdown](https://ellie-app.com/6QtYW8pcCDna1)
+- [Running the built-in, standard markdown HTML renderer](https://ellie-app.com/6Qv2dD7qdBra1)
 
 ## Core features
 
