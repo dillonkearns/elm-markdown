@@ -1,7 +1,35 @@
-# elm-markdown-parser
+# elm-markdown
 [![Build Status](https://travis-ci.org/dillonkearns/elm-markdown.svg?branch=master)](https://travis-ci.org/dillonkearns/elm-markdown)
 
 Extensible markdown parsing in pure elm.
+
+This library extends the basic markdown blocks without actually adding features to the syntax.
+It simply provides a declarative way to map certain HTML tags to your Elm view functions to render them. For example,
+
+```markdown
+<bio name="Dillon Kearns" photo="https://avatars2.githubusercontent.com/u/1384166">
+Dillon really likes building things with Elm! Here are some links
+
+- [Github](https://github.com/dillonkearns/)
+- [Twitter](https://twitter.com/dillontkearns/)
+- [Articles](https://incrementalelm.com/articles)
+</bio>
+```
+
+And you wire up your Elm rendering function like this
+
+```elm
+Markdown.Html.oneOf
+    [ Markdown.Html.tag "bio"
+        (\name photoUrl renderedChildren -> bioView renderedChildren name photoUrl)
+        |> Markdown.Html.withAttribute "name"
+        |> Markdown.Html.withAttribute "photo"
+    ]
+```
+
+Note that it gets the rendered children as an argument. This is rendering the inner contents of the HTML tag using
+your HTML renderer, so you get all of your rendered lists, code blocks, links, etc. within your tag.
+
 
 ## Philosophy & Goals
 
