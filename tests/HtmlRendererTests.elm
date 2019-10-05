@@ -184,7 +184,7 @@ Parsing failed in the following 2 ways:
                         )
                     |> Expect.equal (Err """Problem with the given value:
 
-<requires-attribute>
+<requires-attribute second="present">
 
 Expecting attribute "first".
 """)

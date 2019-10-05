@@ -145,7 +145,21 @@ resultOr ra rb =
 
 tagToString : String -> List Attribute -> String
 tagToString tagName attributes =
-    "<" ++ tagName ++ ">"
+    if List.isEmpty attributes then
+        "<" ++ tagName ++ ">"
+
+    else
+        "<" ++ tagName ++ " " ++ attributesToString attributes ++ ">"
+
+
+attributesToString : List Attribute -> String
+attributesToString attributes =
+    attributes
+        |> List.map
+            (\{ name, value } ->
+                name ++ "=\"" ++ value ++ "\""
+            )
+        |> String.join " "
 
 
 {-| Start a Renderer by expecting a tag of a particular type.
