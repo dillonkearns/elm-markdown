@@ -1,4 +1,5 @@
 # elm-markdown-parser
+[![Build Status](https://travis-ci.org/dillonkearns/elm-markdown.svg?branch=master)](https://travis-ci.org/dillonkearns/elm-markdown)
 
 Markdown parsing in pure elm.
 
