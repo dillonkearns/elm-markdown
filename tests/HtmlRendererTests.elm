@@ -32,12 +32,12 @@ deadEndsToString deadEnds =
         |> String.join "\n"
 
 
-type Rendered
+type Rendered tag
     = Unexpected String
-    | Html String
+    | Html tag
 
 
-testRenderer : List (Markdown.Html.Renderer (List Rendered -> Rendered)) -> Markdown.Renderer Rendered
+testRenderer : List (Markdown.Html.Renderer (List (Rendered a) -> Rendered a)) -> Markdown.Renderer (Rendered a)
 testRenderer htmlRenderer =
     { heading =
         \{ level, children } ->
@@ -158,16 +158,26 @@ Expecting attribute "first".
                             [ Markdown.Html.tag "bio"
                                 (\name twitter github children ->
                                     Html
-                                        ("bio "
-                                            ++ name
-                                            ++ (twitter |> Maybe.withDefault "Nothing")
-                                            ++ (github |> Maybe.withDefault "Nothing")
-                                        )
+                                        { tag =
+                                            "bio"
+                                        , name = name
+                                        , twitter = twitter
+                                        , github = github
+                                        }
                                 )
                                 |> Markdown.Html.withAttribute "name"
                                 |> Markdown.Html.withOptionalAttribute "twitter"
                                 |> Markdown.Html.withOptionalAttribute "github"
                             ]
                         )
-                    |> Expect.equal (Ok [ Html "bio DillondillontkearnsNothing" ])
+                    |> Expect.equal
+                        (Ok
+                            [ Html
+                                { tag = "bio"
+                                , name = "Dillon"
+                                , twitter = Just "dillontkearns"
+                                , github = Nothing
+                                }
+                            ]
+                        )
         ]
