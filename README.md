@@ -40,7 +40,7 @@ your HTML renderer, so you get all of your rendered lists, code blocks, links, e
 
 ## Live Code Demos
 
-- [Custom HTML Block Rendering (with `elm-ui`)](https://ellie-app.com/6QtXzdqDdmSa1)
+- [Custom HTML Block Rendering (with `elm-ui`)](https://ellie-app.com/6QH7BxdcWxKa1)
 - [Extracting a table of contents from the parsed Markdown](https://ellie-app.com/6QtYW8pcCDna1)
 - [Running the built-in, standard markdown HTML renderer](https://ellie-app.com/6Qv2dD7qdBra1)
 
@@ -103,7 +103,7 @@ defaultHtmlRenderer =
 
 ### Custom HTML Blocks
 
-[Check out this example on Ellie](https://ellie-app.com/6QtXzdqDdmSa1) to tweak and take a look at the full code from the top of the README.
+[Check out this example on Ellie](https://ellie-app.com/6QH7BxdcWxKa1) to tweak and take a look at the full code from the top of the README.
 
 ### Markdown Block Transformation
 You get full access to the parsed markdown blocks before passing it to a renderer. That means that you can inspect it, do custom logic on it, perform validations, or even go in and transform it! It's totally customizable, and of course it's all just nice Elm custom types!
