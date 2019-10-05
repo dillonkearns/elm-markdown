@@ -30,6 +30,11 @@ Markdown.Html.oneOf
 Note that it gets the rendered children as an argument. This is rendering the inner contents of the HTML tag using
 your HTML renderer, so you get all of your rendered lists, code blocks, links, etc. within your tag.
 
+## Live Code Demos
+
+- [Custom HTML Block Rendering (with `elm-ui`)](https://ellie-app.com/6QtXzdqDdmSa1)
+- [Extracting a table of contents from the parsed Markdown](https://ellie-app.com/6QtYW8pcCDna1)
+
 ## Core features
 
 ### Custom Renderers
@@ -89,12 +94,12 @@ defaultHtmlRenderer =
 
 ### Custom HTML Blocks
 
-Check out this example to tweak and take a look at the full code from the top of the README.
+[Check out this example on Ellie](https://ellie-app.com/6QtXzdqDdmSa1) to tweak and take a look at the full code from the top of the README.
 
 ### Markdown Block Transformation
 You get full access to the parsed markdown blocks before passing it to a renderer. That means that you can inspect it, do custom logic on it, perform validations, or even go in and transform it! It's totally customizable, and of course it's all just nice Elm custom types!
 
-Here's an example that transforms the AST into a table of contents and renders a `TOC` data type along with the rendered markdown.
+[Here's a live Ellie example](https://ellie-app.com/6QtYW8pcCDna1) that transforms the AST into a table of contents and renders a `TOC` data type along with the rendered markdown.
 
 ## Philosophy & Goals
 
