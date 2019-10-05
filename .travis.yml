@@ -7,4 +7,4 @@ node_js: "10"
 
 script:
   - npm test
-  - npm run test:ete; npm run test:check-regressions
+  - echo -e "travis_fold:start:$1\033[33;1m$2\033[0m"; npm run test:ete; echo -e "\ntravis_fold:end:$1\r"; npm run test:check-regressions
