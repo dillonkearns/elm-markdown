@@ -4,8 +4,8 @@
   "description": "Markdown parsing in pure elm.",
   "scripts": {
     "build": "rm -r dist && parcel build src/index.html --public-url ./",
-    "test": "elm-test",
-    "autotest": "elm-test --watch tests/**/*.elm",
+    "test": "elm-test tests",
+    "autotest": "elm-test --watch tests",
     "test:check-regressions": "git diff --exit-code -- spec-results.json",
     "test:ete": "cd test && npx elm make OutputMarkdownHtml.elm --output elm.js && cd .. && jasmine --config=jasmine.json test/specs/**/*-spec.js"
   },
