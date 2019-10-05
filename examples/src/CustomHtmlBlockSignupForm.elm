@@ -41,7 +41,7 @@ Dillon really likes building things with Elm! Here are some links
 
 - [Github](https://github.com/dillonkearns/)
 - [Twitter](https://twitter.com/dillontkearns/)
-- [Home page](https://incrementalelm.com/)
+- [Articles](https://incrementalelm.com/articles)
 </bio>
 ```
 
@@ -52,7 +52,7 @@ Dillon really likes building things with Elm! Here are some links
 
 - [Github](https://github.com/dillonkearns/)
 - [Twitter](https://twitter.com/dillontkearns/)
-- [Home page](https://incrementalelm.com/)
+- [Articles](https://incrementalelm.com/articles)
 </bio>
 """
 
