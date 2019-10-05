@@ -1,1 +1,304 @@
-{"ReDOS":{"quadratic_br":[null],"quadratic_email":[null]},"GFM":{"Emphasis and strong emphasis":[350,354,355,357,358,359,360,361,362,369,370,371,373,374,377,380,382,383,384,385,386,387,395,396,397,399,400,404,422,433,437,440,447,450,459,468,473],"Raw HTML":[622,623],"Autolinks":[607,608],"Soft line breaks":[645],"Links":[482,483,497],"Hard line breaks":[637,638,641,642,643,644],"Paragraphs":[189,190,191,195],"Fenced code blocks":[110,117,89,90,92,93,99],"[extension] Strikethrough":[492],"Indented code blocks":[84,88],"Setext headings":[67,68,70,74],"List items":[236,242],"ATX headings":[32,37,39,42,44,47,48,49],"Lists":[274],"Thematic breaks":[13,14,15,17,18,20,28],"Textual content":[647,648,649],"Tabs":[1,10],"Code spans":[328,332,333,334,337],"[extension] Tables":[203],"Backslash escapes":[299,304,305],"Entity and numeric character references":[314,315,316,321,322]},"CommonMark":{"Autolinks":[607,608],"Raw HTML":[622,623],"Hard line breaks":[637,638,641,642,643,644],"Emphasis and strong emphasis":[350,354,355,357,358,359,360,361,362,369,370,371,373,374,377,380,382,383,384,385,386,387,395,396,397,399,400,404,422,433,437,440,447,450,459,468,473],"Soft line breaks":[645],"Paragraphs":[189,190,191,195],"Textual content":[647,648,649],"Links":[482,483,497],"Lists":[274],"Thematic breaks":[13,14,15,17,18,20,28],"List items":[236,242],"Fenced code blocks":[110,117,89,90,92,93,99],"ATX headings":[32,37,39,42,44,47,48,49],"Setext headings":[67,68,70,74],"Indented code blocks":[84,88],"Entity and numeric character references":[314,315,316,321,322],"Code spans":[328,332,333,334,337],"Backslash escapes":[299,304,305],"Tabs":[1,10]}}
+{
+  "CommonMark": {
+    "ATX headings": [
+      32,
+      37,
+      39,
+      42,
+      44,
+      47,
+      48,
+      49
+    ],
+    "Autolinks": [
+      607,
+      608
+    ],
+    "Backslash escapes": [
+      299,
+      304,
+      305
+    ],
+    "Code spans": [
+      328,
+      332,
+      333,
+      334,
+      337
+    ],
+    "Emphasis and strong emphasis": [
+      350,
+      354,
+      355,
+      357,
+      358,
+      359,
+      360,
+      361,
+      362,
+      369,
+      370,
+      371,
+      373,
+      374,
+      377,
+      380,
+      382,
+      383,
+      384,
+      385,
+      386,
+      387,
+      395,
+      396,
+      397,
+      399,
+      400,
+      404,
+      422,
+      433,
+      437,
+      440,
+      447,
+      450,
+      459,
+      468,
+      473
+    ],
+    "Entity and numeric character references": [
+      314,
+      315,
+      316,
+      321,
+      322
+    ],
+    "Fenced code blocks": [
+      110,
+      117,
+      89,
+      90,
+      92,
+      93,
+      99
+    ],
+    "Hard line breaks": [
+      637,
+      638,
+      641,
+      642,
+      643,
+      644
+    ],
+    "Indented code blocks": [
+      84,
+      88
+    ],
+    "Links": [
+      482,
+      483,
+      497
+    ],
+    "List items": [
+      236,
+      242
+    ],
+    "Lists": [
+      274
+    ],
+    "Paragraphs": [
+      189,
+      190,
+      191,
+      195
+    ],
+    "Raw HTML": [
+      622,
+      623
+    ],
+    "Setext headings": [
+      67,
+      68,
+      70,
+      74
+    ],
+    "Soft line breaks": [
+      645
+    ],
+    "Tabs": [
+      1,
+      10
+    ],
+    "Textual content": [
+      647,
+      648,
+      649
+    ],
+    "Thematic breaks": [
+      13,
+      14,
+      15,
+      17,
+      18,
+      20,
+      28
+    ]
+  },
+  "GFM": {
+    "ATX headings": [
+      32,
+      37,
+      39,
+      42,
+      44,
+      47,
+      48,
+      49
+    ],
+    "Autolinks": [
+      607,
+      608
+    ],
+    "Backslash escapes": [
+      299,
+      304,
+      305
+    ],
+    "Code spans": [
+      328,
+      332,
+      333,
+      334,
+      337
+    ],
+    "Emphasis and strong emphasis": [
+      350,
+      354,
+      355,
+      357,
+      358,
+      359,
+      360,
+      361,
+      362,
+      369,
+      370,
+      371,
+      373,
+      374,
+      377,
+      380,
+      382,
+      383,
+      384,
+      385,
+      386,
+      387,
+      395,
+      396,
+      397,
+      399,
+      400,
+      404,
+      422,
+      433,
+      437,
+      440,
+      447,
+      450,
+      459,
+      468,
+      473
+    ],
+    "Entity and numeric character references": [
+      314,
+      315,
+      316,
+      321,
+      322
+    ],
+    "Fenced code blocks": [
+      110,
+      117,
+      89,
+      90,
+      92,
+      93,
+      99
+    ],
+    "Hard line breaks": [
+      637,
+      638,
+      641,
+      642,
+      643,
+      644
+    ],
+    "Indented code blocks": [
+      84,
+      88
+    ],
+    "Links": [
+      482,
+      483,
+      497
+    ],
+    "List items": [
+      236,
+      242
+    ],
+    "Lists": [
+      274
+    ],
+    "Paragraphs": [
+      189,
+      190,
+      191,
+      195
+    ],
+    "Raw HTML": [
+      622,
+      623
+    ],
+    "Setext headings": [
+      67,
+      68,
+      70,
+      74
+    ],
+    "Soft line breaks": [
+      645
+    ],
+    "Tabs": [
+      1,
+      10
+    ],
+    "Textual content": [
+      647,
+      648,
+      649
+    ],
+    "Thematic breaks": [
+      13,
+      14,
+      15,
+      17,
+      18,
+      20,
+      28
+    ],
+    "[extension] Strikethrough": [
+      492
+    ],
+    "[extension] Tables": [
+      203
+    ]
+  },
+  "ReDOS": {
+    "quadratic_br": [
+      null
+    ],
+    "quadratic_email": [
+      null
+    ]
+  }
+}

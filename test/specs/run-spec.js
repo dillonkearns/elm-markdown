@@ -3,6 +3,7 @@ const load = require("../helpers/load.js");
 const runElm = require("../helpers/run-elm.js");
 const htmlDiffer = require("../helpers/html-differ.js");
 const fs = require("fs");
+var stringify = require("json-stable-stringify");
 
 function runSpecs(title, dir, showCompletionTable, options) {
   options = options || {};
@@ -100,7 +101,7 @@ function printStatus() {
       passedJson[suiteTitle][section].sort();
     });
   });
-  fs.writeFileSync("./spec-results.json", JSON.stringify(passedJson));
+  fs.writeFileSync("./spec-results.json", stringify(passedJson, { space: 2 }));
 }
 
 function writeFailuresMarkdown(/** @type {string} */ suiteTitle) {
