@@ -134,4 +134,20 @@ Parsing failed in the following 2 ways:
 
 (2) Expecting attribute "button".
 """)
+        , test "missing required attribute" <|
+            \() ->
+                """<requires-attribute second="present" />"""
+                    |> render
+                        (testRenderer
+                            [ Markdown.Html.tag "requires-attribute" (\first second children -> Html ("requires-attribute " ++ first ++ second))
+                                |> Markdown.Html.withAttribute "first"
+                                |> Markdown.Html.withAttribute "second"
+                            ]
+                        )
+                    |> Expect.equal (Err """Problem with the given value:
+
+<requires-attribute>
+
+Expecting attribute "first".
+""")
         ]
