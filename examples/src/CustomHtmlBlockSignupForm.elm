@@ -14,87 +14,6 @@ import Markdown.Html
 import Markdown.Parser
 
 
-markdownBody =
-    """# Custom HTML Renderers
-
-You just render it like this
-
-```
-<bio
-  name="Dillon Kearns"
-  photo="https://avatars2.githubusercontent.com/u/1384166"
-  twitter="dillontkearns"
-  github="dillonkearns"
->
-Dillon really likes building things with Elm! Here are some links
-
-- [Articles](https://incrementalelm.com/articles)
-</bio>
-```
-
-And you get a custom view like this!
-
-<bio
-  name="Dillon Kearns"
-  photo="https://avatars2.githubusercontent.com/u/1384166"
-  twitter="dillontkearns"
-  github="dillonkearns"
->
-Dillon really likes building things with Elm! Here are some links
-
-- [Articles](https://incrementalelm.com/articles)
-</bio>
-
-Note that these attributes are all optional. Try removing them and see what happens!
-Or you can add `dribbble="something"` and see that icon show up if it's provided.
-"""
-
-
-buildToc : List Block -> TableOfContents
-buildToc blocks =
-    let
-        headings =
-            gatherHeadings blocks
-    in
-    headings
-        |> List.map Tuple.second
-        |> List.map
-            (\styledList ->
-                { anchorId = styledToString styledList |> rawTextToId
-                , name = styledToString styledList
-                , level = 1
-                }
-            )
-
-
-styledToString : List Inline -> String
-styledToString list =
-    List.map .string list
-        |> String.join "-"
-
-
-gatherHeadings : List Block -> List ( Int, List Inline )
-gatherHeadings blocks =
-    List.filterMap
-        (\block ->
-            case block of
-                Markdown.Block.Heading level content ->
-                    Just ( level, content )
-
-                _ ->
-                    Nothing
-        )
-        blocks
-
-
-type alias TableOfContents =
-    List { anchorId : String, name : String, level : Int }
-
-
-type alias Model =
-    String
-
-
 view : Model -> { title : String, body : List (Html Msg) }
 view model =
     { title = "dillonkearns/elm-markdown demo"
@@ -324,12 +243,52 @@ codeBlock details =
         (Element.text details.body)
 
 
+markdownBody =
+    """# Custom HTML Renderers
+
+You just render it like this
+
+```
+<bio
+  name="Dillon Kearns"
+  photo="https://avatars2.githubusercontent.com/u/1384166"
+  twitter="dillontkearns"
+  github="dillonkearns"
+>
+Dillon really likes building things with Elm! Here are some links
+
+- [Articles](https://incrementalelm.com/articles)
+</bio>
+```
+
+And you get a custom view like this!
+
+<bio
+  name="Dillon Kearns"
+  photo="https://avatars2.githubusercontent.com/u/1384166"
+  twitter="dillontkearns"
+  github="dillonkearns"
+>
+Dillon really likes building things with Elm! Here are some links
+
+- [Articles](https://incrementalelm.com/articles)
+</bio>
+
+Note that these attributes are all optional. Try removing them and see what happens!
+Or you can add `dribbble="something"` and see that icon show up if it's provided.
+"""
+
+
 type Msg
     = OnMarkdownInput String
 
 
 type alias Flags =
     ()
+
+
+type alias Model =
+    String
 
 
 main : Platform.Program Flags Model Msg
