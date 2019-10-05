@@ -5,9 +5,9 @@ elm:
 
 node_js: "10"
 
+before_script:
+  - npm run test:ete || true
+
 script:
   - npm test
-  - echo -e "travis_fold:start:$1\033[33;1m$2\033[0m"
-  - npm run test:ete || true
-  - echo -e "\ntravis_fold:end:$1\r"
   - npm run test:check-regressions
