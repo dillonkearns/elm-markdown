@@ -5,6 +5,7 @@ import Element exposing (Element)
 import Element.Background
 import Element.Border
 import Element.Font as Font
+import Element.Input
 import Element.Region
 import Html exposing (Attribute, Html)
 import Html.Attributes
@@ -94,29 +95,38 @@ type alias Model =
     String
 
 
-view : Model -> { title : String, body : List (Html msg) }
+view : Model -> { title : String, body : List (Html Msg) }
 view model =
     { title = "dillonkearns/elm-markdown demo"
     , body =
-        [ Element.layout []
-            (case markdownView model of
-                Ok rendered ->
-                    Element.column
-                        [ Element.spacing 30
-                        , Element.padding 80
-                        , Element.width (Element.fill |> Element.maximum 1000)
-                        , Element.centerX
-                        ]
-                        rendered
+        [ Element.layout [ Element.width Element.fill ]
+            (Element.row [ Element.width Element.fill ]
+                [ Element.Input.multiline [ Element.width (Element.px 400) ]
+                    { onChange = OnMarkdownInput
+                    , text = model
+                    , placeholder = Nothing
+                    , label = Element.Input.labelHidden "Markdown input"
+                    , spellcheck = False
+                    }
+                , case markdownView model of
+                    Ok rendered ->
+                        Element.column
+                            [ Element.spacing 30
+                            , Element.padding 80
+                            , Element.width (Element.fill |> Element.maximum 1000)
+                            , Element.centerX
+                            ]
+                            rendered
 
-                Err errors ->
-                    Element.text errors
+                    Err errors ->
+                        Element.text errors
+                ]
             )
         ]
     }
 
 
-markdownView : String -> Result String (List (Element msg))
+markdownView : String -> Result String (List (Element Msg))
 markdownView markdown =
     markdown
         |> Markdown.Parser.parse
@@ -124,7 +134,7 @@ markdownView markdown =
         |> Result.andThen (Markdown.Parser.render renderer)
 
 
-renderer : Markdown.Parser.Renderer (Element msg)
+renderer : Markdown.Parser.Renderer (Element Msg)
 renderer =
     { heading = heading
     , raw =
@@ -314,8 +324,8 @@ codeBlock details =
         (Element.text details.body)
 
 
-type alias Msg =
-    ()
+type Msg
+    = OnMarkdownInput String
 
 
 type alias Flags =
@@ -327,6 +337,12 @@ main =
     Browser.document
         { init = \flags -> ( markdownBody, Cmd.none )
         , view = view
-        , update = \msg model -> ( model, Cmd.none )
+        , update = update
         , subscriptions = \model -> Sub.none
         }
+
+
+update msg model =
+    case msg of
+        OnMarkdownInput newMarkdown ->
+            ( newMarkdown, Cmd.none )
