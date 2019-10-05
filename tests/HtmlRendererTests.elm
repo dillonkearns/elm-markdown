@@ -94,17 +94,36 @@ suite =
                 """<signup-form button="Sign up now!" />"""
                     |> render
                         (testRenderer
-                            [ Markdown.Html.tag "signup-form" (\buttonText children -> Html ("signup-form " ++ buttonText))
+                            [ Markdown.Html.tag "signup-form"
+                                (\buttonText children ->
+                                    Html
+                                        { tag = "signup-form"
+                                        , buttonText = buttonText
+                                        }
+                                )
                                 |> Markdown.Html.withAttribute "button"
                             ]
                         )
-                    |> Expect.equal (Ok [ Html "signup-form Sign up now!" ])
+                    |> Expect.equal
+                        (Ok
+                            [ Html
+                                { tag = "signup-form"
+                                , buttonText = "Sign up now!"
+                                }
+                            ]
+                        )
         , test "fail on missing attribute" <|
             \() ->
                 """<signup-form />"""
                     |> render
                         (testRenderer
-                            [ Markdown.Html.tag "signup-form" (\buttonText children -> Html ("signup-form " ++ buttonText))
+                            [ Markdown.Html.tag "signup-form"
+                                (\buttonText children ->
+                                    Html
+                                        { tag = "signup-form"
+                                        , buttonText = buttonText
+                                        }
+                                )
                                 |> Markdown.Html.withAttribute "button"
                             ]
                         )
@@ -119,9 +138,21 @@ Expecting attribute "button".
                 """<unregistered-tag />"""
                     |> render
                         (testRenderer
-                            [ Markdown.Html.tag "signup-form" (\buttonText children -> Html ("signup-form " ++ buttonText))
+                            [ Markdown.Html.tag "signup-form"
+                                (\buttonText children ->
+                                    Html
+                                        { tag = "signup-form"
+                                        , buttonText = Just buttonText
+                                        }
+                                )
                                 |> Markdown.Html.withAttribute "button"
-                            , Markdown.Html.tag "signup-form" (\children -> Html "signup-form")
+                            , Markdown.Html.tag "signup-form"
+                                (\children ->
+                                    Html
+                                        { tag = "signup-form"
+                                        , buttonText = Nothing
+                                        }
+                                )
                             ]
                         )
                     |> Expect.equal (Err """oneOf failed parsing this value:
@@ -139,7 +170,14 @@ Parsing failed in the following 2 ways:
                 """<requires-attribute second="present" />"""
                     |> render
                         (testRenderer
-                            [ Markdown.Html.tag "requires-attribute" (\first second children -> Html ("requires-attribute " ++ first ++ second))
+                            [ Markdown.Html.tag "requires-attribute"
+                                (\first second children ->
+                                    Html
+                                        { tag = "requires-attribute "
+                                        , first = first
+                                        , second = second
+                                        }
+                                )
                                 |> Markdown.Html.withAttribute "first"
                                 |> Markdown.Html.withAttribute "second"
                             ]
