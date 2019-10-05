@@ -6,12 +6,15 @@ Extensible markdown parsing in pure elm.
 This library extends the basic markdown blocks without actually adding features to the syntax.
 It simply provides a declarative way to map certain HTML tags to your Elm view functions to render them. For example,
 
-```markdown
-<bio name="Dillon Kearns" photo="https://avatars2.githubusercontent.com/u/1384166">
+```html
+<bio
+  name="Dillon Kearns"
+  photo="https://avatars2.githubusercontent.com/u/1384166"
+  twitter="dillontkearns"
+  github="dillonkearns"
+>
 Dillon really likes building things with Elm! Here are some links
 
-- [Github](https://github.com/dillonkearns/)
-- [Twitter](https://twitter.com/dillontkearns/)
 - [Articles](https://incrementalelm.com/articles)
 </bio>
 ```
@@ -20,11 +23,16 @@ And you wire up your Elm rendering function like this
 
 ```elm
 Markdown.Html.oneOf
-    [ Markdown.Html.tag "bio"
-        (\name photoUrl renderedChildren -> bioView renderedChildren name photoUrl)
-        |> Markdown.Html.withAttribute "name"
-        |> Markdown.Html.withAttribute "photo"
-    ]
+  [ Markdown.Html.tag "bio"
+    (\name photoUrl twitter github dribbble renderedChildren ->
+      bioView renderedChildren name photoUrl twitter github dribbble
+    )
+    |> Markdown.Html.withAttribute "name"
+    |> Markdown.Html.withAttribute "photo"
+    |> Markdown.Html.withOptionalAttribute "twitter"
+    |> Markdown.Html.withOptionalAttribute "github"
+    |> Markdown.Html.withOptionalAttribute "dribbble"
+  ]
 ```
 
 Note that it gets the rendered children as an argument. This is rendering the inner contents of the HTML tag using
