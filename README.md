@@ -30,6 +30,71 @@ Markdown.Html.oneOf
 Note that it gets the rendered children as an argument. This is rendering the inner contents of the HTML tag using
 your HTML renderer, so you get all of your rendered lists, code blocks, links, etc. within your tag.
 
+## Core features
+
+### Custom Renderers
+
+You define your own custom renderer, turning your markdown content into any data type with totally customizable logic. You can even pass back an `Err` to get custom failures (for example, broken links or validations like headings that are too long)!
+
+Here's a snippet from the default HTML renderer that comes built in to give you a sense of how you define a `Renderer`:
+
+```elm
+import Html
+import Html.Attributes as Attr
+
+
+defaultHtmlRenderer : Renderer (Html msg)
+defaultHtmlRenderer =
+    { heading =
+        \{ level, children } ->
+            case level of
+                1 ->
+                    Html.h1 [] children
+
+                2 ->
+                    Html.h2 [] children
+
+                3 ->
+                    Html.h3 [] children
+
+                4 ->
+                    Html.h4 [] children
+
+                5 ->
+                    Html.h5 [] children
+
+                6 ->
+                    Html.h6 [] children
+
+                _ ->
+                    Html.text ""
+    , raw = Html.p []
+    , bold =
+        \content -> Html.strong [] [ Html.text content ]
+    , italic =
+        \content -> Html.em [] [ Html.text content ]
+    , code =
+        \content -> Html.code [] [ Html.text content ]
+    , link =
+        \link content ->
+            Html.a [ Attr.href link.destination ] content
+                |> Ok
+    , image =
+        \image content ->
+            Html.img [ Attr.src image.src ] [ Html.text content ]
+                |> Ok
+    , -- ...
+    }
+```
+
+### Custom HTML Blocks
+
+Check out this example to tweak and take a look at the full code from the top of the README.
+
+### Markdown Block Transformation
+You get full access to the parsed markdown blocks before passing it to a renderer. That means that you can inspect it, do custom logic on it, perform validations, or even go in and transform it! It's totally customizable, and of course it's all just nice Elm custom types!
+
+Here's an example that transforms the AST into a table of contents and renders a `TOC` data type along with the rendered markdown.
 
 ## Philosophy & Goals
 
