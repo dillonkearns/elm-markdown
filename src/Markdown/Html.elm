@@ -1,6 +1,6 @@
 module Markdown.Html exposing
     ( Renderer
-    , tag, withAttribute
+    , tag, withAttribute, withOptionalAttribute
     , map, oneOf
     )
 
@@ -11,7 +11,7 @@ module Markdown.Html exposing
 
 ## Creating an HTML renderer
 
-@docs tag, withAttribute
+@docs tag, withAttribute, withOptionalAttribute
 @docs map, oneOf
 
 -}
@@ -211,6 +211,40 @@ withAttribute attributeName (Markdown.HtmlRenderer.HtmlRenderer renderer) =
                                     ++ attributeName
                                     ++ "\"."
                                 )
+               )
+    )
+        |> Markdown.HtmlRenderer.HtmlRenderer
+
+
+{-| Same as `withAttribute`, but the Renderer won't fail if the attribute is missing.
+Instead, it just returns `Nothing` for missing attributes.
+
+    import Html
+    import Html.Attributes as Attr
+    import Markdown.Html
+
+    Markdown.Html.tag "bio"
+        (\name twitter github children ->
+            bioView name twitter github children
+        )
+
+-}
+withOptionalAttribute : String -> Renderer (Maybe String -> view) -> Renderer view
+withOptionalAttribute attributeName (Markdown.HtmlRenderer.HtmlRenderer renderer) =
+    (\tagName attributes innerBlocks ->
+        renderer tagName attributes innerBlocks
+            |> (case
+                    attributes
+                        |> List.Extra.find
+                            (\{ name, value } ->
+                                name == attributeName
+                            )
+                of
+                    Just { value } ->
+                        Result.map ((|>) (Just value))
+
+                    Nothing ->
+                        Result.map ((|>) Nothing)
                )
     )
         |> Markdown.HtmlRenderer.HtmlRenderer

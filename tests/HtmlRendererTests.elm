@@ -150,4 +150,24 @@ Parsing failed in the following 2 ways:
 
 Expecting attribute "first".
 """)
+        , test "gives back Nothing for missing optional attributes" <|
+            \() ->
+                """<bio name="Dillon" twitter="dillontkearns" />"""
+                    |> render
+                        (testRenderer
+                            [ Markdown.Html.tag "bio"
+                                (\name twitter github children ->
+                                    Html
+                                        ("bio "
+                                            ++ name
+                                            ++ (twitter |> Maybe.withDefault "Nothing")
+                                            ++ (github |> Maybe.withDefault "Nothing")
+                                        )
+                                )
+                                |> Markdown.Html.withAttribute "name"
+                                |> Markdown.Html.withOptionalAttribute "twitter"
+                                |> Markdown.Html.withOptionalAttribute "github"
+                            ]
+                        )
+                    |> Expect.equal (Ok [ Html "bio DillondillontkearnsNothing" ])
         ]
