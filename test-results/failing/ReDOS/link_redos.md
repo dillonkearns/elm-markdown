@@ -1,38 +1,6 @@
-# ReDOS
+# ReDOS - link_redos
 
-## link_code
-
-### Example undefined
-
-This markdown:
-
-```markdown
-INDEX(string, pattern[, start)` : searches for the first occurrence of pattern in string, starting from start: `INDEX("123123", "23", 3)` == `5`
-`INSERT(new, old[, start][, length][, pad])` : inserts the new string into the old string after the specified position (default is 0), new string is truncated or padded (default is " ") to the specified length, if start is beyond the end of old old will be padded
-`LASTPOS(pattern, string[, start])` : searches backwards for the last occurrence of pattern in string, starting from start: `LASTPOS("123123", "23", 4)` == `2`
-`LINES(file)` : returns the number of lines typed ahead at the interactive stream: `push("a line"); push("second line"); lines(STDIN); /* == 2 */`
-`MAX(number, number[, number,...])` : obvious
-`MIN(number, number[, number,...])` : obvious
-`OPEN(filehandle, filename[, "APPEND"|"READ"|"WRITE"])` : opens file, returns boolean for success: `OPEN("MyCon", "CON:160/50/320/100/MyCon/CDS")` == `1`
-`OVERLAY(new, old[, start][, length][, pad])` : overlays new string onto old one at start for length chars padding with pad if necessary: `OVERLAY("4", "123", 5, 5)` == `"123-4----"`
-`POS(pattern, string[, start])` : same as index
-
-```
-
-Should give output:
-
-```html
-<p>INDEX(string, pattern[, start)<code>: searches for the first occurrence of pattern in string, starting from start:</code>INDEX(&quot;123123&quot;, &quot;23&quot;, 3)<code>==</code>5<code></code>INSERT(new, old[, start][, length][, pad])<code>: inserts the new string into the old string after the specified position (default is 0), new string is truncated or padded (default is &quot; &quot;) to the specified length, if start is beyond the end of old old will be padded</code>LASTPOS(pattern, string[, start])<code>: searches backwards for the last occurrence of pattern in string, starting from start:</code>LASTPOS(&quot;123123&quot;, &quot;23&quot;, 4)<code>==</code>2<code></code>LINES(file)<code>: returns the number of lines typed ahead at the interactive stream:</code>push(&quot;a line&quot;); push(&quot;second line&quot;); lines(STDIN); /* == 2 */<code></code>MAX(number, number[, number,...])<code>: obvious</code>MIN(number, number[, number,...])<code>: obvious</code>OPEN(filehandle, filename[, &quot;APPEND&quot;|&quot;READ&quot;|&quot;WRITE&quot;])<code>: opens file, returns boolean for success:</code>OPEN(&quot;MyCon&quot;, &quot;CON:160/50/320/100/MyCon/CDS&quot;)<code>==</code>1<code></code>OVERLAY(new, old[, start][, length][, pad])<code>: overlays new string onto old one at start for length chars padding with pad if necessary:</code>OVERLAY(&quot;4&quot;, &quot;123&quot;, 5, 5)<code>==</code>&quot;123-4----&quot;<code></code>POS(pattern, string[, start])` : same as index</p>
-```
-
-But instead was:
-
-```html
-ERROR Problem at row 19 Expecting Problem at row 1 Expecting symbol (
-```
-## link_redos
-
-### Example undefined
+## Example undefined
 
 This markdown:
 
@@ -51,48 +19,4 @@ But instead was:
 
 ```html
 <p><em>伪类：</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:active">:active</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:any-link">:any-link</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:blank">:blank</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:checked">:checked</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:current">:current</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:default">:default</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:defined">:defined</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:dir">:dir()</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:disabled">:disabled</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:drop">:drop</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:empty">:empty</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:enabled">:enabled</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:first">:first</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:first-child">:first-child</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:first-of-type">:first-of-type</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:fullscreen">:fullscreen</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:future">:future</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:focus">:focus</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:focus-visible">:focus-visible</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:focus-within">:focus-within</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:has">:has()</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:host">:host</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:host(">:host()</a><em>)、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:host-context(">:host-context()</a><em>)、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:hover">:hover</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:indeterminate">:indeterminate</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:in-range">:in-range</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:invalid">:invalid</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:is">:is()</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:lang">:lang()</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:last-child">:last-child</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:last-of-type">:last-of-type</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:left">:left</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:link">:link</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:local-link">:local-link</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:not">:not()</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-child">:nth-child()</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-col">:nth-col()</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-last-child">:nth-last-child()</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-last-col">:nth-last-col()</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-last-of-type">:nth-last-of-type()</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-of-type">:nth-of-type()</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:only-child">:only-child</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:only-of-type">:only-of-type</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:optional">:optional</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:out-of-range">:out-of-range</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:past">:past</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:placeholder-shown">:placeholder-shown</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:read-only">:read-only</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:read-write">:read-write</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:required">:required</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:right">:right</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:root">:root</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:scope">:scope</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:target">:target</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:target-within">:target-within</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:user-invalid">:user-invalid</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:valid">:valid</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:visited">:visited</a><em>、</em><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:where">:where()</a><em></em>伪元素：<a href="https://developer.mozilla.org/en-US/docs/Web/CSS/::after">::after (:after)</a>、<a href="https://developer.mozilla.org/en-US/docs/Web/CSS/::backdrop">::backdrop</a>、<a href="https://developer.mozilla.org/en-US/docs/Web/CSS/::before">::before (:before)</a>、<a href="https://developer.mozilla.org/en-US/docs/Web/CSS/::cue">::cue (:cue)</a>、<a href="https://developer.mozilla.org/en-US/docs/Web/CSS/::first-letter">::first-letter (:first-letter)</a>、<a href="https://developer.mozilla.org/en-US/docs/Web/CSS/::first-line">::first-line (:first-line)</a>、<a href="https://developer.mozilla.org/en-US/docs/Web/CSS/::grammar-error">::grammar-error</a>、<a href="https://developer.mozilla.org/en-US/docs/Web/CSS/::marker">::marker</a>、<a href="https://developer.mozilla.org/en-US/docs/Web/CSS/::placeholder">::placeholder</a>、<a href="https://developer.mozilla.org/en-US/docs/Web/CSS/::selection">::selection</a>、<a href="https://developer.mozilla.org/en-US/docs/Web/CSS/::slotted">::slotted()</a>、<a href="https://developer.mozilla.org/en-US/docs/Web/CSS/::spelling-error">::spelling-error</a></p>
-```
-## redos_html_closing
-
-### Example undefined
-
-This markdown:
-
-```markdown
-<tag  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""  ""<" />a'a
-
-```
-
-Should give output:
-
-```html
-<p>&lt;tag &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot;&lt;&quot; /&gt;a&#39;a</p>
-```
-
-But instead was:
-
-```html
-ERROR Problem at row 1 Expecting symbol /&gt; Problem at row 1 Expecting symbol &gt;
-```
-## redos_nolink
-
-### Example undefined
-
-This markdown:
-
-```markdown
-![\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]\[[]!\
-
-```
-
-Should give output:
-
-```html
-<p>![[[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[][[]!\</p>
-```
-
-But instead was:
-
-```html
-ERROR Problem at row 3 Expecting Problem at row 1 Expecting symbol (
 ```

@@ -121,10 +121,9 @@ function writeFailuresMarkdown(/** @type {string} */ suiteTitle) {
   },
   {});
 
-  /** @type {string} */ let markdown = "";
-  markdown += `# ${suiteTitle}\n\n`;
+  /** @type {Object} */ let markdownSections = {};
   Object.keys(failedJson).forEach(section => {
-    markdown += `## ${section}\n\n`;
+    /** @type {string} */ let sectionMarkdown = `# ${suiteTitle} - ${section}\n\n`;
     failedJson[section].sort((
       /** @type {Spec} */ specA,
       /** @type {Spec} */ specB
@@ -137,14 +136,14 @@ function writeFailuresMarkdown(/** @type {string} */ suiteTitle) {
     });
     failedJson[section].forEach((/** @type {Spec} */ spec) => {
       if (suiteTitle === "GFM" && spec.example) {
-        markdown += `### [Example ${spec.example}](https://github.github.com/gfm/#example-${spec.example})`;
+        sectionMarkdown += `## [Example ${spec.example}](https://github.github.com/gfm/#example-${spec.example})`;
       } else if (suiteTitle === "CommonMark" && spec.example) {
-        markdown += `### [Example ${spec.example}](https://spec.commonmark.org/0.29/#example-${spec.example})`;
+        sectionMarkdown += `## [Example ${spec.example}](https://spec.commonmark.org/0.29/#example-${spec.example})`;
       } else {
-        markdown += `### Example ${spec.example}`;
+        sectionMarkdown += `## Example ${spec.example}`;
       }
 
-      markdown += `
+      sectionMarkdown += `
 
 This markdown:
 
@@ -165,9 +164,15 @@ ${spec.diff.actual}
 \`\`\`
 `;
     });
-  });
+    fs.mkdirSync(`./test-results/failing/${suiteTitle}`, {
+      recursive: true
+    });
 
-  fs.writeFileSync(`./test-results/failing-${suiteTitle}.md`, markdown);
+    fs.writeFileSync(
+      `./test-results/failing/${suiteTitle}/${section}.md`,
+      sectionMarkdown
+    );
+  });
 }
 
 function writePassingMarkdown(/** @type {string} */ suiteTitle) {

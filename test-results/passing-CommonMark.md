@@ -1,16 +1,14 @@
 # CommonMark
 
-## Paragraphs
+## Raw HTML
 
-### [Example 189](https://spec.commonmark.org/0.29/#example-189)
+### [Example 622](https://spec.commonmark.org/0.29/#example-622)
 
 This markdown:
 
 
 ```markdown
-aaa
-
-bbb
+foo <!-- not a comment -- two hyphens -->
 
 ```
 
@@ -18,22 +16,19 @@ Gives this correct output:
 
 
 ```html
-<p>aaa</p>
-<p>bbb</p>
+<p>foo &lt;!-- not a comment -- two hyphens --&gt;</p>
 
 ```
 
-### [Example 190](https://spec.commonmark.org/0.29/#example-190)
+### [Example 623](https://spec.commonmark.org/0.29/#example-623)
 
 This markdown:
 
 
 ```markdown
-aaa
-bbb
+foo <!--> foo -->
 
-ccc
-ddd
+foo <!-- foo--->
 
 ```
 
@@ -41,99 +36,8 @@ Gives this correct output:
 
 
 ```html
-<p>aaa
-bbb</p>
-<p>ccc
-ddd</p>
-
-```
-
-### [Example 191](https://spec.commonmark.org/0.29/#example-191)
-
-This markdown:
-
-
-```markdown
-aaa
-
-
-bbb
-
-```
-
-Gives this correct output:
-
-
-```html
-<p>aaa</p>
-<p>bbb</p>
-
-```
-
-### [Example 195](https://spec.commonmark.org/0.29/#example-195)
-
-This markdown:
-
-
-```markdown
-    aaa
-bbb
-
-```
-
-Gives this correct output:
-
-
-```html
-<pre><code>aaa
-</code></pre>
-<p>bbb</p>
-
-```
-
-## List items
-
-### [Example 236](https://spec.commonmark.org/0.29/#example-236)
-
-This markdown:
-
-
-```markdown
-1234567890. not ok
-
-```
-
-Gives this correct output:
-
-
-```html
-<p>1234567890. not ok</p>
-
-```
-
-### [Example 242](https://spec.commonmark.org/0.29/#example-242)
-
-This markdown:
-
-
-```markdown
-    indented code
-
-paragraph
-
-    more code
-
-```
-
-Gives this correct output:
-
-
-```html
-<pre><code>indented code
-</code></pre>
-<p>paragraph</p>
-<pre><code>more code
-</code></pre>
+<p>foo &lt;!--&gt; foo --&gt;</p>
+<p>foo &lt;!-- foo---&gt;</p>
 
 ```
 
@@ -246,771 +150,6 @@ Gives this correct output:
 
 ```html
 <h3>foo</h3>
-
-```
-
-## Links
-
-### [Example 482](https://spec.commonmark.org/0.29/#example-482)
-
-This markdown:
-
-
-```markdown
-[link](/uri)
-
-```
-
-Gives this correct output:
-
-
-```html
-<p><a href="/uri">link</a></p>
-
-```
-
-### [Example 483](https://spec.commonmark.org/0.29/#example-483)
-
-This markdown:
-
-
-```markdown
-[link]()
-
-```
-
-Gives this correct output:
-
-
-```html
-<p><a href="">link</a></p>
-
-```
-
-### [Example 497](https://spec.commonmark.org/0.29/#example-497)
-
-This markdown:
-
-
-```markdown
-[link](#fragment)
-
-[link](http://example.com#fragment)
-
-[link](http://example.com?foo=3#frag)
-
-```
-
-Gives this correct output:
-
-
-```html
-<p><a href="#fragment">link</a></p>
-<p><a href="http://example.com#fragment">link</a></p>
-<p><a href="http://example.com?foo=3#frag">link</a></p>
-
-```
-
-## ATX headings
-
-### [Example 32](https://spec.commonmark.org/0.29/#example-32)
-
-This markdown:
-
-
-```markdown
-# foo
-## foo
-### foo
-#### foo
-##### foo
-###### foo
-
-```
-
-Gives this correct output:
-
-
-```html
-<h1>foo</h1>
-<h2>foo</h2>
-<h3>foo</h3>
-<h4>foo</h4>
-<h5>foo</h5>
-<h6>foo</h6>
-
-```
-
-### [Example 37](https://spec.commonmark.org/0.29/#example-37)
-
-This markdown:
-
-
-```markdown
-#                  foo                     
-
-```
-
-Gives this correct output:
-
-
-```html
-<h1>foo</h1>
-
-```
-
-### [Example 39](https://spec.commonmark.org/0.29/#example-39)
-
-This markdown:
-
-
-```markdown
-    # foo
-
-```
-
-Gives this correct output:
-
-
-```html
-<pre><code># foo
-</code></pre>
-
-```
-
-### [Example 42](https://spec.commonmark.org/0.29/#example-42)
-
-This markdown:
-
-
-```markdown
-# foo ##################################
-##### foo ##
-
-```
-
-Gives this correct output:
-
-
-```html
-<h1>foo</h1>
-<h5>foo</h5>
-
-```
-
-### [Example 44](https://spec.commonmark.org/0.29/#example-44)
-
-This markdown:
-
-
-```markdown
-### foo ### b
-
-```
-
-Gives this correct output:
-
-
-```html
-<h3>foo ### b</h3>
-
-```
-
-### [Example 47](https://spec.commonmark.org/0.29/#example-47)
-
-This markdown:
-
-
-```markdown
-****
-## foo
-****
-
-```
-
-Gives this correct output:
-
-
-```html
-<hr />
-<h2>foo</h2>
-<hr />
-
-```
-
-### [Example 48](https://spec.commonmark.org/0.29/#example-48)
-
-This markdown:
-
-
-```markdown
-Foo bar
-# baz
-Bar foo
-
-```
-
-Gives this correct output:
-
-
-```html
-<p>Foo bar</p>
-<h1>baz</h1>
-<p>Bar foo</p>
-
-```
-
-### [Example 49](https://spec.commonmark.org/0.29/#example-49)
-
-This markdown:
-
-
-```markdown
-## 
-#
-### ###
-
-```
-
-Gives this correct output:
-
-
-```html
-<h2></h2>
-<h1></h1>
-<h3></h3>
-
-```
-
-## Soft line breaks
-
-### [Example 645](https://spec.commonmark.org/0.29/#example-645)
-
-This markdown:
-
-
-```markdown
-foo
-baz
-
-```
-
-Gives this correct output:
-
-
-```html
-<p>foo
-baz</p>
-
-```
-
-## Lists
-
-### [Example 274](https://spec.commonmark.org/0.29/#example-274)
-
-This markdown:
-
-
-```markdown
-The number of windows in my house is
-14.  The number of doors is 6.
-
-```
-
-Gives this correct output:
-
-
-```html
-<p>The number of windows in my house is
-14.  The number of doors is 6.</p>
-
-```
-
-## Fenced code blocks
-
-### [Example 89](https://spec.commonmark.org/0.29/#example-89)
-
-This markdown:
-
-
-```markdown
-```
-<
- >
-```
-
-```
-
-Gives this correct output:
-
-
-```html
-<pre><code>&lt;
- &gt;
-</code></pre>
-
-```
-
-### [Example 90](https://spec.commonmark.org/0.29/#example-90)
-
-This markdown:
-
-
-```markdown
-~~~
-<
- >
-~~~
-
-```
-
-Gives this correct output:
-
-
-```html
-<pre><code>&lt;
- &gt;
-</code></pre>
-
-```
-
-### [Example 92](https://spec.commonmark.org/0.29/#example-92)
-
-This markdown:
-
-
-```markdown
-```
-aaa
-~~~
-```
-
-```
-
-Gives this correct output:
-
-
-```html
-<pre><code>aaa
-~~~
-</code></pre>
-
-```
-
-### [Example 93](https://spec.commonmark.org/0.29/#example-93)
-
-This markdown:
-
-
-```markdown
-~~~
-aaa
-```
-~~~
-
-```
-
-Gives this correct output:
-
-
-```html
-<pre><code>aaa
-```
-</code></pre>
-
-```
-
-### [Example 99](https://spec.commonmark.org/0.29/#example-99)
-
-This markdown:
-
-
-```markdown
-```
-
-  
-```
-
-```
-
-Gives this correct output:
-
-
-```html
-<pre><code>
-  
-</code></pre>
-
-```
-
-### [Example 110](https://spec.commonmark.org/0.29/#example-110)
-
-This markdown:
-
-
-```markdown
-foo
-```
-bar
-```
-baz
-
-```
-
-Gives this correct output:
-
-
-```html
-<p>foo</p>
-<pre><code>bar
-</code></pre>
-<p>baz</p>
-
-```
-
-### [Example 117](https://spec.commonmark.org/0.29/#example-117)
-
-This markdown:
-
-
-```markdown
-```
-``` aaa
-```
-
-```
-
-Gives this correct output:
-
-
-```html
-<pre><code>``` aaa
-</code></pre>
-
-```
-
-## Textual content
-
-### [Example 647](https://spec.commonmark.org/0.29/#example-647)
-
-This markdown:
-
-
-```markdown
-hello $.;'there
-
-```
-
-Gives this correct output:
-
-
-```html
-<p>hello $.;'there</p>
-
-```
-
-### [Example 648](https://spec.commonmark.org/0.29/#example-648)
-
-This markdown:
-
-
-```markdown
-Foo χρῆν
-
-```
-
-Gives this correct output:
-
-
-```html
-<p>Foo χρῆν</p>
-
-```
-
-### [Example 649](https://spec.commonmark.org/0.29/#example-649)
-
-This markdown:
-
-
-```markdown
-Multiple     spaces
-
-```
-
-Gives this correct output:
-
-
-```html
-<p>Multiple     spaces</p>
-
-```
-
-## Backslash escapes
-
-### [Example 299](https://spec.commonmark.org/0.29/#example-299)
-
-This markdown:
-
-
-```markdown
-\	\A\a\ \3\φ\«
-
-```
-
-Gives this correct output:
-
-
-```html
-<p>\	\A\a\ \3\φ\«</p>
-
-```
-
-### [Example 304](https://spec.commonmark.org/0.29/#example-304)
-
-This markdown:
-
-
-```markdown
-    \[\]
-
-```
-
-Gives this correct output:
-
-
-```html
-<pre><code>\[\]
-</code></pre>
-
-```
-
-### [Example 305](https://spec.commonmark.org/0.29/#example-305)
-
-This markdown:
-
-
-```markdown
-~~~
-\[\]
-~~~
-
-```
-
-Gives this correct output:
-
-
-```html
-<pre><code>\[\]
-</code></pre>
-
-```
-
-## Autolinks
-
-### [Example 607](https://spec.commonmark.org/0.29/#example-607)
-
-This markdown:
-
-
-```markdown
-http://example.com
-
-```
-
-Gives this correct output:
-
-
-```html
-<p>http://example.com</p>
-
-```
-
-### [Example 608](https://spec.commonmark.org/0.29/#example-608)
-
-This markdown:
-
-
-```markdown
-foo@bar.example.com
-
-```
-
-Gives this correct output:
-
-
-```html
-<p>foo@bar.example.com</p>
-
-```
-
-## Indented code blocks
-
-### [Example 84](https://spec.commonmark.org/0.29/#example-84)
-
-This markdown:
-
-
-```markdown
-    foo
-bar
-
-```
-
-Gives this correct output:
-
-
-```html
-<pre><code>foo
-</code></pre>
-<p>bar</p>
-
-```
-
-### [Example 88](https://spec.commonmark.org/0.29/#example-88)
-
-This markdown:
-
-
-```markdown
-    foo  
-
-```
-
-Gives this correct output:
-
-
-```html
-<pre><code>foo  
-</code></pre>
-
-```
-
-## Setext headings
-
-### [Example 67](https://spec.commonmark.org/0.29/#example-67)
-
-This markdown:
-
-
-```markdown
-
-====
-
-```
-
-Gives this correct output:
-
-
-```html
-<p>====</p>
-
-```
-
-### [Example 68](https://spec.commonmark.org/0.29/#example-68)
-
-This markdown:
-
-
-```markdown
----
----
-
-```
-
-Gives this correct output:
-
-
-```html
-<hr />
-<hr />
-
-```
-
-### [Example 70](https://spec.commonmark.org/0.29/#example-70)
-
-This markdown:
-
-
-```markdown
-    foo
----
-
-```
-
-Gives this correct output:
-
-
-```html
-<pre><code>foo
-</code></pre>
-<hr />
-
-```
-
-### [Example 74](https://spec.commonmark.org/0.29/#example-74)
-
-This markdown:
-
-
-```markdown
-Foo
-bar
-
----
-
-baz
-
-```
-
-Gives this correct output:
-
-
-```html
-<p>Foo
-bar</p>
-<hr />
-<p>baz</p>
-
-```
-
-## Raw HTML
-
-### [Example 622](https://spec.commonmark.org/0.29/#example-622)
-
-This markdown:
-
-
-```markdown
-foo <!-- not a comment -- two hyphens -->
-
-```
-
-Gives this correct output:
-
-
-```html
-<p>foo &lt;!-- not a comment -- two hyphens --&gt;</p>
-
-```
-
-### [Example 623](https://spec.commonmark.org/0.29/#example-623)
-
-This markdown:
-
-
-```markdown
-foo <!--> foo -->
-
-foo <!-- foo--->
-
-```
-
-Gives this correct output:
-
-
-```html
-<p>foo &lt;!--&gt; foo --&gt;</p>
-<p>foo &lt;!-- foo---&gt;</p>
 
 ```
 
@@ -1244,6 +383,340 @@ Gives this correct output:
 
 ```html
 <h1>Foo</h1>
+
+```
+
+## Fenced code blocks
+
+### [Example 89](https://spec.commonmark.org/0.29/#example-89)
+
+This markdown:
+
+
+```markdown
+```
+<
+ >
+```
+
+```
+
+Gives this correct output:
+
+
+```html
+<pre><code>&lt;
+ &gt;
+</code></pre>
+
+```
+
+### [Example 90](https://spec.commonmark.org/0.29/#example-90)
+
+This markdown:
+
+
+```markdown
+~~~
+<
+ >
+~~~
+
+```
+
+Gives this correct output:
+
+
+```html
+<pre><code>&lt;
+ &gt;
+</code></pre>
+
+```
+
+### [Example 92](https://spec.commonmark.org/0.29/#example-92)
+
+This markdown:
+
+
+```markdown
+```
+aaa
+~~~
+```
+
+```
+
+Gives this correct output:
+
+
+```html
+<pre><code>aaa
+~~~
+</code></pre>
+
+```
+
+### [Example 93](https://spec.commonmark.org/0.29/#example-93)
+
+This markdown:
+
+
+```markdown
+~~~
+aaa
+```
+~~~
+
+```
+
+Gives this correct output:
+
+
+```html
+<pre><code>aaa
+```
+</code></pre>
+
+```
+
+### [Example 99](https://spec.commonmark.org/0.29/#example-99)
+
+This markdown:
+
+
+```markdown
+```
+
+  
+```
+
+```
+
+Gives this correct output:
+
+
+```html
+<pre><code>
+  
+</code></pre>
+
+```
+
+### [Example 110](https://spec.commonmark.org/0.29/#example-110)
+
+This markdown:
+
+
+```markdown
+foo
+```
+bar
+```
+baz
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>foo</p>
+<pre><code>bar
+</code></pre>
+<p>baz</p>
+
+```
+
+### [Example 117](https://spec.commonmark.org/0.29/#example-117)
+
+This markdown:
+
+
+```markdown
+```
+``` aaa
+```
+
+```
+
+Gives this correct output:
+
+
+```html
+<pre><code>``` aaa
+</code></pre>
+
+```
+
+## ATX headings
+
+### [Example 32](https://spec.commonmark.org/0.29/#example-32)
+
+This markdown:
+
+
+```markdown
+# foo
+## foo
+### foo
+#### foo
+##### foo
+###### foo
+
+```
+
+Gives this correct output:
+
+
+```html
+<h1>foo</h1>
+<h2>foo</h2>
+<h3>foo</h3>
+<h4>foo</h4>
+<h5>foo</h5>
+<h6>foo</h6>
+
+```
+
+### [Example 37](https://spec.commonmark.org/0.29/#example-37)
+
+This markdown:
+
+
+```markdown
+#                  foo                     
+
+```
+
+Gives this correct output:
+
+
+```html
+<h1>foo</h1>
+
+```
+
+### [Example 39](https://spec.commonmark.org/0.29/#example-39)
+
+This markdown:
+
+
+```markdown
+    # foo
+
+```
+
+Gives this correct output:
+
+
+```html
+<pre><code># foo
+</code></pre>
+
+```
+
+### [Example 42](https://spec.commonmark.org/0.29/#example-42)
+
+This markdown:
+
+
+```markdown
+# foo ##################################
+##### foo ##
+
+```
+
+Gives this correct output:
+
+
+```html
+<h1>foo</h1>
+<h5>foo</h5>
+
+```
+
+### [Example 44](https://spec.commonmark.org/0.29/#example-44)
+
+This markdown:
+
+
+```markdown
+### foo ### b
+
+```
+
+Gives this correct output:
+
+
+```html
+<h3>foo ### b</h3>
+
+```
+
+### [Example 47](https://spec.commonmark.org/0.29/#example-47)
+
+This markdown:
+
+
+```markdown
+****
+## foo
+****
+
+```
+
+Gives this correct output:
+
+
+```html
+<hr />
+<h2>foo</h2>
+<hr />
+
+```
+
+### [Example 48](https://spec.commonmark.org/0.29/#example-48)
+
+This markdown:
+
+
+```markdown
+Foo bar
+# baz
+Bar foo
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>Foo bar</p>
+<h1>baz</h1>
+<p>Bar foo</p>
+
+```
+
+### [Example 49](https://spec.commonmark.org/0.29/#example-49)
+
+This markdown:
+
+
+```markdown
+## 
+#
+### ###
+
+```
+
+Gives this correct output:
+
+
+```html
+<h2></h2>
+<h1></h1>
+<h3></h3>
 
 ```
 
@@ -1921,6 +1394,68 @@ Gives this correct output:
 
 ```
 
+## Links
+
+### [Example 482](https://spec.commonmark.org/0.29/#example-482)
+
+This markdown:
+
+
+```markdown
+[link](/uri)
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><a href="/uri">link</a></p>
+
+```
+
+### [Example 483](https://spec.commonmark.org/0.29/#example-483)
+
+This markdown:
+
+
+```markdown
+[link]()
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><a href="">link</a></p>
+
+```
+
+### [Example 497](https://spec.commonmark.org/0.29/#example-497)
+
+This markdown:
+
+
+```markdown
+[link](#fragment)
+
+[link](http://example.com#fragment)
+
+[link](http://example.com?foo=3#frag)
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><a href="#fragment">link</a></p>
+<p><a href="http://example.com#fragment">link</a></p>
+<p><a href="http://example.com?foo=3#frag">link</a></p>
+
+```
+
 ## Thematic breaks
 
 ### [Example 13](https://spec.commonmark.org/0.29/#example-13)
@@ -2059,6 +1594,471 @@ Gives this correct output:
 <p>Foo</p>
 <hr />
 <p>bar</p>
+
+```
+
+## Soft line breaks
+
+### [Example 645](https://spec.commonmark.org/0.29/#example-645)
+
+This markdown:
+
+
+```markdown
+foo
+baz
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>foo
+baz</p>
+
+```
+
+## Textual content
+
+### [Example 647](https://spec.commonmark.org/0.29/#example-647)
+
+This markdown:
+
+
+```markdown
+hello $.;'there
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>hello $.;'there</p>
+
+```
+
+### [Example 648](https://spec.commonmark.org/0.29/#example-648)
+
+This markdown:
+
+
+```markdown
+Foo χρῆν
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>Foo χρῆν</p>
+
+```
+
+### [Example 649](https://spec.commonmark.org/0.29/#example-649)
+
+This markdown:
+
+
+```markdown
+Multiple     spaces
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>Multiple     spaces</p>
+
+```
+
+## Lists
+
+### [Example 274](https://spec.commonmark.org/0.29/#example-274)
+
+This markdown:
+
+
+```markdown
+The number of windows in my house is
+14.  The number of doors is 6.
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>The number of windows in my house is
+14.  The number of doors is 6.</p>
+
+```
+
+## List items
+
+### [Example 236](https://spec.commonmark.org/0.29/#example-236)
+
+This markdown:
+
+
+```markdown
+1234567890. not ok
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>1234567890. not ok</p>
+
+```
+
+### [Example 242](https://spec.commonmark.org/0.29/#example-242)
+
+This markdown:
+
+
+```markdown
+    indented code
+
+paragraph
+
+    more code
+
+```
+
+Gives this correct output:
+
+
+```html
+<pre><code>indented code
+</code></pre>
+<p>paragraph</p>
+<pre><code>more code
+</code></pre>
+
+```
+
+## Backslash escapes
+
+### [Example 299](https://spec.commonmark.org/0.29/#example-299)
+
+This markdown:
+
+
+```markdown
+\	\A\a\ \3\φ\«
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>\	\A\a\ \3\φ\«</p>
+
+```
+
+### [Example 304](https://spec.commonmark.org/0.29/#example-304)
+
+This markdown:
+
+
+```markdown
+    \[\]
+
+```
+
+Gives this correct output:
+
+
+```html
+<pre><code>\[\]
+</code></pre>
+
+```
+
+### [Example 305](https://spec.commonmark.org/0.29/#example-305)
+
+This markdown:
+
+
+```markdown
+~~~
+\[\]
+~~~
+
+```
+
+Gives this correct output:
+
+
+```html
+<pre><code>\[\]
+</code></pre>
+
+```
+
+## Indented code blocks
+
+### [Example 84](https://spec.commonmark.org/0.29/#example-84)
+
+This markdown:
+
+
+```markdown
+    foo
+bar
+
+```
+
+Gives this correct output:
+
+
+```html
+<pre><code>foo
+</code></pre>
+<p>bar</p>
+
+```
+
+### [Example 88](https://spec.commonmark.org/0.29/#example-88)
+
+This markdown:
+
+
+```markdown
+    foo  
+
+```
+
+Gives this correct output:
+
+
+```html
+<pre><code>foo  
+</code></pre>
+
+```
+
+## Paragraphs
+
+### [Example 189](https://spec.commonmark.org/0.29/#example-189)
+
+This markdown:
+
+
+```markdown
+aaa
+
+bbb
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>aaa</p>
+<p>bbb</p>
+
+```
+
+### [Example 190](https://spec.commonmark.org/0.29/#example-190)
+
+This markdown:
+
+
+```markdown
+aaa
+bbb
+
+ccc
+ddd
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>aaa
+bbb</p>
+<p>ccc
+ddd</p>
+
+```
+
+### [Example 191](https://spec.commonmark.org/0.29/#example-191)
+
+This markdown:
+
+
+```markdown
+aaa
+
+
+bbb
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>aaa</p>
+<p>bbb</p>
+
+```
+
+### [Example 195](https://spec.commonmark.org/0.29/#example-195)
+
+This markdown:
+
+
+```markdown
+    aaa
+bbb
+
+```
+
+Gives this correct output:
+
+
+```html
+<pre><code>aaa
+</code></pre>
+<p>bbb</p>
+
+```
+
+## Setext headings
+
+### [Example 67](https://spec.commonmark.org/0.29/#example-67)
+
+This markdown:
+
+
+```markdown
+
+====
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>====</p>
+
+```
+
+### [Example 68](https://spec.commonmark.org/0.29/#example-68)
+
+This markdown:
+
+
+```markdown
+---
+---
+
+```
+
+Gives this correct output:
+
+
+```html
+<hr />
+<hr />
+
+```
+
+### [Example 70](https://spec.commonmark.org/0.29/#example-70)
+
+This markdown:
+
+
+```markdown
+    foo
+---
+
+```
+
+Gives this correct output:
+
+
+```html
+<pre><code>foo
+</code></pre>
+<hr />
+
+```
+
+### [Example 74](https://spec.commonmark.org/0.29/#example-74)
+
+This markdown:
+
+
+```markdown
+Foo
+bar
+
+---
+
+baz
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>Foo
+bar</p>
+<hr />
+<p>baz</p>
+
+```
+
+## Autolinks
+
+### [Example 607](https://spec.commonmark.org/0.29/#example-607)
+
+This markdown:
+
+
+```markdown
+http://example.com
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>http://example.com</p>
+
+```
+
+### [Example 608](https://spec.commonmark.org/0.29/#example-608)
+
+This markdown:
+
+
+```markdown
+foo@bar.example.com
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>foo@bar.example.com</p>
 
 ```
 
