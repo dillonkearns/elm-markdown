@@ -127,7 +127,7 @@ This is evolving and I would like input on the direction of parsing. My current 
 ## Current Github-flavored markdown compliance
 The test suite for this library runs through all the expected outputs outlined in the GFM spec. It uses the same test suite to test these cases as highlight.js (the library that `elm-explorations/elm-markdown` uses under the hood).
 
-You can see the latest passing and failing tests from this test suite [in the `test-results` folder](https://github.com/dillonkearns/elm-markdown/tree/master/test-results). Note: because some of the files are very long, Github won't render them correctly (they are in markdown with clickable links). If you want to see a nicer formatted version, you can clone this repo and use a Markdown preview tool in your text editor of choice to open them up.
+You can see the latest passing and failing tests from this test suite in the `test-results` folder [(in particular, take a look at the Github-Flavored Markdown failures in in `failing/GFM`](https://github.com/dillonkearns/elm-markdown/tree/master/test-results/failing/GFM).
 
 ### Examples of fallback behavior
 Github flavored markdown behavior:
