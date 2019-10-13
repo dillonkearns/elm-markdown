@@ -34,6 +34,19 @@ suite =
                                 }
                             )
                         )
+        , test "link with empty pointy brackets (gfm 496)" <|
+            \() ->
+                """[About](<>)"""
+                    |> Advanced.run Link.parser
+                    |> Expect.equal
+                        (Ok
+                            (Link.Link
+                                { description = "About"
+                                , destination = ""
+                                , title = Nothing
+                                }
+                            )
+                        )
         , test "image" <|
             \() ->
                 """![About](/my-image.jpg)"""
