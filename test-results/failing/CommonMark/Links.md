@@ -20,26 +20,6 @@ But instead was:
 ```html
 <p><a href="/uri \" title\""="">link</a></p>
 ```
-## [Example 484](https://spec.commonmark.org/0.29/#example-484)
-
-This markdown:
-
-```markdown
-[link](<>)
-
-```
-
-Should give output:
-
-```html
-<p><a href="">link</a></p>
-```
-
-But instead was:
-
-```html
-<p><a href="&lt;&gt;">link</a></p>
-```
 ## [Example 485](https://spec.commonmark.org/0.29/#example-485)
 
 This markdown:
@@ -78,7 +58,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><a href="&lt;/my uri&gt;">link</a></p>
+<p><a href="/my uri">link</a></p>
 ```
 ## [Example 487](https://spec.commonmark.org/0.29/#example-487)
 
@@ -120,27 +100,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><a href="&lt;foo bar&gt;">link</a></p>
-```
-## [Example 489](https://spec.commonmark.org/0.29/#example-489)
-
-This markdown:
-
-```markdown
-[a](<b)c>)
-
-```
-
-Should give output:
-
-```html
-<p><a href="b)c">a</a></p>
-```
-
-But instead was:
-
-```html
-<p><a href="&lt;b">a</a>c&gt;)</p>
+<p><a href="foo bar">link</a></p>
 ```
 ## [Example 490](https://spec.commonmark.org/0.29/#example-490)
 
@@ -160,7 +120,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><a href="&lt;foo\&gt;">link</a></p>
+<p><a href="foo\">link</a></p>
 ```
 ## [Example 491](https://spec.commonmark.org/0.29/#example-491)
 
@@ -182,7 +142,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><a href="&lt;b">a</a>c<a href="&lt;b">a</a>c&gt;<a href="&lt;b&gt;c">a</a></p>
+ERROR Problem at row 7 Expecting Problem at row 1 Expecting symbol )
 ```
 ## [Example 492](https://spec.commonmark.org/0.29/#example-492)
 
@@ -243,26 +203,6 @@ But instead was:
 
 ```html
 <p><a href="foo\(and\(bar\">link</a>)</p>
-```
-## [Example 495](https://spec.commonmark.org/0.29/#example-495)
-
-This markdown:
-
-```markdown
-[link](<foo(and(bar)>)
-
-```
-
-Should give output:
-
-```html
-<p><a href="foo(and(bar)">link</a></p>
-```
-
-But instead was:
-
-```html
-<p><a href="&lt;foo(and(bar">link</a>&gt;)</p>
 ```
 ## [Example 496](https://spec.commonmark.org/0.29/#example-496)
 
