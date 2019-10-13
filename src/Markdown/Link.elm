@@ -46,7 +46,20 @@ parser =
                 (chompUntil (Advanced.Token "]" (Parser.ExpectingSymbol "]")))
             |. Advanced.symbol (Advanced.Token "]" (Parser.ExpectingSymbol "]"))
             |. Advanced.symbol (Advanced.Token "(" (Parser.ExpectingSymbol "("))
+            |= linkDestination
+            |. Advanced.symbol (Advanced.Token ")" (Parser.ExpectingSymbol ")"))
+        ]
+
+
+linkDestination : Parser String
+linkDestination =
+    oneOf
+        [ succeed identity
+            |. Advanced.symbol (Advanced.Token "<" (Parser.ExpectingSymbol "<"))
+            |= getChompedString
+                (chompUntil (Advanced.Token ">" (Parser.ExpectingSymbol ">")))
+            |. Advanced.symbol (Advanced.Token ">" (Parser.ExpectingSymbol ">"))
+        , succeed identity
             |= getChompedString
                 (chompUntil (Advanced.Token ")" (Parser.ExpectingSymbol ")")))
-            |. Advanced.symbol (Advanced.Token ")" (Parser.ExpectingSymbol ")"))
         ]
