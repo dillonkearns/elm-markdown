@@ -16,11 +16,59 @@ type alias Parser a =
 suite : Test
 suite =
     describe "list parsing"
-        [ test "basic list" <|
+        [ test "basic list with '-'" <|
             \() ->
                 """- Item 1
 - Item 2
 - Item 3
+"""
+                    |> Advanced.run Markdown.List.parser
+                    |> Expect.equal
+                        (Ok
+                            [ "Item 1"
+                            , "Item 2"
+                            , "Item 3"
+                            ]
+                        )
+        , test "basic list with '+'" <|
+            \() ->
+                """+ Item 1
++ Item 2
++ Item 3
+"""
+                    |> Advanced.run Markdown.List.parser
+                    |> Expect.equal
+                        (Ok
+                            [ "Item 1"
+                            , "Item 2"
+                            , "Item 3"
+                            ]
+                        )
+        , test "basic list with '*'" <|
+            \() ->
+                """* Item 1
+* Item 2
+* Item 3
+"""
+                    |> Advanced.run Markdown.List.parser
+                    |> Expect.equal
+                        (Ok
+                            [ "Item 1"
+                            , "Item 2"
+                            , "Item 3"
+                            ]
+                        )
+        , test "sibling lists with different markers" <|
+            \() ->
+                """- Item 1
+- Item 2
+- Item 3
++ Item 4
++ Item 5
++ Item 6
+* Item 7
+* Item 8
+* Item 9
 """
                     |> Advanced.run Markdown.List.parser
                     |> Expect.equal

@@ -16,25 +16,47 @@ type alias ListItem =
 
 parser : Parser (List ListItem)
 parser =
-    singleItemParser
+    openingItemParser
         |> andThen
-            (\firstItem ->
-                loop [] (statementsHelp firstItem)
+            (\( listMarker, firstItem ) ->
+                loop [] (statementsHelp listMarker firstItem)
             )
 
 
-singleItemParser : Parser ListItem
-singleItemParser =
-    succeed
-        identity
-        |. Advanced.symbol (Advanced.Token "-" (Parser.ExpectingSymbol "-"))
+listMarkerParser : Parser String
+listMarkerParser =
+    let
+        markerOption : String -> Parser String
+        markerOption marker =
+            Advanced.getChompedString (Advanced.symbol (Advanced.Token marker (Parser.ExpectingSymbol marker)))
+    in
+    Advanced.oneOf
+        [ markerOption "-"
+        , markerOption "+"
+        , markerOption "*"
+        ]
+
+
+openingItemParser : Parser ( String, ListItem )
+openingItemParser =
+    succeed Tuple.pair
+        |= listMarkerParser
         |. chompWhile (\c -> c == ' ')
         |= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
         |. Advanced.symbol (Advanced.Token "\n" (Parser.ExpectingSymbol "\n"))
 
 
-statementsHelp : ListItem -> List ListItem -> Parser (Step (List ListItem) (List ListItem))
-statementsHelp firstItem revStmts =
+singleItemParser : String -> Parser ListItem
+singleItemParser listMarker =
+    succeed identity
+        |. Advanced.symbol (Advanced.Token listMarker (Parser.ExpectingSymbol listMarker))
+        |. chompWhile (\c -> c == ' ')
+        |= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
+        |. Advanced.symbol (Advanced.Token "\n" (Parser.ExpectingSymbol "\n"))
+
+
+statementsHelp : String -> ListItem -> List ListItem -> Parser (Step (List ListItem) (List ListItem))
+statementsHelp listMarker firstItem revStmts =
     oneOf
         [ succeed
             (\offsetBefore stmt offsetAfter ->
@@ -51,7 +73,7 @@ statementsHelp firstItem revStmts =
              --     Done (List.reverse (stmt :: revStmts))
             )
             |= Advanced.getOffset
-            |= singleItemParser
+            |= singleItemParser listMarker
             |= Advanced.getOffset
 
         -- TODO this is causing files to require newlines
