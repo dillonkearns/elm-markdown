@@ -1,5 +1,25 @@
 # CommonMark - Emphasis and strong emphasis
 
+## [Example 350](https://spec.commonmark.org/0.29/#example-350)
+
+This markdown:
+
+```markdown
+*foo bar*
+
+```
+
+Should give output:
+
+```html
+<p><em>foo bar</em></p>
+```
+
+But instead was:
+
+```html
+<ul><li><p>foo bar</p></li></ul>
+```
 ## [Example 351](https://spec.commonmark.org/0.29/#example-351)
 
 This markdown:
@@ -58,7 +78,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><em>a</em></p>
+<ul><li><p>a</p></li></ul>
 ```
 ## [Example 356](https://spec.commonmark.org/0.29/#example-356)
 
@@ -138,7 +158,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><em>foo bar</em></p>
+<ul><li><p>foo bar</p></li></ul>
 ```
 ## [Example 366](https://spec.commonmark.org/0.29/#example-366)
 
@@ -159,7 +179,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><em>foo bar</em></p>
+<ul><li><p>foo bar</p></li><li><p></p></li></ul>
 ```
 ## [Example 367](https://spec.commonmark.org/0.29/#example-367)
 
@@ -179,7 +199,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><em>(</em>foo)</p>
+<ul><li><p>(<em>foo)</em></p></li></ul>
 ```
 ## [Example 368](https://spec.commonmark.org/0.29/#example-368)
 
@@ -199,7 +219,27 @@ Should give output:
 But instead was:
 
 ```html
-<p><em>(</em>foo<em>)</em></p>
+<ul><li><p>(<em>foo</em>)</p></li></ul>
+```
+## [Example 369](https://spec.commonmark.org/0.29/#example-369)
+
+This markdown:
+
+```markdown
+*foo*bar
+
+```
+
+Should give output:
+
+```html
+<p><em>foo</em>bar</p>
+```
+
+But instead was:
+
+```html
+<ul><li><p>foo<em>bar</em></p></li></ul>
 ```
 ## [Example 372](https://spec.commonmark.org/0.29/#example-372)
 
@@ -261,6 +301,26 @@ But instead was:
 ```html
 <p>_(bar)_.</p>
 ```
+## [Example 377](https://spec.commonmark.org/0.29/#example-377)
+
+This markdown:
+
+```markdown
+**foo bar**
+
+```
+
+Should give output:
+
+```html
+<p><strong>foo bar</strong></p>
+```
+
+But instead was:
+
+```html
+<ul><li><p><em>foo bar</em></p></li></ul>
+```
 ## [Example 378](https://spec.commonmark.org/0.29/#example-378)
 
 This markdown:
@@ -279,7 +339,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><strong>foo bar</strong></p>
+<ul><li><p><em>foo bar</em></p></li></ul>
 ```
 ## [Example 379](https://spec.commonmark.org/0.29/#example-379)
 
@@ -379,7 +439,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><strong>foo bar</strong></p>
+<ul><li><p><em>foo bar</em></p></li></ul>
 ```
 ## [Example 391](https://spec.commonmark.org/0.29/#example-391)
 
@@ -399,7 +459,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><strong>(</strong>foo)</p>
+<ul><li><p><em>(</em><strong>foo)</strong></p></li></ul>
 ```
 ## [Example 392](https://spec.commonmark.org/0.29/#example-392)
 
@@ -419,7 +479,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><em>(</em><strong>foo</strong><em>)</em></p>
+<ul><li><p>(<strong>foo</strong>)</p></li></ul>
 ```
 ## [Example 393](https://spec.commonmark.org/0.29/#example-393)
 
@@ -440,7 +500,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><strong>Gomphocarpus (</strong><strong>Gomphocarpus physocarpus</strong><strong>, syn.</strong><strong>Asclepias physocarpa</strong><strong>)</strong></p>
+<ul><li><p><em>Gomphocarpus (</em>Gomphocarpus physocarpus<em>, syn.</em></p></li><li><p>Asclepias physocarpa<em>)</em></p></li></ul>
 ```
 ## [Example 394](https://spec.commonmark.org/0.29/#example-394)
 
@@ -460,7 +520,27 @@ Should give output:
 But instead was:
 
 ```html
-<p><strong>foo &quot;</strong><strong>bar</strong><strong>&quot; foo</strong></p>
+<ul><li><p><em>foo &quot;</em>bar<em>&quot; foo</em></p></li></ul>
+```
+## [Example 395](https://spec.commonmark.org/0.29/#example-395)
+
+This markdown:
+
+```markdown
+**foo**bar
+
+```
+
+Should give output:
+
+```html
+<p><strong>foo</strong>bar</p>
+```
+
+But instead was:
+
+```html
+<ul><li><p><em>foo</em><strong>bar</strong></p></li></ul>
 ```
 ## [Example 398](https://spec.commonmark.org/0.29/#example-398)
 
@@ -540,7 +620,28 @@ Should give output:
 But instead was:
 
 ```html
-<p><em>foo</em><a href="/url">bar</a></p>
+<ul><li><p>foo<a href="/url">bar</a></p></li></ul>
+```
+## [Example 404](https://spec.commonmark.org/0.29/#example-404)
+
+This markdown:
+
+```markdown
+*foo
+bar*
+
+```
+
+Should give output:
+
+```html
+<p><em>foo bar</em></p>
+```
+
+But instead was:
+
+```html
+<ul><li><p>foo</p></li></ul><p>bar</p>
 ```
 ## [Example 405](https://spec.commonmark.org/0.29/#example-405)
 
@@ -620,7 +721,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><em>foo</em>bar</p>
+<ul><li><p>foo<em>bar</em></p></li></ul>
 ```
 ## [Example 409](https://spec.commonmark.org/0.29/#example-409)
 
@@ -640,7 +741,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><em>foo</em><strong>bar</strong><em>baz</em></p>
+<ul><li><p>foo<strong>bar</strong>baz</p></li></ul>
 ```
 ## [Example 410](https://spec.commonmark.org/0.29/#example-410)
 
@@ -660,7 +761,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><em>foo</em><strong>bar</strong><em>baz</em></p>
+<ul><li><p>foo<strong>bar</strong>baz</p></li></ul>
 ```
 ## [Example 411](https://spec.commonmark.org/0.29/#example-411)
 
@@ -680,7 +781,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><em>foo</em><strong>bar</strong></p>
+<ul><li><p>foo<strong>bar</strong></p></li></ul>
 ```
 ## [Example 412](https://spec.commonmark.org/0.29/#example-412)
 
@@ -720,7 +821,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><em>foo</em><strong>bar</strong></p>
+<ul><li><p>foo<strong>bar</strong></p></li></ul>
 ```
 ## [Example 414](https://spec.commonmark.org/0.29/#example-414)
 
@@ -740,7 +841,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><em>foo</em><strong>bar</strong></p>
+<ul><li><p>foo<strong>bar</strong></p></li></ul>
 ```
 ## [Example 415](https://spec.commonmark.org/0.29/#example-415)
 
@@ -800,7 +901,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><em>foo</em><strong>bar</strong><strong>baz</strong><strong>bim</strong><em>bop</em></p>
+<ul><li><p>foo<strong>bar</strong><strong>baz</strong><strong>bim</strong>bop</p></li></ul>
 ```
 ## [Example 418](https://spec.commonmark.org/0.29/#example-418)
 
@@ -820,7 +921,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><em>foo</em><a href="/url"><em>bar</em></a></p>
+<ul><li><p>foo<a href="/url"><em>bar</em></a></p></li></ul>
 ```
 ## [Example 419](https://spec.commonmark.org/0.29/#example-419)
 
@@ -840,7 +941,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><strong>is not an empty emphasis</strong></p>
+<ul><li><p><em>is not an empty emphasis</em></p></li></ul>
 ```
 ## [Example 420](https://spec.commonmark.org/0.29/#example-420)
 
@@ -880,7 +981,28 @@ Should give output:
 But instead was:
 
 ```html
-<p><strong>foo</strong><a href="/url">bar</a></p>
+<ul><li><p><em>foo</em><a href="/url">bar</a></p></li></ul>
+```
+## [Example 422](https://spec.commonmark.org/0.29/#example-422)
+
+This markdown:
+
+```markdown
+**foo
+bar**
+
+```
+
+Should give output:
+
+```html
+<p><strong>foo bar</strong></p>
+```
+
+But instead was:
+
+```html
+<ul><li><p><em>foo</em></p></li></ul><p>bar</p>
 ```
 ## [Example 423](https://spec.commonmark.org/0.29/#example-423)
 
@@ -960,7 +1082,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><strong>foo</strong>bar</p>
+<ul><li><p><em>foo</em><strong>bar</strong></p></li></ul>
 ```
 ## [Example 427](https://spec.commonmark.org/0.29/#example-427)
 
@@ -980,7 +1102,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><strong>foo</strong><strong>bar</strong><strong>baz</strong></p>
+<ul><li><p><em>foo</em>bar<em>baz</em></p></li></ul>
 ```
 ## [Example 428](https://spec.commonmark.org/0.29/#example-428)
 
@@ -1000,7 +1122,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><strong>foo</strong><strong>bar</strong><strong>baz</strong></p>
+<ul><li><p><em>foo</em>bar<em>baz</em></p></li></ul>
 ```
 ## [Example 429](https://spec.commonmark.org/0.29/#example-429)
 
@@ -1040,7 +1162,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><strong>foo</strong><strong>bar</strong></p>
+<ul><li><p><em>foo</em>bar</p></li></ul>
 ```
 ## [Example 431](https://spec.commonmark.org/0.29/#example-431)
 
@@ -1061,7 +1183,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><strong>foo</strong><strong>bar</strong><em>baz</em><strong>bim</strong><strong>bop</strong></p>
+<ul><li><p><em>foo</em>bar<strong>baz</strong></p></li></ul><p>bim<em>bop</em></p>
 ```
 ## [Example 432](https://spec.commonmark.org/0.29/#example-432)
 
@@ -1081,7 +1203,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><strong>foo</strong><a href="/url"><em>bar</em></a></p>
+<ul><li><p><em>foo</em><a href="/url"><em>bar</em></a></p></li></ul>
 ```
 ## [Example 434](https://spec.commonmark.org/0.29/#example-434)
 
@@ -1201,7 +1323,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><strong>foo</strong></p>
+<ul><li><p><em>foo</em></p></li></ul>
 ```
 ## [Example 442](https://spec.commonmark.org/0.29/#example-442)
 
@@ -1221,7 +1343,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><em>foo</em></p>
+<ul><li><p>foo</p></li></ul>
 ```
 ## [Example 443](https://spec.commonmark.org/0.29/#example-443)
 
@@ -1281,7 +1403,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><strong>foo</strong></p>
+<ul><li><p><em>foo</em></p></li></ul>
 ```
 ## [Example 446](https://spec.commonmark.org/0.29/#example-446)
 
@@ -1301,7 +1423,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><em>foo</em></p>
+<ul><li><p>foo</p></li></ul>
 ```
 ## [Example 448](https://spec.commonmark.org/0.29/#example-448)
 
@@ -1503,6 +1625,26 @@ But instead was:
 ```html
 <p>_foo____</p>
 ```
+## [Example 459](https://spec.commonmark.org/0.29/#example-459)
+
+This markdown:
+
+```markdown
+**foo**
+
+```
+
+Should give output:
+
+```html
+<p><strong>foo</strong></p>
+```
+
+But instead was:
+
+```html
+<ul><li><p><em>foo</em></p></li></ul>
+```
 ## [Example 460](https://spec.commonmark.org/0.29/#example-460)
 
 This markdown:
@@ -1521,7 +1663,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><em>_foo_</em></p>
+<ul><li><p>_foo_</p></li></ul>
 ```
 ## [Example 461](https://spec.commonmark.org/0.29/#example-461)
 
@@ -1663,6 +1805,26 @@ But instead was:
 ```html
 ERROR Problem at row 1 Expecting end Problem at row 1 Expecting newline
 ```
+## [Example 468](https://spec.commonmark.org/0.29/#example-468)
+
+This markdown:
+
+```markdown
+*foo _bar* baz_
+
+```
+
+Should give output:
+
+```html
+<p><em>foo _bar</em>baz_</p>
+```
+
+But instead was:
+
+```html
+<ul><li><p>foo _bar<em>baz_</em></p></li></ul>
+```
 ## [Example 469](https://spec.commonmark.org/0.29/#example-469)
 
 This markdown:
@@ -1681,7 +1843,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><em>foo __bar</em>baz bim__ bam</p>
+<ul><li><p>foo __bar<em>baz bim__ bam</em></p></li></ul>
 ```
 ## [Example 470](https://spec.commonmark.org/0.29/#example-470)
 
@@ -1701,7 +1863,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><strong>foo</strong>bar baz</p>
+<ul><li><p><em>foo</em><strong>bar baz</strong></p></li></ul>
 ```
 ## [Example 471](https://spec.commonmark.org/0.29/#example-471)
 
@@ -1721,7 +1883,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><em>foo</em>bar baz</p>
+<ul><li><p>foo<em>bar baz</em></p></li></ul>
 ```
 ## [Example 472](https://spec.commonmark.org/0.29/#example-472)
 
@@ -1741,7 +1903,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><a href="/url">bar</a></p>
+<ul><li><p><a href="/url">bar</a></p></li></ul>
 ```
 ## [Example 474](https://spec.commonmark.org/0.29/#example-474)
 
@@ -1761,7 +1923,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><em>&lt;img src=&quot;foo&quot; title=&quot;</em>&quot;/&gt;</p>
+<ul><li><p>&lt;img src=&quot;foo&quot; title=&quot;<em>&quot;/&gt;</em></p></li></ul>
 ```
 ## [Example 475](https://spec.commonmark.org/0.29/#example-475)
 
@@ -1781,7 +1943,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><strong>&lt;a href=&quot;</strong>&quot;&gt;</p>
+<ul><li><p><em>&lt;a href=&quot;</em><strong>&quot;&gt;</strong></p></li></ul>
 ```
 ## [Example 476](https://spec.commonmark.org/0.29/#example-476)
 
@@ -1821,7 +1983,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><em>a</em></p>
+<ul><li><p>a</p></li></ul>
 ```
 ## [Example 478](https://spec.commonmark.org/0.29/#example-478)
 
@@ -1861,7 +2023,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><strong>a&lt;http://foo.bar/?q=</strong>&gt;</p>
+<ul><li><p><em>a&lt;http://foo.bar/?q=</em><strong>&gt;</strong></p></li></ul>
 ```
 ## [Example 480](https://spec.commonmark.org/0.29/#example-480)
 

@@ -124,7 +124,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><em>foo bar</em></p>
+<ul><li><p>foo</p></li></ul><p>bar</p>
 ```
 ## [Example 636](https://github.github.com/gfm/#example-636)
 
@@ -145,7 +145,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><em>foo\ bar</em></p>
+<ul><li><p>foo\</p></li></ul><p>bar</p>
 ```
 ## [Example 639](https://github.github.com/gfm/#example-639)
 

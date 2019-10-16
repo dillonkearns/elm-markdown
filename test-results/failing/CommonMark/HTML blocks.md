@@ -270,7 +270,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Ran into a oneOf with no possibilities!
+ERROR Problem at row 1 Expecting Problem at row 1 Expecting symbol
 ```
 ## [Example 130](https://spec.commonmark.org/0.29/#example-130)
 
@@ -468,7 +468,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Ran into a oneOf with no possibilities!
+ERROR Problem at row 1 Expecting Problem at row 1 Expecting symbol
 ```
 ## [Example 139](https://spec.commonmark.org/0.29/#example-139)
 

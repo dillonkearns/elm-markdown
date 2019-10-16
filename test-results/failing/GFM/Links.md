@@ -625,7 +625,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><a href="/uri">foo</a></p>
+<ul><li><p><a href="/uri">foo</a></p></li></ul>
 ```
 ## [Example 518](https://github.github.com/gfm/#example-518)
 

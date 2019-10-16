@@ -42,5 +42,5 @@ Should give output:
 But instead was:
 
 ```html
-<p>_123_</p><p><em>123</em></p><p>_12_</p><p><em>12</em></p><p>_1_</p><p><em>1</em></p><p>__</p><p>_123 _</p><p><em>123</em></p><p>_ 123_</p><p>_1__</p><p><em>1</em></p>
+<p>_123_</p><ul><li><p>123</p></li></ul><p>_12_</p><ul><li><p>12</p></li></ul><p>_1_</p><ul><li><p>1</p></li></ul><p>__</p><ul><li><p></p></li></ul><p>_123 _</p><ul><li><p>123</p></li></ul><p>_ 123_</p><p>_1__</p><ul><li><p>1</p></li></ul>
 ```

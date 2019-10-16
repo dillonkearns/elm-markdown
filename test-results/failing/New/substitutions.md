@@ -20,5 +20,5 @@ Should give output:
 But instead was:
 
 ```html
-<p>foo␤␤bar</p><p><em>a</em></p>
+<p>foo␤␤bar</p><ul><li><p>a</p></li></ul>
 ```

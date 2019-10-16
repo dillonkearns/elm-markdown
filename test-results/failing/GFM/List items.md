@@ -672,7 +672,7 @@ Should give output:
 But instead was:
 
 ```html
-
+<ul><li><p></p></li></ul>
 ```
 ## [Example 255](https://github.github.com/gfm/#example-255)
 
@@ -696,7 +696,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>foo</p><p>foo 1.</p>
+<p>foo</p><ul><li><p></p></li></ul><p>foo 1.</p>
 ```
 ## [Example 256](https://github.github.com/gfm/#example-256)
 

@@ -496,7 +496,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>Foo bar<em></em><em>baz</em></p>
+<p>Foo bar</p><ul><li><p><em></em></p></li></ul><p>baz</p>
 ```
 ## [Example 76](https://github.github.com/gfm/#example-76)
 

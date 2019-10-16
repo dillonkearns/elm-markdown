@@ -186,5 +186,5 @@ Should give output:
 But instead was:
 
 ```html
-<p><em></em><em></em></p>
+<ul><li><p><em></em></p></li></ul>
 ```
