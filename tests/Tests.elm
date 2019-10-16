@@ -38,6 +38,11 @@ suite =
                     "## Hello!"
                         |> parse
                         |> Expect.equal (Ok [ Block.Heading 2 (unstyledText "Hello!") ])
+            , test "Emphasis line is not interpreted as a list" <|
+                \() ->
+                    "*This is not a list, it's a paragraph with emphasis*\n"
+                        |> parse
+                        |> Expect.equal (Ok [ Block.Body (emphasisText "This is not a list, it's a paragraph with emphasis") ])
             , test "Heading 7 is invalid" <|
                 \() ->
                     "####### Hello!"
@@ -288,6 +293,19 @@ unstyledText body =
             { isCode = False
             , isBold = False
             , isItalic = False
+            , link = Nothing
+            }
+      }
+    ]
+
+
+emphasisText : String -> List Block.Inline
+emphasisText body =
+    [ { string = body
+      , style =
+            { isCode = False
+            , isBold = False
+            , isItalic = True
             , link = Nothing
             }
       }
