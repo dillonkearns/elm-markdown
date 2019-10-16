@@ -165,7 +165,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>&amp;#42;foo&amp;#42;</p><ul><li><p>foo</p></li></ul>
+<p>&amp;#42;foo&amp;#42;<em>foo</em></p>
 ```
 ## [Example 324](https://github.github.com/gfm/#example-324)
 

@@ -625,7 +625,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p><a href="/uri">foo</a></p></li></ul>
+<p><a href="/uri">foo</a></p>
 ```
 ## [Example 518](https://spec.commonmark.org/0.29/#example-518)
 

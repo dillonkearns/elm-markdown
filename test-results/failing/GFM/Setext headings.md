@@ -339,7 +339,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p>Foo</p></li><li><p>--</p></li></ul>
+<ul><li><p>Foo</p></li></ul><hr>
 ```
 ## [Example 65](https://github.github.com/gfm/#example-65)
 
@@ -407,7 +407,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p>foo</p></li><li><p>----</p></li></ul>
+<ul><li><p>foo</p></li></ul><hr>
 ```
 ## [Example 71](https://github.github.com/gfm/#example-71)
 

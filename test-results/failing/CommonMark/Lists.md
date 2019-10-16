@@ -333,7 +333,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p>a</p></li><li><p></p></li></ul><ul><li><p>c</p></li></ul>
+<ul><li><p>a</p></li></ul><ul><li><p>c</p></li></ul>
 ```
 ## [Example 286](https://spec.commonmark.org/0.29/#example-286)
 

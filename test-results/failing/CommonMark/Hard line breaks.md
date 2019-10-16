@@ -124,7 +124,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p>foo</p></li></ul><p>bar</p>
+<p><em>foo bar</em></p>
 ```
 ## [Example 636](https://spec.commonmark.org/0.29/#example-636)
 
@@ -145,7 +145,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p>foo\</p></li></ul><p>bar</p>
+<p><em>foo\ bar</em></p>
 ```
 ## [Example 639](https://spec.commonmark.org/0.29/#example-639)
 

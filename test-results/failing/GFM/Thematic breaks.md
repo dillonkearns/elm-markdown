@@ -1,25 +1,5 @@
 # GFM - Thematic breaks
 
-## [Example 14](https://github.github.com/gfm/#example-14)
-
-This markdown:
-
-```markdown
-+++
-
-```
-
-Should give output:
-
-```html
-<p>+++</p>
-```
-
-But instead was:
-
-```html
-<ul><li><p>++</p></li></ul>
-```
 ## [Example 16](https://github.github.com/gfm/#example-16)
 
 This markdown:
@@ -40,7 +20,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p>-</p></li></ul><ul><li><p></p></li></ul><p>__</p>
+<p>--<strong>__</strong></p>
 ```
 ## [Example 19](https://github.github.com/gfm/#example-19)
 

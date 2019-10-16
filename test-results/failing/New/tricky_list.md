@@ -32,5 +32,5 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p><em>hello</em><strong>_world_</strong></p></li></ul><ul><li><p>hello world</p></li></ul><ul><li><p><em>hello</em><strong>_world_</strong></p></li></ul><ul><li><p>hello world</p></li></ul><ul><li><p><em>hello</em><strong>_world_</strong></p></li></ul><ul><li><p>Hello world</p></li></ul><ul><li><p><em>hello</em><strong>_world_</strong></p></li></ul><ul><li><p>hello world</p></li></ul>
+<p><strong>hello</strong>_world_</p><ul><li><p>hello world</p></li></ul><p><strong>hello</strong>_world_</p><ul><li><p>hello world</p></li></ul><p><strong>hello</strong>_world_</p><ul><li><p>Hello world</p></li></ul><p><strong>hello</strong>_world_</p><ul><li><p>hello world</p></li></ul>
 ```

@@ -1,25 +1,5 @@
 # GFM - Emphasis and strong emphasis
 
-## [Example 350](https://github.github.com/gfm/#example-350)
-
-This markdown:
-
-```markdown
-*foo bar*
-
-```
-
-Should give output:
-
-```html
-<p><em>foo bar</em></p>
-```
-
-But instead was:
-
-```html
-<ul><li><p>foo bar</p></li></ul>
-```
 ## [Example 351](https://github.github.com/gfm/#example-351)
 
 This markdown:
@@ -78,7 +58,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p>a</p></li></ul>
+<p><em>a</em></p>
 ```
 ## [Example 356](https://github.github.com/gfm/#example-356)
 
@@ -158,7 +138,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p>foo bar</p></li></ul>
+<p><em>foo bar</em></p>
 ```
 ## [Example 366](https://github.github.com/gfm/#example-366)
 
@@ -179,7 +159,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p>foo bar</p></li><li><p></p></li></ul>
+<p><em>foo bar</em></p>
 ```
 ## [Example 367](https://github.github.com/gfm/#example-367)
 
@@ -199,7 +179,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p>(<em>foo)</em></p></li></ul>
+<p><em>(</em>foo)</p>
 ```
 ## [Example 368](https://github.github.com/gfm/#example-368)
 
@@ -219,27 +199,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p>(<em>foo</em>)</p></li></ul>
-```
-## [Example 369](https://github.github.com/gfm/#example-369)
-
-This markdown:
-
-```markdown
-*foo*bar
-
-```
-
-Should give output:
-
-```html
-<p><em>foo</em>bar</p>
-```
-
-But instead was:
-
-```html
-<ul><li><p>foo<em>bar</em></p></li></ul>
+<p><em>(</em>foo<em>)</em></p>
 ```
 ## [Example 372](https://github.github.com/gfm/#example-372)
 
@@ -301,26 +261,6 @@ But instead was:
 ```html
 <p>_(bar)_.</p>
 ```
-## [Example 377](https://github.github.com/gfm/#example-377)
-
-This markdown:
-
-```markdown
-**foo bar**
-
-```
-
-Should give output:
-
-```html
-<p><strong>foo bar</strong></p>
-```
-
-But instead was:
-
-```html
-<ul><li><p><em>foo bar</em></p></li></ul>
-```
 ## [Example 378](https://github.github.com/gfm/#example-378)
 
 This markdown:
@@ -339,7 +279,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p><em>foo bar</em></p></li></ul>
+<p><strong>foo bar</strong></p>
 ```
 ## [Example 379](https://github.github.com/gfm/#example-379)
 
@@ -439,7 +379,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p><em>foo bar</em></p></li></ul>
+<p><strong>foo bar</strong></p>
 ```
 ## [Example 391](https://github.github.com/gfm/#example-391)
 
@@ -459,7 +399,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p><em>(</em><strong>foo)</strong></p></li></ul>
+<p><strong>(</strong>foo)</p>
 ```
 ## [Example 392](https://github.github.com/gfm/#example-392)
 
@@ -479,7 +419,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p>(<strong>foo</strong>)</p></li></ul>
+<p><em>(</em><strong>foo</strong><em>)</em></p>
 ```
 ## [Example 393](https://github.github.com/gfm/#example-393)
 
@@ -500,7 +440,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p><em>Gomphocarpus (</em>Gomphocarpus physocarpus<em>, syn.</em></p></li><li><p>Asclepias physocarpa<em>)</em></p></li></ul>
+<p><strong>Gomphocarpus (</strong><strong>Gomphocarpus physocarpus</strong><strong>, syn.</strong><strong>Asclepias physocarpa</strong><strong>)</strong></p>
 ```
 ## [Example 394](https://github.github.com/gfm/#example-394)
 
@@ -520,27 +460,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p><em>foo &quot;</em>bar<em>&quot; foo</em></p></li></ul>
-```
-## [Example 395](https://github.github.com/gfm/#example-395)
-
-This markdown:
-
-```markdown
-**foo**bar
-
-```
-
-Should give output:
-
-```html
-<p><strong>foo</strong>bar</p>
-```
-
-But instead was:
-
-```html
-<ul><li><p><em>foo</em><strong>bar</strong></p></li></ul>
+<p><strong>foo &quot;</strong><strong>bar</strong><strong>&quot; foo</strong></p>
 ```
 ## [Example 398](https://github.github.com/gfm/#example-398)
 
@@ -620,28 +540,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p>foo<a href="/url">bar</a></p></li></ul>
-```
-## [Example 404](https://github.github.com/gfm/#example-404)
-
-This markdown:
-
-```markdown
-*foo
-bar*
-
-```
-
-Should give output:
-
-```html
-<p><em>foo bar</em></p>
-```
-
-But instead was:
-
-```html
-<ul><li><p>foo</p></li></ul><p>bar</p>
+<p><em>foo</em><a href="/url">bar</a></p>
 ```
 ## [Example 405](https://github.github.com/gfm/#example-405)
 
@@ -721,7 +620,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p>foo<em>bar</em></p></li></ul>
+<p><em>foo</em>bar</p>
 ```
 ## [Example 409](https://github.github.com/gfm/#example-409)
 
@@ -741,7 +640,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p>foo<strong>bar</strong>baz</p></li></ul>
+<p><em>foo</em><strong>bar</strong><em>baz</em></p>
 ```
 ## [Example 410](https://github.github.com/gfm/#example-410)
 
@@ -761,7 +660,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p>foo<strong>bar</strong>baz</p></li></ul>
+<p><em>foo</em><strong>bar</strong><em>baz</em></p>
 ```
 ## [Example 411](https://github.github.com/gfm/#example-411)
 
@@ -781,7 +680,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p>foo<strong>bar</strong></p></li></ul>
+<p><em>foo</em><strong>bar</strong></p>
 ```
 ## [Example 412](https://github.github.com/gfm/#example-412)
 
@@ -821,7 +720,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p>foo<strong>bar</strong></p></li></ul>
+<p><em>foo</em><strong>bar</strong></p>
 ```
 ## [Example 414](https://github.github.com/gfm/#example-414)
 
@@ -841,7 +740,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p>foo<strong>bar</strong></p></li></ul>
+<p><em>foo</em><strong>bar</strong></p>
 ```
 ## [Example 415](https://github.github.com/gfm/#example-415)
 
@@ -901,7 +800,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p>foo<strong>bar</strong><strong>baz</strong><strong>bim</strong>bop</p></li></ul>
+<p><em>foo</em><strong>bar</strong><strong>baz</strong><strong>bim</strong><em>bop</em></p>
 ```
 ## [Example 418](https://github.github.com/gfm/#example-418)
 
@@ -921,7 +820,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p>foo<a href="/url"><em>bar</em></a></p></li></ul>
+<p><em>foo</em><a href="/url"><em>bar</em></a></p>
 ```
 ## [Example 419](https://github.github.com/gfm/#example-419)
 
@@ -941,7 +840,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p><em>is not an empty emphasis</em></p></li></ul>
+<p><strong>is not an empty emphasis</strong></p>
 ```
 ## [Example 420](https://github.github.com/gfm/#example-420)
 
@@ -981,28 +880,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p><em>foo</em><a href="/url">bar</a></p></li></ul>
-```
-## [Example 422](https://github.github.com/gfm/#example-422)
-
-This markdown:
-
-```markdown
-**foo
-bar**
-
-```
-
-Should give output:
-
-```html
-<p><strong>foo bar</strong></p>
-```
-
-But instead was:
-
-```html
-<ul><li><p><em>foo</em></p></li></ul><p>bar</p>
+<p><strong>foo</strong><a href="/url">bar</a></p>
 ```
 ## [Example 423](https://github.github.com/gfm/#example-423)
 
@@ -1082,7 +960,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p><em>foo</em><strong>bar</strong></p></li></ul>
+<p><strong>foo</strong>bar</p>
 ```
 ## [Example 427](https://github.github.com/gfm/#example-427)
 
@@ -1102,7 +980,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p><em>foo</em>bar<em>baz</em></p></li></ul>
+<p><strong>foo</strong><strong>bar</strong><strong>baz</strong></p>
 ```
 ## [Example 428](https://github.github.com/gfm/#example-428)
 
@@ -1122,7 +1000,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p><em>foo</em>bar<em>baz</em></p></li></ul>
+<p><strong>foo</strong><strong>bar</strong><strong>baz</strong></p>
 ```
 ## [Example 429](https://github.github.com/gfm/#example-429)
 
@@ -1162,7 +1040,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p><em>foo</em>bar</p></li></ul>
+<p><strong>foo</strong><strong>bar</strong></p>
 ```
 ## [Example 431](https://github.github.com/gfm/#example-431)
 
@@ -1183,7 +1061,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p><em>foo</em>bar<strong>baz</strong></p></li></ul><p>bim<em>bop</em></p>
+<p><strong>foo</strong><strong>bar</strong><em>baz</em><strong>bim</strong><strong>bop</strong></p>
 ```
 ## [Example 432](https://github.github.com/gfm/#example-432)
 
@@ -1203,7 +1081,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p><em>foo</em><a href="/url"><em>bar</em></a></p></li></ul>
+<p><strong>foo</strong><a href="/url"><em>bar</em></a></p>
 ```
 ## [Example 434](https://github.github.com/gfm/#example-434)
 
@@ -1323,7 +1201,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p><em>foo</em></p></li></ul>
+<p><strong>foo</strong></p>
 ```
 ## [Example 442](https://github.github.com/gfm/#example-442)
 
@@ -1343,7 +1221,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p>foo</p></li></ul>
+<p><em>foo</em></p>
 ```
 ## [Example 443](https://github.github.com/gfm/#example-443)
 
@@ -1403,7 +1281,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p><em>foo</em></p></li></ul>
+<p><strong>foo</strong></p>
 ```
 ## [Example 446](https://github.github.com/gfm/#example-446)
 
@@ -1423,7 +1301,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p>foo</p></li></ul>
+<p><em>foo</em></p>
 ```
 ## [Example 448](https://github.github.com/gfm/#example-448)
 
@@ -1625,26 +1503,6 @@ But instead was:
 ```html
 <p>_foo____</p>
 ```
-## [Example 459](https://github.github.com/gfm/#example-459)
-
-This markdown:
-
-```markdown
-**foo**
-
-```
-
-Should give output:
-
-```html
-<p><strong>foo</strong></p>
-```
-
-But instead was:
-
-```html
-<ul><li><p><em>foo</em></p></li></ul>
-```
 ## [Example 460](https://github.github.com/gfm/#example-460)
 
 This markdown:
@@ -1663,7 +1521,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p>_foo_</p></li></ul>
+<p><em>_foo_</em></p>
 ```
 ## [Example 461](https://github.github.com/gfm/#example-461)
 
@@ -1805,26 +1663,6 @@ But instead was:
 ```html
 ERROR Problem at row 1 Expecting end Problem at row 1 Expecting newline
 ```
-## [Example 468](https://github.github.com/gfm/#example-468)
-
-This markdown:
-
-```markdown
-*foo _bar* baz_
-
-```
-
-Should give output:
-
-```html
-<p><em>foo _bar</em>baz_</p>
-```
-
-But instead was:
-
-```html
-<ul><li><p>foo _bar<em>baz_</em></p></li></ul>
-```
 ## [Example 469](https://github.github.com/gfm/#example-469)
 
 This markdown:
@@ -1843,7 +1681,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p>foo __bar<em>baz bim__ bam</em></p></li></ul>
+<p><em>foo __bar</em>baz bim__ bam</p>
 ```
 ## [Example 470](https://github.github.com/gfm/#example-470)
 
@@ -1863,7 +1701,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p><em>foo</em><strong>bar baz</strong></p></li></ul>
+<p><strong>foo</strong>bar baz</p>
 ```
 ## [Example 471](https://github.github.com/gfm/#example-471)
 
@@ -1883,7 +1721,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p>foo<em>bar baz</em></p></li></ul>
+<p><em>foo</em>bar baz</p>
 ```
 ## [Example 472](https://github.github.com/gfm/#example-472)
 
@@ -1903,7 +1741,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p><a href="/url">bar</a></p></li></ul>
+<p><a href="/url">bar</a></p>
 ```
 ## [Example 474](https://github.github.com/gfm/#example-474)
 
@@ -1923,7 +1761,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p>&lt;img src=&quot;foo&quot; title=&quot;<em>&quot;/&gt;</em></p></li></ul>
+<p><em>&lt;img src=&quot;foo&quot; title=&quot;</em>&quot;/&gt;</p>
 ```
 ## [Example 475](https://github.github.com/gfm/#example-475)
 
@@ -1943,7 +1781,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p><em>&lt;a href=&quot;</em><strong>&quot;&gt;</strong></p></li></ul>
+<p><strong>&lt;a href=&quot;</strong>&quot;&gt;</p>
 ```
 ## [Example 476](https://github.github.com/gfm/#example-476)
 
@@ -1983,7 +1821,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p>a</p></li></ul>
+<p><em>a</em></p>
 ```
 ## [Example 478](https://github.github.com/gfm/#example-478)
 
@@ -2023,7 +1861,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p><em>a&lt;http://foo.bar/?q=</em><strong>&gt;</strong></p></li></ul>
+<p><strong>a&lt;http://foo.bar/?q=</strong>&gt;</p>
 ```
 ## [Example 480](https://github.github.com/gfm/#example-480)
 
