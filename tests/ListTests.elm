@@ -78,6 +78,21 @@ suite =
                             , "Item 3"
                             ]
                         )
+        , test "A list item with emphasis in it and starting with '*'" <|
+            \() ->
+                """* Item 1 is *emphasized*
+* Item 2
+* Item 3
+*emphasized text following the list*
+"""
+                    |> Advanced.run Markdown.List.parser
+                    |> Expect.equal
+                        (Ok
+                            [ "Item 1 is *emphasized*"
+                            , "Item 2"
+                            , "Item 3"
+                            ]
+                        )
         ]
 
 

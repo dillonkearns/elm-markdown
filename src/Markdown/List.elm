@@ -4,6 +4,7 @@ import Html exposing (Html)
 import Html.Attributes as Attr
 import Parser
 import Parser.Advanced as Advanced exposing (..)
+import Parser.Extra exposing (oneOrMore)
 
 
 type alias Parser a =
@@ -40,8 +41,9 @@ listMarkerParser =
 openingItemParser : Parser ( String, ListItem )
 openingItemParser =
     succeed Tuple.pair
-        |= listMarkerParser
-        |. chompWhile (\c -> c == ' ')
+        |= (backtrackable listMarkerParser
+                |. oneOrMore (\c -> c == ' ')
+           )
         |= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
         |. Advanced.symbol (Advanced.Token "\n" (Parser.ExpectingSymbol "\n"))
 
@@ -49,8 +51,10 @@ openingItemParser =
 singleItemParser : String -> Parser ListItem
 singleItemParser listMarker =
     succeed identity
-        |. Advanced.symbol (Advanced.Token listMarker (Parser.ExpectingSymbol listMarker))
-        |. chompWhile (\c -> c == ' ')
+        |. backtrackable
+            (Advanced.symbol (Advanced.Token listMarker (Parser.ExpectingSymbol listMarker))
+                |. oneOrMore (\c -> c == ' ')
+            )
         |= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
         |. Advanced.symbol (Advanced.Token "\n" (Parser.ExpectingSymbol "\n"))
 
