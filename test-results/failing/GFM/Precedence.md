@@ -19,5 +19,5 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p><code>one</code></p></li><li><p>two</p></li></ul>
+<ul><li><code>one</code></li><li>two</li></ul>
 ```

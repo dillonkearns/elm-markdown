@@ -30,5 +30,5 @@ Should give output:
 But instead was:
 
 ```html
-<p>Link: &lt;http://example.com/&gt;.</p><p>With an ampersand: &lt;http://example.com/?foo=1&amp;bar=2&gt;</p><ul><li><p>In a list?</p></li><li><p>&lt;http://example.com/&gt;</p></li><li><p>It should.</p></li></ul><p>&gt; Blockquoted: &lt;http://example.com/&gt;</p><p>Auto-links should not occur here:<code>&lt;http://example.com/&gt;</code></p><pre><code>or here: &lt;http://example.com/&gt;</code></pre>
+<p>Link: &lt;http://example.com/&gt;.</p><p>With an ampersand: &lt;http://example.com/?foo=1&amp;bar=2&gt;</p><ul><li>In a list?</li><li>&lt;http://example.com/&gt;</li><li>It should.</li></ul><p>&gt; Blockquoted: &lt;http://example.com/&gt;</p><p>Auto-links should not occur here:<code>&lt;http://example.com/&gt;</code></p><pre><code>or here: &lt;http://example.com/&gt;</code></pre>
 ```

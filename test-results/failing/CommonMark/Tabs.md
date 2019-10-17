@@ -83,7 +83,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p>foo</p></li></ul><pre><code>bar</code></pre>
+<ul><li>foo</li></ul><pre><code>bar</code></pre>
 ```
 ## [Example 6](https://spec.commonmark.org/0.29/#example-6)
 

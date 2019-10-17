@@ -23,5 +23,5 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p>hello</p></li></ul><p>world</p><ul><li><p>how</p></li></ul><p>are</p><ul><li><p><em></em></p></li></ul><p>you today?</p>
+<ul><li>hello</li></ul><p>world</p><ul><li>how</li></ul><p>are</p><ul><li><em></em></li></ul><p>you today?</p>
 ```

@@ -101,7 +101,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p>- - -</p></li></ul>
+<ul><li>- - -</li></ul>
 ```
 ## [Example 24](https://spec.commonmark.org/0.29/#example-24)
 
@@ -121,7 +121,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p>- - -</p></li></ul>
+<ul><li>- - -</li></ul>
 ```
 ## [Example 25](https://spec.commonmark.org/0.29/#example-25)
 
@@ -167,28 +167,6 @@ But instead was:
 ```html
 ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
 ```
-## [Example 27](https://spec.commonmark.org/0.29/#example-27)
-
-This markdown:
-
-```markdown
-- foo
-***
-- bar
-
-```
-
-Should give output:
-
-```html
-<ul><li>foo</li></ul><hr><ul><li>bar</li></ul>
-```
-
-But instead was:
-
-```html
-<ul><li><p>foo</p></li></ul><hr><ul><li><p>bar</p></li></ul>
-```
 ## [Example 29](https://spec.commonmark.org/0.29/#example-29)
 
 This markdown:
@@ -231,7 +209,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p>Foo</p></li><li><p><em></em></p></li><li><p>Bar</p></li></ul>
+<ul><li>Foo</li><li><em></em></li><li>Bar</li></ul>
 ```
 ## [Example 31](https://spec.commonmark.org/0.29/#example-31)
 
@@ -252,5 +230,5 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p>Foo</p></li><li><p><em></em></p></li></ul>
+<ul><li>Foo</li><li><em></em></li></ul>
 ```

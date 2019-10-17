@@ -1,61 +1,5 @@
 # GFM
 
-## Textual content
-
-### [Example 647](https://github.github.com/gfm/#example-647)
-
-This markdown:
-
-
-```markdown
-hello $.;'there
-
-```
-
-Gives this correct output:
-
-
-```html
-<p>hello $.;'there</p>
-
-```
-
-### [Example 648](https://github.github.com/gfm/#example-648)
-
-This markdown:
-
-
-```markdown
-Foo χρῆν
-
-```
-
-Gives this correct output:
-
-
-```html
-<p>Foo χρῆν</p>
-
-```
-
-### [Example 649](https://github.github.com/gfm/#example-649)
-
-This markdown:
-
-
-```markdown
-Multiple     spaces
-
-```
-
-Gives this correct output:
-
-
-```html
-<p>Multiple     spaces</p>
-
-```
-
 ## Tabs
 
 ### [Example 1](https://github.github.com/gfm/#example-1)
@@ -190,15 +134,15 @@ Gives this correct output:
 
 ```
 
-## Backslash escapes
+## Textual content
 
-### [Example 299](https://github.github.com/gfm/#example-299)
+### [Example 647](https://github.github.com/gfm/#example-647)
 
 This markdown:
 
 
 ```markdown
-\	\A\a\ \3\φ\«
+hello $.;'there
 
 ```
 
@@ -206,17 +150,17 @@ Gives this correct output:
 
 
 ```html
-<p>\	\A\a\ \3\φ\«</p>
+<p>hello $.;'there</p>
 
 ```
 
-### [Example 304](https://github.github.com/gfm/#example-304)
+### [Example 648](https://github.github.com/gfm/#example-648)
 
 This markdown:
 
 
 ```markdown
-    \[\]
+Foo χρῆν
 
 ```
 
@@ -224,19 +168,62 @@ Gives this correct output:
 
 
 ```html
-<pre><code>\[\]
+<p>Foo χρῆν</p>
+
+```
+
+### [Example 649](https://github.github.com/gfm/#example-649)
+
+This markdown:
+
+
+```markdown
+Multiple     spaces
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>Multiple     spaces</p>
+
+```
+
+## Fenced code blocks
+
+### [Example 89](https://github.github.com/gfm/#example-89)
+
+This markdown:
+
+
+```markdown
+```
+<
+ >
+```
+
+```
+
+Gives this correct output:
+
+
+```html
+<pre><code>&lt;
+ &gt;
 </code></pre>
 
 ```
 
-### [Example 305](https://github.github.com/gfm/#example-305)
+### [Example 90](https://github.github.com/gfm/#example-90)
 
 This markdown:
 
 
 ```markdown
 ~~~
-\[\]
+<
+ >
 ~~~
 
 ```
@@ -245,20 +232,22 @@ Gives this correct output:
 
 
 ```html
-<pre><code>\[\]
+<pre><code>&lt;
+ &gt;
 </code></pre>
 
 ```
 
-## Autolinks
-
-### [Example 607](https://github.github.com/gfm/#example-607)
+### [Example 92](https://github.github.com/gfm/#example-92)
 
 This markdown:
 
 
 ```markdown
-http://example.com
+```
+aaa
+~~~
+```
 
 ```
 
@@ -266,17 +255,22 @@ Gives this correct output:
 
 
 ```html
-<p>http://example.com</p>
+<pre><code>aaa
+~~~
+</code></pre>
 
 ```
 
-### [Example 608](https://github.github.com/gfm/#example-608)
+### [Example 93](https://github.github.com/gfm/#example-93)
 
 This markdown:
 
 
 ```markdown
-foo@bar.example.com
+~~~
+aaa
+```
+~~~
 
 ```
 
@@ -284,19 +278,22 @@ Gives this correct output:
 
 
 ```html
-<p>foo@bar.example.com</p>
+<pre><code>aaa
+```
+</code></pre>
 
 ```
 
-## Raw HTML
-
-### [Example 622](https://github.github.com/gfm/#example-622)
+### [Example 99](https://github.github.com/gfm/#example-99)
 
 This markdown:
 
 
 ```markdown
-foo <!-- not a comment -- two hyphens -->
+```
+
+  
+```
 
 ```
 
@@ -304,19 +301,23 @@ Gives this correct output:
 
 
 ```html
-<p>foo &lt;!-- not a comment -- two hyphens --&gt;</p>
+<pre><code>
+  
+</code></pre>
 
 ```
 
-### [Example 623](https://github.github.com/gfm/#example-623)
+### [Example 110](https://github.github.com/gfm/#example-110)
 
 This markdown:
 
 
 ```markdown
-foo <!--> foo -->
-
-foo <!-- foo--->
+foo
+```
+bar
+```
+baz
 
 ```
 
@@ -324,8 +325,31 @@ Gives this correct output:
 
 
 ```html
-<p>foo &lt;!--&gt; foo --&gt;</p>
-<p>foo &lt;!-- foo---&gt;</p>
+<p>foo</p>
+<pre><code>bar
+</code></pre>
+<p>baz</p>
+
+```
+
+### [Example 117](https://github.github.com/gfm/#example-117)
+
+This markdown:
+
+
+```markdown
+```
+``` aaa
+```
+
+```
+
+Gives this correct output:
+
+
+```html
+<pre><code>``` aaa
+</code></pre>
 
 ```
 
@@ -428,16 +452,39 @@ Gives this correct output:
 
 ```
 
-## Lists
+## [extension] Tables
 
-### [Example 274](https://github.github.com/gfm/#example-274)
+### [Example 203](https://github.github.com/gfm/#example-203)
 
 This markdown:
 
 
 ```markdown
-The number of windows in my house is
-14.  The number of doors is 6.
+| abc | def |
+| --- |
+| bar |
+```
+
+Gives this correct output:
+
+
+```html
+<p>| abc | def |
+| --- |
+| bar |</p>
+```
+
+## Lists
+
+### [Example 271](https://github.github.com/gfm/#example-271)
+
+This markdown:
+
+
+```markdown
+- foo
+- bar
++ baz
 
 ```
 
@@ -445,8 +492,651 @@ Gives this correct output:
 
 
 ```html
-<p>The number of windows in my house is
-14.  The number of doors is 6.</p>
+<ul>
+<li>foo</li>
+<li>bar</li>
+</ul>
+<ul>
+<li>baz</li>
+</ul>
+
+```
+
+### [Example 272](https://github.github.com/gfm/#example-272)
+
+This markdown:
+
+
+```markdown
+1. foo
+2. bar
+3) baz
+
+```
+
+Gives this correct output:
+
+
+```html
+<ol>
+<li>foo</li>
+<li>bar</li>
+</ol>
+<ol start="3">
+<li>baz</li>
+</ol>
+
+```
+
+### [Example 273](https://github.github.com/gfm/#example-273)
+
+This markdown:
+
+
+```markdown
+Foo
+- bar
+- baz
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>Foo</p>
+<ul>
+<li>bar</li>
+<li>baz</li>
+</ul>
+
+```
+
+### [Example 275](https://github.github.com/gfm/#example-275)
+
+This markdown:
+
+
+```markdown
+The number of windows in my house is
+1.  The number of doors is 6.
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>The number of windows in my house is</p>
+<ol>
+<li>The number of doors is 6.</li>
+</ol>
+
+```
+
+### [Example 292](https://github.github.com/gfm/#example-292)
+
+This markdown:
+
+
+```markdown
+- a
+
+```
+
+Gives this correct output:
+
+
+```html
+<ul>
+<li>a</li>
+</ul>
+
+```
+
+## [extension] Strikethrough
+
+### [Example 492](https://github.github.com/gfm/#example-492)
+
+This markdown:
+
+
+```markdown
+This ~~has a
+
+new paragraph~~.
+```
+
+Gives this correct output:
+
+
+```html
+<p>This ~~has a</p>
+<p>new paragraph~~.</p>
+```
+
+## Paragraphs
+
+### [Example 189](https://github.github.com/gfm/#example-189)
+
+This markdown:
+
+
+```markdown
+aaa
+
+bbb
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>aaa</p>
+<p>bbb</p>
+
+```
+
+### [Example 190](https://github.github.com/gfm/#example-190)
+
+This markdown:
+
+
+```markdown
+aaa
+bbb
+
+ccc
+ddd
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>aaa
+bbb</p>
+<p>ccc
+ddd</p>
+
+```
+
+### [Example 191](https://github.github.com/gfm/#example-191)
+
+This markdown:
+
+
+```markdown
+aaa
+
+
+bbb
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>aaa</p>
+<p>bbb</p>
+
+```
+
+### [Example 195](https://github.github.com/gfm/#example-195)
+
+This markdown:
+
+
+```markdown
+    aaa
+bbb
+
+```
+
+Gives this correct output:
+
+
+```html
+<pre><code>aaa
+</code></pre>
+<p>bbb</p>
+
+```
+
+## Links
+
+### [Example 482](https://github.github.com/gfm/#example-482)
+
+This markdown:
+
+
+```markdown
+[link](/uri)
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><a href="/uri">link</a></p>
+
+```
+
+### [Example 483](https://github.github.com/gfm/#example-483)
+
+This markdown:
+
+
+```markdown
+[link]()
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><a href="">link</a></p>
+
+```
+
+### [Example 484](https://github.github.com/gfm/#example-484)
+
+This markdown:
+
+
+```markdown
+[link](<>)
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><a href="">link</a></p>
+
+```
+
+### [Example 489](https://github.github.com/gfm/#example-489)
+
+This markdown:
+
+
+```markdown
+[a](<b)c>)
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><a href="b)c">a</a></p>
+
+```
+
+### [Example 495](https://github.github.com/gfm/#example-495)
+
+This markdown:
+
+
+```markdown
+[link](<foo(and(bar)>)
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><a href="foo(and(bar)">link</a></p>
+
+```
+
+### [Example 497](https://github.github.com/gfm/#example-497)
+
+This markdown:
+
+
+```markdown
+[link](#fragment)
+
+[link](http://example.com#fragment)
+
+[link](http://example.com?foo=3#frag)
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><a href="#fragment">link</a></p>
+<p><a href="http://example.com#fragment">link</a></p>
+<p><a href="http://example.com?foo=3#frag">link</a></p>
+
+```
+
+## Thematic breaks
+
+### [Example 13](https://github.github.com/gfm/#example-13)
+
+This markdown:
+
+
+```markdown
+***
+---
+___
+
+```
+
+Gives this correct output:
+
+
+```html
+<hr />
+<hr />
+<hr />
+
+```
+
+### [Example 14](https://github.github.com/gfm/#example-14)
+
+This markdown:
+
+
+```markdown
++++
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>+++</p>
+
+```
+
+### [Example 15](https://github.github.com/gfm/#example-15)
+
+This markdown:
+
+
+```markdown
+===
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>===</p>
+
+```
+
+### [Example 17](https://github.github.com/gfm/#example-17)
+
+This markdown:
+
+
+```markdown
+ ***
+  ***
+   ***
+
+```
+
+Gives this correct output:
+
+
+```html
+<hr />
+<hr />
+<hr />
+
+```
+
+### [Example 18](https://github.github.com/gfm/#example-18)
+
+This markdown:
+
+
+```markdown
+    ***
+
+```
+
+Gives this correct output:
+
+
+```html
+<pre><code>***
+</code></pre>
+
+```
+
+### [Example 20](https://github.github.com/gfm/#example-20)
+
+This markdown:
+
+
+```markdown
+_____________________________________
+
+```
+
+Gives this correct output:
+
+
+```html
+<hr />
+
+```
+
+### [Example 27](https://github.github.com/gfm/#example-27)
+
+This markdown:
+
+
+```markdown
+- foo
+***
+- bar
+
+```
+
+Gives this correct output:
+
+
+```html
+<ul>
+<li>foo</li>
+</ul>
+<hr />
+<ul>
+<li>bar</li>
+</ul>
+
+```
+
+### [Example 28](https://github.github.com/gfm/#example-28)
+
+This markdown:
+
+
+```markdown
+Foo
+***
+bar
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>Foo</p>
+<hr />
+<p>bar</p>
+
+```
+
+## List items
+
+### [Example 231](https://github.github.com/gfm/#example-231)
+
+This markdown:
+
+
+```markdown
+-one
+
+2.two
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>-one</p>
+<p>2.two</p>
+
+```
+
+### [Example 235](https://github.github.com/gfm/#example-235)
+
+This markdown:
+
+
+```markdown
+123456789. ok
+
+```
+
+Gives this correct output:
+
+
+```html
+<ol start="123456789">
+<li>ok</li>
+</ol>
+
+```
+
+### [Example 237](https://github.github.com/gfm/#example-237)
+
+This markdown:
+
+
+```markdown
+0. ok
+
+```
+
+Gives this correct output:
+
+
+```html
+<ol start="0">
+<li>ok</li>
+</ol>
+
+```
+
+### [Example 238](https://github.github.com/gfm/#example-238)
+
+This markdown:
+
+
+```markdown
+003. ok
+
+```
+
+Gives this correct output:
+
+
+```html
+<ol start="3">
+<li>ok</li>
+</ol>
+
+```
+
+### [Example 239](https://github.github.com/gfm/#example-239)
+
+This markdown:
+
+
+```markdown
+-1. not ok
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>-1. not ok</p>
+
+```
+
+### [Example 242](https://github.github.com/gfm/#example-242)
+
+This markdown:
+
+
+```markdown
+    indented code
+
+paragraph
+
+    more code
+
+```
+
+Gives this correct output:
+
+
+```html
+<pre><code>indented code
+</code></pre>
+<p>paragraph</p>
+<pre><code>more code
+</code></pre>
+
+```
+
+### [Example 252](https://github.github.com/gfm/#example-252)
+
+This markdown:
+
+
+```markdown
+- foo
+-   
+- bar
+
+```
+
+Gives this correct output:
+
+
+```html
+<ul>
+<li>foo</li>
+<li></li>
+<li>bar</li>
+</ul>
 
 ```
 
@@ -1124,768 +1814,6 @@ Gives this correct output:
 
 ```
 
-## [extension] Tables
-
-### [Example 203](https://github.github.com/gfm/#example-203)
-
-This markdown:
-
-
-```markdown
-| abc | def |
-| --- |
-| bar |
-```
-
-Gives this correct output:
-
-
-```html
-<p>| abc | def |
-| --- |
-| bar |</p>
-```
-
-## Fenced code blocks
-
-### [Example 89](https://github.github.com/gfm/#example-89)
-
-This markdown:
-
-
-```markdown
-```
-<
- >
-```
-
-```
-
-Gives this correct output:
-
-
-```html
-<pre><code>&lt;
- &gt;
-</code></pre>
-
-```
-
-### [Example 90](https://github.github.com/gfm/#example-90)
-
-This markdown:
-
-
-```markdown
-~~~
-<
- >
-~~~
-
-```
-
-Gives this correct output:
-
-
-```html
-<pre><code>&lt;
- &gt;
-</code></pre>
-
-```
-
-### [Example 92](https://github.github.com/gfm/#example-92)
-
-This markdown:
-
-
-```markdown
-```
-aaa
-~~~
-```
-
-```
-
-Gives this correct output:
-
-
-```html
-<pre><code>aaa
-~~~
-</code></pre>
-
-```
-
-### [Example 93](https://github.github.com/gfm/#example-93)
-
-This markdown:
-
-
-```markdown
-~~~
-aaa
-```
-~~~
-
-```
-
-Gives this correct output:
-
-
-```html
-<pre><code>aaa
-```
-</code></pre>
-
-```
-
-### [Example 99](https://github.github.com/gfm/#example-99)
-
-This markdown:
-
-
-```markdown
-```
-
-  
-```
-
-```
-
-Gives this correct output:
-
-
-```html
-<pre><code>
-  
-</code></pre>
-
-```
-
-### [Example 110](https://github.github.com/gfm/#example-110)
-
-This markdown:
-
-
-```markdown
-foo
-```
-bar
-```
-baz
-
-```
-
-Gives this correct output:
-
-
-```html
-<p>foo</p>
-<pre><code>bar
-</code></pre>
-<p>baz</p>
-
-```
-
-### [Example 117](https://github.github.com/gfm/#example-117)
-
-This markdown:
-
-
-```markdown
-```
-``` aaa
-```
-
-```
-
-Gives this correct output:
-
-
-```html
-<pre><code>``` aaa
-</code></pre>
-
-```
-
-## Hard line breaks
-
-### [Example 637](https://github.github.com/gfm/#example-637)
-
-This markdown:
-
-
-```markdown
-`code 
-span`
-
-```
-
-Gives this correct output:
-
-
-```html
-<p><code>code  span</code></p>
-
-```
-
-### [Example 638](https://github.github.com/gfm/#example-638)
-
-This markdown:
-
-
-```markdown
-`code\
-span`
-
-```
-
-Gives this correct output:
-
-
-```html
-<p><code>code\ span</code></p>
-
-```
-
-### [Example 641](https://github.github.com/gfm/#example-641)
-
-This markdown:
-
-
-```markdown
-foo\
-
-```
-
-Gives this correct output:
-
-
-```html
-<p>foo\</p>
-
-```
-
-### [Example 642](https://github.github.com/gfm/#example-642)
-
-This markdown:
-
-
-```markdown
-foo  
-
-```
-
-Gives this correct output:
-
-
-```html
-<p>foo</p>
-
-```
-
-### [Example 643](https://github.github.com/gfm/#example-643)
-
-This markdown:
-
-
-```markdown
-### foo\
-
-```
-
-Gives this correct output:
-
-
-```html
-<h3>foo\</h3>
-
-```
-
-### [Example 644](https://github.github.com/gfm/#example-644)
-
-This markdown:
-
-
-```markdown
-### foo  
-
-```
-
-Gives this correct output:
-
-
-```html
-<h3>foo</h3>
-
-```
-
-## List items
-
-### [Example 231](https://github.github.com/gfm/#example-231)
-
-This markdown:
-
-
-```markdown
--one
-
-2.two
-
-```
-
-Gives this correct output:
-
-
-```html
-<p>-one</p>
-<p>2.two</p>
-
-```
-
-### [Example 236](https://github.github.com/gfm/#example-236)
-
-This markdown:
-
-
-```markdown
-1234567890. not ok
-
-```
-
-Gives this correct output:
-
-
-```html
-<p>1234567890. not ok</p>
-
-```
-
-### [Example 239](https://github.github.com/gfm/#example-239)
-
-This markdown:
-
-
-```markdown
--1. not ok
-
-```
-
-Gives this correct output:
-
-
-```html
-<p>-1. not ok</p>
-
-```
-
-### [Example 242](https://github.github.com/gfm/#example-242)
-
-This markdown:
-
-
-```markdown
-    indented code
-
-paragraph
-
-    more code
-
-```
-
-Gives this correct output:
-
-
-```html
-<pre><code>indented code
-</code></pre>
-<p>paragraph</p>
-<pre><code>more code
-</code></pre>
-
-```
-
-## [extension] Strikethrough
-
-### [Example 492](https://github.github.com/gfm/#example-492)
-
-This markdown:
-
-
-```markdown
-This ~~has a
-
-new paragraph~~.
-```
-
-Gives this correct output:
-
-
-```html
-<p>This ~~has a</p>
-<p>new paragraph~~.</p>
-```
-
-## Indented code blocks
-
-### [Example 84](https://github.github.com/gfm/#example-84)
-
-This markdown:
-
-
-```markdown
-    foo
-bar
-
-```
-
-Gives this correct output:
-
-
-```html
-<pre><code>foo
-</code></pre>
-<p>bar</p>
-
-```
-
-### [Example 88](https://github.github.com/gfm/#example-88)
-
-This markdown:
-
-
-```markdown
-    foo  
-
-```
-
-Gives this correct output:
-
-
-```html
-<pre><code>foo  
-</code></pre>
-
-```
-
-## Links
-
-### [Example 482](https://github.github.com/gfm/#example-482)
-
-This markdown:
-
-
-```markdown
-[link](/uri)
-
-```
-
-Gives this correct output:
-
-
-```html
-<p><a href="/uri">link</a></p>
-
-```
-
-### [Example 483](https://github.github.com/gfm/#example-483)
-
-This markdown:
-
-
-```markdown
-[link]()
-
-```
-
-Gives this correct output:
-
-
-```html
-<p><a href="">link</a></p>
-
-```
-
-### [Example 484](https://github.github.com/gfm/#example-484)
-
-This markdown:
-
-
-```markdown
-[link](<>)
-
-```
-
-Gives this correct output:
-
-
-```html
-<p><a href="">link</a></p>
-
-```
-
-### [Example 489](https://github.github.com/gfm/#example-489)
-
-This markdown:
-
-
-```markdown
-[a](<b)c>)
-
-```
-
-Gives this correct output:
-
-
-```html
-<p><a href="b)c">a</a></p>
-
-```
-
-### [Example 495](https://github.github.com/gfm/#example-495)
-
-This markdown:
-
-
-```markdown
-[link](<foo(and(bar)>)
-
-```
-
-Gives this correct output:
-
-
-```html
-<p><a href="foo(and(bar)">link</a></p>
-
-```
-
-### [Example 497](https://github.github.com/gfm/#example-497)
-
-This markdown:
-
-
-```markdown
-[link](#fragment)
-
-[link](http://example.com#fragment)
-
-[link](http://example.com?foo=3#frag)
-
-```
-
-Gives this correct output:
-
-
-```html
-<p><a href="#fragment">link</a></p>
-<p><a href="http://example.com#fragment">link</a></p>
-<p><a href="http://example.com?foo=3#frag">link</a></p>
-
-```
-
-## Soft line breaks
-
-### [Example 645](https://github.github.com/gfm/#example-645)
-
-This markdown:
-
-
-```markdown
-foo
-baz
-
-```
-
-Gives this correct output:
-
-
-```html
-<p>foo
-baz</p>
-
-```
-
-## Setext headings
-
-### [Example 67](https://github.github.com/gfm/#example-67)
-
-This markdown:
-
-
-```markdown
-
-====
-
-```
-
-Gives this correct output:
-
-
-```html
-<p>====</p>
-
-```
-
-### [Example 68](https://github.github.com/gfm/#example-68)
-
-This markdown:
-
-
-```markdown
----
----
-
-```
-
-Gives this correct output:
-
-
-```html
-<hr />
-<hr />
-
-```
-
-### [Example 70](https://github.github.com/gfm/#example-70)
-
-This markdown:
-
-
-```markdown
-    foo
----
-
-```
-
-Gives this correct output:
-
-
-```html
-<pre><code>foo
-</code></pre>
-<hr />
-
-```
-
-### [Example 74](https://github.github.com/gfm/#example-74)
-
-This markdown:
-
-
-```markdown
-Foo
-bar
-
----
-
-baz
-
-```
-
-Gives this correct output:
-
-
-```html
-<p>Foo
-bar</p>
-<hr />
-<p>baz</p>
-
-```
-
-## Paragraphs
-
-### [Example 189](https://github.github.com/gfm/#example-189)
-
-This markdown:
-
-
-```markdown
-aaa
-
-bbb
-
-```
-
-Gives this correct output:
-
-
-```html
-<p>aaa</p>
-<p>bbb</p>
-
-```
-
-### [Example 190](https://github.github.com/gfm/#example-190)
-
-This markdown:
-
-
-```markdown
-aaa
-bbb
-
-ccc
-ddd
-
-```
-
-Gives this correct output:
-
-
-```html
-<p>aaa
-bbb</p>
-<p>ccc
-ddd</p>
-
-```
-
-### [Example 191](https://github.github.com/gfm/#example-191)
-
-This markdown:
-
-
-```markdown
-aaa
-
-
-bbb
-
-```
-
-Gives this correct output:
-
-
-```html
-<p>aaa</p>
-<p>bbb</p>
-
-```
-
-### [Example 195](https://github.github.com/gfm/#example-195)
-
-This markdown:
-
-
-```markdown
-    aaa
-bbb
-
-```
-
-Gives this correct output:
-
-
-```html
-<pre><code>aaa
-</code></pre>
-<p>bbb</p>
-
-```
-
 ## ATX headings
 
 ### [Example 32](https://github.github.com/gfm/#example-32)
@@ -2057,17 +1985,15 @@ Gives this correct output:
 
 ```
 
-## Thematic breaks
+## Backslash escapes
 
-### [Example 13](https://github.github.com/gfm/#example-13)
+### [Example 299](https://github.github.com/gfm/#example-299)
 
 This markdown:
 
 
 ```markdown
-***
----
-___
+\	\A\a\ \3\φ\«
 
 ```
 
@@ -2075,19 +2001,17 @@ Gives this correct output:
 
 
 ```html
-<hr />
-<hr />
-<hr />
+<p>\	\A\a\ \3\φ\«</p>
 
 ```
 
-### [Example 14](https://github.github.com/gfm/#example-14)
+### [Example 304](https://github.github.com/gfm/#example-304)
 
 This markdown:
 
 
 ```markdown
-+++
+    \[\]
 
 ```
 
@@ -2095,76 +2019,83 @@ Gives this correct output:
 
 
 ```html
-<p>+++</p>
-
-```
-
-### [Example 15](https://github.github.com/gfm/#example-15)
-
-This markdown:
-
-
-```markdown
-===
-
-```
-
-Gives this correct output:
-
-
-```html
-<p>===</p>
-
-```
-
-### [Example 17](https://github.github.com/gfm/#example-17)
-
-This markdown:
-
-
-```markdown
- ***
-  ***
-   ***
-
-```
-
-Gives this correct output:
-
-
-```html
-<hr />
-<hr />
-<hr />
-
-```
-
-### [Example 18](https://github.github.com/gfm/#example-18)
-
-This markdown:
-
-
-```markdown
-    ***
-
-```
-
-Gives this correct output:
-
-
-```html
-<pre><code>***
+<pre><code>\[\]
 </code></pre>
 
 ```
 
-### [Example 20](https://github.github.com/gfm/#example-20)
+### [Example 305](https://github.github.com/gfm/#example-305)
 
 This markdown:
 
 
 ```markdown
-_____________________________________
+~~~
+\[\]
+~~~
+
+```
+
+Gives this correct output:
+
+
+```html
+<pre><code>\[\]
+</code></pre>
+
+```
+
+## Setext headings
+
+### [Example 64](https://github.github.com/gfm/#example-64)
+
+This markdown:
+
+
+```markdown
+- Foo
+---
+
+```
+
+Gives this correct output:
+
+
+```html
+<ul>
+<li>Foo</li>
+</ul>
+<hr />
+
+```
+
+### [Example 67](https://github.github.com/gfm/#example-67)
+
+This markdown:
+
+
+```markdown
+
+====
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>====</p>
+
+```
+
+### [Example 68](https://github.github.com/gfm/#example-68)
+
+This markdown:
+
+
+```markdown
+---
+---
 
 ```
 
@@ -2173,17 +2104,200 @@ Gives this correct output:
 
 ```html
 <hr />
+<hr />
 
 ```
 
-### [Example 28](https://github.github.com/gfm/#example-28)
+### [Example 69](https://github.github.com/gfm/#example-69)
+
+This markdown:
+
+
+```markdown
+- foo
+-----
+
+```
+
+Gives this correct output:
+
+
+```html
+<ul>
+<li>foo</li>
+</ul>
+<hr />
+
+```
+
+### [Example 70](https://github.github.com/gfm/#example-70)
+
+This markdown:
+
+
+```markdown
+    foo
+---
+
+```
+
+Gives this correct output:
+
+
+```html
+<pre><code>foo
+</code></pre>
+<hr />
+
+```
+
+### [Example 74](https://github.github.com/gfm/#example-74)
 
 This markdown:
 
 
 ```markdown
 Foo
-***
+bar
+
+---
+
+baz
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>Foo
+bar</p>
+<hr />
+<p>baz</p>
+
+```
+
+## Hard line breaks
+
+### [Example 637](https://github.github.com/gfm/#example-637)
+
+This markdown:
+
+
+```markdown
+`code 
+span`
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><code>code  span</code></p>
+
+```
+
+### [Example 638](https://github.github.com/gfm/#example-638)
+
+This markdown:
+
+
+```markdown
+`code\
+span`
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><code>code\ span</code></p>
+
+```
+
+### [Example 641](https://github.github.com/gfm/#example-641)
+
+This markdown:
+
+
+```markdown
+foo\
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>foo\</p>
+
+```
+
+### [Example 642](https://github.github.com/gfm/#example-642)
+
+This markdown:
+
+
+```markdown
+foo  
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>foo</p>
+
+```
+
+### [Example 643](https://github.github.com/gfm/#example-643)
+
+This markdown:
+
+
+```markdown
+### foo\
+
+```
+
+Gives this correct output:
+
+
+```html
+<h3>foo\</h3>
+
+```
+
+### [Example 644](https://github.github.com/gfm/#example-644)
+
+This markdown:
+
+
+```markdown
+### foo  
+
+```
+
+Gives this correct output:
+
+
+```html
+<h3>foo</h3>
+
+```
+
+## Indented code blocks
+
+### [Example 84](https://github.github.com/gfm/#example-84)
+
+This markdown:
+
+
+```markdown
+    foo
 bar
 
 ```
@@ -2192,9 +2306,129 @@ Gives this correct output:
 
 
 ```html
-<p>Foo</p>
-<hr />
+<pre><code>foo
+</code></pre>
 <p>bar</p>
+
+```
+
+### [Example 88](https://github.github.com/gfm/#example-88)
+
+This markdown:
+
+
+```markdown
+    foo  
+
+```
+
+Gives this correct output:
+
+
+```html
+<pre><code>foo  
+</code></pre>
+
+```
+
+## Autolinks
+
+### [Example 607](https://github.github.com/gfm/#example-607)
+
+This markdown:
+
+
+```markdown
+http://example.com
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>http://example.com</p>
+
+```
+
+### [Example 608](https://github.github.com/gfm/#example-608)
+
+This markdown:
+
+
+```markdown
+foo@bar.example.com
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>foo@bar.example.com</p>
+
+```
+
+## Soft line breaks
+
+### [Example 645](https://github.github.com/gfm/#example-645)
+
+This markdown:
+
+
+```markdown
+foo
+baz
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>foo
+baz</p>
+
+```
+
+## Raw HTML
+
+### [Example 622](https://github.github.com/gfm/#example-622)
+
+This markdown:
+
+
+```markdown
+foo <!-- not a comment -- two hyphens -->
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>foo &lt;!-- not a comment -- two hyphens --&gt;</p>
+
+```
+
+### [Example 623](https://github.github.com/gfm/#example-623)
+
+This markdown:
+
+
+```markdown
+foo <!--> foo -->
+
+foo <!-- foo--->
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>foo &lt;!--&gt; foo --&gt;</p>
+<p>foo &lt;!-- foo---&gt;</p>
 
 ```
 

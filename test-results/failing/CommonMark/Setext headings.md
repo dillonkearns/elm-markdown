@@ -320,27 +320,6 @@ But instead was:
 ```html
 <p>&gt; foo bar ===</p>
 ```
-## [Example 64](https://spec.commonmark.org/0.29/#example-64)
-
-This markdown:
-
-```markdown
-- Foo
----
-
-```
-
-Should give output:
-
-```html
-<ul><li>Foo</li></ul><hr>
-```
-
-But instead was:
-
-```html
-<ul><li><p>Foo</p></li></ul><hr>
-```
 ## [Example 65](https://spec.commonmark.org/0.29/#example-65)
 
 This markdown:
@@ -387,27 +366,6 @@ But instead was:
 
 ```html
 <hr><p>Foo</p><hr><p>Bar</p><hr><p>Baz</p>
-```
-## [Example 69](https://spec.commonmark.org/0.29/#example-69)
-
-This markdown:
-
-```markdown
-- foo
------
-
-```
-
-Should give output:
-
-```html
-<ul><li>foo</li></ul><hr>
-```
-
-But instead was:
-
-```html
-<ul><li><p>foo</p></li></ul><hr>
 ```
 ## [Example 71](https://spec.commonmark.org/0.29/#example-71)
 
@@ -496,7 +454,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>Foo bar</p><ul><li><p><em></em></p></li></ul><p>baz</p>
+<p>Foo bar</p><ul><li><em></em></li></ul><p>baz</p>
 ```
 ## [Example 76](https://spec.commonmark.org/0.29/#example-76)
 
