@@ -1,7 +1,5 @@
-module Markdown.List exposing (..)
+module Markdown.UnorderedList exposing (parser)
 
-import Html exposing (Html)
-import Html.Attributes as Attr
 import Parser
 import Parser.Advanced as Advanced exposing (..)
 import Parser.Extra exposing (oneOrMore)

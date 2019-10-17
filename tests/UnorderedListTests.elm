@@ -1,9 +1,9 @@
-module ListTests exposing (suite)
+module UnorderedListTests exposing (suite)
 
 import Expect exposing (Expectation)
 import Markdown.Inlines
-import Markdown.List
 import Markdown.Parser exposing (..)
+import Markdown.UnorderedList
 import Parser
 import Parser.Advanced as Advanced
 import Test exposing (..)
@@ -22,7 +22,7 @@ suite =
 - Item 2
 - Item 3
 """
-                    |> Advanced.run Markdown.List.parser
+                    |> Advanced.run Markdown.UnorderedList.parser
                     |> Expect.equal
                         (Ok
                             [ "Item 1"
@@ -36,7 +36,7 @@ suite =
 + Item 2
 + Item 3
 """
-                    |> Advanced.run Markdown.List.parser
+                    |> Advanced.run Markdown.UnorderedList.parser
                     |> Expect.equal
                         (Ok
                             [ "Item 1"
@@ -50,7 +50,7 @@ suite =
 * Item 2
 * Item 3
 """
-                    |> Advanced.run Markdown.List.parser
+                    |> Advanced.run Markdown.UnorderedList.parser
                     |> Expect.equal
                         (Ok
                             [ "Item 1"
@@ -70,7 +70,7 @@ suite =
 * Item 8
 * Item 9
 """
-                    |> Advanced.run Markdown.List.parser
+                    |> Advanced.run Markdown.UnorderedList.parser
                     |> Expect.equal
                         (Ok
                             [ "Item 1"
@@ -85,7 +85,7 @@ suite =
 * Item 3
 *emphasized text following the list*
 """
-                    |> Advanced.run Markdown.List.parser
+                    |> Advanced.run Markdown.UnorderedList.parser
                     |> Expect.equal
                         (Ok
                             [ "Item 1 is *emphasized*"

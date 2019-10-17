@@ -53,7 +53,7 @@ type Block
     = Heading Int (List Inline)
     | Body (List Inline)
     | Html String (List Attribute) (List Block)
-    | ListBlock (List (List Inline))
+    | UnorderedListBlock (List (List Inline))
     | CodeBlock Markdown.CodeBlock.CodeBlock
     | ThematicBreak
 

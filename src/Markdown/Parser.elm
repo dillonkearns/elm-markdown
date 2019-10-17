@@ -13,7 +13,7 @@ import Markdown.CodeBlock
 import Markdown.Html exposing (..)
 import Markdown.HtmlRenderer
 import Markdown.Inlines as Inlines
-import Markdown.List
+import Markdown.UnorderedList
 import Parser
 import Parser.Advanced as Advanced exposing ((|.), (|=), Nestable(..), Step(..), andThen, chompIf, chompUntil, chompWhile, getChompedString, inContext, int, lazy, loop, map, multiComment, oneOf, problem, succeed, symbol, token)
 import Parser.Extra exposing (zeroOrMore)
@@ -188,7 +188,7 @@ renderHelper renderer blocks =
                 Block.Html tag attributes children ->
                     renderHtmlNode renderer tag attributes children
 
-                Block.ListBlock items ->
+                Block.UnorderedListBlock items ->
                     items
                         |> List.map (renderStyled renderer)
                         |> combineResults
@@ -365,7 +365,7 @@ parseInlines rawBlock =
                 |> List.map (parseRawInline identity)
                 |> List.reverse
                 |> combine
-                |> map Block.ListBlock
+                |> map Block.UnorderedListBlock
                 |> map Just
 
         CodeBlock codeBlock ->
@@ -407,9 +407,9 @@ plainLine =
             ]
 
 
-listBlock : Parser RawBlock
-listBlock =
-    Markdown.List.parser
+unorderedListBlock : Parser RawBlock
+unorderedListBlock =
+    Markdown.UnorderedList.parser
         |> map (List.map UnparsedInlines)
         |> map ListBlock
 
@@ -574,7 +574,7 @@ statementsHelp2 revStmts =
         , blankLine |> keepLooping
         , Markdown.CodeBlock.parser |> map CodeBlock |> keepLooping
         , thematicBreak |> keepLooping
-        , listBlock |> keepLooping
+        , unorderedListBlock |> keepLooping
         , heading |> keepLooping
         , htmlParser |> keepLooping
         , plainLine |> keepLooping
