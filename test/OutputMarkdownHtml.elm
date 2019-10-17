@@ -105,7 +105,13 @@ renderMarkdown markdown =
                         )
             , orderedList =
                 \startingIndex items ->
-                    Html.ol [ Attr.start startingIndex ]
+                    Html.ol
+                        (if startingIndex /= 1 then
+                            [ Attr.start startingIndex ]
+
+                         else
+                            []
+                        )
                         (items
                             |> List.map
                                 (\itemBlocks ->
