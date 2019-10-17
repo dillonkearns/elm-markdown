@@ -146,6 +146,21 @@ suite =
                               ]
                             )
                         )
+        , test "When the marker changes in the middle of a list" <|
+            \() ->
+                """1. foo
+2. bar
+3) baz
+"""
+                    |> Advanced.run Markdown.OrderedList.parser
+                    |> Expect.equal
+                        (Ok
+                            ( 1
+                            , [ "foo"
+                              , "bar"
+                              ]
+                            )
+                        )
         , test "Text starting with a decimal number" <|
             \() ->
                 """4.3

@@ -154,7 +154,7 @@ Hello!
                             -- , ListBlock []
                             ]
                         )
-        , test "sibling lists with different markers" <|
+        , test "sibling unordered lists with different markers" <|
             \() ->
                 """- Item 1
 - Item 2
@@ -183,6 +183,24 @@ Hello!
                                 [ unstyledText "Item 7"
                                 , unstyledText "Item 8"
                                 , unstyledText "Item 9"
+                                ]
+                            ]
+                        )
+        , test "sibling ordered lists with different markers" <|
+            \() ->
+                """1. foo
+2. bar
+3) baz
+"""
+                    |> parse
+                    |> Expect.equal
+                        (Ok
+                            [ Block.OrderedListBlock 1
+                                [ unstyledText "foo"
+                                , unstyledText "bar"
+                                ]
+                            , Block.OrderedListBlock 3
+                                [ unstyledText "baz"
                                 ]
                             ]
                         )

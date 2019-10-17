@@ -614,6 +614,7 @@ statementsHelp2 revStmts =
         , Markdown.CodeBlock.parser |> map CodeBlock |> keepLooping
         , thematicBreak |> keepLooping
         , unorderedListBlock |> keepLooping
+        , orderedListBlock |> keepLooping
         , heading |> keepLooping
         , htmlParser |> keepLooping
         , plainLine |> keepLooping
