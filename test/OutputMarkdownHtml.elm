@@ -100,7 +100,7 @@ renderMarkdown markdown =
                             |> List.map
                                 (\itemBlocks ->
                                     Html.li []
-                                        [ itemBlocks ]
+                                        itemBlocks
                                 )
                         )
             , orderedList =
@@ -116,7 +116,7 @@ renderMarkdown markdown =
                             |> List.map
                                 (\itemBlocks ->
                                     Html.li []
-                                        [ itemBlocks ]
+                                        itemBlocks
                                 )
                         )
             , html = Markdown.Html.oneOf []

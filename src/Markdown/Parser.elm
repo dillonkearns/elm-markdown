@@ -44,8 +44,8 @@ type alias Renderer view =
     , italic : String -> view
     , link : { title : Maybe String, destination : String } -> List view -> Result String view
     , image : { src : String } -> String -> Result String view
-    , unorderedList : List view -> view
-    , orderedList : Int -> List view -> view
+    , unorderedList : List (List view) -> view
+    , orderedList : Int -> List (List view) -> view
     , codeBlock : { body : String, language : Maybe String } -> view
     , thematicBreak : view
     }
@@ -103,7 +103,7 @@ defaultHtmlRenderer =
                     |> List.map
                         (\itemBlocks ->
                             Html.li []
-                                [ itemBlocks ]
+                                itemBlocks
                         )
                 )
     , orderedList =
@@ -119,7 +119,7 @@ defaultHtmlRenderer =
                     |> List.map
                         (\itemBlocks ->
                             Html.li []
-                                [ itemBlocks ]
+                                itemBlocks
                         )
                 )
     , html = Markdown.Html.oneOf []
@@ -210,14 +210,12 @@ renderHelper renderer blocks =
                     items
                         |> List.map (renderStyled renderer)
                         |> combineResults
-                        |> Result.map (List.map renderer.raw)
                         |> Result.map renderer.unorderedList
 
                 Block.OrderedListBlock startingIndex items ->
                     items
                         |> List.map (renderStyled renderer)
                         |> combineResults
-                        |> Result.map (List.map renderer.raw)
                         |> Result.map (renderer.orderedList startingIndex)
 
                 Block.CodeBlock codeBlock ->
@@ -417,6 +415,7 @@ just value =
     succeed (Just value)
 
 
+parseRawInline : (List Inline -> a) -> UnparsedInlines -> Advanced.Parser c Parser.Problem a
 parseRawInline wrap (UnparsedInlines unparsedInlines) =
     case Advanced.run Inlines.parse unparsedInlines of
         Ok styledLine ->
