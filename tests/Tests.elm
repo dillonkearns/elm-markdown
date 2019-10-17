@@ -43,6 +43,11 @@ suite =
                     "*This is not a list, it's a paragraph with emphasis*\n"
                         |> parse
                         |> Expect.equal (Ok [ Block.Body (emphasisText "This is not a list, it's a paragraph with emphasis") ])
+            , test "Line starting with a decimal is not interpreted as a list" <|
+                \() ->
+                    "3.5 is a number - is not a list\n"
+                        |> parse
+                        |> Expect.equal (Ok [ Block.Body (unstyledText "3.5 is a number - is not a list") ])
             , test "Heading 7 is invalid" <|
                 \() ->
                     "####### Hello!"

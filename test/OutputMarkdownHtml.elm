@@ -93,9 +93,19 @@ renderMarkdown markdown =
                         |> Ok
             , plain =
                 Html.text
-            , list =
+            , unorderedList =
                 \items ->
                     Html.ul []
+                        (items
+                            |> List.map
+                                (\itemBlocks ->
+                                    Html.li []
+                                        [ itemBlocks ]
+                                )
+                        )
+            , orderedList =
+                \startingIndex items ->
+                    Html.ol [ Attr.start startingIndex ]
                         (items
                             |> List.map
                                 (\itemBlocks ->

@@ -54,6 +54,7 @@ type Block
     | Body (List Inline)
     | Html String (List Attribute) (List Block)
     | UnorderedListBlock (List (List Inline))
+    | OrderedListBlock Int (List (List Inline))
     | CodeBlock Markdown.CodeBlock.CodeBlock
     | ThematicBreak
 
