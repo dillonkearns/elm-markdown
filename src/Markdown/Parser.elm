@@ -10,7 +10,7 @@ import Html exposing (Html)
 import Html.Attributes as Attr
 import Markdown.Block as Block exposing (Block, Inline)
 import Markdown.CodeBlock
-import Markdown.Html exposing (..)
+import Markdown.Html
 import Markdown.HtmlRenderer
 import Markdown.Inlines as Inlines
 import Markdown.List
