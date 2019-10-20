@@ -100,7 +100,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><a f&ouml;&ouml;\""="" href="/föö \">foo</a></p>
+ERROR Problem at row 3 Expecting Problem at row 1 Link destinations can&#39;t contain whitespace, if you would like to include them please wrap your URL with &lt; .. &gt;
 ```
 ## [Example 319](https://spec.commonmark.org/0.29/#example-319)
 
@@ -247,5 +247,5 @@ Should give output:
 But instead was:
 
 ```html
-<p><a href="url &quot;tit&quot;">a</a></p>
+ERROR Problem at row 3 Expecting Problem at row 1 Link destinations can&#39;t contain whitespace, if you would like to include them please wrap your URL with &lt; .. &gt;
 ```

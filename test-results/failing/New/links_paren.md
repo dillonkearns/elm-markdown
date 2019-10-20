@@ -22,5 +22,5 @@ Should give output:
 But instead was:
 
 ```html
-<p>(<a href="http://example.com/1">one</a>) (<a href="http://example.com/2">two</a>)</p><p>(<a href="http://example.com/1">one</a>) (<a href="http://example.com/2">two</a>)</p><p>(<a a\""="" href="http://example.com/1 \">one</a>) (<a b\""="" href="http://example.com/2 \">two</a>)</p>
+ERROR Problem at row 9 Expecting Problem at row 1 Link destinations can&#39;t contain whitespace, if you would like to include them please wrap your URL with &lt; .. &gt;
 ```

@@ -167,7 +167,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><a href="/bar\* \" ti\*tle\""="">foo</a></p>
+ERROR Problem at row 3 Expecting Problem at row 1 Link destinations can&#39;t contain whitespace, if you would like to include them please wrap your URL with &lt; .. &gt;
 ```
 ## [Example 309](https://github.github.com/gfm/#example-309)
 

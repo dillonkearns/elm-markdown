@@ -18,7 +18,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><a href="/uri \" title\""="">link</a></p>
+ERROR Problem at row 3 Expecting Problem at row 1 Link destinations can&#39;t contain whitespace, if you would like to include them please wrap your URL with &lt; .. &gt;
 ```
 ## [Example 485](https://spec.commonmark.org/0.29/#example-485)
 
@@ -38,7 +38,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><a href="/my uri">link</a></p>
+ERROR Problem at row 3 Expecting Problem at row 1 Link destinations can&#39;t contain whitespace, if you would like to include them please wrap your URL with &lt; .. &gt;
 ```
 ## [Example 486](https://spec.commonmark.org/0.29/#example-486)
 
@@ -79,7 +79,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><a href="foo bar">link</a></p>
+ERROR Problem at row 5 Expecting Problem at row 1 Link destinations can&#39;t contain whitespace, if you would like to include them please wrap your URL with &lt; .. &gt;
 ```
 ## [Example 488](https://spec.commonmark.org/0.29/#example-488)
 
@@ -304,7 +304,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><a href="/url \" title\""="">link</a><a href="/url &#39;title&#39;">link</a><a href="/url (title">link</a>)</p>
+ERROR Problem at row 7 Expecting Problem at row 1 Link destinations can&#39;t contain whitespace, if you would like to include them please wrap your URL with &lt; .. &gt;
 ```
 ## [Example 502](https://spec.commonmark.org/0.29/#example-502)
 
@@ -324,7 +324,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><a \\"&quot;\""="" href="/url \" title="">link</a></p>
+ERROR Problem at row 3 Expecting Problem at row 1 Link destinations can&#39;t contain whitespace, if you would like to include them please wrap your URL with &lt; .. &gt;
 ```
 ## [Example 503](https://spec.commonmark.org/0.29/#example-503)
 
@@ -364,7 +364,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><a \"and\"="" href="/url \" title="" title\""="">link</a></p>
+ERROR Problem at row 3 Expecting Problem at row 1 Link destinations can&#39;t contain whitespace, if you would like to include them please wrap your URL with &lt; .. &gt;
 ```
 ## [Example 505](https://spec.commonmark.org/0.29/#example-505)
 
@@ -384,7 +384,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><a and\"="" href="/url &#39;title \" title'"="">link</a></p>
+ERROR Problem at row 3 Expecting Problem at row 1 Link destinations can&#39;t contain whitespace, if you would like to include them please wrap your URL with &lt; .. &gt;
 ```
 ## [Example 506](https://spec.commonmark.org/0.29/#example-506)
 
