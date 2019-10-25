@@ -217,6 +217,14 @@ suite =
 """
                     |> Advanced.run Markdown.OrderedList.parser
                     |> Expect.err
+        , test "A list cannot start with a number longer than 9 digits" <|
+            \() ->
+                """1234567890. item 1
+1234567891. item 2
+1234567892. item 3
+"""
+                    |> Advanced.run Markdown.OrderedList.parser
+                    |> Expect.err
         ]
 
 

@@ -23,6 +23,19 @@ parser =
             )
 
 
+positiveIntegerMaxOf9Digits : Parser Int
+positiveIntegerMaxOf9Digits =
+    Parser.Extra.positiveInteger
+        |> Advanced.andThen
+            (\parsed ->
+                if parsed <= 999999999 then
+                    Advanced.succeed parsed
+
+                else
+                    Advanced.problem (Parser.Problem "Starting numbers must be nine digits or less.")
+            )
+
+
 listMarkerParser : Parser ( Int, String )
 listMarkerParser =
     let
@@ -31,7 +44,7 @@ listMarkerParser =
             Advanced.getChompedString (Advanced.symbol (Advanced.Token marker (Parser.ExpectingSymbol marker)))
     in
     succeed Tuple.pair
-        |= Parser.Extra.positiveInteger
+        |= positiveIntegerMaxOf9Digits
         |= Advanced.oneOf
             [ markerOption "."
             , markerOption ")"
