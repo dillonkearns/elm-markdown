@@ -246,7 +246,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li>a</li></ul><ul><li>c</li></ul>
+<ul><li>a</li><li></li></ul><ul><li>c</li></ul>
 ```
 ## [Example 286](https://github.github.com/gfm/#example-286)
 

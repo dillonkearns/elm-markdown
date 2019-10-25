@@ -486,50 +486,6 @@ But instead was:
 ```html
 ERROR Problem at row 4 Expecting --- Problem at row 4 Expecting *** Problem at row 4 Expecting ___
 ```
-## [Example 251](https://github.github.com/gfm/#example-251)
-
-This markdown:
-
-```markdown
-- foo
--
-- bar
-
-```
-
-Should give output:
-
-```html
-<ul><li>foo</li><li></li><li>bar</li></ul>
-```
-
-But instead was:
-
-```html
-<ul><li>foo</li></ul><p>-</p><ul><li>bar</li></ul>
-```
-## [Example 253](https://github.github.com/gfm/#example-253)
-
-This markdown:
-
-```markdown
-1. foo
-2.
-3. bar
-
-```
-
-Should give output:
-
-```html
-<ol><li>foo</li><li></li><li>bar</li></ol>
-```
-
-But instead was:
-
-```html
-<ol><li>foo</li></ol><p>2. 3. bar</p>
-```
 ## [Example 254](https://github.github.com/gfm/#example-254)
 
 This markdown:
