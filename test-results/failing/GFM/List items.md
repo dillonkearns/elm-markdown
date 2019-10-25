@@ -258,26 +258,6 @@ But instead was:
 ```html
 <ul><li>Foo</li></ul><pre><code>bar</code></pre><pre><code>baz</code></pre>
 ```
-## [Example 236](https://github.github.com/gfm/#example-236)
-
-This markdown:
-
-```markdown
-1234567890. not ok
-
-```
-
-Should give output:
-
-```html
-<p>1234567890. not ok</p>
-```
-
-But instead was:
-
-```html
-<ol start="1234567890"><li>not ok</li></ol>
-```
 ## [Example 240](https://github.github.com/gfm/#example-240)
 
 This markdown:
