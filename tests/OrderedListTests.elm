@@ -1,4 +1,4 @@
-module OrderedList exposing (..)
+module OrderedListTests exposing (..)
 
 import Expect exposing (Expectation)
 import Markdown.OrderedList
