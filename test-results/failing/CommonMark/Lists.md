@@ -1,26 +1,5 @@
 # CommonMark - Lists
 
-## [Example 274](https://spec.commonmark.org/0.29/#example-274)
-
-This markdown:
-
-```markdown
-The number of windows in my house is
-14.  The number of doors is 6.
-
-```
-
-Should give output:
-
-```html
-<p>The number of windows in my house is 14. The number of doors is 6.</p>
-```
-
-But instead was:
-
-```html
-<p>The number of windows in my house is</p><ol start="14"><li>The number of doors is 6.</li></ol>
-```
 ## [Example 276](https://spec.commonmark.org/0.29/#example-276)
 
 This markdown:

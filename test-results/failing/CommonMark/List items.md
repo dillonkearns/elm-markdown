@@ -528,7 +528,7 @@ Should give output:
 But instead was:
 
 ```html
-<ol><li>foo</li></ol><p>2.</p><ol start="3"><li>bar</li></ol>
+<ol><li>foo</li></ol><p>2. 3. bar</p>
 ```
 ## [Example 254](https://spec.commonmark.org/0.29/#example-254)
 

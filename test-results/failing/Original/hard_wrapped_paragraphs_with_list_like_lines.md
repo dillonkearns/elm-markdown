@@ -25,5 +25,5 @@ Should give output:
 But instead was:
 
 ```html
-<p>In Markdown 1.0.0 and earlier. Version</p><ol start="8"><li>This line turns into a list item.</li></ol><p>Because a hard-wrapped line in the middle of a paragraph looked like a list item.</p><p>Here&#39;s one with a bullet.</p><ul><li>criminey.</li></ul>
+<p>In Markdown 1.0.0 and earlier. Version 8. This line turns into a list item. Because a hard-wrapped line in the middle of a paragraph looked like a list item.</p><p>Here&#39;s one with a bullet.</p><ul><li>criminey.</li></ul>
 ```
