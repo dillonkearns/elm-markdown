@@ -204,19 +204,16 @@ Hello!
                                 ]
                             ]
                         )
-        , skip <|
-            test "A paragraph with a numeral that is NOT 1 in the text before a blank line" <|
-                \() ->
-                    """The number of windows in my house is
+        , test "A paragraph with a numeral that is NOT 1 in the text before a blank line" <|
+            \() ->
+                """The number of windows in my house is
 14.  The number of doors is 6."""
-                        |> parse
-                        |> Expect.equal
-                            (Ok
-                                [ Block.Body (unstyledText """The number of windows in my house is
-14.  The number of doors is 6.
-""")
-                                ]
-                            )
+                    |> parse
+                    |> Expect.equal
+                        (Ok
+                            [ Block.Body (unstyledText """The number of windows in my house is 14.  The number of doors is 6.""")
+                            ]
+                        )
         , test "A paragraph with a numeral that IS 1 in the text" <|
             \() ->
                 """The number of windows in my house is

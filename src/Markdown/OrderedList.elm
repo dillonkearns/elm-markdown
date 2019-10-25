@@ -1,5 +1,6 @@
 module Markdown.OrderedList exposing (parser)
 
+import Markdown.RawBlock exposing (RawBlock(..))
 import Parser
 import Parser.Advanced as Advanced exposing (..)
 import Parser.Extra exposing (oneOrMore)
@@ -13,9 +14,9 @@ type alias ListItem =
     String
 
 
-parser : Parser ( Int, List ListItem )
-parser =
-    openingItemParser
+parser : Maybe RawBlock -> Parser ( Int, List ListItem )
+parser lastBlock =
+    openingItemParser lastBlock
         |> andThen
             (\( startingIndex, listMarker, firstItem ) ->
                 loop [] (statementsHelp listMarker firstItem)
@@ -51,10 +52,27 @@ listMarkerParser =
             ]
 
 
-openingItemParser : Parser ( Int, String, ListItem )
-openingItemParser =
+openingItemParser : Maybe RawBlock -> Parser ( Int, String, ListItem )
+openingItemParser lastBlock =
+    let
+        validateStartsWith1 parsed =
+            case parsed of
+                ( 1, _ ) ->
+                    Advanced.succeed parsed
+
+                _ ->
+                    Advanced.problem (Parser.Problem "Lists inside a paragraph or after a paragraph without a blank line must start with 1")
+
+        validateStartsWith1IfInParagraph parsed =
+            case lastBlock of
+                Just (Body _) ->
+                    validateStartsWith1 parsed
+
+                _ ->
+                    succeed parsed
+    in
     succeed (\( startingIndex, marker ) item -> ( startingIndex, marker, item ))
-        |= (backtrackable listMarkerParser
+        |= (backtrackable (listMarkerParser |> andThen validateStartsWith1IfInParagraph)
                 |. oneOrMore (\c -> c == ' ')
            )
         |= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")

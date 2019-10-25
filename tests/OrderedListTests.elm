@@ -21,7 +21,7 @@ suite =
 2. Item 2
 3. Item 3
 """
-                    |> Advanced.run Markdown.OrderedList.parser
+                    |> Advanced.run (Markdown.OrderedList.parser Nothing)
                     |> Expect.equal
                         (Ok
                             ( 1
@@ -37,7 +37,7 @@ suite =
 1. Item 2
 1. Item 3
 """
-                    |> Advanced.run Markdown.OrderedList.parser
+                    |> Advanced.run (Markdown.OrderedList.parser Nothing)
                     |> Expect.equal
                         (Ok
                             ( 1
@@ -53,7 +53,7 @@ suite =
 3. Item 2
 8. Item 3
 """
-                    |> Advanced.run Markdown.OrderedList.parser
+                    |> Advanced.run (Markdown.OrderedList.parser Nothing)
                     |> Expect.equal
                         (Ok
                             ( 1
@@ -69,7 +69,7 @@ suite =
 3. Item 2
 3. Item 3
 """
-                    |> Advanced.run Markdown.OrderedList.parser
+                    |> Advanced.run (Markdown.OrderedList.parser Nothing)
                     |> Expect.equal
                         (Ok
                             ( 3
@@ -85,7 +85,7 @@ suite =
 1. Item 2
 2. Item 3
 """
-                    |> Advanced.run Markdown.OrderedList.parser
+                    |> Advanced.run (Markdown.OrderedList.parser Nothing)
                     |> Expect.equal
                         (Ok
                             ( 0
@@ -101,7 +101,7 @@ suite =
 0003. Item 2
 00003. Item 3
 """
-                    |> Advanced.run Markdown.OrderedList.parser
+                    |> Advanced.run (Markdown.OrderedList.parser Nothing)
                     |> Expect.equal
                         (Ok
                             ( 3
@@ -117,7 +117,7 @@ suite =
 2. Item 2
 1. Item 3
 """
-                    |> Advanced.run Markdown.OrderedList.parser
+                    |> Advanced.run (Markdown.OrderedList.parser Nothing)
                     |> Expect.equal
                         (Ok
                             ( 3
@@ -133,7 +133,7 @@ suite =
 2) Item 2
 3) Item 3
 """
-                    |> Advanced.run Markdown.OrderedList.parser
+                    |> Advanced.run (Markdown.OrderedList.parser Nothing)
                     |> Expect.equal
                         (Ok
                             ( 1
@@ -149,7 +149,7 @@ suite =
 3) Item 2
 3) Item 3
 """
-                    |> Advanced.run Markdown.OrderedList.parser
+                    |> Advanced.run (Markdown.OrderedList.parser Nothing)
                     |> Expect.equal
                         (Ok
                             ( 3
@@ -168,7 +168,7 @@ suite =
 2. Item 5
 3. Item 6
 """
-                    |> Advanced.run Markdown.OrderedList.parser
+                    |> Advanced.run (Markdown.OrderedList.parser Nothing)
                     |> Expect.equal
                         (Ok
                             ( 1
@@ -184,7 +184,7 @@ suite =
 2. bar
 3) baz
 """
-                    |> Advanced.run Markdown.OrderedList.parser
+                    |> Advanced.run (Markdown.OrderedList.parser Nothing)
                     |> Expect.equal
                         (Ok
                             ( 1
@@ -197,25 +197,25 @@ suite =
             \() ->
                 """4.3
 """
-                    |> Advanced.run Markdown.OrderedList.parser
+                    |> Advanced.run (Markdown.OrderedList.parser Nothing)
                     |> Expect.err
         , test "A list that doesn't have a space after the period marker" <|
             \() ->
                 """1.testing
 """
-                    |> Advanced.run Markdown.OrderedList.parser
+                    |> Advanced.run (Markdown.OrderedList.parser Nothing)
                     |> Expect.err
         , test "A list that doesn't have a space after the parenthesis marker" <|
             \() ->
                 """1)testing
 """
-                    |> Advanced.run Markdown.OrderedList.parser
+                    |> Advanced.run (Markdown.OrderedList.parser Nothing)
                     |> Expect.err
         , test "Text starting with a parenthetical statement" <|
             \() ->
                 """(test) data
 """
-                    |> Advanced.run Markdown.OrderedList.parser
+                    |> Advanced.run (Markdown.OrderedList.parser Nothing)
                     |> Expect.err
         , test "A list cannot start with a number longer than 9 digits" <|
             \() ->
@@ -223,7 +223,7 @@ suite =
 1234567891. item 2
 1234567892. item 3
 """
-                    |> Advanced.run Markdown.OrderedList.parser
+                    |> Advanced.run (Markdown.OrderedList.parser Nothing)
                     |> Expect.err
         ]
 

@@ -14,6 +14,7 @@ import Markdown.Html exposing (..)
 import Markdown.HtmlRenderer
 import Markdown.Inlines as Inlines
 import Markdown.OrderedList
+import Markdown.RawBlock exposing (Attribute, RawBlock(..), UnparsedInlines(..))
 import Markdown.UnorderedList
 import Parser
 import Parser.Advanced as Advanced exposing ((|.), (|=), Nestable(..), Step(..), andThen, chompIf, chompUntil, chompWhile, getChompedString, inContext, int, lazy, loop, map, multiComment, oneOf, problem, succeed, symbol, token)
@@ -342,25 +343,6 @@ type alias Parser a =
     Advanced.Parser String Parser.Problem a
 
 
-type alias Attribute =
-    { name : String, value : String }
-
-
-type UnparsedInlines
-    = UnparsedInlines String
-
-
-type RawBlock
-    = Heading Int UnparsedInlines
-    | Body UnparsedInlines
-    | Html String (List Attribute) (List Block)
-    | UnorderedListBlock (List UnparsedInlines)
-    | OrderedListBlock Int (List UnparsedInlines)
-    | CodeBlock Markdown.CodeBlock.CodeBlock
-    | ThematicBreak
-    | BlankLine
-
-
 parseInlines : RawBlock -> Parser (Maybe Block)
 parseInlines rawBlock =
     case rawBlock of
@@ -447,9 +429,9 @@ unorderedListBlock =
         |> map UnorderedListBlock
 
 
-orderedListBlock : Parser RawBlock
-orderedListBlock =
-    Markdown.OrderedList.parser
+orderedListBlock : Maybe RawBlock -> Parser RawBlock
+orderedListBlock lastBlock =
+    Markdown.OrderedList.parser lastBlock
         |> map (\( startingIndex, unparsedLines ) -> OrderedListBlock startingIndex (List.map UnparsedInlines unparsedLines))
 
 
@@ -614,7 +596,7 @@ statementsHelp2 revStmts =
         , Markdown.CodeBlock.parser |> map CodeBlock |> keepLooping
         , thematicBreak |> keepLooping
         , unorderedListBlock |> keepLooping
-        , orderedListBlock |> keepLooping
+        , orderedListBlock (List.head revStmts) |> keepLooping
         , heading |> keepLooping
         , htmlParser |> keepLooping
         , plainLine |> keepLooping
