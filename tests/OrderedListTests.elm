@@ -193,6 +193,22 @@ suite =
                               ]
                             )
                         )
+        , test "When there is an empty item" <|
+            \() ->
+                """1. foo
+2.
+3. bar
+"""
+                    |> Advanced.run (Markdown.OrderedList.parser Nothing)
+                    |> Expect.equal
+                        (Ok
+                            ( 1
+                            , [ "foo"
+                              , ""
+                              , "bar"
+                              ]
+                            )
+                        )
         , test "Text starting with a decimal number" <|
             \() ->
                 """4.3

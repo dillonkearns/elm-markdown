@@ -93,6 +93,20 @@ suite =
                             , "Item 3"
                             ]
                         )
+        , test "When there is an empty item" <|
+            \() ->
+                """* foo
+*
+* bar
+"""
+                    |> Advanced.run Markdown.UnorderedList.parser
+                    |> Expect.equal
+                        (Ok
+                            [ "foo"
+                            , ""
+                            , "bar"
+                            ]
+                        )
         ]
 
 

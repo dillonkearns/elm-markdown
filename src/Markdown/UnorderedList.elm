@@ -50,11 +50,21 @@ singleItemParser : String -> Parser ListItem
 singleItemParser listMarker =
     succeed identity
         |. backtrackable
-            (Advanced.symbol (Advanced.Token listMarker (Parser.ExpectingSymbol listMarker))
-                |. oneOrMore (\c -> c == ' ')
-            )
-        |= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
-        |. Advanced.symbol (Advanced.Token "\n" (Parser.ExpectingSymbol "\n"))
+            (Advanced.symbol (Advanced.Token listMarker (Parser.ExpectingSymbol listMarker)))
+        |= itemBody
+
+
+itemBody : Parser ListItem
+itemBody =
+    oneOf
+        [ succeed identity
+            |. backtrackable (oneOrMore (\c -> c == ' '))
+            |. commit ""
+            |= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
+            |. Advanced.symbol (Advanced.Token "\n" (Parser.ExpectingSymbol "\n"))
+        , succeed ""
+            |. Advanced.symbol (Advanced.Token "\n" (Parser.ExpectingSymbol "\n"))
+        ]
 
 
 statementsHelp : String -> ListItem -> List ListItem -> Parser (Step (List ListItem) (List ListItem))
