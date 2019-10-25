@@ -79,6 +79,38 @@ suite =
                               ]
                             )
                         )
+        , test "A list can start at 0" <|
+            \() ->
+                """0. Item 1
+1. Item 2
+2. Item 3
+"""
+                    |> Advanced.run Markdown.OrderedList.parser
+                    |> Expect.equal
+                        (Ok
+                            ( 0
+                            , [ "Item 1"
+                              , "Item 2"
+                              , "Item 3"
+                              ]
+                            )
+                        )
+        , test "A list starting number can have leading zeros" <|
+            \() ->
+                """003. Item 1
+0003. Item 2
+00003. Item 3
+"""
+                    |> Advanced.run Markdown.OrderedList.parser
+                    |> Expect.equal
+                        (Ok
+                            ( 3
+                            , [ "Item 1"
+                              , "Item 2"
+                              , "Item 3"
+                              ]
+                            )
+                        )
         , test "basic list with that start with '3.' and follow with decreasing numbers" <|
             \() ->
                 """3. Item 1
