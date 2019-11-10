@@ -218,4 +218,73 @@ Expecting attribute "first".
                                 }
                             ]
                         )
+        , test "html entity in attribute" <|
+            \() ->
+                """<link url="https://example.com?a=1&amp;b=2" />"""
+                    |> render
+                        (testRenderer
+                            [ Markdown.Html.tag "link"
+                                (\urlText children ->
+                                    Html
+                                        { tag = "link"
+                                        , urlText = urlText
+                                        }
+                                )
+                                |> Markdown.Html.withAttribute "url"
+                            ]
+                        )
+                    |> Expect.equal
+                        (Ok
+                            [ Html
+                                { tag = "link"
+                                , urlText = "https://example.com?a=1&b=2"
+                                }
+                            ]
+                        )
+        , test "html code in attribute" <|
+            \() ->
+                """<link url="https://example.com?a=1&#38;b=2" />"""
+                    |> render
+                        (testRenderer
+                            [ Markdown.Html.tag "link"
+                                (\urlText children ->
+                                    Html
+                                        { tag = "link"
+                                        , urlText = urlText
+                                        }
+                                )
+                                |> Markdown.Html.withAttribute "url"
+                            ]
+                        )
+                    |> Expect.equal
+                        (Ok
+                            [ Html
+                                { tag = "link"
+                                , urlText = "https://example.com?a=1&b=2"
+                                }
+                            ]
+                        )
+        , test "hex code in attribute" <|
+            \() ->
+                """<link url="https://example.com?a=1&#x26;b=2" />"""
+                    |> render
+                        (testRenderer
+                            [ Markdown.Html.tag "link"
+                                (\urlText children ->
+                                    Html
+                                        { tag = "link"
+                                        , urlText = urlText
+                                        }
+                                )
+                                |> Markdown.Html.withAttribute "url"
+                            ]
+                        )
+                    |> Expect.equal
+                        (Ok
+                            [ Html
+                                { tag = "link"
+                                , urlText = "https://example.com?a=1&b=2"
+                                }
+                            ]
+                        )
         ]
