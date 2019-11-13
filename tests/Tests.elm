@@ -38,6 +38,11 @@ suite =
                     "## Hello!"
                         |> parse
                         |> Expect.equal (Ok [ Block.Heading 2 (unstyledText "Hello!") ])
+            , test "Emphasis line is not interpreted as a list" <|
+                \() ->
+                    "*This is not a list, it's a paragraph with emphasis*\n"
+                        |> parse
+                        |> Expect.equal (Ok [ Block.Body (emphasisText "This is not a list, it's a paragraph with emphasis") ])
             , test "Heading 7 is invalid" <|
                 \() ->
                     "####### Hello!"
@@ -142,6 +147,38 @@ Hello!
 
                             -- TODO why is this extra block here? Fix
                             -- , ListBlock []
+                            ]
+                        )
+        , test "sibling lists with different markers" <|
+            \() ->
+                """- Item 1
+- Item 2
+- Item 3
++ Item 4
++ Item 5
++ Item 6
+* Item 7
+* Item 8
+* Item 9
+"""
+                    |> parse
+                    |> Expect.equal
+                        (Ok
+                            [ Block.ListBlock
+                                [ unstyledText "Item 1"
+                                , unstyledText "Item 2"
+                                , unstyledText "Item 3"
+                                ]
+                            , Block.ListBlock
+                                [ unstyledText "Item 4"
+                                , unstyledText "Item 5"
+                                , unstyledText "Item 6"
+                                ]
+                            , Block.ListBlock
+                                [ unstyledText "Item 7"
+                                , unstyledText "Item 8"
+                                , unstyledText "Item 9"
+                                ]
                             ]
                         )
         , test "thematic break" <|
@@ -256,6 +293,19 @@ unstyledText body =
             { isCode = False
             , isBold = False
             , isItalic = False
+            , link = Nothing
+            }
+      }
+    ]
+
+
+emphasisText : String -> List Block.Inline
+emphasisText body =
+    [ { string = body
+      , style =
+            { isCode = False
+            , isBold = False
+            , isItalic = True
             , link = Nothing
             }
       }

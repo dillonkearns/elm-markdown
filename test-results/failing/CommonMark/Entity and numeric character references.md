@@ -187,7 +187,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>&amp;#42; foo</p><p><em>foo</em></p>
+<p>&amp;#42; foo</p><ul><li><p>foo</p></li></ul>
 ```
 ## [Example 325](https://spec.commonmark.org/0.29/#example-325)
 

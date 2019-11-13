@@ -182,28 +182,6 @@ But instead was:
 ```html
 ERROR Problem at row 5 Expecting --- Problem at row 5 Expecting *** Problem at row 5 Expecting ___
 ```
-## [Example 231](https://github.github.com/gfm/#example-231)
-
-This markdown:
-
-```markdown
--one
-
-2.two
-
-```
-
-Should give output:
-
-```html
-<p>-one</p><p>2.two</p>
-```
-
-But instead was:
-
-```html
-<ul><li><p>one</p></li></ul><p>2.two</p>
-```
 ## [Example 232](https://github.github.com/gfm/#example-232)
 
 This markdown:
@@ -339,26 +317,6 @@ But instead was:
 
 ```html
 <p>003. ok</p>
-```
-## [Example 239](https://github.github.com/gfm/#example-239)
-
-This markdown:
-
-```markdown
--1. not ok
-
-```
-
-Should give output:
-
-```html
-<p>-1. not ok</p>
-```
-
-But instead was:
-
-```html
-<ul><li><p>1. not ok</p></li></ul>
 ```
 ## [Example 240](https://github.github.com/gfm/#example-240)
 
@@ -608,7 +566,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p>foo</p></li><li><p></p></li><li><p>bar</p></li></ul>
+<ul><li><p>foo</p></li></ul><p>-</p><ul><li><p>bar</p></li></ul>
 ```
 ## [Example 252](https://github.github.com/gfm/#example-252)
 

@@ -123,7 +123,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p>foo</p></li></ul>
+<p>- foo</p>
 ```
 ## [Example 8](https://spec.commonmark.org/0.29/#example-8)
 

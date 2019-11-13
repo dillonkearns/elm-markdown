@@ -20,7 +20,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p>foo</p></li><li><p>bar</p></li></ul><p>+ baz</p>
+<ul><li><p>foo</p></li><li><p>bar</p></li></ul><ul><li><p>baz</p></li></ul>
 ```
 ## [Example 272](https://github.github.com/gfm/#example-272)
 
@@ -333,7 +333,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><em>a</em></p><p><em>c</em></p>
+<ul><li><p>a</p></li></ul><ul><li><p>c</p></li></ul>
 ```
 ## [Example 286](https://github.github.com/gfm/#example-286)
 

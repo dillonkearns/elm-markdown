@@ -20,7 +20,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p>-</p></li></ul><p><strong>__</strong></p>
+<p>--<strong>__</strong></p>
 ```
 ## [Example 19](https://spec.commonmark.org/0.29/#example-19)
 
@@ -231,7 +231,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><em>Foo</em><em></em><em>Bar</em></p>
+<ul><li><p>Foo</p></li><li><p><em></em></p></li><li><p>Bar</p></li></ul>
 ```
 ## [Example 31](https://spec.commonmark.org/0.29/#example-31)
 

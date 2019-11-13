@@ -16,6 +16,7 @@ import Markdown.Inlines as Inlines
 import Markdown.List
 import Parser
 import Parser.Advanced as Advanced exposing ((|.), (|=), Nestable(..), Step(..), andThen, chompIf, chompUntil, chompWhile, getChompedString, inContext, int, lazy, loop, map, multiComment, oneOf, problem, succeed, symbol, token)
+import Parser.Extra exposing (zeroOrMore)
 import XmlParser exposing (Node(..))
 
 
@@ -581,17 +582,9 @@ statementsHelp2 revStmts =
         ]
 
 
-spaceOrTab =
-    \c -> c == ' ' || c == '\t'
-
-
-oneOrMore condition =
-    chompIf condition (Parser.Problem "Expected one or more character")
-        |. chompWhile condition
-
-
-zeroOrMore condition =
-    chompWhile condition
+spaceOrTab : Char -> Bool
+spaceOrTab c =
+    c == ' ' || c == '\t'
 
 
 thematicBreak : Parser RawBlock
