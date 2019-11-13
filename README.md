@@ -1,5 +1,5 @@
 # elm-markdown
-[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors)
 [![Build Status](https://travis-ci.org/dillonkearns/elm-markdown.svg?branch=master)](https://travis-ci.org/dillonkearns/elm-markdown)
 
 Extensible markdown parsing in pure elm.
@@ -156,6 +156,7 @@ This library gives an error message here, and aims to do so in similar situation
   <tr>
     <td align="center"><a href="https://github.com/stephenreddek"><img src="https://avatars1.githubusercontent.com/u/1985939?v=4" width="100px;" alt="Stephen Reddekopp"/><br /><sub><b>Stephen Reddekopp</b></sub></a><br /><a href="https://github.com/dillonkearns/elm-markdown/commits?author=stephenreddek" title="Tests">⚠️</a> <a href="https://github.com/dillonkearns/elm-markdown/commits?author=stephenreddek" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/thomasin"><img src="https://avatars3.githubusercontent.com/u/25238976?v=4" width="100px;" alt="thomasin"/><br /><sub><b>thomasin</b></sub></a><br /><a href="https://github.com/dillonkearns/elm-markdown/commits?author=thomasin" title="Tests">⚠️</a> <a href="https://github.com/dillonkearns/elm-markdown/commits?author=thomasin" title="Code">💻</a></td>
+    <td align="center"><a href="https://brianginsburg.com/"><img src="https://avatars0.githubusercontent.com/u/7957636?v=4" width="100px;" alt="Brian Ginsburg"/><br /><sub><b>Brian Ginsburg</b></sub></a><br /><a href="https://github.com/dillonkearns/elm-markdown/commits?author=bgins" title="Tests">⚠️</a> <a href="https://github.com/dillonkearns/elm-markdown/commits?author=bgins" title="Code">💻</a></td>
   </tr>
 </table>
 
