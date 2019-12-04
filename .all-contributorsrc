@@ -1,0 +1,44 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "stephenreddek",
+      "name": "Stephen Reddekopp",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/1985939?v=4",
+      "profile": "https://github.com/stephenreddek",
+      "contributions": [
+        "test",
+        "code"
+      ]
+    },
+    {
+      "login": "thomasin",
+      "name": "thomasin",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/25238976?v=4",
+      "profile": "https://github.com/thomasin",
+      "contributions": [
+        "test",
+        "code"
+      ]
+    },
+    {
+      "login": "bgins",
+      "name": "Brian Ginsburg",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/7957636?v=4",
+      "profile": "https://brianginsburg.com/",
+      "contributions": [
+        "test",
+        "code"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "elm-markdown",
+  "projectOwner": "dillonkearns",
+  "repoType": "github",
+  "repoHost": "https://github.com"
+}

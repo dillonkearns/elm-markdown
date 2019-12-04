@@ -9,8 +9,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.1.3] - 2019-11-13
+
+### Fixed
+
+- Lists with markers besides `-` are now handled, thanks to
+  [#8](https://github.com/dillonkearns/elm-markdown/pull/8) (thank you Stephen Reddekopp 🙏)
+
 ## [1.1.2] - 2019-11-12
 
-### Fixed 
-* HTML attributes were cut short with certain escape characters. They are now correctly parsed, thanks to
-     [#11](https://github.com/dillonkearns/elm-markdown/pull/11) (thank you Brian Ginsburg!!!)
+### Fixed
+
+- HTML attributes were cut short with certain escape characters. They are now correctly parsed, thanks to
+  [#11](https://github.com/dillonkearns/elm-markdown/pull/11) (thank you Brian Ginsburg!!!)
