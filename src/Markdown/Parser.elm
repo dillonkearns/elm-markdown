@@ -363,7 +363,6 @@ parseInlines rawBlock =
         ListBlock unparsedInlines ->
             unparsedInlines
                 |> List.map (parseRawInline identity)
-                |> List.reverse
                 |> combine
                 |> map Block.ListBlock
                 |> map Just
@@ -463,7 +462,7 @@ nodesToBlocksParser children =
 combine : List (Parser a) -> Parser (List a)
 combine list =
     list
-        |> List.foldl
+        |> List.foldr
             (\parser listParser ->
                 listParser
                     |> Advanced.andThen
