@@ -369,7 +369,6 @@ parseInlines rawBlock =
         UnorderedListBlock unparsedInlines ->
             unparsedInlines
                 |> List.map (parseRawInline identity)
-                |> List.reverse
                 |> combine
                 |> map Block.UnorderedListBlock
                 |> map Just
