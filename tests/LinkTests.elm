@@ -47,6 +47,10 @@ suite =
                                 }
                             )
                         )
+        , test "link with space" <|
+            \() ->
+                """[About](/about me)"""
+                    |> parserError
         , test "image" <|
             \() ->
                 """![About](/my-image.jpg)"""
