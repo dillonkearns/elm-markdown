@@ -151,13 +151,16 @@ This library gives an error message here, and aims to do so in similar situation
 ## Contributors
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
 <table>
   <tr>
-    <td align="center"><a href="https://github.com/stephenreddek"><img src="https://avatars1.githubusercontent.com/u/1985939?v=4" width="100px;" alt="Stephen Reddekopp"/><br /><sub><b>Stephen Reddekopp</b></sub></a><br /><a href="https://github.com/dillonkearns/elm-markdown/commits?author=stephenreddek" title="Tests">⚠️</a> <a href="https://github.com/dillonkearns/elm-markdown/commits?author=stephenreddek" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/stephenreddek"><img src="https://avatars1.githubusercontent.com/u/1985939?v=4" width="100px;" alt=""/><br /><sub><b>Stephen Reddekopp</b></sub></a><br /><a href="https://github.com/dillonkearns/elm-markdown/commits?author=stephenreddek" title="Tests">⚠️</a> <a href="https://github.com/dillonkearns/elm-markdown/commits?author=stephenreddek" title="Code">💻</a></td>
   </tr>
 </table>
 
+<!-- markdownlint-enable -->
+<!-- prettier-ignore-end -->
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 Thank you [@jinjor](https://github.com/jinjor) for your
 [`elm-xml-parser`](https://package.elm-lang.org/packages/jinjor/elm-xml-parser/latest/XmlParser) package!
