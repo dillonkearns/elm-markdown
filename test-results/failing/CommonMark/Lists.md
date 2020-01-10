@@ -1,92 +1,5 @@
 # CommonMark - Lists
 
-## [Example 271](https://spec.commonmark.org/0.29/#example-271)
-
-This markdown:
-
-```markdown
-- foo
-- bar
-+ baz
-
-```
-
-Should give output:
-
-```html
-<ul><li>foo</li><li>bar</li></ul><ul><li>baz</li></ul>
-```
-
-But instead was:
-
-```html
-<ul><li><p>foo</p></li><li><p>bar</p></li></ul><ul><li><p>baz</p></li></ul>
-```
-## [Example 272](https://spec.commonmark.org/0.29/#example-272)
-
-This markdown:
-
-```markdown
-1. foo
-2. bar
-3) baz
-
-```
-
-Should give output:
-
-```html
-<ol><li>foo</li><li>bar</li></ol><ol start="3"><li>baz</li></ol>
-```
-
-But instead was:
-
-```html
-<p>1. foo 2. bar 3) baz</p>
-```
-## [Example 273](https://spec.commonmark.org/0.29/#example-273)
-
-This markdown:
-
-```markdown
-Foo
-- bar
-- baz
-
-```
-
-Should give output:
-
-```html
-<p>Foo</p><ul><li>bar</li><li>baz</li></ul>
-```
-
-But instead was:
-
-```html
-<p>Foo</p><ul><li><p>bar</p></li><li><p>baz</p></li></ul>
-```
-## [Example 275](https://spec.commonmark.org/0.29/#example-275)
-
-This markdown:
-
-```markdown
-The number of windows in my house is
-1.  The number of doors is 6.
-
-```
-
-Should give output:
-
-```html
-<p>The number of windows in my house is</p><ol><li>The number of doors is 6.</li></ol>
-```
-
-But instead was:
-
-```html
-<p>The number of windows in my house is 1. The number of doors is 6.</p>
-```
 ## [Example 276](https://spec.commonmark.org/0.29/#example-276)
 
 This markdown:
@@ -110,7 +23,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p>foo</p></li></ul><ul><li><p>bar</p></li></ul><ul><li><p>baz</p></li></ul>
+<ul><li>foo</li></ul><ul><li>bar</li></ul><ul><li>baz</li></ul>
 ```
 ## [Example 277](https://spec.commonmark.org/0.29/#example-277)
 
@@ -310,7 +223,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p>a</p></li><li><p>b</p></li></ul><ul><li><p>c</p></li></ul>
+<ul><li>a</li><li>b</li></ul><ul><li>c</li></ul>
 ```
 ## [Example 285](https://spec.commonmark.org/0.29/#example-285)
 
@@ -333,7 +246,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p>a</p></li></ul><ul><li><p>c</p></li></ul>
+<ul><li>a</li><li></li></ul><ul><li>c</li></ul>
 ```
 ## [Example 286](https://spec.commonmark.org/0.29/#example-286)
 
@@ -480,26 +393,6 @@ But instead was:
 
 ```html
 ERROR Problem at row 3 Expecting --- Problem at row 3 Expecting *** Problem at row 3 Expecting ___
-```
-## [Example 292](https://spec.commonmark.org/0.29/#example-292)
-
-This markdown:
-
-```markdown
-- a
-
-```
-
-Should give output:
-
-```html
-<ul><li>a</li></ul>
-```
-
-But instead was:
-
-```html
-<ul><li><p>a</p></li></ul>
 ```
 ## [Example 293](https://spec.commonmark.org/0.29/#example-293)
 

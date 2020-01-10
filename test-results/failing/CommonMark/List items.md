@@ -48,7 +48,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>1. A paragraph</p><pre><code>with two lines.</code></pre><pre><code>indented code</code></pre><pre><code>&gt; A block quote.</code></pre>
+<ol><li>A paragraph</li></ol><pre><code>with two lines.</code></pre><pre><code>indented code</code></pre><pre><code>&gt; A block quote.</code></pre>
 ```
 ## [Example 225](https://spec.commonmark.org/0.29/#example-225)
 
@@ -231,7 +231,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>1. foo</p><pre><code>```</code></pre><pre><code>bar</code></pre><pre><code>```</code></pre><pre><code>baz</code></pre><pre><code>&gt; bam</code></pre>
+<ol><li>foo</li></ol><pre><code>```</code></pre><pre><code>bar</code></pre><pre><code>```</code></pre><pre><code>baz</code></pre><pre><code>&gt; bam</code></pre>
 ```
 ## [Example 234](https://spec.commonmark.org/0.29/#example-234)
 
@@ -256,67 +256,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p>Foo</p></li></ul><pre><code>bar</code></pre><pre><code>baz</code></pre>
-```
-## [Example 235](https://spec.commonmark.org/0.29/#example-235)
-
-This markdown:
-
-```markdown
-123456789. ok
-
-```
-
-Should give output:
-
-```html
-<ol start="123456789"><li>ok</li></ol>
-```
-
-But instead was:
-
-```html
-<p>123456789. ok</p>
-```
-## [Example 237](https://spec.commonmark.org/0.29/#example-237)
-
-This markdown:
-
-```markdown
-0. ok
-
-```
-
-Should give output:
-
-```html
-<ol start="0"><li>ok</li></ol>
-```
-
-But instead was:
-
-```html
-<p>0. ok</p>
-```
-## [Example 238](https://spec.commonmark.org/0.29/#example-238)
-
-This markdown:
-
-```markdown
-003. ok
-
-```
-
-Should give output:
-
-```html
-<ol start="3"><li>ok</li></ol>
-```
-
-But instead was:
-
-```html
-<p>003. ok</p>
+<ul><li>Foo</li></ul><pre><code>bar</code></pre><pre><code>baz</code></pre>
 ```
 ## [Example 240](https://spec.commonmark.org/0.29/#example-240)
 
@@ -338,7 +278,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p>foo</p></li></ul><pre><code>bar</code></pre>
+<ul><li>foo</li></ul><pre><code>bar</code></pre>
 ```
 ## [Example 241](https://spec.commonmark.org/0.29/#example-241)
 
@@ -545,72 +485,6 @@ But instead was:
 
 ```html
 ERROR Problem at row 4 Expecting --- Problem at row 4 Expecting *** Problem at row 4 Expecting ___
-```
-## [Example 251](https://spec.commonmark.org/0.29/#example-251)
-
-This markdown:
-
-```markdown
-- foo
--
-- bar
-
-```
-
-Should give output:
-
-```html
-<ul><li>foo</li><li></li><li>bar</li></ul>
-```
-
-But instead was:
-
-```html
-<ul><li><p>foo</p></li></ul><p>-</p><ul><li><p>bar</p></li></ul>
-```
-## [Example 252](https://spec.commonmark.org/0.29/#example-252)
-
-This markdown:
-
-```markdown
-- foo
--   
-- bar
-
-```
-
-Should give output:
-
-```html
-<ul><li>foo</li><li></li><li>bar</li></ul>
-```
-
-But instead was:
-
-```html
-<ul><li><p>foo</p></li><li><p></p></li><li><p>bar</p></li></ul>
-```
-## [Example 253](https://spec.commonmark.org/0.29/#example-253)
-
-This markdown:
-
-```markdown
-1. foo
-2.
-3. bar
-
-```
-
-Should give output:
-
-```html
-<ol><li>foo</li><li></li><li>bar</li></ol>
-```
-
-But instead was:
-
-```html
-<p>1. foo 2. 3. bar</p>
 ```
 ## [Example 254](https://spec.commonmark.org/0.29/#example-254)
 
@@ -909,7 +783,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>10) foo</p><pre><code>- bar</code></pre>
+<ol start="10"><li>foo</li></ol><pre><code>- bar</code></pre>
 ```
 ## [Example 267](https://spec.commonmark.org/0.29/#example-267)
 
@@ -950,7 +824,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p>- foo</p></li></ul>
+<ul><li>- foo</li></ul>
 ```
 ## [Example 269](https://spec.commonmark.org/0.29/#example-269)
 
@@ -970,7 +844,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>1. - 2. foo</p>
+<ol><li>- 2. foo</li></ol>
 ```
 ## [Example 270](https://spec.commonmark.org/0.29/#example-270)
 

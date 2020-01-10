@@ -93,14 +93,30 @@ renderMarkdown markdown =
                         |> Ok
             , plain =
                 Html.text
-            , list =
+            , unorderedList =
                 \items ->
                     Html.ul []
                         (items
                             |> List.map
                                 (\itemBlocks ->
                                     Html.li []
-                                        [ itemBlocks ]
+                                        itemBlocks
+                                )
+                        )
+            , orderedList =
+                \startingIndex items ->
+                    Html.ol
+                        (if startingIndex /= 1 then
+                            [ Attr.start startingIndex ]
+
+                         else
+                            []
+                        )
+                        (items
+                            |> List.map
+                                (\itemBlocks ->
+                                    Html.li []
+                                        itemBlocks
                                 )
                         )
             , html = Markdown.Html.oneOf []

@@ -172,7 +172,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>&gt; - foo</p><ul><li><p>bar</p></li></ul>
+<p>&gt; - foo</p><ul><li>bar</li></ul>
 ```
 ## [Example 206](https://github.github.com/gfm/#example-206)
 

@@ -1,7 +1,7 @@
-module Parser.Extra exposing (oneOrMore, zeroOrMore)
+module Parser.Extra exposing (oneOrMore, positiveInteger, zeroOrMore)
 
 import Parser
-import Parser.Advanced as Parser exposing ((|.), Parser, chompIf, chompWhile)
+import Parser.Advanced as Parser exposing ((|.), Parser, chompIf, chompWhile, mapChompedString, succeed)
 
 
 oneOrMore : (Char -> Bool) -> Parser c Parser.Problem ()
@@ -13,3 +13,11 @@ oneOrMore condition =
 zeroOrMore : (Char -> Bool) -> Parser c x ()
 zeroOrMore condition =
     chompWhile condition
+
+
+positiveInteger : Parser c Parser.Problem Int
+positiveInteger =
+    succeed ()
+        |. oneOrMore Char.isDigit
+        |> mapChompedString
+            (\str _ -> String.toInt str |> Maybe.withDefault 0)

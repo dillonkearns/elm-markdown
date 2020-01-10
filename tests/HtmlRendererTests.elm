@@ -60,8 +60,11 @@ testRenderer htmlRenderer =
     , plain =
         \_ ->
             Unexpected "String"
-    , list =
+    , unorderedList =
         \items ->
+            Unexpected "String"
+    , orderedList =
+        \startingIndex items ->
             Unexpected "String"
     , html = Markdown.Html.oneOf htmlRenderer
     , codeBlock =

@@ -63,7 +63,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>1. foo</p><pre><code>- bar</code></pre>
+<ol><li>foo</li></ol><pre><code>- bar</code></pre>
 ```
 ## [Example 80](https://github.github.com/gfm/#example-80)
 

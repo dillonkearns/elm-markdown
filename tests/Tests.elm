@@ -43,6 +43,11 @@ suite =
                     "*This is not a list, it's a paragraph with emphasis*\n"
                         |> parse
                         |> Expect.equal (Ok [ Block.Body (emphasisText "This is not a list, it's a paragraph with emphasis") ])
+            , test "Line starting with a decimal is not interpreted as a list" <|
+                \() ->
+                    "3.5 is a number - is not a list\n"
+                        |> parse
+                        |> Expect.equal (Ok [ Block.Body (unstyledText "3.5 is a number - is not a list") ])
             , test "Heading 7 is invalid" <|
                 \() ->
                     "####### Hello!"
@@ -139,7 +144,7 @@ Hello!
                     |> parse
                     |> Expect.equal
                         (Ok
-                            [ Block.ListBlock
+                            [ Block.UnorderedListBlock
                                 [ unstyledText "One"
                                 , unstyledText "Two"
                                 , unstyledText "Three"
@@ -149,7 +154,7 @@ Hello!
                             -- , ListBlock []
                             ]
                         )
-        , test "sibling lists with different markers" <|
+        , test "sibling unordered lists with different markers" <|
             \() ->
                 """- Item 1
 - Item 2
@@ -164,20 +169,62 @@ Hello!
                     |> parse
                     |> Expect.equal
                         (Ok
-                            [ Block.ListBlock
+                            [ Block.UnorderedListBlock
                                 [ unstyledText "Item 1"
                                 , unstyledText "Item 2"
                                 , unstyledText "Item 3"
                                 ]
-                            , Block.ListBlock
+                            , Block.UnorderedListBlock
                                 [ unstyledText "Item 4"
                                 , unstyledText "Item 5"
                                 , unstyledText "Item 6"
                                 ]
-                            , Block.ListBlock
+                            , Block.UnorderedListBlock
                                 [ unstyledText "Item 7"
                                 , unstyledText "Item 8"
                                 , unstyledText "Item 9"
+                                ]
+                            ]
+                        )
+        , test "sibling ordered lists with different markers" <|
+            \() ->
+                """1. foo
+2. bar
+3) baz
+"""
+                    |> parse
+                    |> Expect.equal
+                        (Ok
+                            [ Block.OrderedListBlock 1
+                                [ unstyledText "foo"
+                                , unstyledText "bar"
+                                ]
+                            , Block.OrderedListBlock 3
+                                [ unstyledText "baz"
+                                ]
+                            ]
+                        )
+        , test "A paragraph with a numeral that is NOT 1 in the text before a blank line" <|
+            \() ->
+                """The number of windows in my house is
+14.  The number of doors is 6."""
+                    |> parse
+                    |> Expect.equal
+                        (Ok
+                            [ Block.Body (unstyledText """The number of windows in my house is 14.  The number of doors is 6.""")
+                            ]
+                        )
+        , test "A paragraph with a numeral that IS 1 in the text" <|
+            \() ->
+                """The number of windows in my house is
+1.  The number of doors is 6.
+"""
+                    |> parse
+                    |> Expect.equal
+                        (Ok
+                            [ Block.Body (unstyledText "The number of windows in my house is")
+                            , Block.OrderedListBlock 1
+                                [ unstyledText "The number of doors is 6."
                                 ]
                             ]
                         )
@@ -213,7 +260,7 @@ Text after
                     |> Expect.equal
                         (Ok
                             [ Block.Heading 1 (unstyledText "Title")
-                            , Block.ListBlock
+                            , Block.UnorderedListBlock
                                 [ unstyledText "This is an item"
                                 , unstyledText "And so is this"
                                 ]

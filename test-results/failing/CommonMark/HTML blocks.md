@@ -612,7 +612,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><p>&lt;div&gt;</p></li><li><p>foo</p></li></ul>
+<ul><li>&lt;div&gt;</li><li>foo</li></ul>
 ```
 ## [Example 145](https://spec.commonmark.org/0.29/#example-145)
 

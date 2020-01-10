@@ -13,7 +13,9 @@ import Markdown.CodeBlock
 import Markdown.Html
 import Markdown.HtmlRenderer
 import Markdown.Inlines as Inlines
-import Markdown.List
+import Markdown.OrderedList
+import Markdown.RawBlock exposing (Attribute, RawBlock(..), UnparsedInlines(..))
+import Markdown.UnorderedList
 import Parser
 import Parser.Advanced as Advanced exposing ((|.), (|=), Nestable(..), Step(..), andThen, chompIf, chompUntil, chompWhile, getChompedString, inContext, int, lazy, loop, map, multiComment, oneOf, problem, succeed, symbol, token)
 import Parser.Extra exposing (zeroOrMore)
@@ -43,7 +45,8 @@ type alias Renderer view =
     , italic : String -> view
     , link : { title : Maybe String, destination : String } -> List view -> Result String view
     , image : { src : String } -> String -> Result String view
-    , list : List view -> view
+    , unorderedList : List (List view) -> view
+    , orderedList : Int -> List (List view) -> view
     , codeBlock : { body : String, language : Maybe String } -> view
     , thematicBreak : view
     }
@@ -94,14 +97,30 @@ defaultHtmlRenderer =
                 |> Ok
     , plain =
         Html.text
-    , list =
+    , unorderedList =
         \items ->
             Html.ul []
                 (items
                     |> List.map
                         (\itemBlocks ->
                             Html.li []
-                                [ itemBlocks ]
+                                itemBlocks
+                        )
+                )
+    , orderedList =
+        \startingIndex items ->
+            Html.ol
+                (if startingIndex /= 1 then
+                    [ Attr.start startingIndex ]
+
+                 else
+                    []
+                )
+                (items
+                    |> List.map
+                        (\itemBlocks ->
+                            Html.li []
+                                itemBlocks
                         )
                 )
     , html = Markdown.Html.oneOf []
@@ -188,12 +207,17 @@ renderHelper renderer blocks =
                 Block.Html tag attributes children ->
                     renderHtmlNode renderer tag attributes children
 
-                Block.ListBlock items ->
+                Block.UnorderedListBlock items ->
                     items
                         |> List.map (renderStyled renderer)
                         |> combineResults
-                        |> Result.map (List.map renderer.raw)
-                        |> Result.map renderer.list
+                        |> Result.map renderer.unorderedList
+
+                Block.OrderedListBlock startingIndex items ->
+                    items
+                        |> List.map (renderStyled renderer)
+                        |> combineResults
+                        |> Result.map (renderer.orderedList startingIndex)
 
                 Block.CodeBlock codeBlock ->
                     codeBlock
@@ -319,24 +343,6 @@ type alias Parser a =
     Advanced.Parser String Parser.Problem a
 
 
-type alias Attribute =
-    { name : String, value : String }
-
-
-type UnparsedInlines
-    = UnparsedInlines String
-
-
-type RawBlock
-    = Heading Int UnparsedInlines
-    | Body UnparsedInlines
-    | Html String (List Attribute) (List Block)
-    | ListBlock (List UnparsedInlines)
-    | CodeBlock Markdown.CodeBlock.CodeBlock
-    | ThematicBreak
-    | BlankLine
-
-
 parseInlines : RawBlock -> Parser (Maybe Block)
 parseInlines rawBlock =
     case rawBlock of
@@ -360,12 +366,20 @@ parseInlines rawBlock =
             Block.Html tagName attributes children
                 |> just
 
-        ListBlock unparsedInlines ->
+        UnorderedListBlock unparsedInlines ->
             unparsedInlines
                 |> List.map (parseRawInline identity)
                 |> List.reverse
                 |> combine
-                |> map Block.ListBlock
+                |> map Block.UnorderedListBlock
+                |> map Just
+
+        OrderedListBlock startingIndex unparsedInlines ->
+            unparsedInlines
+                |> List.map (parseRawInline identity)
+                |> List.reverse
+                |> combine
+                |> map (Block.OrderedListBlock startingIndex)
                 |> map Just
 
         CodeBlock codeBlock ->
@@ -383,6 +397,7 @@ just value =
     succeed (Just value)
 
 
+parseRawInline : (List Inline -> a) -> UnparsedInlines -> Advanced.Parser c Parser.Problem a
 parseRawInline wrap (UnparsedInlines unparsedInlines) =
     case Advanced.run Inlines.parse unparsedInlines of
         Ok styledLine ->
@@ -407,11 +422,17 @@ plainLine =
             ]
 
 
-listBlock : Parser RawBlock
-listBlock =
-    Markdown.List.parser
+unorderedListBlock : Parser RawBlock
+unorderedListBlock =
+    Markdown.UnorderedList.parser
         |> map (List.map UnparsedInlines)
-        |> map ListBlock
+        |> map UnorderedListBlock
+
+
+orderedListBlock : Maybe RawBlock -> Parser RawBlock
+orderedListBlock lastBlock =
+    Markdown.OrderedList.parser lastBlock
+        |> map (\( startingIndex, unparsedLines ) -> OrderedListBlock startingIndex (List.map UnparsedInlines unparsedLines))
 
 
 blankLine : Parser RawBlock
@@ -574,7 +595,8 @@ statementsHelp2 revStmts =
         , blankLine |> keepLooping
         , Markdown.CodeBlock.parser |> map CodeBlock |> keepLooping
         , thematicBreak |> keepLooping
-        , listBlock |> keepLooping
+        , unorderedListBlock |> keepLooping
+        , orderedListBlock (List.head revStmts) |> keepLooping
         , heading |> keepLooping
         , htmlParser |> keepLooping
         , plainLine |> keepLooping
