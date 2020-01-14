@@ -13,10 +13,10 @@
   "dependencies": {},
   "devDependencies": {
     "@markedjs/html-differ": "^3.0.0",
-    "elm": "^0.19.0-no-deps",
+    "elm": "latest-0.19.1",
     "elm-format": "^0.8.2",
     "elm-hot": "^1.0.1",
-    "elm-test": "^0.19.0-rev6",
+    "elm-test": "0.19.1-revision3",
     "front-matter": "^3.0.2",
     "jasmine": "^3.4.0",
     "json-stable-stringify": "^1.0.1",

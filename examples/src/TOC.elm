@@ -188,7 +188,7 @@ renderer =
     , code = code
     , link =
         \{ title, destination } body ->
-            Element.link
+            Element.newTabLink
                 [ Element.htmlAttribute (Html.Attributes.style "display" "inline-flex") ]
                 { url = destination
                 , label =
@@ -202,19 +202,28 @@ renderer =
         \image body ->
             Element.image [ Element.width Element.fill ] { src = image.src, description = body }
                 |> Ok
-
-    -- )
-    , list =
+    , unorderedList =
         \items ->
             Element.column [ Element.spacing 15 ]
                 (items
                     |> List.map
                         (\itemBlocks ->
                             Element.row [ Element.spacing 5 ]
-                                [ Element.el
+                                [ Element.row
                                     [ Element.alignTop ]
-                                    (Element.text "•")
-                                , itemBlocks
+                                    (Element.text "• " :: itemBlocks)
+                                ]
+                        )
+                )
+    , orderedList =
+        \startingIndex items ->
+            Element.column [ Element.spacing 15 ]
+                (items
+                    |> List.indexedMap
+                        (\index itemBlocks ->
+                            Element.row [ Element.spacing 5 ]
+                                [ Element.row [ Element.alignTop ]
+                                    (Element.text (String.fromInt index ++ " ") :: itemBlocks)
                                 ]
                         )
                 )
