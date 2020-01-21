@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.0.1] - 2020-01-21
+
+### Fixed
+- Just pushing README update with updated Ellie examples, see [#22](https://github.com/dillonkearns/elm-markdown/issues/22).
+
 ## [2.0.0] - 2020-01-09
 
 ### Fixed
