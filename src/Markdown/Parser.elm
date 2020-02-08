@@ -6,6 +6,7 @@ module Markdown.Parser exposing (Renderer, defaultHtmlRenderer, deadEndToString,
 
 -}
 
+import Helpers
 import Html exposing (Html)
 import Html.Attributes as Attr
 import Markdown.Block as Block exposing (Block, Inline)
@@ -411,16 +412,7 @@ plainLine =
         )
         |= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
         |. oneOf
-            [ Advanced.chompIf
-                (\c ->
-                    case c of
-                        '\n' ->
-                            True
-
-                        _ ->
-                            False
-                )
-                (Parser.Expecting "A single non-newline char.")
+            [ Advanced.chompIf Helpers.isNewline (Parser.Expecting "A single non-newline char.")
             , Advanced.end (Parser.Expecting "End")
             ]
 
@@ -441,15 +433,7 @@ orderedListBlock lastBlock =
 blankLine : Parser RawBlock
 blankLine =
     token (Advanced.Token "\n" (Parser.Expecting "\n"))
-        |. chompWhile
-            (\c ->
-                case c of
-                    '\n' ->
-                        True
-
-                    _ ->
-                        False
-            )
+        |. chompWhile Helpers.isNewline
         |> map (\() -> BlankLine)
 
 
@@ -629,19 +613,6 @@ statementsHelp2 revStmts =
         ]
 
 
-spaceOrTab : Char -> Bool
-spaceOrTab c =
-    case c of
-        ' ' ->
-            True
-
-        '\t' ->
-            True
-
-        _ ->
-            False
-
-
 thematicBreak : Parser RawBlock
 thematicBreak =
     succeed ThematicBreak
@@ -659,7 +630,7 @@ thematicBreak =
             , symbol (Advanced.Token "___" (Parser.Expecting "___"))
                 |. chompWhile (\c -> c == '_')
             ]
-        |. zeroOrMore spaceOrTab
+        |. zeroOrMore Helpers.isSpaceOrTab
         |. oneOf
             [ Advanced.end (Parser.Problem "Expecting end")
             , chompIf (\c -> c == '\n') (Parser.Problem "Expecting newline")
@@ -695,15 +666,7 @@ heading =
                             succeed level
                     )
            )
-        |. chompWhile
-            (\c ->
-                case c of
-                    ' ' ->
-                        True
-
-                    _ ->
-                        False
-            )
+        |. chompWhile Helpers.isSpacebar
         |= (getChompedString
                 (succeed ()
                     |. Advanced.chompUntilEndOr "\n"

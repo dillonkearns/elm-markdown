@@ -1,7 +1,6 @@
 module Markdown.Link exposing (..)
 
-import Html exposing (Html)
-import Html.Attributes as Attr
+import Helpers
 import Parser
 import Parser.Advanced as Advanced exposing (..)
 
@@ -76,40 +75,13 @@ cantContainNewline destination =
         succeed destination
 
 
-{-| Whitespace as defined in the GFM spec
--}
-isWhitespace : Char -> Bool
-isWhitespace char =
-    case char of
-        ' ' ->
-            True
-
-        '\n' ->
-            True
-
-        '\t' ->
-            True
-
-        '\u{000B}' ->
-            True
-
-        '\u{000C}' ->
-            True
-
-        '\u{000D}' ->
-            True
-
-        _ ->
-            False
-
-
 cantContainWhitespace : String -> Parser String
 cantContainWhitespace untrimmed =
     let
         destination =
             String.trim untrimmed
     in
-    if String.any isWhitespace destination then
+    if String.any Helpers.isGfmWhitespace destination then
         problem (Parser.Problem "Link destinations can't contain whitespace, if you would like to include them please wrap your URL with < .. >")
 
     else
