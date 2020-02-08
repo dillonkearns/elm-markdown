@@ -1,6 +1,6 @@
 # GFM - Indented code blocks
 
-## [Example 77](https://github.github.com/gfm/#example-77)
+## [Example 77](https://spec.commonmark.org/0.29/#example-77)
 
 This markdown:
 
@@ -21,7 +21,7 @@ But instead was:
 ```html
 <pre><code>a simple</code></pre><pre><code>indented code block</code></pre>
 ```
-## [Example 78](https://github.github.com/gfm/#example-78)
+## [Example 78](https://spec.commonmark.org/0.29/#example-78)
 
 This markdown:
 
@@ -43,7 +43,7 @@ But instead was:
 ```html
 ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
 ```
-## [Example 79](https://github.github.com/gfm/#example-79)
+## [Example 79](https://spec.commonmark.org/0.29/#example-79)
 
 This markdown:
 
@@ -65,7 +65,7 @@ But instead was:
 ```html
 <ol><li>foo</li></ol><pre><code>- bar</code></pre>
 ```
-## [Example 80](https://github.github.com/gfm/#example-80)
+## [Example 80](https://spec.commonmark.org/0.29/#example-80)
 
 This markdown:
 
@@ -88,7 +88,7 @@ But instead was:
 ```html
 <pre><code>&lt;a/&gt;</code></pre><pre><code>*hi*</code></pre><pre><code>- one</code></pre>
 ```
-## [Example 81](https://github.github.com/gfm/#example-81)
+## [Example 81](https://spec.commonmark.org/0.29/#example-81)
 
 This markdown:
 
@@ -114,7 +114,7 @@ But instead was:
 ```html
 ERROR Problem at row 6 Expecting --- Problem at row 6 Expecting *** Problem at row 6 Expecting ___
 ```
-## [Example 82](https://github.github.com/gfm/#example-82)
+## [Example 82](https://spec.commonmark.org/0.29/#example-82)
 
 This markdown:
 
@@ -136,7 +136,7 @@ But instead was:
 ```html
 <pre><code>chunk1</code></pre><pre><code></code></pre><pre><code>chunk2</code></pre>
 ```
-## [Example 83](https://github.github.com/gfm/#example-83)
+## [Example 83](https://spec.commonmark.org/0.29/#example-83)
 
 This markdown:
 
@@ -158,7 +158,7 @@ But instead was:
 ```html
 <p>Foo</p><pre><code>bar</code></pre>
 ```
-## [Example 85](https://github.github.com/gfm/#example-85)
+## [Example 85](https://spec.commonmark.org/0.29/#example-85)
 
 This markdown:
 
@@ -183,7 +183,7 @@ But instead was:
 ```html
 <h1>Heading</h1><pre><code>foo</code></pre><p>Heading</p><hr><pre><code>foo</code></pre><hr>
 ```
-## [Example 86](https://github.github.com/gfm/#example-86)
+## [Example 86](https://spec.commonmark.org/0.29/#example-86)
 
 This markdown:
 
@@ -204,7 +204,7 @@ But instead was:
 ```html
 <pre><code>foo</code></pre><pre><code>bar</code></pre>
 ```
-## [Example 87](https://github.github.com/gfm/#example-87)
+## [Example 87](https://spec.commonmark.org/0.29/#example-87)
 
 This markdown:
 

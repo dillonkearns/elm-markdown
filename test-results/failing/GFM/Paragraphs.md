@@ -1,6 +1,6 @@
 # GFM - Paragraphs
 
-## [Example 192](https://github.github.com/gfm/#example-192)
+## [Example 192](https://spec.commonmark.org/0.29/#example-192)
 
 This markdown:
 
@@ -21,7 +21,7 @@ But instead was:
 ```html
 ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
 ```
-## [Example 193](https://github.github.com/gfm/#example-193)
+## [Example 193](https://spec.commonmark.org/0.29/#example-193)
 
 This markdown:
 
@@ -43,7 +43,7 @@ But instead was:
 ```html
 <p>aaa</p><pre><code>bbb</code></pre><pre><code>ccc</code></pre>
 ```
-## [Example 194](https://github.github.com/gfm/#example-194)
+## [Example 194](https://spec.commonmark.org/0.29/#example-194)
 
 This markdown:
 
@@ -64,7 +64,7 @@ But instead was:
 ```html
 ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
 ```
-## [Example 196](https://github.github.com/gfm/#example-196)
+## [Example 196](https://spec.commonmark.org/0.29/#example-196)
 
 This markdown:
 

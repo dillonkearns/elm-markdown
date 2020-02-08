@@ -1,6 +1,6 @@
 # GFM - Soft line breaks
 
-## [Example 646](https://github.github.com/gfm/#example-646)
+## [Example 646](https://spec.commonmark.org/0.29/#example-646)
 
 This markdown:
 

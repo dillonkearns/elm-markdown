@@ -135,10 +135,10 @@ function writeFailuresMarkdown(/** @type {string} */ suiteTitle) {
       }
     });
     failedJson[section].forEach((/** @type {Spec} */ spec) => {
-      if (suiteTitle === "GFM" && spec.example) {
-        sectionMarkdown += `## [Example ${spec.example}](https://github.github.com/gfm/#example-${spec.example})`;
-      } else if (suiteTitle === "CommonMark" && spec.example) {
+      if (spec.start_line && spec.example) {
         sectionMarkdown += `## [Example ${spec.example}](https://spec.commonmark.org/0.29/#example-${spec.example})`;
+      } else if (spec.example) {
+        sectionMarkdown += `## [Example ${spec.example}](https://github.github.com/gfm/#example-${spec.example})`;
       } else {
         sectionMarkdown += `## Example ${spec.example}`;
       }
@@ -207,10 +207,10 @@ function writePassingMarkdown(/** @type {string} */ suiteTitle) {
       }
     });
     passedJson[section].forEach((/** @type {Spec} */ spec) => {
-      if (suiteTitle === "GFM" && spec.example) {
-        markdown += `### [Example ${spec.example}](https://github.github.com/gfm/#example-${spec.example})`;
-      } else if (suiteTitle === "CommonMark" && spec.example) {
+      if (spec.start_line && spec.example) {
         markdown += `### [Example ${spec.example}](https://spec.commonmark.org/0.29/#example-${spec.example})`;
+      } else if (spec.example) {
+        markdown += `### [Example ${spec.example}](https://github.github.com/gfm/#example-${spec.example})`;
       } else {
         markdown += `### Example ${spec.example}`;
       }

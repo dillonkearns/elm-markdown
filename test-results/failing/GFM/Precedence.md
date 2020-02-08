@@ -1,6 +1,6 @@
 # GFM - Precedence
 
-## [Example 12](https://github.github.com/gfm/#example-12)
+## [Example 12](https://spec.commonmark.org/0.29/#example-12)
 
 This markdown:
 

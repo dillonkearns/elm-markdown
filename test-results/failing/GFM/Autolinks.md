@@ -1,6 +1,6 @@
 # GFM - Autolinks
 
-## [Example 590](https://github.github.com/gfm/#example-590)
+## [Example 590](https://spec.commonmark.org/0.29/#example-590)
 
 This markdown:
 
@@ -20,7 +20,7 @@ But instead was:
 ```html
 ERROR Problem at row 1 Expecting symbol /&gt; Problem at row 1 Expecting symbol &gt;
 ```
-## [Example 591](https://github.github.com/gfm/#example-591)
+## [Example 591](https://spec.commonmark.org/0.29/#example-591)
 
 This markdown:
 
@@ -40,7 +40,7 @@ But instead was:
 ```html
 ERROR Problem at row 1 Expecting symbol /&gt; Problem at row 1 Expecting symbol &gt;
 ```
-## [Example 592](https://github.github.com/gfm/#example-592)
+## [Example 592](https://spec.commonmark.org/0.29/#example-592)
 
 This markdown:
 
@@ -60,7 +60,7 @@ But instead was:
 ```html
 ERROR Problem at row 1 Expecting symbol /&gt; Problem at row 1 Expecting symbol &gt;
 ```
-## [Example 593](https://github.github.com/gfm/#example-593)
+## [Example 593](https://spec.commonmark.org/0.29/#example-593)
 
 This markdown:
 
@@ -80,7 +80,7 @@ But instead was:
 ```html
 ERROR Problem at row 2 Expecting symbol
 ```
-## [Example 594](https://github.github.com/gfm/#example-594)
+## [Example 594](https://spec.commonmark.org/0.29/#example-594)
 
 This markdown:
 
@@ -100,7 +100,7 @@ But instead was:
 ```html
 ERROR Problem at row 2 Expecting symbol
 ```
-## [Example 595](https://github.github.com/gfm/#example-595)
+## [Example 595](https://spec.commonmark.org/0.29/#example-595)
 
 This markdown:
 
@@ -120,7 +120,7 @@ But instead was:
 ```html
 ERROR Problem at row 1 Expecting symbol /&gt; Problem at row 1 Expecting symbol &gt;
 ```
-## [Example 596](https://github.github.com/gfm/#example-596)
+## [Example 596](https://spec.commonmark.org/0.29/#example-596)
 
 This markdown:
 
@@ -140,7 +140,7 @@ But instead was:
 ```html
 ERROR Problem at row 1 Expecting symbol /&gt; Problem at row 1 Expecting symbol &gt;
 ```
-## [Example 597](https://github.github.com/gfm/#example-597)
+## [Example 597](https://spec.commonmark.org/0.29/#example-597)
 
 This markdown:
 
@@ -160,7 +160,7 @@ But instead was:
 ```html
 ERROR Problem at row 1 Expecting symbol /&gt; Problem at row 1 Expecting symbol &gt;
 ```
-## [Example 598](https://github.github.com/gfm/#example-598)
+## [Example 598](https://spec.commonmark.org/0.29/#example-598)
 
 This markdown:
 
@@ -180,7 +180,7 @@ But instead was:
 ```html
 ERROR Problem at row 1 Expecting symbol /&gt; Problem at row 1 Expecting symbol &gt;
 ```
-## [Example 599](https://github.github.com/gfm/#example-599)
+## [Example 599](https://spec.commonmark.org/0.29/#example-599)
 
 This markdown:
 
@@ -200,7 +200,7 @@ But instead was:
 ```html
 ERROR Problem at row 1 Expecting symbol /&gt; Problem at row 1 Expecting symbol &gt;
 ```
-## [Example 600](https://github.github.com/gfm/#example-600)
+## [Example 600](https://spec.commonmark.org/0.29/#example-600)
 
 This markdown:
 
@@ -220,7 +220,7 @@ But instead was:
 ```html
 ERROR Problem at row 2 Expecting symbol
 ```
-## [Example 601](https://github.github.com/gfm/#example-601)
+## [Example 601](https://spec.commonmark.org/0.29/#example-601)
 
 This markdown:
 
@@ -240,7 +240,7 @@ But instead was:
 ```html
 ERROR Problem at row 2 Expecting symbol
 ```
-## [Example 602](https://github.github.com/gfm/#example-602)
+## [Example 602](https://spec.commonmark.org/0.29/#example-602)
 
 This markdown:
 
@@ -260,7 +260,7 @@ But instead was:
 ```html
 ERROR Problem at row 2 Expecting symbol
 ```
-## [Example 603](https://github.github.com/gfm/#example-603)
+## [Example 603](https://spec.commonmark.org/0.29/#example-603)
 
 This markdown:
 
@@ -280,7 +280,7 @@ But instead was:
 ```html
 ERROR Problem at row 1 Bad repeat
 ```
-## [Example 604](https://github.github.com/gfm/#example-604)
+## [Example 604](https://spec.commonmark.org/0.29/#example-604)
 
 This markdown:
 
@@ -300,7 +300,7 @@ But instead was:
 ```html
 ERROR Problem at row 1 Bad repeat
 ```
-## [Example 605](https://github.github.com/gfm/#example-605)
+## [Example 605](https://spec.commonmark.org/0.29/#example-605)
 
 This markdown:
 
@@ -320,7 +320,7 @@ But instead was:
 ```html
 ERROR Problem at row 2 Expecting symbol
 ```
-## [Example 606](https://github.github.com/gfm/#example-606)
+## [Example 606](https://spec.commonmark.org/0.29/#example-606)
 
 This markdown:
 

@@ -1,6 +1,6 @@
 # GFM - ATX headings
 
-## [Example 33](https://github.github.com/gfm/#example-33)
+## [Example 33](https://spec.commonmark.org/0.29/#example-33)
 
 This markdown:
 
@@ -20,7 +20,7 @@ But instead was:
 ```html
 ERROR Problem at row 1 Expecting heading with &lt; 7 #&#39;s
 ```
-## [Example 34](https://github.github.com/gfm/#example-34)
+## [Example 34](https://spec.commonmark.org/0.29/#example-34)
 
 This markdown:
 
@@ -42,7 +42,7 @@ But instead was:
 ```html
 <h1>5 bolt</h1><h1>hashtag</h1>
 ```
-## [Example 35](https://github.github.com/gfm/#example-35)
+## [Example 35](https://spec.commonmark.org/0.29/#example-35)
 
 This markdown:
 
@@ -62,7 +62,7 @@ But instead was:
 ```html
 <p>\## foo</p>
 ```
-## [Example 36](https://github.github.com/gfm/#example-36)
+## [Example 36](https://spec.commonmark.org/0.29/#example-36)
 
 This markdown:
 
@@ -82,7 +82,7 @@ But instead was:
 ```html
 <h1>foo<em>bar</em>\<em>baz\</em></h1>
 ```
-## [Example 38](https://github.github.com/gfm/#example-38)
+## [Example 38](https://spec.commonmark.org/0.29/#example-38)
 
 This markdown:
 
@@ -104,7 +104,7 @@ But instead was:
 ```html
 ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
 ```
-## [Example 40](https://github.github.com/gfm/#example-40)
+## [Example 40](https://spec.commonmark.org/0.29/#example-40)
 
 This markdown:
 
@@ -125,7 +125,7 @@ But instead was:
 ```html
 <p>foo</p><pre><code># bar</code></pre>
 ```
-## [Example 41](https://github.github.com/gfm/#example-41)
+## [Example 41](https://spec.commonmark.org/0.29/#example-41)
 
 This markdown:
 
@@ -146,7 +146,7 @@ But instead was:
 ```html
 ERROR Problem at row 3 Expecting --- Problem at row 3 Expecting *** Problem at row 3 Expecting ___
 ```
-## [Example 43](https://github.github.com/gfm/#example-43)
+## [Example 43](https://spec.commonmark.org/0.29/#example-43)
 
 This markdown:
 
@@ -166,7 +166,7 @@ But instead was:
 ```html
 <h3>foo ###</h3>
 ```
-## [Example 45](https://github.github.com/gfm/#example-45)
+## [Example 45](https://spec.commonmark.org/0.29/#example-45)
 
 This markdown:
 
@@ -186,7 +186,7 @@ But instead was:
 ```html
 <h1>foo</h1>
 ```
-## [Example 46](https://github.github.com/gfm/#example-46)
+## [Example 46](https://spec.commonmark.org/0.29/#example-46)
 
 This markdown:
 

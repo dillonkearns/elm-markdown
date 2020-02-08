@@ -1,6 +1,6 @@
 # GFM - Emphasis and strong emphasis
 
-## [Example 351](https://github.github.com/gfm/#example-351)
+## [Example 351](https://spec.commonmark.org/0.29/#example-351)
 
 This markdown:
 
@@ -20,7 +20,7 @@ But instead was:
 ```html
 <p>a<em>foo bar</em></p>
 ```
-## [Example 352](https://github.github.com/gfm/#example-352)
+## [Example 352](https://spec.commonmark.org/0.29/#example-352)
 
 This markdown:
 
@@ -40,7 +40,7 @@ But instead was:
 ```html
 <p>a<em>&quot;foo&quot;</em></p>
 ```
-## [Example 353](https://github.github.com/gfm/#example-353)
+## [Example 353](https://spec.commonmark.org/0.29/#example-353)
 
 This markdown:
 
@@ -60,7 +60,7 @@ But instead was:
 ```html
 <p><em>a</em></p>
 ```
-## [Example 356](https://github.github.com/gfm/#example-356)
+## [Example 356](https://spec.commonmark.org/0.29/#example-356)
 
 This markdown:
 
@@ -80,7 +80,7 @@ But instead was:
 ```html
 <p>_foo bar_</p>
 ```
-## [Example 363](https://github.github.com/gfm/#example-363)
+## [Example 363](https://spec.commonmark.org/0.29/#example-363)
 
 This markdown:
 
@@ -100,7 +100,7 @@ But instead was:
 ```html
 <p>foo-_(bar)_</p>
 ```
-## [Example 364](https://github.github.com/gfm/#example-364)
+## [Example 364](https://spec.commonmark.org/0.29/#example-364)
 
 This markdown:
 
@@ -120,7 +120,7 @@ But instead was:
 ```html
 <p>_foo</p>
 ```
-## [Example 365](https://github.github.com/gfm/#example-365)
+## [Example 365](https://spec.commonmark.org/0.29/#example-365)
 
 This markdown:
 
@@ -140,7 +140,7 @@ But instead was:
 ```html
 <p><em>foo bar</em></p>
 ```
-## [Example 366](https://github.github.com/gfm/#example-366)
+## [Example 366](https://spec.commonmark.org/0.29/#example-366)
 
 This markdown:
 
@@ -161,7 +161,7 @@ But instead was:
 ```html
 <p><em>foo bar</em></p>
 ```
-## [Example 367](https://github.github.com/gfm/#example-367)
+## [Example 367](https://spec.commonmark.org/0.29/#example-367)
 
 This markdown:
 
@@ -181,7 +181,7 @@ But instead was:
 ```html
 <p><em>(</em>foo)</p>
 ```
-## [Example 368](https://github.github.com/gfm/#example-368)
+## [Example 368](https://spec.commonmark.org/0.29/#example-368)
 
 This markdown:
 
@@ -201,7 +201,7 @@ But instead was:
 ```html
 <p><em>(</em>foo<em>)</em></p>
 ```
-## [Example 372](https://github.github.com/gfm/#example-372)
+## [Example 372](https://spec.commonmark.org/0.29/#example-372)
 
 This markdown:
 
@@ -221,7 +221,7 @@ But instead was:
 ```html
 <p>_(_foo_)_</p>
 ```
-## [Example 375](https://github.github.com/gfm/#example-375)
+## [Example 375](https://spec.commonmark.org/0.29/#example-375)
 
 This markdown:
 
@@ -241,7 +241,7 @@ But instead was:
 ```html
 <p>_foo_bar_baz_</p>
 ```
-## [Example 376](https://github.github.com/gfm/#example-376)
+## [Example 376](https://spec.commonmark.org/0.29/#example-376)
 
 This markdown:
 
@@ -261,7 +261,7 @@ But instead was:
 ```html
 <p>_(bar)_.</p>
 ```
-## [Example 378](https://github.github.com/gfm/#example-378)
+## [Example 378](https://spec.commonmark.org/0.29/#example-378)
 
 This markdown:
 
@@ -281,7 +281,7 @@ But instead was:
 ```html
 <p><strong>foo bar</strong></p>
 ```
-## [Example 379](https://github.github.com/gfm/#example-379)
+## [Example 379](https://spec.commonmark.org/0.29/#example-379)
 
 This markdown:
 
@@ -301,7 +301,7 @@ But instead was:
 ```html
 <p>a<strong>&quot;foo&quot;</strong></p>
 ```
-## [Example 381](https://github.github.com/gfm/#example-381)
+## [Example 381](https://spec.commonmark.org/0.29/#example-381)
 
 This markdown:
 
@@ -321,7 +321,7 @@ But instead was:
 ```html
 <p>__foo bar__</p>
 ```
-## [Example 388](https://github.github.com/gfm/#example-388)
+## [Example 388](https://spec.commonmark.org/0.29/#example-388)
 
 This markdown:
 
@@ -341,7 +341,7 @@ But instead was:
 ```html
 <p>__foo, __bar__, baz__</p>
 ```
-## [Example 389](https://github.github.com/gfm/#example-389)
+## [Example 389](https://spec.commonmark.org/0.29/#example-389)
 
 This markdown:
 
@@ -361,7 +361,7 @@ But instead was:
 ```html
 <p>foo-__(bar)__</p>
 ```
-## [Example 390](https://github.github.com/gfm/#example-390)
+## [Example 390](https://spec.commonmark.org/0.29/#example-390)
 
 This markdown:
 
@@ -381,7 +381,7 @@ But instead was:
 ```html
 <p><strong>foo bar</strong></p>
 ```
-## [Example 391](https://github.github.com/gfm/#example-391)
+## [Example 391](https://spec.commonmark.org/0.29/#example-391)
 
 This markdown:
 
@@ -401,7 +401,7 @@ But instead was:
 ```html
 <p><strong>(</strong>foo)</p>
 ```
-## [Example 392](https://github.github.com/gfm/#example-392)
+## [Example 392](https://spec.commonmark.org/0.29/#example-392)
 
 This markdown:
 
@@ -421,7 +421,7 @@ But instead was:
 ```html
 <p><em>(</em><strong>foo</strong><em>)</em></p>
 ```
-## [Example 393](https://github.github.com/gfm/#example-393)
+## [Example 393](https://spec.commonmark.org/0.29/#example-393)
 
 This markdown:
 
@@ -442,7 +442,7 @@ But instead was:
 ```html
 <p><strong>Gomphocarpus (</strong><strong>Gomphocarpus physocarpus</strong><strong>, syn.</strong><strong>Asclepias physocarpa</strong><strong>)</strong></p>
 ```
-## [Example 394](https://github.github.com/gfm/#example-394)
+## [Example 394](https://spec.commonmark.org/0.29/#example-394)
 
 This markdown:
 
@@ -462,7 +462,7 @@ But instead was:
 ```html
 <p><strong>foo &quot;</strong><strong>bar</strong><strong>&quot; foo</strong></p>
 ```
-## [Example 398](https://github.github.com/gfm/#example-398)
+## [Example 398](https://spec.commonmark.org/0.29/#example-398)
 
 This markdown:
 
@@ -482,7 +482,7 @@ But instead was:
 ```html
 <p>_(__foo__)_</p>
 ```
-## [Example 401](https://github.github.com/gfm/#example-401)
+## [Example 401](https://spec.commonmark.org/0.29/#example-401)
 
 This markdown:
 
@@ -502,7 +502,7 @@ But instead was:
 ```html
 <p>__foo__bar__baz__</p>
 ```
-## [Example 402](https://github.github.com/gfm/#example-402)
+## [Example 402](https://spec.commonmark.org/0.29/#example-402)
 
 This markdown:
 
@@ -522,7 +522,7 @@ But instead was:
 ```html
 <p>__(bar)__.</p>
 ```
-## [Example 403](https://github.github.com/gfm/#example-403)
+## [Example 403](https://spec.commonmark.org/0.29/#example-403)
 
 This markdown:
 
@@ -542,7 +542,7 @@ But instead was:
 ```html
 <p><em>foo</em><a href="/url">bar</a></p>
 ```
-## [Example 405](https://github.github.com/gfm/#example-405)
+## [Example 405](https://spec.commonmark.org/0.29/#example-405)
 
 This markdown:
 
@@ -562,7 +562,7 @@ But instead was:
 ```html
 <p>_foo __bar__ baz_</p>
 ```
-## [Example 406](https://github.github.com/gfm/#example-406)
+## [Example 406](https://spec.commonmark.org/0.29/#example-406)
 
 This markdown:
 
@@ -582,7 +582,7 @@ But instead was:
 ```html
 <p>_foo _bar_ baz_</p>
 ```
-## [Example 407](https://github.github.com/gfm/#example-407)
+## [Example 407](https://spec.commonmark.org/0.29/#example-407)
 
 This markdown:
 
@@ -602,7 +602,7 @@ But instead was:
 ```html
 <p>__foo_ bar_</p>
 ```
-## [Example 408](https://github.github.com/gfm/#example-408)
+## [Example 408](https://spec.commonmark.org/0.29/#example-408)
 
 This markdown:
 
@@ -622,7 +622,7 @@ But instead was:
 ```html
 <p><em>foo</em>bar</p>
 ```
-## [Example 409](https://github.github.com/gfm/#example-409)
+## [Example 409](https://spec.commonmark.org/0.29/#example-409)
 
 This markdown:
 
@@ -642,7 +642,7 @@ But instead was:
 ```html
 <p><em>foo</em><strong>bar</strong><em>baz</em></p>
 ```
-## [Example 410](https://github.github.com/gfm/#example-410)
+## [Example 410](https://spec.commonmark.org/0.29/#example-410)
 
 This markdown:
 
@@ -662,7 +662,7 @@ But instead was:
 ```html
 <p><em>foo</em><strong>bar</strong><em>baz</em></p>
 ```
-## [Example 411](https://github.github.com/gfm/#example-411)
+## [Example 411](https://spec.commonmark.org/0.29/#example-411)
 
 This markdown:
 
@@ -682,7 +682,7 @@ But instead was:
 ```html
 <p><em>foo</em><strong>bar</strong></p>
 ```
-## [Example 412](https://github.github.com/gfm/#example-412)
+## [Example 412](https://spec.commonmark.org/0.29/#example-412)
 
 This markdown:
 
@@ -702,7 +702,7 @@ But instead was:
 ```html
 ERROR Problem at row 1 Expecting end Problem at row 1 Expecting newline
 ```
-## [Example 413](https://github.github.com/gfm/#example-413)
+## [Example 413](https://spec.commonmark.org/0.29/#example-413)
 
 This markdown:
 
@@ -722,7 +722,7 @@ But instead was:
 ```html
 <p><em>foo</em><strong>bar</strong></p>
 ```
-## [Example 414](https://github.github.com/gfm/#example-414)
+## [Example 414](https://spec.commonmark.org/0.29/#example-414)
 
 This markdown:
 
@@ -742,7 +742,7 @@ But instead was:
 ```html
 <p><em>foo</em><strong>bar</strong></p>
 ```
-## [Example 415](https://github.github.com/gfm/#example-415)
+## [Example 415](https://spec.commonmark.org/0.29/#example-415)
 
 This markdown:
 
@@ -762,7 +762,7 @@ But instead was:
 ```html
 <p>foo<strong>bar</strong>baz</p>
 ```
-## [Example 416](https://github.github.com/gfm/#example-416)
+## [Example 416](https://spec.commonmark.org/0.29/#example-416)
 
 This markdown:
 
@@ -782,7 +782,7 @@ But instead was:
 ```html
 <p>foo<strong>bar</strong><strong>baz</strong></p>
 ```
-## [Example 417](https://github.github.com/gfm/#example-417)
+## [Example 417](https://spec.commonmark.org/0.29/#example-417)
 
 This markdown:
 
@@ -802,7 +802,7 @@ But instead was:
 ```html
 <p><em>foo</em><strong>bar</strong><strong>baz</strong><strong>bim</strong><em>bop</em></p>
 ```
-## [Example 418](https://github.github.com/gfm/#example-418)
+## [Example 418](https://spec.commonmark.org/0.29/#example-418)
 
 This markdown:
 
@@ -822,7 +822,7 @@ But instead was:
 ```html
 <p><em>foo</em><a href="/url"><em>bar</em></a></p>
 ```
-## [Example 419](https://github.github.com/gfm/#example-419)
+## [Example 419](https://spec.commonmark.org/0.29/#example-419)
 
 This markdown:
 
@@ -842,7 +842,7 @@ But instead was:
 ```html
 <p><strong>is not an empty emphasis</strong></p>
 ```
-## [Example 420](https://github.github.com/gfm/#example-420)
+## [Example 420](https://spec.commonmark.org/0.29/#example-420)
 
 This markdown:
 
@@ -862,7 +862,7 @@ But instead was:
 ```html
 ERROR Problem at row 1 Expecting end Problem at row 1 Expecting newline
 ```
-## [Example 421](https://github.github.com/gfm/#example-421)
+## [Example 421](https://spec.commonmark.org/0.29/#example-421)
 
 This markdown:
 
@@ -882,7 +882,7 @@ But instead was:
 ```html
 <p><strong>foo</strong><a href="/url">bar</a></p>
 ```
-## [Example 423](https://github.github.com/gfm/#example-423)
+## [Example 423](https://spec.commonmark.org/0.29/#example-423)
 
 This markdown:
 
@@ -902,7 +902,7 @@ But instead was:
 ```html
 <p>__foo _bar_ baz__</p>
 ```
-## [Example 424](https://github.github.com/gfm/#example-424)
+## [Example 424](https://spec.commonmark.org/0.29/#example-424)
 
 This markdown:
 
@@ -922,7 +922,7 @@ But instead was:
 ```html
 <p>__foo __bar__ baz__</p>
 ```
-## [Example 425](https://github.github.com/gfm/#example-425)
+## [Example 425](https://spec.commonmark.org/0.29/#example-425)
 
 This markdown:
 
@@ -942,7 +942,7 @@ But instead was:
 ```html
 ERROR Problem at row 1 Expecting end Problem at row 1 Expecting newline
 ```
-## [Example 426](https://github.github.com/gfm/#example-426)
+## [Example 426](https://spec.commonmark.org/0.29/#example-426)
 
 This markdown:
 
@@ -962,7 +962,7 @@ But instead was:
 ```html
 <p><strong>foo</strong>bar</p>
 ```
-## [Example 427](https://github.github.com/gfm/#example-427)
+## [Example 427](https://spec.commonmark.org/0.29/#example-427)
 
 This markdown:
 
@@ -982,7 +982,7 @@ But instead was:
 ```html
 <p><strong>foo</strong><strong>bar</strong><strong>baz</strong></p>
 ```
-## [Example 428](https://github.github.com/gfm/#example-428)
+## [Example 428](https://spec.commonmark.org/0.29/#example-428)
 
 This markdown:
 
@@ -1002,7 +1002,7 @@ But instead was:
 ```html
 <p><strong>foo</strong><strong>bar</strong><strong>baz</strong></p>
 ```
-## [Example 429](https://github.github.com/gfm/#example-429)
+## [Example 429](https://spec.commonmark.org/0.29/#example-429)
 
 This markdown:
 
@@ -1022,7 +1022,7 @@ But instead was:
 ```html
 ERROR Problem at row 1 Expecting end Problem at row 1 Expecting newline
 ```
-## [Example 430](https://github.github.com/gfm/#example-430)
+## [Example 430](https://spec.commonmark.org/0.29/#example-430)
 
 This markdown:
 
@@ -1042,7 +1042,7 @@ But instead was:
 ```html
 <p><strong>foo</strong><strong>bar</strong></p>
 ```
-## [Example 431](https://github.github.com/gfm/#example-431)
+## [Example 431](https://spec.commonmark.org/0.29/#example-431)
 
 This markdown:
 
@@ -1063,7 +1063,7 @@ But instead was:
 ```html
 <p><strong>foo</strong><strong>bar</strong><em>baz</em><strong>bim</strong><strong>bop</strong></p>
 ```
-## [Example 432](https://github.github.com/gfm/#example-432)
+## [Example 432](https://spec.commonmark.org/0.29/#example-432)
 
 This markdown:
 
@@ -1083,7 +1083,7 @@ But instead was:
 ```html
 <p><strong>foo</strong><a href="/url"><em>bar</em></a></p>
 ```
-## [Example 434](https://github.github.com/gfm/#example-434)
+## [Example 434](https://spec.commonmark.org/0.29/#example-434)
 
 This markdown:
 
@@ -1103,7 +1103,7 @@ But instead was:
 ```html
 ERROR Problem at row 1 Expecting end Problem at row 1 Expecting newline
 ```
-## [Example 435](https://github.github.com/gfm/#example-435)
+## [Example 435](https://spec.commonmark.org/0.29/#example-435)
 
 This markdown:
 
@@ -1123,7 +1123,7 @@ But instead was:
 ```html
 <p>foo</p>
 ```
-## [Example 436](https://github.github.com/gfm/#example-436)
+## [Example 436](https://spec.commonmark.org/0.29/#example-436)
 
 This markdown:
 
@@ -1143,7 +1143,7 @@ But instead was:
 ```html
 <p>foo<em>\</em></p>
 ```
-## [Example 438](https://github.github.com/gfm/#example-438)
+## [Example 438](https://spec.commonmark.org/0.29/#example-438)
 
 This markdown:
 
@@ -1163,7 +1163,7 @@ But instead was:
 ```html
 <p>foo</p>
 ```
-## [Example 439](https://github.github.com/gfm/#example-439)
+## [Example 439](https://spec.commonmark.org/0.29/#example-439)
 
 This markdown:
 
@@ -1183,7 +1183,7 @@ But instead was:
 ```html
 <p>foo<strong>\</strong></p>
 ```
-## [Example 441](https://github.github.com/gfm/#example-441)
+## [Example 441](https://spec.commonmark.org/0.29/#example-441)
 
 This markdown:
 
@@ -1203,7 +1203,7 @@ But instead was:
 ```html
 <p><strong>foo</strong></p>
 ```
-## [Example 442](https://github.github.com/gfm/#example-442)
+## [Example 442](https://spec.commonmark.org/0.29/#example-442)
 
 This markdown:
 
@@ -1223,7 +1223,7 @@ But instead was:
 ```html
 <p><em>foo</em></p>
 ```
-## [Example 443](https://github.github.com/gfm/#example-443)
+## [Example 443](https://spec.commonmark.org/0.29/#example-443)
 
 This markdown:
 
@@ -1243,7 +1243,7 @@ But instead was:
 ```html
 ERROR Problem at row 1 Expecting end Problem at row 1 Expecting newline
 ```
-## [Example 444](https://github.github.com/gfm/#example-444)
+## [Example 444](https://spec.commonmark.org/0.29/#example-444)
 
 This markdown:
 
@@ -1263,7 +1263,7 @@ But instead was:
 ```html
 ERROR Problem at row 1 Expecting end Problem at row 1 Expecting newline
 ```
-## [Example 445](https://github.github.com/gfm/#example-445)
+## [Example 445](https://spec.commonmark.org/0.29/#example-445)
 
 This markdown:
 
@@ -1283,7 +1283,7 @@ But instead was:
 ```html
 <p><strong>foo</strong></p>
 ```
-## [Example 446](https://github.github.com/gfm/#example-446)
+## [Example 446](https://spec.commonmark.org/0.29/#example-446)
 
 This markdown:
 
@@ -1303,7 +1303,7 @@ But instead was:
 ```html
 <p><em>foo</em></p>
 ```
-## [Example 448](https://github.github.com/gfm/#example-448)
+## [Example 448](https://spec.commonmark.org/0.29/#example-448)
 
 This markdown:
 
@@ -1323,7 +1323,7 @@ But instead was:
 ```html
 <p>foo _\__</p>
 ```
-## [Example 449](https://github.github.com/gfm/#example-449)
+## [Example 449](https://spec.commonmark.org/0.29/#example-449)
 
 This markdown:
 
@@ -1343,7 +1343,7 @@ But instead was:
 ```html
 <p>foo _<em>_</em></p>
 ```
-## [Example 451](https://github.github.com/gfm/#example-451)
+## [Example 451](https://spec.commonmark.org/0.29/#example-451)
 
 This markdown:
 
@@ -1363,7 +1363,7 @@ But instead was:
 ```html
 <p>foo __\___</p>
 ```
-## [Example 452](https://github.github.com/gfm/#example-452)
+## [Example 452](https://spec.commonmark.org/0.29/#example-452)
 
 This markdown:
 
@@ -1383,7 +1383,7 @@ But instead was:
 ```html
 <p>foo __<em>__</em></p>
 ```
-## [Example 453](https://github.github.com/gfm/#example-453)
+## [Example 453](https://spec.commonmark.org/0.29/#example-453)
 
 This markdown:
 
@@ -1403,7 +1403,7 @@ But instead was:
 ```html
 <p>__foo_</p>
 ```
-## [Example 454](https://github.github.com/gfm/#example-454)
+## [Example 454](https://spec.commonmark.org/0.29/#example-454)
 
 This markdown:
 
@@ -1423,7 +1423,7 @@ But instead was:
 ```html
 <p>_foo__</p>
 ```
-## [Example 455](https://github.github.com/gfm/#example-455)
+## [Example 455](https://spec.commonmark.org/0.29/#example-455)
 
 This markdown:
 
@@ -1443,7 +1443,7 @@ But instead was:
 ```html
 ERROR Problem at row 1 Expecting end Problem at row 1 Expecting newline
 ```
-## [Example 456](https://github.github.com/gfm/#example-456)
+## [Example 456](https://spec.commonmark.org/0.29/#example-456)
 
 This markdown:
 
@@ -1463,7 +1463,7 @@ But instead was:
 ```html
 ERROR Problem at row 1 Expecting end Problem at row 1 Expecting newline
 ```
-## [Example 457](https://github.github.com/gfm/#example-457)
+## [Example 457](https://spec.commonmark.org/0.29/#example-457)
 
 This markdown:
 
@@ -1483,7 +1483,7 @@ But instead was:
 ```html
 <p>__foo___</p>
 ```
-## [Example 458](https://github.github.com/gfm/#example-458)
+## [Example 458](https://spec.commonmark.org/0.29/#example-458)
 
 This markdown:
 
@@ -1503,7 +1503,7 @@ But instead was:
 ```html
 <p>_foo____</p>
 ```
-## [Example 460](https://github.github.com/gfm/#example-460)
+## [Example 460](https://spec.commonmark.org/0.29/#example-460)
 
 This markdown:
 
@@ -1523,7 +1523,7 @@ But instead was:
 ```html
 <p><em>_foo_</em></p>
 ```
-## [Example 461](https://github.github.com/gfm/#example-461)
+## [Example 461](https://spec.commonmark.org/0.29/#example-461)
 
 This markdown:
 
@@ -1543,7 +1543,7 @@ But instead was:
 ```html
 <p>__foo__</p>
 ```
-## [Example 462](https://github.github.com/gfm/#example-462)
+## [Example 462](https://spec.commonmark.org/0.29/#example-462)
 
 This markdown:
 
@@ -1563,7 +1563,7 @@ But instead was:
 ```html
 <p>_<em>foo</em>_</p>
 ```
-## [Example 463](https://github.github.com/gfm/#example-463)
+## [Example 463](https://spec.commonmark.org/0.29/#example-463)
 
 This markdown:
 
@@ -1583,7 +1583,7 @@ But instead was:
 ```html
 ERROR Problem at row 1 Expecting end Problem at row 1 Expecting newline
 ```
-## [Example 464](https://github.github.com/gfm/#example-464)
+## [Example 464](https://spec.commonmark.org/0.29/#example-464)
 
 This markdown:
 
@@ -1603,7 +1603,7 @@ But instead was:
 ```html
 ERROR Problem at row 1 Expecting end Problem at row 1 Expecting newline
 ```
-## [Example 465](https://github.github.com/gfm/#example-465)
+## [Example 465](https://spec.commonmark.org/0.29/#example-465)
 
 This markdown:
 
@@ -1623,7 +1623,7 @@ But instead was:
 ```html
 ERROR Problem at row 1 Expecting end Problem at row 1 Expecting newline
 ```
-## [Example 466](https://github.github.com/gfm/#example-466)
+## [Example 466](https://spec.commonmark.org/0.29/#example-466)
 
 This markdown:
 
@@ -1643,7 +1643,7 @@ But instead was:
 ```html
 ERROR Problem at row 1 Expecting end Problem at row 1 Expecting newline
 ```
-## [Example 467](https://github.github.com/gfm/#example-467)
+## [Example 467](https://spec.commonmark.org/0.29/#example-467)
 
 This markdown:
 
@@ -1663,7 +1663,7 @@ But instead was:
 ```html
 ERROR Problem at row 1 Expecting end Problem at row 1 Expecting newline
 ```
-## [Example 469](https://github.github.com/gfm/#example-469)
+## [Example 469](https://spec.commonmark.org/0.29/#example-469)
 
 This markdown:
 
@@ -1683,7 +1683,7 @@ But instead was:
 ```html
 <p><em>foo __bar</em>baz bim__ bam</p>
 ```
-## [Example 470](https://github.github.com/gfm/#example-470)
+## [Example 470](https://spec.commonmark.org/0.29/#example-470)
 
 This markdown:
 
@@ -1703,7 +1703,7 @@ But instead was:
 ```html
 <p><strong>foo</strong>bar baz</p>
 ```
-## [Example 471](https://github.github.com/gfm/#example-471)
+## [Example 471](https://spec.commonmark.org/0.29/#example-471)
 
 This markdown:
 
@@ -1723,7 +1723,7 @@ But instead was:
 ```html
 <p><em>foo</em>bar baz</p>
 ```
-## [Example 472](https://github.github.com/gfm/#example-472)
+## [Example 472](https://spec.commonmark.org/0.29/#example-472)
 
 This markdown:
 
@@ -1743,7 +1743,7 @@ But instead was:
 ```html
 <p><a href="/url">bar</a></p>
 ```
-## [Example 474](https://github.github.com/gfm/#example-474)
+## [Example 474](https://spec.commonmark.org/0.29/#example-474)
 
 This markdown:
 
@@ -1763,7 +1763,7 @@ But instead was:
 ```html
 <p><em>&lt;img src=&quot;foo&quot; title=&quot;</em>&quot;/&gt;</p>
 ```
-## [Example 475](https://github.github.com/gfm/#example-475)
+## [Example 475](https://spec.commonmark.org/0.29/#example-475)
 
 This markdown:
 
@@ -1783,7 +1783,7 @@ But instead was:
 ```html
 <p><strong>&lt;a href=&quot;</strong>&quot;&gt;</p>
 ```
-## [Example 476](https://github.github.com/gfm/#example-476)
+## [Example 476](https://spec.commonmark.org/0.29/#example-476)
 
 This markdown:
 
@@ -1803,7 +1803,7 @@ But instead was:
 ```html
 <p>__&lt;a href=&quot;__&quot;&gt;</p>
 ```
-## [Example 477](https://github.github.com/gfm/#example-477)
+## [Example 477](https://spec.commonmark.org/0.29/#example-477)
 
 This markdown:
 
@@ -1823,7 +1823,7 @@ But instead was:
 ```html
 <p><em>a</em></p>
 ```
-## [Example 478](https://github.github.com/gfm/#example-478)
+## [Example 478](https://spec.commonmark.org/0.29/#example-478)
 
 This markdown:
 
@@ -1843,7 +1843,7 @@ But instead was:
 ```html
 <p>_a<code>_</code>_</p>
 ```
-## [Example 479](https://github.github.com/gfm/#example-479)
+## [Example 479](https://spec.commonmark.org/0.29/#example-479)
 
 This markdown:
 
@@ -1863,7 +1863,7 @@ But instead was:
 ```html
 <p><strong>a&lt;http://foo.bar/?q=</strong>&gt;</p>
 ```
-## [Example 480](https://github.github.com/gfm/#example-480)
+## [Example 480](https://spec.commonmark.org/0.29/#example-480)
 
 This markdown:
 

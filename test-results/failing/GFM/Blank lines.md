@@ -1,6 +1,6 @@
 # GFM - Blank lines
 
-## [Example 197](https://github.github.com/gfm/#example-197)
+## [Example 197](https://spec.commonmark.org/0.29/#example-197)
 
 This markdown:
 

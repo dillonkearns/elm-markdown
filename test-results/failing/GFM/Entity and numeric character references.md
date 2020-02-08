@@ -1,6 +1,6 @@
 # GFM - Entity and numeric character references
 
-## [Example 311](https://github.github.com/gfm/#example-311)
+## [Example 311](https://spec.commonmark.org/0.29/#example-311)
 
 This markdown:
 
@@ -22,7 +22,7 @@ But instead was:
 ```html
 <p>&amp;nbsp; &amp;amp; &amp;copy; &amp;AElig; &amp;Dcaron; &amp;frac34; &amp;HilbertSpace; &amp;DifferentialD; &amp;ClockwiseContourIntegral; &amp;ngE;</p>
 ```
-## [Example 312](https://github.github.com/gfm/#example-312)
+## [Example 312](https://spec.commonmark.org/0.29/#example-312)
 
 This markdown:
 
@@ -42,7 +42,7 @@ But instead was:
 ```html
 <p>&amp;#35; &amp;#1234; &amp;#992; &amp;#0;</p>
 ```
-## [Example 313](https://github.github.com/gfm/#example-313)
+## [Example 313](https://spec.commonmark.org/0.29/#example-313)
 
 This markdown:
 
@@ -62,7 +62,7 @@ But instead was:
 ```html
 <p>&amp;#X22; &amp;#XD06; &amp;#xcab;</p>
 ```
-## [Example 317](https://github.github.com/gfm/#example-317)
+## [Example 317](https://spec.commonmark.org/0.29/#example-317)
 
 This markdown:
 
@@ -82,7 +82,7 @@ But instead was:
 ```html
 ERROR Problem at row 1 No entity named &quot;ö&quot; found.
 ```
-## [Example 318](https://github.github.com/gfm/#example-318)
+## [Example 318](https://spec.commonmark.org/0.29/#example-318)
 
 This markdown:
 
@@ -102,7 +102,7 @@ But instead was:
 ```html
 ERROR Problem at row 3 Expecting Problem at row 1 Link destinations can&#39;t contain whitespace, if you would like to include them please wrap your URL with &lt; .. &gt;
 ```
-## [Example 319](https://github.github.com/gfm/#example-319)
+## [Example 319](https://spec.commonmark.org/0.29/#example-319)
 
 This markdown:
 
@@ -124,7 +124,7 @@ But instead was:
 ```html
 ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
 ```
-## [Example 320](https://github.github.com/gfm/#example-320)
+## [Example 320](https://spec.commonmark.org/0.29/#example-320)
 
 This markdown:
 
@@ -146,7 +146,7 @@ But instead was:
 ```html
 <pre><code>foo</code></pre>
 ```
-## [Example 323](https://github.github.com/gfm/#example-323)
+## [Example 323](https://spec.commonmark.org/0.29/#example-323)
 
 This markdown:
 
@@ -167,7 +167,7 @@ But instead was:
 ```html
 <p>&amp;#42;foo&amp;#42;<em>foo</em></p>
 ```
-## [Example 324](https://github.github.com/gfm/#example-324)
+## [Example 324](https://spec.commonmark.org/0.29/#example-324)
 
 This markdown:
 
@@ -189,7 +189,7 @@ But instead was:
 ```html
 <p>&amp;#42; foo</p><ul><li>foo</li></ul>
 ```
-## [Example 325](https://github.github.com/gfm/#example-325)
+## [Example 325](https://spec.commonmark.org/0.29/#example-325)
 
 This markdown:
 
@@ -209,7 +209,7 @@ But instead was:
 ```html
 <p>foo&amp;#10;&amp;#10;bar</p>
 ```
-## [Example 326](https://github.github.com/gfm/#example-326)
+## [Example 326](https://spec.commonmark.org/0.29/#example-326)
 
 This markdown:
 
@@ -229,7 +229,7 @@ But instead was:
 ```html
 <p>&amp;#9;foo</p>
 ```
-## [Example 327](https://github.github.com/gfm/#example-327)
+## [Example 327](https://spec.commonmark.org/0.29/#example-327)
 
 This markdown:
 

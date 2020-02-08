@@ -1,6 +1,6 @@
 # GFM - Tabs
 
-## [Example 2](https://github.github.com/gfm/#example-2)
+## [Example 2](https://spec.commonmark.org/0.29/#example-2)
 
 This markdown:
 
@@ -20,7 +20,7 @@ But instead was:
 ```html
 ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
 ```
-## [Example 3](https://github.github.com/gfm/#example-3)
+## [Example 3](https://spec.commonmark.org/0.29/#example-3)
 
 This markdown:
 
@@ -41,7 +41,7 @@ But instead was:
 ```html
 <pre><code>a a</code></pre><pre><code>ὐ a</code></pre>
 ```
-## [Example 4](https://github.github.com/gfm/#example-4)
+## [Example 4](https://spec.commonmark.org/0.29/#example-4)
 
 This markdown:
 
@@ -63,7 +63,7 @@ But instead was:
 ```html
 ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
 ```
-## [Example 5](https://github.github.com/gfm/#example-5)
+## [Example 5](https://spec.commonmark.org/0.29/#example-5)
 
 This markdown:
 
@@ -85,7 +85,7 @@ But instead was:
 ```html
 <ul><li>foo</li></ul><pre><code>bar</code></pre>
 ```
-## [Example 6](https://github.github.com/gfm/#example-6)
+## [Example 6](https://spec.commonmark.org/0.29/#example-6)
 
 This markdown:
 
@@ -105,7 +105,7 @@ But instead was:
 ```html
 <p>&gt; foo</p>
 ```
-## [Example 7](https://github.github.com/gfm/#example-7)
+## [Example 7](https://spec.commonmark.org/0.29/#example-7)
 
 This markdown:
 
@@ -125,7 +125,7 @@ But instead was:
 ```html
 <p>- foo</p>
 ```
-## [Example 8](https://github.github.com/gfm/#example-8)
+## [Example 8](https://spec.commonmark.org/0.29/#example-8)
 
 This markdown:
 
@@ -146,7 +146,7 @@ But instead was:
 ```html
 <pre><code>foo</code></pre><pre><code>bar</code></pre>
 ```
-## [Example 9](https://github.github.com/gfm/#example-9)
+## [Example 9](https://spec.commonmark.org/0.29/#example-9)
 
 This markdown:
 
@@ -168,7 +168,7 @@ But instead was:
 ```html
 ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
 ```
-## [Example 11](https://github.github.com/gfm/#example-11)
+## [Example 11](https://spec.commonmark.org/0.29/#example-11)
 
 This markdown:
 

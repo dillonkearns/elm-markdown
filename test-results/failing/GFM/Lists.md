@@ -1,6 +1,6 @@
 # GFM - Lists
 
-## [Example 276](https://github.github.com/gfm/#example-276)
+## [Example 276](https://spec.commonmark.org/0.29/#example-276)
 
 This markdown:
 
@@ -25,7 +25,7 @@ But instead was:
 ```html
 <ul><li>foo</li></ul><ul><li>bar</li></ul><ul><li>baz</li></ul>
 ```
-## [Example 277](https://github.github.com/gfm/#example-277)
+## [Example 277](https://spec.commonmark.org/0.29/#example-277)
 
 This markdown:
 
@@ -50,7 +50,7 @@ But instead was:
 ```html
 ERROR Problem at row 3 Expecting --- Problem at row 3 Expecting *** Problem at row 3 Expecting ___
 ```
-## [Example 278](https://github.github.com/gfm/#example-278)
+## [Example 278](https://spec.commonmark.org/0.29/#example-278)
 
 This markdown:
 
@@ -76,7 +76,7 @@ But instead was:
 ```html
 ERROR Problem at row 6 Expecting symbol =
 ```
-## [Example 279](https://github.github.com/gfm/#example-279)
+## [Example 279](https://spec.commonmark.org/0.29/#example-279)
 
 This markdown:
 
@@ -104,7 +104,7 @@ But instead was:
 ```html
 ERROR Problem at row 10 Expecting symbol =
 ```
-## [Example 280](https://github.github.com/gfm/#example-280)
+## [Example 280](https://spec.commonmark.org/0.29/#example-280)
 
 This markdown:
 
@@ -130,7 +130,7 @@ But instead was:
 ```html
 ERROR Problem at row 3 Expecting --- Problem at row 3 Expecting *** Problem at row 3 Expecting ___
 ```
-## [Example 281](https://github.github.com/gfm/#example-281)
+## [Example 281](https://spec.commonmark.org/0.29/#example-281)
 
 This markdown:
 
@@ -154,7 +154,7 @@ But instead was:
 ```html
 ERROR Problem at row 4 Expecting --- Problem at row 4 Expecting *** Problem at row 4 Expecting ___
 ```
-## [Example 282](https://github.github.com/gfm/#example-282)
+## [Example 282](https://spec.commonmark.org/0.29/#example-282)
 
 This markdown:
 
@@ -178,7 +178,7 @@ But instead was:
 ```html
 ERROR Problem at row 3 Expecting --- Problem at row 3 Expecting *** Problem at row 3 Expecting ___
 ```
-## [Example 283](https://github.github.com/gfm/#example-283)
+## [Example 283](https://spec.commonmark.org/0.29/#example-283)
 
 This markdown:
 
@@ -202,7 +202,7 @@ But instead was:
 ```html
 ERROR Problem at row 4 Expecting --- Problem at row 4 Expecting *** Problem at row 4 Expecting ___
 ```
-## [Example 284](https://github.github.com/gfm/#example-284)
+## [Example 284](https://spec.commonmark.org/0.29/#example-284)
 
 This markdown:
 
@@ -225,7 +225,7 @@ But instead was:
 ```html
 <ul><li>a</li><li>b</li></ul><ul><li>c</li></ul>
 ```
-## [Example 285](https://github.github.com/gfm/#example-285)
+## [Example 285](https://spec.commonmark.org/0.29/#example-285)
 
 This markdown:
 
@@ -248,7 +248,7 @@ But instead was:
 ```html
 <ul><li>a</li><li></li></ul><ul><li>c</li></ul>
 ```
-## [Example 286](https://github.github.com/gfm/#example-286)
+## [Example 286](https://spec.commonmark.org/0.29/#example-286)
 
 This markdown:
 
@@ -272,7 +272,7 @@ But instead was:
 ```html
 ERROR Problem at row 6 Expecting --- Problem at row 6 Expecting *** Problem at row 6 Expecting ___
 ```
-## [Example 287](https://github.github.com/gfm/#example-287)
+## [Example 287](https://spec.commonmark.org/0.29/#example-287)
 
 This markdown:
 
@@ -296,7 +296,7 @@ But instead was:
 ```html
 ERROR Problem at row 6 Expecting --- Problem at row 6 Expecting *** Problem at row 6 Expecting ___
 ```
-## [Example 288](https://github.github.com/gfm/#example-288)
+## [Example 288](https://spec.commonmark.org/0.29/#example-288)
 
 This markdown:
 
@@ -322,7 +322,7 @@ But instead was:
 ```html
 ERROR Problem at row 5 Expecting --- Problem at row 5 Expecting *** Problem at row 5 Expecting ___
 ```
-## [Example 289](https://github.github.com/gfm/#example-289)
+## [Example 289](https://spec.commonmark.org/0.29/#example-289)
 
 This markdown:
 
@@ -346,7 +346,7 @@ But instead was:
 ```html
 ERROR Problem at row 3 Expecting --- Problem at row 3 Expecting *** Problem at row 3 Expecting ___
 ```
-## [Example 290](https://github.github.com/gfm/#example-290)
+## [Example 290](https://spec.commonmark.org/0.29/#example-290)
 
 This markdown:
 
@@ -369,7 +369,7 @@ But instead was:
 ```html
 ERROR Problem at row 3 Expecting --- Problem at row 3 Expecting *** Problem at row 3 Expecting ___
 ```
-## [Example 291](https://github.github.com/gfm/#example-291)
+## [Example 291](https://spec.commonmark.org/0.29/#example-291)
 
 This markdown:
 
@@ -394,7 +394,7 @@ But instead was:
 ```html
 ERROR Problem at row 3 Expecting --- Problem at row 3 Expecting *** Problem at row 3 Expecting ___
 ```
-## [Example 293](https://github.github.com/gfm/#example-293)
+## [Example 293](https://spec.commonmark.org/0.29/#example-293)
 
 This markdown:
 
@@ -415,7 +415,7 @@ But instead was:
 ```html
 ERROR Problem at row 3 Expecting --- Problem at row 3 Expecting *** Problem at row 3 Expecting ___
 ```
-## [Example 294](https://github.github.com/gfm/#example-294)
+## [Example 294](https://spec.commonmark.org/0.29/#example-294)
 
 This markdown:
 
@@ -439,7 +439,7 @@ But instead was:
 ```html
 ERROR Problem at row 3 Expecting --- Problem at row 3 Expecting *** Problem at row 3 Expecting ___
 ```
-## [Example 295](https://github.github.com/gfm/#example-295)
+## [Example 295](https://spec.commonmark.org/0.29/#example-295)
 
 This markdown:
 
@@ -462,7 +462,7 @@ But instead was:
 ```html
 ERROR Problem at row 3 Expecting --- Problem at row 3 Expecting *** Problem at row 3 Expecting ___
 ```
-## [Example 296](https://github.github.com/gfm/#example-296)
+## [Example 296](https://spec.commonmark.org/0.29/#example-296)
 
 This markdown:
 

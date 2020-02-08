@@ -1,6 +1,6 @@
 # GFM - Hard line breaks
 
-## [Example 630](https://github.github.com/gfm/#example-630)
+## [Example 630](https://spec.commonmark.org/0.29/#example-630)
 
 This markdown:
 
@@ -21,7 +21,7 @@ But instead was:
 ```html
 <p>foo baz</p>
 ```
-## [Example 631](https://github.github.com/gfm/#example-631)
+## [Example 631](https://spec.commonmark.org/0.29/#example-631)
 
 This markdown:
 
@@ -42,7 +42,7 @@ But instead was:
 ```html
 <p>foo\ baz</p>
 ```
-## [Example 632](https://github.github.com/gfm/#example-632)
+## [Example 632](https://spec.commonmark.org/0.29/#example-632)
 
 This markdown:
 
@@ -63,7 +63,7 @@ But instead was:
 ```html
 <p>foo baz</p>
 ```
-## [Example 633](https://github.github.com/gfm/#example-633)
+## [Example 633](https://spec.commonmark.org/0.29/#example-633)
 
 This markdown:
 
@@ -84,7 +84,7 @@ But instead was:
 ```html
 <p>foo</p><pre><code>bar</code></pre>
 ```
-## [Example 634](https://github.github.com/gfm/#example-634)
+## [Example 634](https://spec.commonmark.org/0.29/#example-634)
 
 This markdown:
 
@@ -105,7 +105,7 @@ But instead was:
 ```html
 <p>foo\</p><pre><code>bar</code></pre>
 ```
-## [Example 635](https://github.github.com/gfm/#example-635)
+## [Example 635](https://spec.commonmark.org/0.29/#example-635)
 
 This markdown:
 
@@ -126,7 +126,7 @@ But instead was:
 ```html
 <p><em>foo bar</em></p>
 ```
-## [Example 636](https://github.github.com/gfm/#example-636)
+## [Example 636](https://spec.commonmark.org/0.29/#example-636)
 
 This markdown:
 
@@ -147,7 +147,7 @@ But instead was:
 ```html
 <p><em>foo\ bar</em></p>
 ```
-## [Example 639](https://github.github.com/gfm/#example-639)
+## [Example 639](https://spec.commonmark.org/0.29/#example-639)
 
 This markdown:
 
@@ -169,7 +169,7 @@ But instead was:
 ```html
 ERROR Problem at row 3 Expecting symbol
 ```
-## [Example 640](https://github.github.com/gfm/#example-640)
+## [Example 640](https://spec.commonmark.org/0.29/#example-640)
 
 This markdown:
 

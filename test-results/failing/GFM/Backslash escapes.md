@@ -1,6 +1,6 @@
 # GFM - Backslash escapes
 
-## [Example 298](https://github.github.com/gfm/#example-298)
+## [Example 298](https://spec.commonmark.org/0.29/#example-298)
 
 This markdown:
 
@@ -20,7 +20,7 @@ But instead was:
 ```html
 ERROR Problem at row 3 Expecting Problem at row 1 Expecting symbol (
 ```
-## [Example 300](https://github.github.com/gfm/#example-300)
+## [Example 300](https://spec.commonmark.org/0.29/#example-300)
 
 This markdown:
 
@@ -48,7 +48,7 @@ But instead was:
 ```html
 ERROR Problem at row 19 Expecting Problem at row 1 Expecting symbol (
 ```
-## [Example 301](https://github.github.com/gfm/#example-301)
+## [Example 301](https://spec.commonmark.org/0.29/#example-301)
 
 This markdown:
 
@@ -68,7 +68,7 @@ But instead was:
 ```html
 <p>\\<em>emphasis</em></p>
 ```
-## [Example 302](https://github.github.com/gfm/#example-302)
+## [Example 302](https://spec.commonmark.org/0.29/#example-302)
 
 This markdown:
 
@@ -89,7 +89,7 @@ But instead was:
 ```html
 <p>foo\ bar</p>
 ```
-## [Example 303](https://github.github.com/gfm/#example-303)
+## [Example 303](https://spec.commonmark.org/0.29/#example-303)
 
 This markdown:
 
@@ -109,7 +109,7 @@ But instead was:
 ```html
 ERROR Problem at row 3 Expecting Problem at row 1 Expecting symbol ]
 ```
-## [Example 306](https://github.github.com/gfm/#example-306)
+## [Example 306](https://spec.commonmark.org/0.29/#example-306)
 
 This markdown:
 
@@ -129,7 +129,7 @@ But instead was:
 ```html
 ERROR Problem at row 1 Expecting symbol /&gt; Problem at row 1 Expecting symbol &gt;
 ```
-## [Example 307](https://github.github.com/gfm/#example-307)
+## [Example 307](https://spec.commonmark.org/0.29/#example-307)
 
 This markdown:
 
@@ -149,7 +149,7 @@ But instead was:
 ```html
 ERROR Problem at row 2 Expecting symbol
 ```
-## [Example 308](https://github.github.com/gfm/#example-308)
+## [Example 308](https://spec.commonmark.org/0.29/#example-308)
 
 This markdown:
 
@@ -169,7 +169,7 @@ But instead was:
 ```html
 ERROR Problem at row 3 Expecting Problem at row 1 Link destinations can&#39;t contain whitespace, if you would like to include them please wrap your URL with &lt; .. &gt;
 ```
-## [Example 309](https://github.github.com/gfm/#example-309)
+## [Example 309](https://spec.commonmark.org/0.29/#example-309)
 
 This markdown:
 
@@ -191,7 +191,7 @@ But instead was:
 ```html
 ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
 ```
-## [Example 310](https://github.github.com/gfm/#example-310)
+## [Example 310](https://spec.commonmark.org/0.29/#example-310)
 
 This markdown:
 

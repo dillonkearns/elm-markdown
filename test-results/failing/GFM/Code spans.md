@@ -1,6 +1,6 @@
 # GFM - Code spans
 
-## [Example 329](https://github.github.com/gfm/#example-329)
+## [Example 329](https://spec.commonmark.org/0.29/#example-329)
 
 This markdown:
 
@@ -20,7 +20,7 @@ But instead was:
 ```html
 <p>foo<code>bar</code></p>
 ```
-## [Example 330](https://github.github.com/gfm/#example-330)
+## [Example 330](https://spec.commonmark.org/0.29/#example-330)
 
 This markdown:
 
@@ -40,7 +40,7 @@ But instead was:
 ```html
 <p><code></code><code></code></p>
 ```
-## [Example 331](https://github.github.com/gfm/#example-331)
+## [Example 331](https://spec.commonmark.org/0.29/#example-331)
 
 This markdown:
 
@@ -60,7 +60,7 @@ But instead was:
 ```html
 <p><code></code><code></code></p>
 ```
-## [Example 335](https://github.github.com/gfm/#example-335)
+## [Example 335](https://spec.commonmark.org/0.29/#example-335)
 
 This markdown:
 
@@ -84,7 +84,7 @@ But instead was:
 ```html
 <p>foo bar baz</p>
 ```
-## [Example 336](https://github.github.com/gfm/#example-336)
+## [Example 336](https://spec.commonmark.org/0.29/#example-336)
 
 This markdown:
 
@@ -106,7 +106,7 @@ But instead was:
 ```html
 <p>foo</p>
 ```
-## [Example 338](https://github.github.com/gfm/#example-338)
+## [Example 338](https://spec.commonmark.org/0.29/#example-338)
 
 This markdown:
 
@@ -126,7 +126,7 @@ But instead was:
 ```html
 <p><code>foo\</code>bar</p>
 ```
-## [Example 339](https://github.github.com/gfm/#example-339)
+## [Example 339](https://spec.commonmark.org/0.29/#example-339)
 
 This markdown:
 
@@ -146,7 +146,7 @@ But instead was:
 ```html
 <p>foo<code>bar</code></p>
 ```
-## [Example 340](https://github.github.com/gfm/#example-340)
+## [Example 340](https://spec.commonmark.org/0.29/#example-340)
 
 This markdown:
 
@@ -166,7 +166,7 @@ But instead was:
 ```html
 <p><code>foo</code><code>bar</code></p>
 ```
-## [Example 341](https://github.github.com/gfm/#example-341)
+## [Example 341](https://spec.commonmark.org/0.29/#example-341)
 
 This markdown:
 
@@ -186,7 +186,7 @@ But instead was:
 ```html
 <p><em>foo</em></p>
 ```
-## [Example 342](https://github.github.com/gfm/#example-342)
+## [Example 342](https://spec.commonmark.org/0.29/#example-342)
 
 This markdown:
 
@@ -206,7 +206,7 @@ But instead was:
 ```html
 <p><a href="/foo`">not a<code>link</code></a></p>
 ```
-## [Example 343](https://github.github.com/gfm/#example-343)
+## [Example 343](https://spec.commonmark.org/0.29/#example-343)
 
 This markdown:
 
@@ -226,7 +226,7 @@ But instead was:
 ```html
 <p><code>&lt;a href=&quot;</code>&quot;&gt;</p>
 ```
-## [Example 344](https://github.github.com/gfm/#example-344)
+## [Example 344](https://spec.commonmark.org/0.29/#example-344)
 
 This markdown:
 
@@ -246,7 +246,7 @@ But instead was:
 ```html
 ERROR Problem at row 2 Expecting symbol
 ```
-## [Example 345](https://github.github.com/gfm/#example-345)
+## [Example 345](https://spec.commonmark.org/0.29/#example-345)
 
 This markdown:
 
@@ -266,7 +266,7 @@ But instead was:
 ```html
 <p><code>&lt;http://foo.bar.</code>baz&gt;</p>
 ```
-## [Example 346](https://github.github.com/gfm/#example-346)
+## [Example 346](https://spec.commonmark.org/0.29/#example-346)
 
 This markdown:
 
@@ -286,7 +286,7 @@ But instead was:
 ```html
 ERROR Problem at row 1 Expecting symbol /&gt; Problem at row 1 Expecting symbol &gt;
 ```
-## [Example 347](https://github.github.com/gfm/#example-347)
+## [Example 347](https://spec.commonmark.org/0.29/#example-347)
 
 This markdown:
 
@@ -306,7 +306,7 @@ But instead was:
 ```html
 ERROR Problem at row 3 Expecting symbol ```
 ```
-## [Example 348](https://github.github.com/gfm/#example-348)
+## [Example 348](https://spec.commonmark.org/0.29/#example-348)
 
 This markdown:
 
@@ -326,7 +326,7 @@ But instead was:
 ```html
 <p><code>foo</code></p>
 ```
-## [Example 349](https://github.github.com/gfm/#example-349)
+## [Example 349](https://spec.commonmark.org/0.29/#example-349)
 
 This markdown:
 

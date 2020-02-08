@@ -1,6 +1,6 @@
 # GFM - Thematic breaks
 
-## [Example 16](https://github.github.com/gfm/#example-16)
+## [Example 16](https://spec.commonmark.org/0.29/#example-16)
 
 This markdown:
 
@@ -22,7 +22,7 @@ But instead was:
 ```html
 <p>--<strong>__</strong></p>
 ```
-## [Example 19](https://github.github.com/gfm/#example-19)
+## [Example 19](https://spec.commonmark.org/0.29/#example-19)
 
 This markdown:
 
@@ -43,7 +43,7 @@ But instead was:
 ```html
 <p>Foo</p><pre><code>***</code></pre>
 ```
-## [Example 21](https://github.github.com/gfm/#example-21)
+## [Example 21](https://spec.commonmark.org/0.29/#example-21)
 
 This markdown:
 
@@ -63,7 +63,7 @@ But instead was:
 ```html
 ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
 ```
-## [Example 22](https://github.github.com/gfm/#example-22)
+## [Example 22](https://spec.commonmark.org/0.29/#example-22)
 
 This markdown:
 
@@ -83,7 +83,7 @@ But instead was:
 ```html
 ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
 ```
-## [Example 23](https://github.github.com/gfm/#example-23)
+## [Example 23](https://spec.commonmark.org/0.29/#example-23)
 
 This markdown:
 
@@ -103,7 +103,7 @@ But instead was:
 ```html
 <ul><li>- - -</li></ul>
 ```
-## [Example 24](https://github.github.com/gfm/#example-24)
+## [Example 24](https://spec.commonmark.org/0.29/#example-24)
 
 This markdown:
 
@@ -123,7 +123,7 @@ But instead was:
 ```html
 <ul><li>- - -</li></ul>
 ```
-## [Example 25](https://github.github.com/gfm/#example-25)
+## [Example 25](https://spec.commonmark.org/0.29/#example-25)
 
 This markdown:
 
@@ -147,7 +147,7 @@ But instead was:
 ```html
 ERROR Problem at row 7 Expecting end Problem at row 7 Expecting newline
 ```
-## [Example 26](https://github.github.com/gfm/#example-26)
+## [Example 26](https://spec.commonmark.org/0.29/#example-26)
 
 This markdown:
 
@@ -167,7 +167,7 @@ But instead was:
 ```html
 ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
 ```
-## [Example 29](https://github.github.com/gfm/#example-29)
+## [Example 29](https://spec.commonmark.org/0.29/#example-29)
 
 This markdown:
 
@@ -189,7 +189,7 @@ But instead was:
 ```html
 <p>Foo</p><hr><p>bar</p>
 ```
-## [Example 30](https://github.github.com/gfm/#example-30)
+## [Example 30](https://spec.commonmark.org/0.29/#example-30)
 
 This markdown:
 
@@ -211,7 +211,7 @@ But instead was:
 ```html
 <ul><li>Foo</li><li><em></em></li><li>Bar</li></ul>
 ```
-## [Example 31](https://github.github.com/gfm/#example-31)
+## [Example 31](https://spec.commonmark.org/0.29/#example-31)
 
 This markdown:
 

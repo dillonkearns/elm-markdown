@@ -1,6 +1,6 @@
 # GFM - Inlines
 
-## [Example 297](https://github.github.com/gfm/#example-297)
+## [Example 297](https://spec.commonmark.org/0.29/#example-297)
 
 This markdown:
 
