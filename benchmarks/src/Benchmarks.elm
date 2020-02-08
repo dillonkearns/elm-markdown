@@ -3,72 +3,62 @@ module Benchmarks exposing (suite)
 import Benchmark exposing (Benchmark, describe)
 import Markdown
 import Markdown.Parser
-import Parser.Advanced as Advanced
 
 
 suite : Benchmark
 suite =
     describe "markdown parsing"
-        [ describe "long example"
-            [ "# This is a heading"
-                |> compare "just a heading"
-            , elmMarkdownExplorationsReadme
-                |> compare "elm-explorations/markdown readme"
-            ]
+        [ "# This is a heading"
+            |> compare "just a heading"
+        , elmMarkdownExplorationsReadme
+            |> compare "elm-explorations/markdown readme"
+        , withHeadingsAndLists
+            |> compare "withHeadingsAndLists"
         ]
 
 
 elmMarkdownExplorationsReadme =
-    """# Markdown in Elm
+    """# elm-markdown
 
-This package is for markdown parsing and rendering. It is based on the [marked][] project
-which focuses on speed.
+## Level 2 heading
 
-[marked]: https://github.com/chjj/marked
+### Level 3 heading
 
-## Basic Usage
-
-```elm
-content : Html msg
-content =
-Markdown.toHtml [class "content"] \"\"\"
-
-# Apple Pie Recipe
-
-1. Invent the universe.
-2. Bake an apple pie.
-
-\"\"\"
-```
-
-**Warning:** Calling `Markdown.toHtml` parses the whole block, so try not to
-call it for no reason. In the `content` example above we only have to parse
-the text once, but if we put it in a function we may be doing a lot of
-unnecessary parsing.
-
-
-## Code Blocks
-
-For highlighting any code blocks, the package relies on the
-[highlight.js](https://highlightjs.org/) project. So if you want to
-see highlighting of code blocks in the rendering result, you need to
-make sure that your page/app binds a version of that library
-(supporting the languages you want to handle) to `window.hljs` in
-Javascript. [This is how package.elm-lang.org does
-that.](https://github.com/elm/package.elm-lang.org/blob/e0b7aa4282038475612722ff7a57195866f8645b/backend/ServeFile.hs#L54)
 """
 
 
-longExample =
-    """# Heading"""
+withHeadingsAndLists =
+    """# elm-markdown
+
+- Item 1 
+- Item 2 
+- Item 3 
+
+## Level 2 heading
+
+- [Google](https://google.com)
+- [Bing](https://bing.com)
+- [DuckDuckGo](https://duckduckgo.com)
+
+### Level 3 heading
+
+- Item 1
+- Item 2
+- Item 3
+"""
 
 
 compare title markdown =
-    Benchmark.compare "long example"
-        "elm-markdown-decoder"
+    Benchmark.benchmark title
         (\_ -> Markdown.Parser.parse markdown)
-        "elm-explorations/markdown"
-        (\_ -> explorationsParse markdown)
+
+
+
+--Benchmark.compare "long example"
+--    "elm-markdown-decoder"
+--    (\_ -> Markdown.Parser.parse markdown)
+--    "elm-explorations/markdown"
+--    (\_ -> explorationsParse markdown)
 
 
 explorationsParse =
