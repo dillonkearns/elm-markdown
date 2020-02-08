@@ -545,7 +545,22 @@ whiteSpace1 =
 
 isWhitespace : Char -> Bool
 isWhitespace c =
-    c == ' ' || c == '\u{000D}' || c == '\n' || c == '\t'
+    --c == ' ' || c == '\u{000D}' || c == '\n' || c == '\t'
+    case c of
+        ' ' ->
+            True
+
+        '\u{000D}' ->
+            True
+
+        '\n' ->
+            True
+
+        '\t' ->
+            True
+
+        _ ->
+            False
 
 
 comment : Parser ()

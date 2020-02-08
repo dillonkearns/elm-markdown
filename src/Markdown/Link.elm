@@ -60,7 +60,6 @@ linkDestination =
                 (chompUntil (Advanced.Token ">" (Parser.ExpectingSymbol ">")))
             |. Advanced.symbol (Advanced.Token ">" (Parser.ExpectingSymbol ">"))
             |> andThen cantContainNewline
-
         , succeed identity
             |= getChompedString
                 (chompUntil (Advanced.Token ")" (Parser.ExpectingSymbol ")")))
@@ -77,17 +76,41 @@ cantContainNewline destination =
         succeed destination
 
 
+{-| Whitespace as defined in the GFM spec
+-}
+isWhitespace : Char -> Bool
+isWhitespace char =
+    case char of
+        ' ' ->
+            True
+
+        '\n' ->
+            True
+
+        '\t' ->
+            True
+
+        '\u{000B}' ->
+            True
+
+        '\u{000C}' ->
+            True
+
+        '\u{000D}' ->
+            True
+
+        _ ->
+            False
+
+
 cantContainWhitespace : String -> Parser String
 cantContainWhitespace untrimmed =
     let
-        destination = String.trim untrimmed
-        -- Whitespace as defined in the GFM spec
-        isWhitespace char =
-            List.member char [' ', '\n', '\t', '\u{000B}', '\u{000C}', '\u{000D}']
-
+        destination =
+            String.trim untrimmed
     in
-        if String.any isWhitespace destination then
-            problem (Parser.Problem "Link destinations can't contain whitespace, if you would like to include them please wrap your URL with < .. >")
+    if String.any isWhitespace destination then
+        problem (Parser.Problem "Link destinations can't contain whitespace, if you would like to include them please wrap your URL with < .. >")
 
-        else
-            succeed destination
+    else
+        succeed destination

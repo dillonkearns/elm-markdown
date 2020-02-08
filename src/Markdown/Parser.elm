@@ -415,7 +415,16 @@ plainLine =
         )
         |= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
         |. oneOf
-            [ Advanced.chompIf (\c -> c == '\n') (Parser.Expecting "A single non-newline char.")
+            [ Advanced.chompIf
+                (\c ->
+                    case c of
+                        '\n' ->
+                            True
+
+                        _ ->
+                            False
+                )
+                (Parser.Expecting "A single non-newline char.")
             , Advanced.end (Parser.Expecting "End")
             ]
 
@@ -436,7 +445,15 @@ orderedListBlock lastBlock =
 blankLine : Parser RawBlock
 blankLine =
     token (Advanced.Token "\n" (Parser.Expecting "\n"))
-        |. chompWhile (\c -> c == '\n')
+        |. chompWhile
+            (\c ->
+                case c of
+                    '\n' ->
+                        True
+
+                    _ ->
+                        False
+            )
         |> map (\() -> BlankLine)
 
 
@@ -572,17 +589,31 @@ statementsHelp2 revStmts =
                                     body2Trimmed =
                                         String.trim body2
                                 in
-                                if body1Trimmed == "" || body2Trimmed == "" then
-                                    Loop
-                                        (Body (UnparsedInlines (body2Trimmed ++ body1Trimmed))
-                                            :: rest
-                                        )
+                                --if body1Trimmed == "" || body2Trimmed == "" then
+                                case ( body1Trimmed, body2Trimmed ) of
+                                    ( "", "" ) ->
+                                        Loop
+                                            (Body (UnparsedInlines (body2Trimmed ++ body1Trimmed))
+                                                :: rest
+                                            )
 
-                                else
-                                    Loop
-                                        (Body (UnparsedInlines (body2Trimmed ++ " " ++ body1Trimmed))
-                                            :: rest
-                                        )
+                                    ( "", _ ) ->
+                                        Loop
+                                            (Body (UnparsedInlines (body2Trimmed ++ body1Trimmed))
+                                                :: rest
+                                            )
+
+                                    ( _, "" ) ->
+                                        Loop
+                                            (Body (UnparsedInlines (body2Trimmed ++ body1Trimmed))
+                                                :: rest
+                                            )
+
+                                    _ ->
+                                        Loop
+                                            (Body (UnparsedInlines (body2Trimmed ++ " " ++ body1Trimmed))
+                                                :: rest
+                                            )
 
                             _ ->
                                 Loop (stmts :: revStmts)
@@ -604,7 +635,15 @@ statementsHelp2 revStmts =
 
 spaceOrTab : Char -> Bool
 spaceOrTab c =
-    c == ' ' || c == '\t'
+    case c of
+        ' ' ->
+            True
+
+        '\t' ->
+            True
+
+        _ ->
+            False
 
 
 thematicBreak : Parser RawBlock
@@ -637,7 +676,15 @@ heading =
         |. symbol (Advanced.Token "#" (Parser.Expecting "#"))
         |= (getChompedString
                 (succeed ()
-                    |. chompWhile (\c -> c == '#')
+                    |. chompWhile
+                        (\c ->
+                            case c of
+                                '#' ->
+                                    True
+
+                                _ ->
+                                    False
+                        )
                 )
                 |> andThen
                     (\additionalHashes ->
@@ -652,10 +699,17 @@ heading =
                             succeed level
                     )
            )
-        |. chompWhile (\c -> c == ' ')
+        |. chompWhile
+            (\c ->
+                case c of
+                    ' ' ->
+                        True
+
+                    _ ->
+                        False
+            )
         |= (getChompedString
                 (succeed ()
-                    -- |. chompWhile (\c -> c /= '\n')
                     |. Advanced.chompUntilEndOr "\n"
                 )
                 |> Advanced.andThen

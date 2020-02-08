@@ -21,14 +21,21 @@ type alias Parser a =
 
 isUninteresting : Char -> Bool
 isUninteresting char =
-    char
-        /= '*'
-        && char
-        /= '`'
-        && char
-        /= '['
-        && char
-        /= '!'
+    case char of
+        '*' ->
+            False
+
+        '`' ->
+            False
+
+        '[' ->
+            False
+
+        '!' ->
+            False
+
+        _ ->
+            True
 
 
 type alias State =
