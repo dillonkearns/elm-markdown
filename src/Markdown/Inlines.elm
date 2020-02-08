@@ -146,7 +146,7 @@ parseHelp (( _, _, allFailed ) as state) =
             Nothing ->
                 getChompedString (chompWhile isUninteresting)
 
-            Just unhanldedString ->
-                succeed (\chomped -> unhanldedString ++ chomped)
+            Just unhandledString ->
+                succeed (\chomped -> unhandledString ++ chomped)
                     |= getChompedString (chompIf (\_ -> True) (Parser.Expecting "*"))
         )
