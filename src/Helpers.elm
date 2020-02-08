@@ -1,6 +1,17 @@
 module Helpers exposing (..)
 
 
+isEmptyString : String -> Bool
+isEmptyString string =
+    case string of
+        "" ->
+            True
+
+        _ ->
+            False
+
+
+isSpacebar : Char -> Bool
 isSpacebar c =
     case c of
         ' ' ->
@@ -10,6 +21,7 @@ isSpacebar c =
             False
 
 
+isNewline : Char -> Bool
 isNewline character =
     case character of
         '\n' ->

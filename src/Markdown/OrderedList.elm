@@ -1,5 +1,6 @@
 module Markdown.OrderedList exposing (parser)
 
+import Helpers
 import Markdown.RawBlock exposing (RawBlock(..))
 import Parser
 import Parser.Advanced as Advanced exposing (..)
@@ -73,7 +74,7 @@ openingItemParser lastBlock =
     in
     succeed (\( startingIndex, marker ) item -> ( startingIndex, marker, item ))
         |= (backtrackable (listMarkerParser |> andThen validateStartsWith1IfInParagraph)
-                |. oneOrMore (\c -> c == ' ')
+                |. oneOrMore Helpers.isSpacebar
            )
         |= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
         |. Advanced.symbol (Advanced.Token "\n" (Parser.ExpectingSymbol "\n"))
@@ -93,7 +94,7 @@ itemBody : Parser ListItem
 itemBody =
     oneOf
         [ succeed identity
-            |. backtrackable (oneOrMore (\c -> c == ' '))
+            |. backtrackable (oneOrMore Helpers.isSpacebar)
             |. commit ""
             |= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
             |. Advanced.symbol (Advanced.Token "\n" (Parser.ExpectingSymbol "\n"))

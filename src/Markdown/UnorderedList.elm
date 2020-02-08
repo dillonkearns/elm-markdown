@@ -1,5 +1,6 @@
 module Markdown.UnorderedList exposing (parser)
 
+import Helpers
 import Parser
 import Parser.Advanced as Advanced exposing (..)
 import Parser.Extra exposing (oneOrMore)
@@ -40,7 +41,7 @@ openingItemParser : Parser ( String, ListItem )
 openingItemParser =
     succeed Tuple.pair
         |= (backtrackable listMarkerParser
-                |. oneOrMore (\c -> c == ' ')
+                |. oneOrMore Helpers.isSpacebar
            )
         |= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
         |. Advanced.symbol (Advanced.Token "\n" (Parser.ExpectingSymbol "\n"))
@@ -58,7 +59,7 @@ itemBody : Parser ListItem
 itemBody =
     oneOf
         [ succeed identity
-            |. backtrackable (oneOrMore (\c -> c == ' '))
+            |. backtrackable (oneOrMore Helpers.isSpacebar)
             |. commit ""
             |= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
             |. Advanced.symbol (Advanced.Token "\n" (Parser.ExpectingSymbol "\n"))

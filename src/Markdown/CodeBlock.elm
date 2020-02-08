@@ -1,5 +1,6 @@
 module Markdown.CodeBlock exposing (..)
 
+import Helpers
 import Parser
 import Parser.Advanced as Advanced exposing (..)
 
@@ -38,7 +39,7 @@ parserHelp delimeter =
         (\language body ->
             { body = body
             , language =
-                if language == "" then
+                if Helpers.isEmptyString language then
                     Nothing
 
                 else

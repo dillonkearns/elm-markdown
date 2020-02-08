@@ -624,16 +624,40 @@ thematicBreak =
             ]
         |. oneOf
             [ symbol (Advanced.Token "---" (Parser.Expecting "---"))
-                |. chompWhile (\c -> c == '-')
+                |. chompWhile
+                    (\c ->
+                        case c of
+                            '-' ->
+                                True
+
+                            _ ->
+                                False
+                    )
             , symbol (Advanced.Token "***" (Parser.Expecting "***"))
-                |. chompWhile (\c -> c == '*')
+                |. chompWhile
+                    (\c ->
+                        case c of
+                            '*' ->
+                                True
+
+                            _ ->
+                                False
+                    )
             , symbol (Advanced.Token "___" (Parser.Expecting "___"))
-                |. chompWhile (\c -> c == '_')
+                |. chompWhile
+                    (\c ->
+                        case c of
+                            '_' ->
+                                True
+
+                            _ ->
+                                False
+                    )
             ]
         |. zeroOrMore Helpers.isSpaceOrTab
         |. oneOf
             [ Advanced.end (Parser.Problem "Expecting end")
-            , chompIf (\c -> c == '\n') (Parser.Problem "Expecting newline")
+            , chompIf Helpers.isNewline (Parser.Problem "Expecting newline")
             ]
 
 
