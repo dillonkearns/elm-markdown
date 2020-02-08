@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.0.2] - 2020-02-07
+
+### Fixed
+- Got a 16x performance improvement thanks to
+    [this performance optimization trick](https://discourse.elm-lang.org/t/performance-optimization/5105)!
+
 ## [2.0.1] - 2020-01-21
 
 ### Fixed
