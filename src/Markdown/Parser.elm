@@ -335,10 +335,6 @@ renderHtmlNode renderer tag attributes children =
         (renderHelper renderer children)
 
 
-
--- |> Maybe.withDefault ()
-
-
 type alias Parser a =
     Advanced.Parser String Parser.Problem a
 
