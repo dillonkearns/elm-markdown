@@ -631,10 +631,6 @@ thematicBreak =
             ]
 
 
-
--- |. chompIf (\c -> c == '\n') (Parser.Problem "Expecting newline")
-
-
 heading : Parser RawBlock
 heading =
     succeed Heading
