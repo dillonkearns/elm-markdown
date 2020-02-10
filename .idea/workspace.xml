@@ -2,14 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0b59cffb-0820-46ca-be64-42696fef5c0d" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/elm-markdown-parser.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/elm-markdown-parser.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Markdown/UnorderedList.elm" beforeDir="false" afterPath="$PROJECT_DIR$/src/Markdown/UnorderedList.elm" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test-results/failing/GFM/[extension] Task list items.md" beforeDir="false" afterPath="$PROJECT_DIR$/test-results/failing/GFM/[extension] Task list items.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test-results/failing/ReDOS/link_redos.md" beforeDir="false" afterPath="$PROJECT_DIR$/test-results/failing/ReDOS/link_redos.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test-results/passing-CommonMark.md" beforeDir="false" afterPath="$PROJECT_DIR$/test-results/passing-CommonMark.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test-results/passing-GFM.md" beforeDir="false" afterPath="$PROJECT_DIR$/test-results/passing-GFM.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/UnorderedListTests.elm" beforeDir="false" afterPath="$PROJECT_DIR$/tests/UnorderedListTests.elm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Markdown/OrderedList.elm" beforeDir="false" afterPath="$PROJECT_DIR$/src/Markdown/OrderedList.elm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/OrderedListTests.elm" beforeDir="false" afterPath="$PROJECT_DIR$/tests/OrderedListTests.elm" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -96,6 +91,9 @@
       </method>
     </configuration>
   </component>
+  <component name="ServiceViewManager">
+    <option name="showServicesTree" value="false" />
+  </component>
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -147,10 +145,10 @@
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
     <state x="565" y="304" width="662" height="472" key="find.popup/0.0.1920.1080/-1050.-138.1050.1680@0.0.1920.1080" timestamp="1581362438203" />
-    <state x="601" y="203" width="718" height="652" key="search.everywhere.popup" timestamp="1581362959924">
+    <state x="601" y="203" width="718" height="652" key="search.everywhere.popup" timestamp="1581363007910">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
     <state x="561" y="211" width="670" height="676" key="search.everywhere.popup/0.0.1792.1120@0.0.1792.1120" timestamp="1581354562957" />
-    <state x="601" y="203" width="718" height="652" key="search.everywhere.popup/0.0.1920.1080/-1050.-138.1050.1680@0.0.1920.1080" timestamp="1581362959924" />
+    <state x="601" y="203" width="718" height="652" key="search.everywhere.popup/0.0.1920.1080/-1050.-138.1050.1680@0.0.1920.1080" timestamp="1581363007910" />
   </component>
 </project>
