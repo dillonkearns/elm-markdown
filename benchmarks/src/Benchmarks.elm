@@ -14,6 +14,8 @@ suite =
             |> compare "elm-explorations/markdown readme"
         , withHeadingsAndLists
             |> compare "withHeadingsAndLists"
+        , withHeadingsAndListsAndHtml
+            |> compare "withHeadingsAndListsAndHtml"
         ]
 
 
@@ -39,6 +41,39 @@ withHeadingsAndLists =
 - [Google](https://google.com)
 - [Bing](https://bing.com)
 - [DuckDuckGo](https://duckduckgo.com)
+
+### Level 3 heading
+
+- Item 1
+- Item 2
+- Item 3
+"""
+
+
+withHeadingsAndListsAndHtml =
+    """# elm-markdown
+
+- Item 1 
+- Item 2 
+- Item 3 
+
+## Level 2 heading
+
+<SearchEnginesBox>
+- [Google](https://google.com)
+- [Bing](https://bing.com)
+- [DuckDuckGo](https://duckduckgo.com)
+</SearchEnginesBox>
+
+<MyCustomHtmlTag></MyCustomHtmlTag>
+
+<Nested>
+<Inner>
+## This is a sub-heading
+
+**This is bold**
+</Inner>
+</Nested>
 
 ### Level 3 heading
 
