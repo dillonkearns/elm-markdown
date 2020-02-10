@@ -28,20 +28,15 @@ parser =
             |= succeed Incomplete
             |= succeed "Task item"
             |. Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
+            |. oneOf
+                [ Advanced.symbol (Advanced.Token "\n" (Parser.ExpectingSymbol "\\n"))
+                , Advanced.end (Parser.Expecting "End of input")
+                ]
         , succeed
-            (PlainItem "Plain item")
-        ]
-
-
-listMarkerParser : Parser String
-listMarkerParser =
-    let
-        markerOption : String -> Parser String
-        markerOption marker =
-            Advanced.getChompedString (Advanced.symbol (Advanced.Token marker (Parser.ExpectingSymbol marker)))
-    in
-    Advanced.oneOf
-        [ markerOption "-"
-        , markerOption "+"
-        , markerOption "*"
+            PlainItem
+            |= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
+            |. oneOf
+                [ Advanced.symbol (Advanced.Token "\n" (Parser.ExpectingSymbol "\\n"))
+                , Advanced.end (Parser.Expecting "End of input")
+                ]
         ]

@@ -145,9 +145,9 @@ Hello!
                     |> Expect.equal
                         (Ok
                             [ Block.UnorderedListBlock
-                                [ unstyledText "One"
-                                , unstyledText "Two"
-                                , unstyledText "Three"
+                                [ plainListItem "One"
+                                , plainListItem "Two"
+                                , plainListItem "Three"
                                 ]
 
                             -- TODO why is this extra block here? Fix
@@ -170,19 +170,19 @@ Hello!
                     |> Expect.equal
                         (Ok
                             [ Block.UnorderedListBlock
-                                [ unstyledText "Item 1"
-                                , unstyledText "Item 2"
-                                , unstyledText "Item 3"
+                                [ plainListItem "Item 1"
+                                , plainListItem "Item 2"
+                                , plainListItem "Item 3"
                                 ]
                             , Block.UnorderedListBlock
-                                [ unstyledText "Item 4"
-                                , unstyledText "Item 5"
-                                , unstyledText "Item 6"
+                                [ plainListItem "Item 4"
+                                , plainListItem "Item 5"
+                                , plainListItem "Item 6"
                                 ]
                             , Block.UnorderedListBlock
-                                [ unstyledText "Item 7"
-                                , unstyledText "Item 8"
-                                , unstyledText "Item 9"
+                                [ plainListItem "Item 7"
+                                , plainListItem "Item 8"
+                                , plainListItem "Item 9"
                                 ]
                             ]
                         )
@@ -261,8 +261,8 @@ Text after
                         (Ok
                             [ Block.Heading 1 (unstyledText "Title")
                             , Block.UnorderedListBlock
-                                [ unstyledText "This is an item"
-                                , unstyledText "And so is this"
+                                [ plainListItem "This is an item"
+                                , plainListItem "And so is this"
                                 ]
                             , Block.Body (unstyledText "Text after")
 
@@ -331,6 +331,22 @@ qwer
                             ]
                         )
         ]
+
+
+plainListItem : String -> { body : List Block.Inline, task : Maybe Bool }
+plainListItem body =
+    { body =
+        [ { string = body
+          , style =
+                { isCode = False
+                , isBold = False
+                , isItalic = False
+                , link = Nothing
+                }
+          }
+        ]
+    , task = Nothing
+    }
 
 
 unstyledText : String -> List Block.Inline

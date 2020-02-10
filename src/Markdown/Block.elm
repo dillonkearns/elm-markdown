@@ -53,7 +53,12 @@ type Block
     = Heading Int (List Inline)
     | Body (List Inline)
     | Html String (List Attribute) (List Block)
-    | UnorderedListBlock (List (List Inline))
+    | UnorderedListBlock
+        (List
+            { task : Maybe Bool
+            , body : List Inline
+            }
+        )
     | OrderedListBlock Int (List (List Inline))
     | CodeBlock Markdown.CodeBlock.CodeBlock
     | ThematicBreak

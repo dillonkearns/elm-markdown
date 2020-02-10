@@ -14,6 +14,7 @@ import Markdown.CodeBlock
 import Markdown.Html
 import Markdown.HtmlRenderer
 import Markdown.Inlines as Inlines
+import Markdown.ListItem as ListItem
 import Markdown.OrderedList
 import Markdown.RawBlock exposing (Attribute, RawBlock(..), UnparsedInlines(..))
 import Markdown.UnorderedList
@@ -46,7 +47,12 @@ type alias Renderer view =
     , italic : String -> view
     , link : { title : Maybe String, destination : String } -> List view -> Result String view
     , image : { src : String } -> String -> Result String view
-    , unorderedList : List (List view) -> view
+    , unorderedList :
+        List
+            { task : Maybe Bool
+            , body : List view
+            }
+        -> view
     , orderedList : Int -> List (List view) -> view
     , codeBlock : { body : String, language : Maybe String } -> view
     , thematicBreak : view
@@ -103,9 +109,11 @@ defaultHtmlRenderer =
             Html.ul []
                 (items
                     |> List.map
-                        (\itemBlocks ->
-                            Html.li []
-                                itemBlocks
+                        (\item ->
+                            -- TODO use item.task
+                            -- render an inner input item based on that
+                            -- (Write it in the end-to-end renderer first)
+                            Html.li [] item.body
                         )
                 )
     , orderedList =
@@ -211,7 +219,16 @@ renderHelper renderer blocks =
 
                 Block.UnorderedListBlock items ->
                     items
-                        |> List.map (renderStyled renderer)
+                        |> List.map
+                            (\item ->
+                                renderStyled renderer item.body
+                                    |> Result.map
+                                        (\renderedBody ->
+                                            { body = renderedBody
+                                            , task = item.task
+                                            }
+                                        )
+                            )
                         |> combineResults
                         |> Result.map renderer.unorderedList
 
@@ -364,9 +381,19 @@ parseInlines rawBlock =
             Block.Html tagName attributes children
                 |> just
 
-        UnorderedListBlock unparsedInlines ->
-            unparsedInlines
-                |> List.map (parseRawInline identity)
+        UnorderedListBlock unparsedItems ->
+            unparsedItems
+                |> List.map
+                    (\unparsedItem ->
+                        unparsedItem.body
+                            |> parseRawInline identity
+                            |> Advanced.map
+                                (\parsedInlines ->
+                                    { task = unparsedItem.task
+                                    , body = parsedInlines
+                                    }
+                                )
+                    )
                 |> combine
                 |> map Block.UnorderedListBlock
                 |> map Just
@@ -421,7 +448,29 @@ plainLine =
 unorderedListBlock : Parser RawBlock
 unorderedListBlock =
     Markdown.UnorderedList.parser
-        |> map (List.map UnparsedInlines)
+        |> map
+            (List.map
+                (\unparsedListItem ->
+                    case unparsedListItem of
+                        ListItem.TaskItem completion body ->
+                            { body = UnparsedInlines body
+                            , task =
+                                (case completion of
+                                    ListItem.Complete ->
+                                        True
+
+                                    ListItem.Incomplete ->
+                                        False
+                                )
+                                    |> Just
+                            }
+
+                        ListItem.PlainItem body ->
+                            { body = UnparsedInlines body
+                            , task = Nothing -- unparsedListItem.task
+                            }
+                )
+            )
         |> map UnorderedListBlock
 
 
