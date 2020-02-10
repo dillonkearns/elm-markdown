@@ -19,7 +19,7 @@ import Markdown.RawBlock exposing (Attribute, RawBlock(..), UnparsedInlines(..))
 import Markdown.UnorderedList
 import Parser
 import Parser.Advanced as Advanced exposing ((|.), (|=), Nestable(..), Step(..), andThen, chompIf, chompUntil, chompWhile, getChompedString, inContext, int, lazy, loop, map, multiComment, oneOf, problem, succeed, symbol, token)
-import Parser.Extra exposing (zeroOrMore)
+import Parser.Extra exposing (oneOrMore, zeroOrMore)
 import XmlParser exposing (Node(..))
 
 
@@ -433,9 +433,23 @@ orderedListBlock lastBlock =
 
 blankLine : Parser RawBlock
 blankLine =
-    token (Advanced.Token "\n" (Parser.Expecting "\n"))
-        |. chompWhile Helpers.isNewline
-        |> map (\() -> BlankLine)
+    Advanced.backtrackable
+        (zeroOrMore
+            (\c ->
+                case c of
+                    ' ' ->
+                        True
+
+                    '\t' ->
+                        True
+
+                    _ ->
+                        False
+            )
+            |. token (Advanced.Token "\n" (Parser.Expecting "\n"))
+            |. chompWhile Helpers.isNewline
+            |> map (\() -> BlankLine)
+        )
 
 
 htmlParser : Parser RawBlock

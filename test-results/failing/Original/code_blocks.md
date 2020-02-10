@@ -31,5 +31,5 @@ Should give output:
 But instead was:
 
 ```html
-<pre><code>code block on the first line</code></pre><pre><code></code></pre><p>Regular text.</p><pre><code>code block indented by spaces</code></pre><p>Regular text.</p><pre><code>the lines in this block</code></pre><pre><code>all contain trailing spaces</code></pre><p>Regular Text.</p><pre><code>code block on the last line</code></pre>
+<pre><code>code block on the first line</code></pre><p>Regular text.</p><pre><code>code block indented by spaces</code></pre><p>Regular text.</p><pre><code>the lines in this block</code></pre><pre><code>all contain trailing spaces</code></pre><p>Regular Text.</p><pre><code>code block on the last line</code></pre>
 ```

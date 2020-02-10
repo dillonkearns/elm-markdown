@@ -269,6 +269,34 @@ Gives this correct output:
 
 ```
 
+## Blank lines
+
+### [Example 197](https://spec.commonmark.org/0.29/#example-197)
+
+This markdown:
+
+
+```markdown
+  
+
+aaa
+  
+
+# aaa
+
+  
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>aaa</p>
+<h1>aaa</h1>
+
+```
+
 ## Code spans
 
 ### [Example 328](https://spec.commonmark.org/0.29/#example-328)
@@ -1526,6 +1554,29 @@ Gives this correct output:
 <pre><code>foo
 </code></pre>
 <p>bar</p>
+
+```
+
+### [Example 87](https://spec.commonmark.org/0.29/#example-87)
+
+This markdown:
+
+
+```markdown
+
+    
+    foo
+    
+
+
+```
+
+Gives this correct output:
+
+
+```html
+<pre><code>foo
+</code></pre>
 
 ```
 

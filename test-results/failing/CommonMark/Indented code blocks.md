@@ -112,7 +112,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 6 Expecting --- Problem at row 6 Expecting *** Problem at row 6 Expecting ___
+<pre><code>chunk1</code></pre><pre><code>chunk2</code></pre><pre><code>chunk3</code></pre>
 ```
 ## [Example 82](https://spec.commonmark.org/0.29/#example-82)
 
@@ -134,7 +134,7 @@ Should give output:
 But instead was:
 
 ```html
-<pre><code>chunk1</code></pre><pre><code></code></pre><pre><code>chunk2</code></pre>
+<pre><code>chunk1</code></pre><pre><code>chunk2</code></pre>
 ```
 ## [Example 83](https://spec.commonmark.org/0.29/#example-83)
 
@@ -203,28 +203,4 @@ But instead was:
 
 ```html
 <pre><code>foo</code></pre><pre><code>bar</code></pre>
-```
-## [Example 87](https://spec.commonmark.org/0.29/#example-87)
-
-This markdown:
-
-```markdown
-
-    
-    foo
-    
-
-
-```
-
-Should give output:
-
-```html
-<pre><code>foo</code></pre>
-```
-
-But instead was:
-
-```html
-<pre><code></code></pre><pre><code>foo</code></pre><pre><code></code></pre>
 ```
