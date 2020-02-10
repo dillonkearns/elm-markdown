@@ -330,8 +330,9 @@ element =
 
 tagName : Parser String
 tagName =
-    inContext "tagName" <|
-        keep oneOrMore (\c -> not (isWhitespace c) && isUninteresting c)
+    map (\name -> String.toLower name) <|
+        inContext "tagName" <|
+            keep oneOrMore (\c -> not (isWhitespace c) && isUninteresting c)
 
 
 children : String -> Parser (List Node)
@@ -527,21 +528,34 @@ entities =
 
 attributes : Set String -> Parser (List Attribute)
 attributes keys =
-    inContext "attributes" <|
-        oneOf
-            [ attribute
-                |> andThen
-                    (\attr ->
-                        if Set.member attr.name keys then
-                            fail ("attribute " ++ attr.name ++ " is duplicated")
+    map
+        (\attrs ->
+            List.map
+                (\attr ->
+                    { name = String.toLower attr.name
+                    , value = attr.value
+                    }
+                )
+                attrs
+        )
+    <|
+        inContext
+            "attributes"
+        <|
+            oneOf
+                [ attribute
+                    |> andThen
+                        (\attr ->
+                            if Set.member attr.name keys then
+                                fail ("attribute " ++ attr.name ++ " is duplicated")
 
-                        else
-                            succeed ((::) attr)
-                                |. whiteSpace
-                                |= attributes (Set.insert attr.name keys)
-                    )
-            , succeed []
-            ]
+                            else
+                                succeed ((::) attr)
+                                    |. whiteSpace
+                                    |= attributes (Set.insert attr.name keys)
+                        )
+                , succeed []
+                ]
 
 
 validateAttributes : Set String -> List Attribute -> Maybe String
