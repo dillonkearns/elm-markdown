@@ -119,7 +119,18 @@ renderMarkdown markdown =
                                         itemBlocks
                                 )
                         )
-            , html = Markdown.Html.oneOf []
+            , html =
+                Markdown.Html.oneOf
+                    ([ "table"
+                     , "tr"
+                     , "td"
+                     , "pre"
+                     , "th"
+                     , "div"
+                     , "a"
+                     ]
+                        |> List.map passThroughNode
+                    )
             , codeBlock =
                 \{ body, language } ->
                     Html.pre []
@@ -131,6 +142,23 @@ renderMarkdown markdown =
             }
         |> Result.map (List.map (Html.toString 0))
         |> Result.map (String.join "")
+
+
+passThroughNode nodeName =
+    Markdown.Html.tag nodeName
+        (\id class href children ->
+            Html.node nodeName
+                ([ id |> Maybe.map Attr.id
+                 , class |> Maybe.map Attr.class
+                 , href |> Maybe.map Attr.href
+                 ]
+                    |> List.filterMap identity
+                )
+                children
+        )
+        |> Markdown.Html.withOptionalAttribute "id"
+        |> Markdown.Html.withOptionalAttribute "class"
+        |> Markdown.Html.withOptionalAttribute "href"
 
 
 type Msg

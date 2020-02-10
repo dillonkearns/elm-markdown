@@ -24,7 +24,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Ran into a oneOf with no possibilities!
+<table><tr><td><pre><p><strong>Hello</strong>,</p><p>_world_.</p></pre></td></tr></table>
 ```
 ## [Example 119](https://spec.commonmark.org/0.29/#example-119)
 
@@ -96,75 +96,6 @@ But instead was:
 
 ```html
 ERROR Problem at row 1 Bad repeat
-```
-## [Example 122](https://spec.commonmark.org/0.29/#example-122)
-
-This markdown:
-
-```markdown
-<DIV CLASS="foo">
-
-*Markdown*
-
-</DIV>
-
-```
-
-Should give output:
-
-```html
-<div class="foo"><p><em>Markdown</em></p></div>
-```
-
-But instead was:
-
-```html
-ERROR Ran into a oneOf with no possibilities!
-```
-## [Example 123](https://spec.commonmark.org/0.29/#example-123)
-
-This markdown:
-
-```markdown
-<div id="foo"
-  class="bar">
-</div>
-
-```
-
-Should give output:
-
-```html
-<div class="bar" id="foo"></div>
-```
-
-But instead was:
-
-```html
-ERROR Ran into a oneOf with no possibilities!
-```
-## [Example 124](https://spec.commonmark.org/0.29/#example-124)
-
-This markdown:
-
-```markdown
-<div id="foo" class="bar
-  baz">
-</div>
-
-```
-
-Should give output:
-
-```html
-<div class="bar
- baz" id="foo"></div>
-```
-
-But instead was:
-
-```html
-ERROR Ran into a oneOf with no possibilities!
 ```
 ## [Example 125](https://spec.commonmark.org/0.29/#example-125)
 
@@ -270,7 +201,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Ran into a oneOf with no possibilities!
+<div><a href="bar"><p><em>foo</em></p></a></div>
 ```
 ## [Example 130](https://spec.commonmark.org/0.29/#example-130)
 
@@ -292,7 +223,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Ran into a oneOf with no possibilities!
+<table><tr><td><p>foo</p></td></tr></table>
 ```
 ## [Example 131](https://spec.commonmark.org/0.29/#example-131)
 
@@ -315,7 +246,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Ran into a oneOf with no possibilities!
+<div></div><pre><code>int x = 33;</code></pre>
 ```
 ## [Example 132](https://spec.commonmark.org/0.29/#example-132)
 
@@ -337,7 +268,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Ran into a oneOf with no possibilities!
+<a href="foo"><p><em>bar</em></p></a>
 ```
 ## [Example 133](https://spec.commonmark.org/0.29/#example-133)
 
@@ -359,7 +290,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Ran into a oneOf with no possibilities!
+ERROR oneOf failed parsing this value:<warning>Parsing failed in the following 2 ways: (1) Expected a but was warning (2) Expected div but was warning (3) Expected th but was warning (4) Expected pre but was warning (5) Expected td but was warning (6) Expected tr but was warning (7) Expected table but was warning
 ```
 ## [Example 134](https://spec.commonmark.org/0.29/#example-134)
 
@@ -381,7 +312,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Ran into a oneOf with no possibilities!
+ERROR oneOf failed parsing this value:<i class="foo">Parsing failed in the following 2 ways: (1) Expected a but was i (2) Expected div but was i (3) Expected th but was i (4) Expected pre but was i (5) Expected td but was i (6) Expected tr but was i (7) Expected table but was i
 ```
 ## [Example 135](https://spec.commonmark.org/0.29/#example-135)
 
@@ -424,7 +355,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Ran into a oneOf with no possibilities!
+ERROR oneOf failed parsing this value:<del>Parsing failed in the following 2 ways: (1) Expected a but was del (2) Expected div but was del (3) Expected th but was del (4) Expected pre but was del (5) Expected td but was del (6) Expected tr but was del (7) Expected table but was del
 ```
 ## [Example 137](https://spec.commonmark.org/0.29/#example-137)
 
@@ -448,7 +379,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Ran into a oneOf with no possibilities!
+ERROR oneOf failed parsing this value:<del>Parsing failed in the following 2 ways: (1) Expected a but was del (2) Expected div but was del (3) Expected th but was del (4) Expected pre but was del (5) Expected td but was del (6) Expected tr but was del (7) Expected table but was del
 ```
 ## [Example 138](https://spec.commonmark.org/0.29/#example-138)
 
@@ -468,7 +399,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Ran into a oneOf with no possibilities!
+ERROR oneOf failed parsing this value:<del>Parsing failed in the following 2 ways: (1) Expected a but was del (2) Expected div but was del (3) Expected th but was del (4) Expected pre but was del (5) Expected td but was del (6) Expected tr but was del (7) Expected table but was del
 ```
 ## [Example 139](https://spec.commonmark.org/0.29/#example-139)
 
@@ -494,7 +425,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Ran into a oneOf with no possibilities!
+ERROR oneOf failed parsing this value:<code>Parsing failed in the following 2 ways: (1) Expected a but was code (2) Expected div but was code (3) Expected th but was code (4) Expected pre but was code (5) Expected td but was code (6) Expected tr but was code (7) Expected table but was code
 ```
 ## [Example 140](https://spec.commonmark.org/0.29/#example-140)
 
@@ -519,7 +450,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Ran into a oneOf with no possibilities!
+ERROR oneOf failed parsing this value:<script type="text/javascript">Parsing failed in the following 2 ways: (1) Expected a but was script (2) Expected div but was script (3) Expected th but was script (4) Expected pre but was script (5) Expected td but was script (6) Expected tr but was script (7) Expected table but was script
 ```
 ## [Example 141](https://spec.commonmark.org/0.29/#example-141)
 
@@ -545,7 +476,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Ran into a oneOf with no possibilities!
+ERROR oneOf failed parsing this value:<style type="text/css">Parsing failed in the following 2 ways: (1) Expected a but was style (2) Expected div but was style (3) Expected th but was style (4) Expected pre but was style (5) Expected td but was style (6) Expected tr but was style (7) Expected table but was style
 ```
 ## [Example 142](https://spec.commonmark.org/0.29/#example-142)
 
@@ -633,7 +564,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Ran into a oneOf with no possibilities!
+ERROR oneOf failed parsing this value:<style>Parsing failed in the following 2 ways: (1) Expected a but was style (2) Expected div but was style (3) Expected th but was style (4) Expected pre but was style (5) Expected td but was style (6) Expected tr but was style (7) Expected table but was style
 ```
 ## [Example 146](https://spec.commonmark.org/0.29/#example-146)
 
@@ -676,7 +607,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Ran into a oneOf with no possibilities!
+ERROR oneOf failed parsing this value:<script>Parsing failed in the following 2 ways: (1) Expected a but was script (2) Expected div but was script (3) Expected th but was script (4) Expected pre but was script (5) Expected td but was script (6) Expected tr but was script (7) Expected table but was script
 ```
 ## [Example 148](https://spec.commonmark.org/0.29/#example-148)
 
@@ -844,7 +775,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Ran into a oneOf with no possibilities!
+<p>Foo</p><div><p>bar</p></div>
 ```
 ## [Example 155](https://spec.commonmark.org/0.29/#example-155)
 
@@ -867,7 +798,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Ran into a oneOf with no possibilities!
+<div><p>bar</p></div><p><em>foo</em></p>
 ```
 ## [Example 156](https://spec.commonmark.org/0.29/#example-156)
 
@@ -891,30 +822,6 @@ But instead was:
 ```html
 ERROR Problem at row 5 Expecting symbol
 ```
-## [Example 157](https://spec.commonmark.org/0.29/#example-157)
-
-This markdown:
-
-```markdown
-<div>
-
-*Emphasized* text.
-
-</div>
-
-```
-
-Should give output:
-
-```html
-<div><p><em>Emphasized</em>text.</p></div>
-```
-
-But instead was:
-
-```html
-ERROR Ran into a oneOf with no possibilities!
-```
 ## [Example 158](https://spec.commonmark.org/0.29/#example-158)
 
 This markdown:
@@ -935,7 +842,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Ran into a oneOf with no possibilities!
+<div><p><em>Emphasized</em>text.</p></div>
 ```
 ## [Example 159](https://spec.commonmark.org/0.29/#example-159)
 
@@ -965,7 +872,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Ran into a oneOf with no possibilities!
+<table><tr><td><p>Hi</p></td></tr></table>
 ```
 ## [Example 160](https://spec.commonmark.org/0.29/#example-160)
 

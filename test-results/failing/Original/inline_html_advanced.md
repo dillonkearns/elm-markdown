@@ -32,5 +32,5 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Ran into a oneOf with no possibilities!
+<p>Simple block on one line:</p><div><p>foo</p></div><p>And nested without indentation:</p><div><div><div><p>foo</p></div><div></div></div><div><p>bar</p></div></div>
 ```

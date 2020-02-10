@@ -275,7 +275,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Ran into a oneOf with no possibilities!
+<p><code>Foo</code></p><hr><a></a>
 ```
 ## [Example 62](https://spec.commonmark.org/0.29/#example-62)
 

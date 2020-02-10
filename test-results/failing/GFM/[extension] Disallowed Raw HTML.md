@@ -21,5 +21,5 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 5 tag name mismatch: XMP and blockquote
+ERROR Problem at row 5 tag name mismatch: xmp and blockquote
 ```

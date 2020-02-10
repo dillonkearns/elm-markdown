@@ -38,7 +38,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Ran into a oneOf with no possibilities!
+ERROR oneOf failed parsing this value:<b2>Parsing failed in the following 2 ways: (1) Expected a but was b2 (2) Expected div but was b2 (3) Expected th but was b2 (4) Expected pre but was b2 (5) Expected td but was b2 (6) Expected tr but was b2 (7) Expected table but was b2
 ```
 ## [Example 611](https://spec.commonmark.org/0.29/#example-611)
 
