@@ -31,6 +31,21 @@ suite =
                               ]
                             )
                         )
+        , test "list ending without newline" <|
+            \() ->
+                """1. Item 1
+2. Item 2
+3. Item 3"""
+                    |> Advanced.run (Markdown.OrderedList.parser Nothing)
+                    |> Expect.equal
+                        (Ok
+                            ( 1
+                            , [ "Item 1"
+                              , "Item 2"
+                              , "Item 3"
+                              ]
+                            )
+                        )
         , test "basic list with that start with '1.' and repeat the same starting number" <|
             \() ->
                 """1. Item 1

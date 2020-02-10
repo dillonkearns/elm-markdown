@@ -97,9 +97,12 @@ itemBody =
             |. backtrackable (oneOrMore Helpers.isSpacebar)
             |. commit ""
             |= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
-            |. Advanced.symbol (Advanced.Token "\n" (Parser.ExpectingSymbol "\n"))
+            |. oneOf
+                [ Advanced.symbol (Advanced.Token "\n" (Parser.ExpectingSymbol "\\n"))
+                , Advanced.end (Parser.Expecting "End of input")
+                ]
         , succeed ""
-            |. Advanced.symbol (Advanced.Token "\n" (Parser.ExpectingSymbol "\n"))
+            |. Advanced.symbol (Advanced.Token "\n" (Parser.ExpectingSymbol "\\n"))
         ]
 
 
