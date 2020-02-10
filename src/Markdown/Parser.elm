@@ -110,10 +110,21 @@ defaultHtmlRenderer =
                 (items
                     |> List.map
                         (\item ->
-                            -- TODO use item.task
-                            -- render an inner input item based on that
-                            -- (Write it in the end-to-end renderer first)
-                            Html.li [] item.body
+                            case item.task of
+                                Just complete ->
+                                    let
+                                        checkbox =
+                                            Html.input
+                                                [ Attr.disabled True
+                                                , Attr.checked complete
+                                                , Attr.type_ "checkbox"
+                                                ]
+                                                []
+                                    in
+                                    Html.li [] (checkbox :: item.body)
+
+                                Nothing ->
+                                    Html.li [] item.body
                         )
                 )
     , orderedList =
