@@ -294,7 +294,7 @@ element =
 tagName : Parser String
 tagName =
     inContext "tagName" <|
-        keep oneOrMore (\c -> not (isWhitespace c) && c /= '/' && c /= '<' && c /= '>' && c /= '"' && c /= '\'' && c /= '=')
+        keep oneOrMore (\c -> not (isWhitespace c) && isUninteresting c)
 
 
 children : String -> Parser (List Node)
@@ -545,7 +545,6 @@ whiteSpace1 =
 
 isWhitespace : Char -> Bool
 isWhitespace c =
-    --c == ' ' || c == '\u{000D}' || c == '\n' || c == '\t'
     case c of
         ' ' ->
             True
@@ -766,3 +765,28 @@ end =
 toToken : String -> Advanced.Token Parser.Problem
 toToken str =
     Advanced.Token str (Parser.Expecting str)
+
+
+isUninteresting : Char -> Bool
+isUninteresting c =
+    case c of
+        '/' ->
+            False
+
+        '<' ->
+            False
+
+        '>' ->
+            False
+
+        '"' ->
+            False
+
+        '\'' ->
+            False
+
+        '=' ->
+            False
+
+        _ ->
+            True
