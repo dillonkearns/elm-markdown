@@ -30,6 +30,19 @@ suite =
                             , "Item 3"
                             ]
                         )
+        , test "list that ends without newline" <|
+            \() ->
+                """- Item 1
+- Item 2
+- Item 3"""
+                    |> Advanced.run Markdown.UnorderedList.parser
+                    |> Expect.equal
+                        (Ok
+                            [ "Item 1"
+                            , "Item 2"
+                            , "Item 3"
+                            ]
+                        )
         , test "basic list with '+'" <|
             \() ->
                 """+ Item 1

@@ -18,7 +18,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 3 Expecting symbol
+ERROR Problem at row 3 Expecting Problem at row 1 Expecting symbol (
 ```
 ## [Example 280](https://github.github.com/gfm/#example-280)
 
