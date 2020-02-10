@@ -3,9 +3,22 @@
   <component name="ChangeListManager">
     <list default="true" id="0b59cffb-0820-46ca-be64-42696fef5c0d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Main.elm" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spec-results.json" beforeDir="false" afterPath="$PROJECT_DIR$/spec-results.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/XmlParser.elm" beforeDir="false" afterPath="$PROJECT_DIR$/src/XmlParser.elm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test-results/failing/CommonMark/HTML blocks.md" beforeDir="false" afterPath="$PROJECT_DIR$/test-results/failing/CommonMark/HTML blocks.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test-results/failing/CommonMark/Raw HTML.md" beforeDir="false" afterPath="$PROJECT_DIR$/test-results/failing/CommonMark/Raw HTML.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test-results/failing/CommonMark/Setext headings.md" beforeDir="false" afterPath="$PROJECT_DIR$/test-results/failing/CommonMark/Setext headings.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test-results/failing/GFM/HTML blocks.md" beforeDir="false" afterPath="$PROJECT_DIR$/test-results/failing/GFM/HTML blocks.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test-results/failing/GFM/Raw HTML.md" beforeDir="false" afterPath="$PROJECT_DIR$/test-results/failing/GFM/Raw HTML.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test-results/failing/GFM/Setext headings.md" beforeDir="false" afterPath="$PROJECT_DIR$/test-results/failing/GFM/Setext headings.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test-results/failing/GFM/[extension] Disallowed Raw HTML.md" beforeDir="false" afterPath="$PROJECT_DIR$/test-results/failing/GFM/[extension] Disallowed Raw HTML.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test-results/failing/New/double_link.md" beforeDir="false" afterPath="$PROJECT_DIR$/test-results/failing/New/double_link.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test-results/failing/Original/inline_html_advanced.md" beforeDir="false" afterPath="$PROJECT_DIR$/test-results/failing/Original/inline_html_advanced.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test-results/passing-CommonMark.md" beforeDir="false" afterPath="$PROJECT_DIR$/test-results/passing-CommonMark.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test-results/passing-GFM.md" beforeDir="false" afterPath="$PROJECT_DIR$/test-results/passing-GFM.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test-results/passing-ReDOS.md" beforeDir="false" afterPath="$PROJECT_DIR$/test-results/passing-ReDOS.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/OutputMarkdownHtml.elm" beforeDir="false" afterPath="$PROJECT_DIR$/test/OutputMarkdownHtml.elm" afterDir="false" />
     </list>
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -19,8 +32,9 @@
     <elmProjects>
       <project path="$PROJECT_DIR$/elm.json" />
       <project path="$PROJECT_DIR$/examples/elm.json" />
+      <project path="$PROJECT_DIR$/test/elm.json" />
     </elmProjects>
-    <settings elmCompilerPath="$PROJECT_DIR$/node_modules/.bin/elm" elmFormatPath="$PROJECT_DIR$/node_modules/.bin/elm-format" elmTestPath="$PROJECT_DIR$/node_modules/.bin/elm-test" isElmFormatOnSaveEnabled="false" />
+    <settings elmCompilerPath="$PROJECT_DIR$/node_modules/.bin/elm" elmFormatPath="$PROJECT_DIR$/node_modules/.bin/elm-format" elmTestPath="$PROJECT_DIR$/node_modules/.bin/elm-test" isElmFormatOnSaveEnabled="true" />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -39,25 +53,13 @@
   <component name="ProjectId" id="1RaIWpOFEM0Vw9tKS0b2M6rkqS1" />
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/examples/elm.json" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/test/elm.json" />
     <property name="settings.editor.selected.configurable" value="org.elm.workspace.ui.ElmWorkspaceConfigurable" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/examples/src" />
     </key>
-  </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
-    </option>
   </component>
   <component name="RunManager">
     <configuration default="true" type="Applet">
@@ -128,7 +130,9 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>
@@ -137,5 +141,20 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Add table of contents demo." />
     <option name="LAST_COMMIT_MESSAGE" value="Add table of contents demo." />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="684" y="303" key="FileChooserDialogImpl" timestamp="1581356963429">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state x="684" y="303" key="FileChooserDialogImpl/0.0.1920.1080/-1050.-138.1050.1680@0.0.1920.1080" timestamp="1581356963429" />
+    <state x="435" y="179" key="SettingsEditor" timestamp="1581356485160">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state x="435" y="179" key="SettingsEditor/0.0.1920.1080/-1050.-138.1050.1680@0.0.1920.1080" timestamp="1581356485160" />
+    <state x="601" y="203" width="718" height="652" key="search.everywhere.popup" timestamp="1581356953433">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state x="561" y="211" width="670" height="676" key="search.everywhere.popup/0.0.1792.1120@0.0.1792.1120" timestamp="1581354562957" />
+    <state x="601" y="203" width="718" height="652" key="search.everywhere.popup/0.0.1920.1080/-1050.-138.1050.1680@0.0.1920.1080" timestamp="1581356953433" />
   </component>
 </project>
