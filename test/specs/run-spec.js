@@ -20,7 +20,7 @@ function runSpecs(title, dir, showCompletionTable, options) {
       writePassingMarkdown(title);
     });
 
-    Object.keys(specs).forEach(section => {
+    Object.keys(specs).sort().forEach(section => {
       describe(section, () => {
         specs[section].specs.forEach(spec => {
           spec.options = Object.assign({}, options, spec.options || {});
@@ -96,8 +96,8 @@ function printStatus() {
     return accumulator;
   },
   {});
-  Object.keys(passedJson).forEach(suiteTitle => {
-    Object.keys(passedJson[suiteTitle]).forEach(section => {
+  Object.keys(passedJson).sort().forEach(suiteTitle => {
+    Object.keys(passedJson[suiteTitle]).sort().forEach(section => {
       passedJson[suiteTitle][section].sort();
     });
   });
@@ -122,7 +122,7 @@ function writeFailuresMarkdown(/** @type {string} */ suiteTitle) {
   {});
 
   /** @type {Object} */ let markdownSections = {};
-  Object.keys(failedJson).forEach(section => {
+  Object.keys(failedJson).sort().forEach(section => {
     /** @type {string} */ let sectionMarkdown = `# ${suiteTitle} - ${section}\n\n`;
     failedJson[section].sort((
       /** @type {Spec} */ specA,
@@ -194,7 +194,7 @@ function writePassingMarkdown(/** @type {string} */ suiteTitle) {
 
   /** @type {string} */ let markdown = "";
   markdown += `# ${suiteTitle}\n\n`;
-  Object.keys(passedJson).forEach(section => {
+  Object.keys(passedJson).sort().forEach(section => {
     markdown += `## ${section}\n\n`;
     passedJson[section].sort((
       /** @type {Spec} */ specA,
@@ -203,7 +203,8 @@ function writePassingMarkdown(/** @type {string} */ suiteTitle) {
       if (specA.example && specB.example) {
         return specA.example - specB.example;
       } else {
-        return 0;
+        // return 0;
+        throw `${section} couldn't sort. \nA: ${specA}\n B: ${specB}`;
       }
     });
     passedJson[section].forEach((/** @type {Spec} */ spec) => {
