@@ -26,6 +26,7 @@ module XmlParser exposing
 
 import Char
 import Dict exposing (Dict)
+import Helpers
 import Hex
 import Parser as Parser
 import Parser.Advanced as Advanced exposing ((|.), (|=), Nestable(..), Step(..), andThen, chompUntil, chompWhile, getChompedString, inContext, int, lazy, loop, map, multiComment, oneOf, problem, succeed, token)
@@ -152,7 +153,7 @@ processingInstruction =
 processingInstructionName : Parser String
 processingInstructionName =
     inContext "processingInstructionName" <|
-        keep oneOrMore (\c -> c /= ' ')
+        keep oneOrMore (\c -> not <| Helpers.isSpacebar c)
 
 
 processingInstructionValue : Parser String
@@ -168,9 +169,45 @@ processingInstructionValue =
                             |> map (\tail -> "?" ++ tail)
                     )
             , succeed (++)
-                |= keep zeroOrMore (\c -> c /= '?')
+                |= keep zeroOrMore notQuestionmark
                 |= lazy (\_ -> processingInstructionValue)
             ]
+
+
+notQuestionmark c =
+    case c of
+        '?' ->
+            False
+
+        _ ->
+            True
+
+
+notDoubleQuote c =
+    case c of
+        '"' ->
+            False
+
+        _ ->
+            True
+
+
+notClosingBracket c =
+    case c of
+        ']' ->
+            False
+
+        _ ->
+            True
+
+
+notAmpersand c =
+    case c of
+        '&' ->
+            False
+
+        _ ->
+            True
 
 
 docType : Parser DocType
@@ -223,7 +260,7 @@ docTypeExternalSubset =
     inContext "docTypeExternalSubset" <|
         succeed identity
             |. symbol "\""
-            |= keep zeroOrMore (\c -> c /= '"')
+            |= keep zeroOrMore notDoubleQuote
             |. symbol "\""
 
 
@@ -232,7 +269,7 @@ docTypeInternalSubset =
     inContext "docTypeInternalSubset" <|
         succeed identity
             |. symbol "["
-            |= keep zeroOrMore (\c -> c /= ']')
+            |= keep zeroOrMore notClosingBracket
             |. symbol "]"
 
 
@@ -263,7 +300,7 @@ cdataContent =
                             |> map (\tail -> "]" ++ tail)
                     )
             , succeed (++)
-                |= keep zeroOrMore (\c -> c /= ']')
+                |= keep zeroOrMore notClosingBracket
                 |= lazy (\_ -> cdataContent)
             ]
 
@@ -347,7 +384,7 @@ closingTag startTagName =
 textString : Char -> Parser String
 textString end_ =
     inContext "textString" <|
-        (keep zeroOrMore (\c -> c /= end_ && c /= '&')
+        (keep zeroOrMore (\c -> c /= end_ && notAmpersand c)
             |> andThen
                 (\s ->
                     oneOf
@@ -371,7 +408,18 @@ textNodeString =
                 (\s maybeString ->
                     Just (s ++ (maybeString |> Maybe.withDefault ""))
                 )
-                |= keep oneOrMore (\c -> c /= '<' && c /= '&')
+                |= keep oneOrMore
+                    (\c ->
+                        case c of
+                            '<' ->
+                                False
+
+                            '&' ->
+                                False
+
+                            _ ->
+                                True
+                    )
                 |= lazy (\_ -> textNodeString)
             , succeed
                 (\c maybeString ->
@@ -385,7 +433,7 @@ textNodeString =
                         str =
                             s ++ (maybeString |> Maybe.withDefault "")
                     in
-                    if str /= "" then
+                    if not <| Helpers.isEmptyString str then
                         Just str
 
                     else
@@ -399,7 +447,7 @@ textNodeString =
                         str =
                             maybeString |> Maybe.withDefault ""
                     in
-                    if str /= "" then
+                    if not <| Helpers.isEmptyString str then
                         Just str
 
                     else
@@ -411,12 +459,21 @@ textNodeString =
             ]
 
 
+notSemiColon c =
+    case c of
+        ';' ->
+            False
+
+        _ ->
+            True
+
+
 escapedChar : Char -> Parser Char
 escapedChar end_ =
     inContext "escapedChar" <|
         (succeed identity
             |. symbol "&"
-            |= keep oneOrMore (\c -> c /= end_ && c /= ';')
+            |= keep oneOrMore (\c -> c /= end_ && notSemiColon c)
             |> andThen
                 (\s ->
                     oneOf
@@ -515,7 +572,7 @@ attribute =
 attributeName : Parser String
 attributeName =
     inContext "attributeName" <|
-        keep oneOrMore (\c -> not (isWhitespace c) && c /= '/' && c /= '<' && c /= '>' && c /= '"' && c /= '\'' && c /= '=')
+        keep oneOrMore (\c -> not (isWhitespace c) && isUninteresting c)
 
 
 attributeValue : Parser String
