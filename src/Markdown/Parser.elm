@@ -111,11 +111,12 @@ defaultHtmlRenderer =
     , orderedList =
         \startingIndex items ->
             Html.ol
-                (if startingIndex /= 1 then
-                    [ Attr.start startingIndex ]
+                (case startingIndex of
+                    1 ->
+                        [ Attr.start startingIndex ]
 
-                 else
-                    []
+                    _ ->
+                        []
                 )
                 (items
                     |> List.map
@@ -522,7 +523,17 @@ multiParser2 =
         |. succeed Advanced.end
         |> andThen parseAllInlines
         -- TODO find a more elegant way to exclude empty blocks for each blank lines
-        |> map (List.filter (\item -> item /= Block.Body []))
+        |> map
+            (List.filter
+                (\item ->
+                    case item of
+                        Block.Body [] ->
+                            False
+
+                        _ ->
+                            True
+                )
+            )
 
 
 parseAllInlines : List RawBlock -> Parser (List Block)

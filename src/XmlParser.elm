@@ -251,7 +251,7 @@ publicIdentifier =
     inContext "publicIdentifier" <|
         succeed identity
             |. symbol "\""
-            |= keep zeroOrMore (\c -> c /= '"')
+            |= keep zeroOrMore notDoubleQuote
             |. symbol "\""
 
 

@@ -1,6 +1,7 @@
 module Markdown.Inlines exposing (State, isUninteresting, nextStepWhenFoundBold, nextStepWhenFoundItalic, nextStepWhenFoundNothing, parse, parseHelp, toString)
 
 import Char
+import Helpers
 import Html exposing (Html)
 import Html.Attributes as Attr
 import Markdown.Block as Block exposing (Inline, InlineStyle)
@@ -96,7 +97,7 @@ nextStepWhenFoundNothing ( currStyle, revStyledStrings, _ ) string =
     Done
         (List.reverse
             ({ style = currStyle, string = string } :: revStyledStrings)
-            |> List.filter (\thing -> thing.string /= "")
+            |> List.filter (\thing -> not <| Helpers.isEmptyString thing.string)
         )
 
 
