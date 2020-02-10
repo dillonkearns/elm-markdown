@@ -22,6 +22,12 @@ suite =
                     |> Advanced.run Markdown.ListItem.parser
                     |> Expect.equal
                         (Ok (TaskItem Incomplete "Task item"))
+        , test "complete task" <|
+            \() ->
+                "[x] Another task item"
+                    |> Advanced.run Markdown.ListItem.parser
+                    |> Expect.equal
+                        (Ok (TaskItem Complete "Another task item"))
         , test "plain item" <|
             \() ->
                 "Plain item"

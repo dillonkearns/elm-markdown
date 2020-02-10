@@ -24,10 +24,21 @@ parser : Parser ListItem
 parser =
     oneOf
         [ succeed TaskItem
-            |. Advanced.symbol (Advanced.Token "[" (Parser.ExpectingSymbol "["))
+            |. Advanced.symbol (Advanced.Token "[ ]" (Parser.ExpectingSymbol "[ ]"))
             |= succeed Incomplete
             |= succeed "Task item"
             |. Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
+            |. oneOf
+                [ Advanced.symbol (Advanced.Token "\n" (Parser.ExpectingSymbol "\\n"))
+                , Advanced.end (Parser.Expecting "End of input")
+                ]
+        , succeed TaskItem
+            |. oneOf
+                [ Advanced.symbol (Advanced.Token "[x]" (Parser.ExpectingSymbol "[x]"))
+                ]
+            |= succeed Complete
+            |. oneOrMore Helpers.isSpacebar
+            |= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
             |. oneOf
                 [ Advanced.symbol (Advanced.Token "\n" (Parser.ExpectingSymbol "\\n"))
                 , Advanced.end (Parser.Expecting "End of input")
