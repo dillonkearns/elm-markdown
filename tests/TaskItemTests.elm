@@ -28,6 +28,18 @@ suite =
                     |> Advanced.run Markdown.ListItem.parser
                     |> Expect.equal
                         (Ok (TaskItem Complete "Another task item"))
+        , test "capital X complete task" <|
+            \() ->
+                "[X] Another task item"
+                    |> Advanced.run Markdown.ListItem.parser
+                    |> Expect.equal
+                        (Ok (TaskItem Complete "Another task item"))
+        , test "plain item because space after checkbox is missing" <|
+            \() ->
+                "[X]Another task item"
+                    |> Advanced.run Markdown.ListItem.parser
+                    |> Expect.equal
+                        (Ok (PlainItem "[X]Another task item"))
         , test "plain item" <|
             \() ->
                 "Plain item"

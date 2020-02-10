@@ -2612,3 +2612,25 @@ Gives this correct output:
 | bar |</p>
 ```
 
+## [extension] Task list items
+
+### [Example 279](https://github.github.com/gfm/#example-279)
+
+This markdown:
+
+
+```markdown
+- [ ] foo
+- [x] bar
+```
+
+Gives this correct output:
+
+
+```html
+<ul>
+<li><input disabled="" type="checkbox"> foo</li>
+<li><input checked="" disabled="" type="checkbox"> bar</li>
+</ul>
+```
+

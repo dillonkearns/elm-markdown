@@ -98,9 +98,22 @@ renderMarkdown markdown =
                     Html.ul []
                         (items
                             |> List.map
-                                (\itemBlocks ->
-                                    Html.li []
-                                        itemBlocks
+                                (\item ->
+                                    case item.task of
+                                        Just complete ->
+                                            let
+                                                checkbox =
+                                                    Html.input
+                                                        [ Attr.disabled True
+                                                        , Attr.checked complete
+                                                        , Attr.type_ "checkbox"
+                                                        ]
+                                                        []
+                                            in
+                                            Html.li [] (checkbox :: item.body)
+
+                                        Nothing ->
+                                            Html.li [] item.body
                                 )
                         )
             , orderedList =
