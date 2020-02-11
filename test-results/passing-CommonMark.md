@@ -319,6 +319,30 @@ baz</p>
 
 ```
 
+### [Example 200](https://spec.commonmark.org/0.29/#example-200)
+
+This markdown:
+
+
+```markdown
+   > # Foo
+   > bar
+ > baz
+
+```
+
+Gives this correct output:
+
+
+```html
+<blockquote>
+<h1>Foo</h1>
+<p>bar
+baz</p>
+</blockquote>
+
+```
+
 ### [Example 204](https://spec.commonmark.org/0.29/#example-204)
 
 This markdown:
@@ -2016,6 +2040,33 @@ with two lines.</p>
 </code></pre>
 <blockquote>
 <p>A block quote.</p>
+</blockquote>
+
+```
+
+### [Example 230](https://spec.commonmark.org/0.29/#example-230)
+
+This markdown:
+
+
+```markdown
+>>- one
+>>
+  >  > two
+
+```
+
+Gives this correct output:
+
+
+```html
+<blockquote>
+<blockquote>
+<ul>
+<li>one</li>
+</ul>
+<p>two</p>
+</blockquote>
 </blockquote>
 
 ```

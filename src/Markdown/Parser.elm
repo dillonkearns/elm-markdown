@@ -524,7 +524,13 @@ blockQuote : Parser RawBlock
 blockQuote =
     succeed BlockQuote
         |. oneOf
-            [ symbol (Advanced.Token "> " (Parser.Expecting "> "))
+            [ symbol (Advanced.Token "   > " (Parser.Expecting "   > "))
+            , symbol (Advanced.Token "  > " (Parser.Expecting "  > "))
+            , symbol (Advanced.Token " > " (Parser.Expecting " > "))
+            , symbol (Advanced.Token "> " (Parser.Expecting "> "))
+            , symbol (Advanced.Token "   >" (Parser.Expecting "   >"))
+            , symbol (Advanced.Token "  >" (Parser.Expecting "  >"))
+            , symbol (Advanced.Token " >" (Parser.Expecting " >"))
             , symbol (Advanced.Token ">" (Parser.Expecting ">"))
             ]
         |= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")

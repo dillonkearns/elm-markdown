@@ -21,5 +21,5 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 6 Expecting --- Problem at row 6 Expecting *** Problem at row 6 Expecting ___
+<p>This fails in markdown.pl and upskirt:</p><ul><li>hello</li></ul><blockquote><p>world</p></blockquote>
 ```

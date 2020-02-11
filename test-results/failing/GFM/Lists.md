@@ -367,7 +367,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 3 Expecting --- Problem at row 3 Expecting *** Problem at row 3 Expecting ___
+<ul><li>a</li></ul><blockquote><p>b</p></blockquote><ul><li>c</li></ul>
 ```
 ## [Example 291](https://spec.commonmark.org/0.29/#example-291)
 
@@ -392,7 +392,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 3 Expecting --- Problem at row 3 Expecting *** Problem at row 3 Expecting ___
+ERROR Problem at row 5 Expecting --- Problem at row 5 Expecting *** Problem at row 5 Expecting ___
 ```
 ## [Example 293](https://spec.commonmark.org/0.29/#example-293)
 

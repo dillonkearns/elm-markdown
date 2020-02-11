@@ -133,29 +133,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
-```
-## [Example 230](https://spec.commonmark.org/0.29/#example-230)
-
-This markdown:
-
-```markdown
->>- one
->>
-  >  > two
-
-```
-
-Should give output:
-
-```html
-<blockquote><blockquote><ul><li>one</li></ul><p>two</p></blockquote></blockquote>
-```
-
-But instead was:
-
-```html
-ERROR Problem at row 5 Expecting --- Problem at row 5 Expecting *** Problem at row 5 Expecting ___
+<blockquote><blockquote><ol><li>one</li></ol><p>two</p></blockquote></blockquote>
 ```
 ## [Example 232](https://spec.commonmark.org/0.29/#example-232)
 

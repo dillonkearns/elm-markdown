@@ -1,27 +1,5 @@
 # CommonMark - Block quotes
 
-## [Example 200](https://spec.commonmark.org/0.29/#example-200)
-
-This markdown:
-
-```markdown
-   > # Foo
-   > bar
- > baz
-
-```
-
-Should give output:
-
-```html
-<blockquote><h1>Foo</h1><p>bar baz</p></blockquote>
-```
-
-But instead was:
-
-```html
-ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
-```
 ## [Example 201](https://spec.commonmark.org/0.29/#example-201)
 
 This markdown:
