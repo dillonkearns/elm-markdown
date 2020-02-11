@@ -4,12 +4,13 @@ import Element exposing (Element)
 import Element.Background
 import Element.Border
 import Element.Font as Font
+import Element.Input
 import Element.Region
 import Html exposing (Attribute, Html)
 import Html.Attributes
 import Markdown.Block exposing (Block, Inline, InlineStyle)
 import Markdown.Html
-import Markdown.Parser
+import Markdown.Parser exposing (ListItem(..), TaskStatus(..))
 
 
 main : Html msg
@@ -31,6 +32,11 @@ main =
 markdownBody =
     """
 # Esse intrata referre inter adspeximus aequora soror
+
+## Todos
+- [ ] A
+- [ ] B
+- [X] C
 
 ## Ebur iamque mecum
 
@@ -180,11 +186,19 @@ renderer =
             Element.column [ Element.spacing 15 ]
                 (items
                     |> List.map
-                        (\itemBlocks ->
+                        (\item ->
                             Element.row [ Element.spacing 5 ]
                                 [ Element.row
                                     [ Element.alignTop ]
-                                    (Element.text "• " :: itemBlocks)
+                                    (case item of
+                                        TaskItem status children ->
+                                            checkbox status
+                                                :: Element.text " "
+                                                :: children
+
+                                        NonTaskItem children ->
+                                            Element.text "• " :: children
+                                    )
                                 ]
                         )
                 )
@@ -203,6 +217,18 @@ renderer =
     , codeBlock = codeBlock
     , html = Markdown.Html.oneOf []
     }
+
+
+checkbox : TaskStatus -> Element msg
+checkbox status =
+    Element.Input.defaultCheckbox
+        (case status of
+            Incomplete ->
+                False
+
+            Complete ->
+                True
+        )
 
 
 rawTextToId rawText =

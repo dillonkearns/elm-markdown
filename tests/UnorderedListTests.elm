@@ -3,7 +3,7 @@ module UnorderedListTests exposing (suite)
 import Expect exposing (Expectation)
 import Markdown.Inlines
 import Markdown.ListItem as ListItem exposing (ListItem)
-import Markdown.Parser exposing (..)
+import Markdown.Parser
 import Markdown.UnorderedList
 import Parser
 import Parser.Advanced as Advanced
@@ -131,7 +131,7 @@ plainItem body =
 
 parserError : String -> Expect.Expectation
 parserError markdown =
-    case parse markdown of
+    case Markdown.Parser.parse markdown of
         Ok _ ->
             Expect.fail "Expected a parser failure!"
 

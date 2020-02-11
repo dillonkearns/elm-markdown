@@ -1,4 +1,7 @@
-module Markdown.Parser exposing (Renderer, defaultHtmlRenderer, deadEndToString, parse, render)
+module Markdown.Parser exposing
+    ( Renderer, defaultHtmlRenderer, deadEndToString, parse, render
+    , ListItem(..), TaskStatus(..)
+    )
 
 {-|
 
@@ -47,16 +50,21 @@ type alias Renderer view =
     , italic : String -> view
     , link : { title : Maybe String, destination : String } -> List view -> Result String view
     , image : { src : String } -> String -> Result String view
-    , unorderedList :
-        List
-            { task : Maybe Bool
-            , body : List view
-            }
-        -> view
+    , unorderedList : List (ListItem view) -> view
     , orderedList : Int -> List (List view) -> view
     , codeBlock : { body : String, language : Maybe String } -> view
     , thematicBreak : view
     }
+
+
+type TaskStatus
+    = Complete
+    | Incomplete
+
+
+type ListItem view
+    = TaskItem TaskStatus (List view)
+    | NonTaskItem (List view)
 
 
 {-| This renders `Html` in an attempt to be as close as possible to
@@ -110,21 +118,28 @@ defaultHtmlRenderer =
                 (items
                     |> List.map
                         (\item ->
-                            case item.task of
-                                Just complete ->
+                            case item of
+                                TaskItem status body ->
                                     let
                                         checkbox =
                                             Html.input
                                                 [ Attr.disabled True
-                                                , Attr.checked complete
+                                                , Attr.checked
+                                                    (case status of
+                                                        Complete ->
+                                                            True
+
+                                                        Incomplete ->
+                                                            False
+                                                    )
                                                 , Attr.type_ "checkbox"
                                                 ]
                                                 []
                                     in
-                                    Html.li [] (checkbox :: item.body)
+                                    Html.li [] (checkbox :: body)
 
-                                Nothing ->
-                                    Html.li [] item.body
+                                NonTaskItem body ->
+                                    Html.li [] body
                         )
                 )
     , orderedList =
@@ -235,9 +250,20 @@ renderHelper renderer blocks =
                                 renderStyled renderer item.body
                                     |> Result.map
                                         (\renderedBody ->
-                                            { body = renderedBody
-                                            , task = item.task
-                                            }
+                                            case item.task of
+                                                Just complete ->
+                                                    TaskItem
+                                                        (case complete of
+                                                            True ->
+                                                                Complete
+
+                                                            False ->
+                                                                Incomplete
+                                                        )
+                                                        renderedBody
+
+                                                Nothing ->
+                                                    NonTaskItem renderedBody
                                         )
                             )
                         |> combineResults

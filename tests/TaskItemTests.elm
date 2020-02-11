@@ -3,7 +3,7 @@ module TaskItemTests exposing (suite)
 import Expect exposing (Expectation)
 import Markdown.Inlines
 import Markdown.ListItem exposing (Completion(..), ListItem(..))
-import Markdown.Parser exposing (..)
+import Markdown.Parser
 import Parser
 import Parser.Advanced as Advanced
 import Test exposing (..)
@@ -51,7 +51,7 @@ suite =
 
 parserError : String -> Expect.Expectation
 parserError markdown =
-    case parse markdown of
+    case Markdown.Parser.parse markdown of
         Ok _ ->
             Expect.fail "Expected a parser failure!"
 
