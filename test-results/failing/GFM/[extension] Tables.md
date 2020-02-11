@@ -84,7 +84,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 7 Expecting --- Problem at row 7 Expecting *** Problem at row 7 Expecting ___
+<p>| abc | def | | --- | --- | | bar | baz |</p><blockquote><p>bar</p></blockquote>
 ```
 ## [Example 202](https://github.github.com/gfm/#example-202)
 

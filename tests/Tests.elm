@@ -336,6 +336,11 @@ qwer
                     ">This is a quote\n"
                         |> parse
                         |> Expect.equal (Ok [ Block.BlockQuote [ Block.Body (unstyledText "This is a quote") ] ])
+            , test "block quote with a space after" <|
+                \() ->
+                    "> This is a quote\n"
+                        |> parse
+                        |> Expect.equal (Ok [ Block.BlockQuote [ Block.Body (unstyledText "This is a quote") ] ])
             ]
         ]
 

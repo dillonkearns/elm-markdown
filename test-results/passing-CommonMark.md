@@ -290,6 +290,76 @@ Gives this correct output:
 
 ```
 
+### [Example 215](https://spec.commonmark.org/0.29/#example-215)
+
+This markdown:
+
+
+```markdown
+foo
+> bar
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>foo</p>
+<blockquote>
+<p>bar</p>
+</blockquote>
+
+```
+
+### [Example 217](https://spec.commonmark.org/0.29/#example-217)
+
+This markdown:
+
+
+```markdown
+> bar
+baz
+
+```
+
+Gives this correct output:
+
+
+```html
+<blockquote>
+<p>bar
+baz</p>
+</blockquote>
+
+```
+
+### [Example 220](https://spec.commonmark.org/0.29/#example-220)
+
+This markdown:
+
+
+```markdown
+> > > foo
+bar
+
+```
+
+Gives this correct output:
+
+
+```html
+<blockquote>
+<blockquote>
+<blockquote>
+<p>foo
+bar</p>
+</blockquote>
+</blockquote>
+</blockquote>
+
+```
+
 ## Code spans
 
 ### [Example 328](https://spec.commonmark.org/0.29/#example-328)
@@ -1687,6 +1757,35 @@ Gives this correct output:
 
 ## List items
 
+### [Example 223](https://spec.commonmark.org/0.29/#example-223)
+
+This markdown:
+
+
+```markdown
+A paragraph
+with two lines.
+
+    indented code
+
+> A block quote.
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>A paragraph
+with two lines.</p>
+<pre><code>indented code
+</code></pre>
+<blockquote>
+<p>A block quote.</p>
+</blockquote>
+
+```
+
 ### [Example 231](https://spec.commonmark.org/0.29/#example-231)
 
 This markdown:
@@ -2175,6 +2274,30 @@ Gives this correct output:
 ```
 
 ## Setext headings
+
+### [Example 63](https://spec.commonmark.org/0.29/#example-63)
+
+This markdown:
+
+
+```markdown
+> foo
+bar
+===
+
+```
+
+Gives this correct output:
+
+
+```html
+<blockquote>
+<p>foo
+bar
+===</p>
+</blockquote>
+
+```
 
 ### [Example 64](https://spec.commonmark.org/0.29/#example-64)
 

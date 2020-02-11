@@ -519,7 +519,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 5 Expecting --- Problem at row 5 Expecting *** Problem at row 5 Expecting ___
+ERROR Problem at row 7 Expecting Problem at row 1 Expecting symbol (
 ```
 ## [Example 184](https://spec.commonmark.org/0.29/#example-184)
 
@@ -613,7 +613,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 4 Expecting --- Problem at row 4 Expecting *** Problem at row 4 Expecting ___
+ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
 ```
 ## [Example 188](https://spec.commonmark.org/0.29/#example-188)
 

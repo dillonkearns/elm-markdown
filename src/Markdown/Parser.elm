@@ -503,7 +503,10 @@ plainLine =
 blockQuote : Parser RawBlock
 blockQuote =
     succeed BlockQuote
-        |. symbol (Advanced.Token ">" (Parser.Expecting ">"))
+        |. oneOf
+            [ symbol (Advanced.Token "> " (Parser.Expecting "> "))
+            , symbol (Advanced.Token ">" (Parser.Expecting ">"))
+            ]
         |= rawBlockParser
 
 

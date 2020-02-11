@@ -28,5 +28,5 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+<blockquote><p>Example:</p><blockquote><blockquote><pre><code>sub status {</code></pre><blockquote><pre><code>print &quot;working&quot;;</code></pre><blockquote><pre><code>}</code></pre><blockquote><blockquote><p>Or:</p><blockquote><blockquote><pre><code>sub status {</code></pre><blockquote><pre><code>return &quot;working&quot;;</code></pre><blockquote><pre><code>}</code></pre></blockquote></blockquote></blockquote></blockquote></blockquote></blockquote></blockquote></blockquote></blockquote></blockquote></blockquote>
 ```

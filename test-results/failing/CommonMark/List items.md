@@ -1,30 +1,5 @@
 # CommonMark - List items
 
-## [Example 223](https://spec.commonmark.org/0.29/#example-223)
-
-This markdown:
-
-```markdown
-A paragraph
-with two lines.
-
-    indented code
-
-> A block quote.
-
-```
-
-Should give output:
-
-```html
-<p>A paragraph with two lines.</p><pre><code>indented code</code></pre><blockquote><p>A block quote.</p></blockquote>
-```
-
-But instead was:
-
-```html
-ERROR Problem at row 9 Expecting --- Problem at row 9 Expecting *** Problem at row 9 Expecting ___
-```
 ## [Example 224](https://spec.commonmark.org/0.29/#example-224)
 
 This markdown:
@@ -695,7 +670,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+<blockquote><ol><li>&gt; Blockquote</li></ol><p>continued here.</p></blockquote>
 ```
 ## [Example 263](https://spec.commonmark.org/0.29/#example-263)
 
@@ -716,7 +691,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+<blockquote><ol><li>&gt; Blockquote</li></ol><blockquote><p>continued here.</p></blockquote></blockquote>
 ```
 ## [Example 264](https://spec.commonmark.org/0.29/#example-264)
 

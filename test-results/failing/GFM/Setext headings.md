@@ -296,29 +296,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
-```
-## [Example 63](https://spec.commonmark.org/0.29/#example-63)
-
-This markdown:
-
-```markdown
-> foo
-bar
-===
-
-```
-
-Should give output:
-
-```html
-<blockquote><p>foo bar ===</p></blockquote>
-```
-
-But instead was:
-
-```html
-ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+<blockquote><p>Foo</p><hr></blockquote>
 ```
 ## [Example 65](https://spec.commonmark.org/0.29/#example-65)
 
@@ -386,7 +364,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+<blockquote><p>foo</p><hr></blockquote>
 ```
 ## [Example 72](https://spec.commonmark.org/0.29/#example-72)
 
