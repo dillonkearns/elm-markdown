@@ -277,28 +277,6 @@ But instead was:
 ```html
 <p><code>Foo</code></p><hr><a></a>
 ```
-## [Example 63](https://spec.commonmark.org/0.29/#example-63)
-
-This markdown:
-
-```markdown
-> foo
-bar
-===
-
-```
-
-Should give output:
-
-```html
-<blockquote><p>foo bar ===</p></blockquote>
-```
-
-But instead was:
-
-```html
-<blockquote><p>foo</p></blockquote><p>bar ===</p>
-```
 ## [Example 65](https://spec.commonmark.org/0.29/#example-65)
 
 This markdown:

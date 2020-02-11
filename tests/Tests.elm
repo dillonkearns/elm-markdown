@@ -355,6 +355,20 @@ qwer
                                     ]
                                 ]
                             )
+            , test "plain lines immediately after block quote lines are combined" <|
+                \() ->
+                    """> # Heading
+I'm part of the block quote
+"""
+                        |> parse
+                        |> Expect.equal
+                            (Ok
+                                [ Block.BlockQuote
+                                    [ Block.Heading 1 (unstyledText "Heading")
+                                    , Block.Body (unstyledText "I'm part of the block quote")
+                                    ]
+                                ]
+                            )
             ]
         ]
 

@@ -343,6 +343,54 @@ baz</p>
 
 ```
 
+### [Example 202](https://spec.commonmark.org/0.29/#example-202)
+
+This markdown:
+
+
+```markdown
+> # Foo
+> bar
+baz
+
+```
+
+Gives this correct output:
+
+
+```html
+<blockquote>
+<h1>Foo</h1>
+<p>bar
+baz</p>
+</blockquote>
+
+```
+
+### [Example 203](https://spec.commonmark.org/0.29/#example-203)
+
+This markdown:
+
+
+```markdown
+> bar
+baz
+> foo
+
+```
+
+Gives this correct output:
+
+
+```html
+<blockquote>
+<p>bar
+baz
+foo</p>
+</blockquote>
+
+```
+
 ### [Example 204](https://spec.commonmark.org/0.29/#example-204)
 
 This markdown:
@@ -572,6 +620,28 @@ Gives this correct output:
 
 ```
 
+### [Example 217](https://spec.commonmark.org/0.29/#example-217)
+
+This markdown:
+
+
+```markdown
+> bar
+baz
+
+```
+
+Gives this correct output:
+
+
+```html
+<blockquote>
+<p>bar
+baz</p>
+</blockquote>
+
+```
+
 ### [Example 218](https://spec.commonmark.org/0.29/#example-218)
 
 This markdown:
@@ -595,15 +665,14 @@ Gives this correct output:
 
 ```
 
-### [Example 219](https://spec.commonmark.org/0.29/#example-219)
+### [Example 220](https://spec.commonmark.org/0.29/#example-220)
 
 This markdown:
 
 
 ```markdown
-> bar
->
-baz
+> > > foo
+bar
 
 ```
 
@@ -612,9 +681,41 @@ Gives this correct output:
 
 ```html
 <blockquote>
-<p>bar</p>
+<blockquote>
+<blockquote>
+<p>foo
+bar</p>
 </blockquote>
-<p>baz</p>
+</blockquote>
+</blockquote>
+
+```
+
+### [Example 221](https://spec.commonmark.org/0.29/#example-221)
+
+This markdown:
+
+
+```markdown
+>>> foo
+> bar
+>>baz
+
+```
+
+Gives this correct output:
+
+
+```html
+<blockquote>
+<blockquote>
+<blockquote>
+<p>foo
+bar
+baz</p>
+</blockquote>
+</blockquote>
+</blockquote>
 
 ```
 
@@ -2579,6 +2680,30 @@ Gives this correct output:
 <p>Foo</p>
 </blockquote>
 <hr />
+
+```
+
+### [Example 63](https://spec.commonmark.org/0.29/#example-63)
+
+This markdown:
+
+
+```markdown
+> foo
+bar
+===
+
+```
+
+Gives this correct output:
+
+
+```html
+<blockquote>
+<p>foo
+bar
+===</p>
+</blockquote>
 
 ```
 

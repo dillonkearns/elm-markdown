@@ -648,7 +648,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 5 Expecting TODO
+<blockquote><ol><li>&gt; Blockquote</li></ol><p>continued here.</p></blockquote>
 ```
 ## [Example 263](https://spec.commonmark.org/0.29/#example-263)
 

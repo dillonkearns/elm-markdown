@@ -473,17 +473,6 @@ parseInlines rawBlock =
                     Advanced.problem (Parser.Expecting "TODO")
 
 
-
---just (Block.BlockQuote [])
---Debug.todo "parse inlines or raw String for BlockQuote"
---parseAllInlines rawBlocks
---    |> map Block.BlockQuote
---    |> map Just
---|> just
---just
---    Block.ThematicBreak
-
-
 just value =
     succeed (Just value)
 
@@ -721,6 +710,12 @@ statementsHelp2 revStmts =
                             , revStmts
                             )
                         of
+                            ( Body (UnparsedInlines body1), (BlockQuote body2) :: rest ) ->
+                                (BlockQuote (joinRawStringsWith "\n" body2 body1)
+                                    :: rest
+                                )
+                                    |> Loop
+
                             ( BlockQuote body1, (BlockQuote body2) :: rest ) ->
                                 (BlockQuote (joinRawStringsWith "\n" body2 body1)
                                     :: rest
