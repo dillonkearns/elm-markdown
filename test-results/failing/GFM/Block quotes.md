@@ -87,25 +87,3 @@ But instead was:
 ```html
 <blockquote><p>bar baz</p></blockquote>
 ```
-## [Example 222](https://spec.commonmark.org/0.29/#example-222)
-
-This markdown:
-
-```markdown
->     code
-
->    not code
-
-```
-
-Should give output:
-
-```html
-<blockquote><pre><code>code</code></pre></blockquote><blockquote><p>not code</p></blockquote>
-```
-
-But instead was:
-
-```html
-ERROR Problem at row 6 Expecting TODO
-```

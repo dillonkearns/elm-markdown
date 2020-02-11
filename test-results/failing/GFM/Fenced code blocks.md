@@ -132,7 +132,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 8 Expecting TODO
+ERROR Problem at row 8 Problem at row 3 Expecting symbol ```
 ```
 ## [Example 100](https://spec.commonmark.org/0.29/#example-100)
 
@@ -176,7 +176,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+ERROR Problem at row 9 Expecting symbol ```
 ```
 ## [Example 102](https://spec.commonmark.org/0.29/#example-102)
 
@@ -200,7 +200,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+<p><code>aaa aaa aaa</code></p>
 ```
 ## [Example 103](https://spec.commonmark.org/0.29/#example-103)
 
@@ -224,7 +224,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+<p><code>aaa</code></p><pre><code>aaa</code></pre><p>aaa</p>
 ```
 ## [Example 105](https://spec.commonmark.org/0.29/#example-105)
 
@@ -268,7 +268,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+<p><code>aaa</code></p>
 ```
 ## [Example 107](https://spec.commonmark.org/0.29/#example-107)
 
@@ -333,7 +333,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 5 Expecting --- Problem at row 5 Expecting *** Problem at row 5 Expecting ___
+<pre><code>aaa</code></pre><p>~~</p>
 ```
 ## [Example 111](https://spec.commonmark.org/0.29/#example-111)
 

@@ -52,7 +52,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 7 Expecting Problem at row 2 Expecting --- Problem at row 2 Expecting *** Problem at row 2 Expecting ___
+ERROR Problem at row 7 Expecting Problem at row 2 Expecting Not a space or tab.
 ```
 ## [Example 120](https://spec.commonmark.org/0.29/#example-120)
 
@@ -74,7 +74,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+<p>&lt;div&gt;<em>hello</em></p><pre><code>&lt;foo&gt;&lt;a&gt;</code></pre>
 ```
 ## [Example 121](https://spec.commonmark.org/0.29/#example-121)
 
@@ -522,7 +522,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 8 Expecting TODO
+ERROR Problem at row 8 Problem at row 2 Expecting symbol
 ```
 ## [Example 144](https://spec.commonmark.org/0.29/#example-144)
 
@@ -730,7 +730,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+<p>&lt;!-- foo --&gt;</p><pre><code>&lt;!-- foo --&gt;</code></pre>
 ```
 ## [Example 153](https://spec.commonmark.org/0.29/#example-153)
 
@@ -752,7 +752,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+<p>&lt;div&gt;</p><pre><code>&lt;div&gt;</code></pre>
 ```
 ## [Example 154](https://spec.commonmark.org/0.29/#example-154)
 
@@ -902,5 +902,5 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 11 Expecting Problem at row 3 Expecting --- Problem at row 3 Expecting *** Problem at row 3 Expecting ___
+ERROR Problem at row 11 Expecting Problem at row 3 Expecting Not a space or tab.
 ```

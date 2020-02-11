@@ -25,5 +25,5 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+<p>aaa</p><h1>aaa</h1><p></p>
 ```

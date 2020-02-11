@@ -24,5 +24,5 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 8 Expecting --- Problem at row 8 Expecting *** Problem at row 8 Expecting ___
+ERROR Problem at row 11 Expecting Problem at row 1 Expecting symbol (
 ```

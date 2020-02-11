@@ -742,6 +742,32 @@ baz</p>
 
 ```
 
+### [Example 222](https://spec.commonmark.org/0.29/#example-222)
+
+This markdown:
+
+
+```markdown
+>     code
+
+>    not code
+
+```
+
+Gives this correct output:
+
+
+```html
+<blockquote>
+<pre><code>code
+</code></pre>
+</blockquote>
+<blockquote>
+<p>not code</p>
+</blockquote>
+
+```
+
 ## Code spans
 
 ### [Example 328](https://spec.commonmark.org/0.29/#example-328)
@@ -2279,6 +2305,29 @@ with two lines.</p>
 
 ```
 
+### [Example 225](https://spec.commonmark.org/0.29/#example-225)
+
+This markdown:
+
+
+```markdown
+- one
+
+ two
+
+```
+
+Gives this correct output:
+
+
+```html
+<ul>
+<li>one</li>
+</ul>
+<p>two</p>
+
+```
+
 ### [Example 230](https://spec.commonmark.org/0.29/#example-230)
 
 This markdown:
@@ -2446,6 +2495,50 @@ Gives this correct output:
 <p>paragraph</p>
 <pre><code>more code
 </code></pre>
+
+```
+
+### [Example 245](https://spec.commonmark.org/0.29/#example-245)
+
+This markdown:
+
+
+```markdown
+   foo
+
+bar
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>foo</p>
+<p>bar</p>
+
+```
+
+### [Example 246](https://spec.commonmark.org/0.29/#example-246)
+
+This markdown:
+
+
+```markdown
+-    foo
+
+  bar
+
+```
+
+Gives this correct output:
+
+
+```html
+<ul>
+<li>foo</li>
+</ul>
+<p>bar</p>
 
 ```
 
@@ -2728,6 +2821,46 @@ Gives this correct output:
 ```html
 <p>aaa</p>
 <p>bbb</p>
+
+```
+
+### [Example 192](https://spec.commonmark.org/0.29/#example-192)
+
+This markdown:
+
+
+```markdown
+  aaa
+ bbb
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>aaa
+bbb</p>
+
+```
+
+### [Example 194](https://spec.commonmark.org/0.29/#example-194)
+
+This markdown:
+
+
+```markdown
+   aaa
+bbb
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>aaa
+bbb</p>
 
 ```
 
@@ -3015,6 +3148,26 @@ baz</p>
 
 ```
 
+### [Example 646](https://spec.commonmark.org/0.29/#example-646)
+
+This markdown:
+
+
+```markdown
+foo 
+ baz
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>foo
+baz</p>
+
+```
+
 ## Tabs
 
 ### [Example 1](https://spec.commonmark.org/0.29/#example-1)
@@ -3289,6 +3442,24 @@ Gives this correct output:
 
 ```html
 <hr />
+
+```
+
+### [Example 26](https://spec.commonmark.org/0.29/#example-26)
+
+This markdown:
+
+
+```markdown
+ *-*
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><em>-</em></p>
 
 ```
 

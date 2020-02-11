@@ -25,28 +25,6 @@ But instead was:
 ```html
 <ol><li>A paragraph</li></ol><pre><code>with two lines.</code></pre><pre><code>indented code</code></pre><pre><code>&gt; A block quote.</code></pre>
 ```
-## [Example 225](https://spec.commonmark.org/0.29/#example-225)
-
-This markdown:
-
-```markdown
-- one
-
- two
-
-```
-
-Should give output:
-
-```html
-<ul><li>one</li></ul><p>two</p>
-```
-
-But instead was:
-
-```html
-ERROR Problem at row 4 Expecting --- Problem at row 4 Expecting *** Problem at row 4 Expecting ___
-```
 ## [Example 226](https://spec.commonmark.org/0.29/#example-226)
 
 This markdown:
@@ -67,7 +45,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 4 Expecting --- Problem at row 4 Expecting *** Problem at row 4 Expecting ___
+<ul><li>one</li></ul><p>two</p>
 ```
 ## [Example 227](https://spec.commonmark.org/0.29/#example-227)
 
@@ -89,7 +67,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+<p>- one</p><pre><code>two</code></pre>
 ```
 ## [Example 228](https://spec.commonmark.org/0.29/#example-228)
 
@@ -111,7 +89,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+<p>- one</p><pre><code>two</code></pre>
 ```
 ## [Example 229](https://spec.commonmark.org/0.29/#example-229)
 
@@ -156,7 +134,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 5 Expecting --- Problem at row 5 Expecting *** Problem at row 5 Expecting ___
+<ul><li>foo</li></ul><p>bar</p>
 ```
 ## [Example 233](https://spec.commonmark.org/0.29/#example-233)
 
@@ -253,7 +231,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+<p>10. foo</p><pre><code>bar</code></pre>
 ```
 ## [Example 243](https://spec.commonmark.org/0.29/#example-243)
 
@@ -277,7 +255,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 4 Expecting --- Problem at row 4 Expecting *** Problem at row 4 Expecting ___
+<ol><li>indented code</li></ol><p>paragraph</p><pre><code>more code</code></pre>
 ```
 ## [Example 244](https://spec.commonmark.org/0.29/#example-244)
 
@@ -301,51 +279,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 4 Expecting --- Problem at row 4 Expecting *** Problem at row 4 Expecting ___
-```
-## [Example 245](https://spec.commonmark.org/0.29/#example-245)
-
-This markdown:
-
-```markdown
-   foo
-
-bar
-
-```
-
-Should give output:
-
-```html
-<p>foo</p><p>bar</p>
-```
-
-But instead was:
-
-```html
-ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
-```
-## [Example 246](https://spec.commonmark.org/0.29/#example-246)
-
-This markdown:
-
-```markdown
--    foo
-
-  bar
-
-```
-
-Should give output:
-
-```html
-<ul><li>foo</li></ul><p>bar</p>
-```
-
-But instead was:
-
-```html
-ERROR Problem at row 4 Expecting --- Problem at row 4 Expecting *** Problem at row 4 Expecting ___
+<ol><li>indented code</li></ol><p>paragraph</p><pre><code>more code</code></pre>
 ```
 ## [Example 247](https://spec.commonmark.org/0.29/#example-247)
 
@@ -367,7 +301,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 4 Expecting --- Problem at row 4 Expecting *** Problem at row 4 Expecting ___
+<ul><li>foo</li></ul><p>bar</p>
 ```
 ## [Example 248](https://spec.commonmark.org/0.29/#example-248)
 
@@ -394,7 +328,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 3 Expecting --- Problem at row 3 Expecting *** Problem at row 3 Expecting ___
+<p>- foo -<code>bar</code>-</p><pre><code>baz</code></pre>
 ```
 ## [Example 249](https://spec.commonmark.org/0.29/#example-249)
 
@@ -415,7 +349,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 3 Expecting --- Problem at row 3 Expecting *** Problem at row 3 Expecting ___
+<ul><li></li></ul><p>foo</p>
 ```
 ## [Example 250](https://spec.commonmark.org/0.29/#example-250)
 
@@ -437,7 +371,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 4 Expecting --- Problem at row 4 Expecting *** Problem at row 4 Expecting ___
+<p>-</p><p>foo</p>
 ```
 ## [Example 254](https://spec.commonmark.org/0.29/#example-254)
 
@@ -506,7 +440,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+<p>1. A paragraph</p><pre><code>with two lines.</code></pre><pre><code>indented code</code></pre><pre><code>&gt; A block quote.</code></pre>
 ```
 ## [Example 257](https://spec.commonmark.org/0.29/#example-257)
 
@@ -531,7 +465,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+<p>1. A paragraph</p><pre><code>with two lines.</code></pre><pre><code>indented code</code></pre><pre><code>&gt; A block quote.</code></pre>
 ```
 ## [Example 258](https://spec.commonmark.org/0.29/#example-258)
 
@@ -556,7 +490,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+<p>1. A paragraph</p><pre><code>with two lines.</code></pre><pre><code>indented code</code></pre><pre><code>&gt; A block quote.</code></pre>
 ```
 ## [Example 259](https://spec.commonmark.org/0.29/#example-259)
 
@@ -606,7 +540,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+<p>1. A paragraph with two lines.</p><pre><code>indented code</code></pre><pre><code>&gt; A block quote.</code></pre>
 ```
 ## [Example 261](https://spec.commonmark.org/0.29/#example-261)
 
@@ -627,7 +561,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+<p>1. A paragraph</p><pre><code>with two lines.</code></pre>
 ```
 ## [Example 262](https://spec.commonmark.org/0.29/#example-262)
 
@@ -692,7 +626,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 3 Expecting --- Problem at row 3 Expecting *** Problem at row 3 Expecting ___
+<ul><li>foo</li></ul><p>- bar</p><pre><code>- baz - boo</code></pre>
 ```
 ## [Example 265](https://spec.commonmark.org/0.29/#example-265)
 
@@ -715,7 +649,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 3 Expecting --- Problem at row 3 Expecting *** Problem at row 3 Expecting ___
+<ul><li>foo</li></ul><p>- bar - baz - boo</p>
 ```
 ## [Example 266](https://spec.commonmark.org/0.29/#example-266)
 
@@ -757,7 +691,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 3 Expecting --- Problem at row 3 Expecting *** Problem at row 3 Expecting ___
+<ol start="10"><li>foo</li></ol><p>- bar</p>
 ```
 ## [Example 268](https://spec.commonmark.org/0.29/#example-268)
 
@@ -820,5 +754,5 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 6 Expecting --- Problem at row 6 Expecting *** Problem at row 6 Expecting ___
+<ul><li># Foo</li><li>Bar</li></ul><hr><p>baz</p>
 ```

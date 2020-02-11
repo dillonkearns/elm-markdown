@@ -384,6 +384,26 @@ I'm part of the block quote
                                 }
                             ]
                         )
+        , test "block quotes eat the first space and allow paragraphs to start with 3 spaces" <|
+            \() ->
+                """>     code
+
+>    not code
+"""
+                    |> parse
+                    |> Expect.equal
+                        (Ok
+                            [ Block.BlockQuote
+                                [ Block.CodeBlock
+                                    { body = "code"
+                                    , language = Nothing
+                                    }
+                                ]
+                            , Block.BlockQuote
+                                [ Block.Body (unstyledText "not code")
+                                ]
+                            ]
+                        )
         ]
 
 

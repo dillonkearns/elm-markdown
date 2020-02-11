@@ -18,7 +18,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+ERROR Problem at row 1 Expecting Not a space or tab.
 ```
 ## [Example 4](https://spec.commonmark.org/0.29/#example-4)
 
@@ -40,7 +40,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+<p>- foo</p><pre><code>bar</code></pre>
 ```
 ## [Example 5](https://spec.commonmark.org/0.29/#example-5)
 
@@ -104,7 +104,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+<p>- foo - bar</p><pre><code>- baz</code></pre>
 ```
 ## [Example 11](https://spec.commonmark.org/0.29/#example-11)
 

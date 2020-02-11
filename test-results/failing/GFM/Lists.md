@@ -48,7 +48,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 3 Expecting --- Problem at row 3 Expecting *** Problem at row 3 Expecting ___
+<ul><li>foo</li></ul><p>- bar</p><pre><code>- baz</code></pre><pre><code>bim</code></pre>
 ```
 ## [Example 278](https://spec.commonmark.org/0.29/#example-278)
 
@@ -128,7 +128,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 3 Expecting --- Problem at row 3 Expecting *** Problem at row 3 Expecting ___
+<ul><li>a</li></ul><p>- b - c - d - e - f</p><ul><li>g</li></ul>
 ```
 ## [Example 281](https://spec.commonmark.org/0.29/#example-281)
 
@@ -152,7 +152,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 4 Expecting --- Problem at row 4 Expecting *** Problem at row 4 Expecting ___
+<ol><li>a</li></ol><p>2. b</p><p>3. c</p>
 ```
 ## [Example 282](https://spec.commonmark.org/0.29/#example-282)
 
@@ -176,7 +176,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 3 Expecting --- Problem at row 3 Expecting *** Problem at row 3 Expecting ___
+<ul><li>a</li></ul><p>- b - c - d</p><pre><code>- e</code></pre>
 ```
 ## [Example 283](https://spec.commonmark.org/0.29/#example-283)
 
@@ -200,7 +200,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 4 Expecting --- Problem at row 4 Expecting *** Problem at row 4 Expecting ___
+<ol><li>a</li></ol><p>2. b</p><pre><code>3. c</code></pre>
 ```
 ## [Example 284](https://spec.commonmark.org/0.29/#example-284)
 
@@ -270,7 +270,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 6 Expecting --- Problem at row 6 Expecting *** Problem at row 6 Expecting ___
+<ul><li>a</li><li>b</li></ul><p>c</p><ul><li>d</li></ul>
 ```
 ## [Example 287](https://spec.commonmark.org/0.29/#example-287)
 
@@ -294,7 +294,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 6 Expecting --- Problem at row 6 Expecting *** Problem at row 6 Expecting ___
+ERROR Problem at row 10 Expecting Problem at row 1 Expecting symbol (
 ```
 ## [Example 288](https://spec.commonmark.org/0.29/#example-288)
 
@@ -320,7 +320,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 5 Expecting --- Problem at row 5 Expecting *** Problem at row 5 Expecting ___
+<ul><li>a</li><li></li></ul><p>b</p><ul><li>c</li></ul>
 ```
 ## [Example 289](https://spec.commonmark.org/0.29/#example-289)
 
@@ -344,7 +344,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 3 Expecting --- Problem at row 3 Expecting *** Problem at row 3 Expecting ___
+<ul><li>a</li></ul><p>- b</p><pre><code>c</code></pre><ul><li>d</li></ul>
 ```
 ## [Example 290](https://spec.commonmark.org/0.29/#example-290)
 
@@ -392,7 +392,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 5 Expecting --- Problem at row 5 Expecting *** Problem at row 5 Expecting ___
+<ul><li>a</li></ul><blockquote><p>b</p><pre><code>c</code></pre></blockquote><ul><li>d</li></ul>
 ```
 ## [Example 293](https://spec.commonmark.org/0.29/#example-293)
 
@@ -413,7 +413,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 3 Expecting --- Problem at row 3 Expecting *** Problem at row 3 Expecting ___
+<ul><li>a</li></ul><p>- b</p>
 ```
 ## [Example 294](https://spec.commonmark.org/0.29/#example-294)
 
@@ -437,7 +437,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 3 Expecting --- Problem at row 3 Expecting *** Problem at row 3 Expecting ___
+<ol><li></li></ol><p>foo</p><p>bar</p>
 ```
 ## [Example 295](https://spec.commonmark.org/0.29/#example-295)
 
@@ -460,7 +460,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 3 Expecting --- Problem at row 3 Expecting *** Problem at row 3 Expecting ___
+<ul><li>foo</li></ul><p><em>bar</em></p><p>baz</p>
 ```
 ## [Example 296](https://spec.commonmark.org/0.29/#example-296)
 
@@ -486,5 +486,5 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 3 Expecting --- Problem at row 3 Expecting *** Problem at row 3 Expecting ___
+<ul><li>a</li></ul><p>- b - c</p><ul><li>d</li></ul><p>- e - f</p>
 ```

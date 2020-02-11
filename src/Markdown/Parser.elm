@@ -470,7 +470,7 @@ parseInlines rawBlock =
                             )
 
                 Err error ->
-                    Advanced.problem (Parser.Expecting "TODO")
+                    Advanced.problem (Parser.Problem (deadEndsToString error))
 
 
 just value =
@@ -489,24 +489,30 @@ parseRawInline wrap (UnparsedInlines unparsedInlines) =
 
 plainLine : Parser RawBlock
 plainLine =
-    --succeed
-    map
+    succeed
         (\rawLine ->
             rawLine
                 |> UnparsedInlines
                 |> Body
         )
-    <|
-        (getChompedString <|
-            succeed ()
-                |. Advanced.chompIf (\c -> not <| Helpers.isSpaceOrTab c && (not <| Helpers.isNewline c)) (Parser.Expecting "Not a space or tab.")
-                |. Advanced.chompUntilEndOr "\n"
-         --|= Advanced.getChompedString
-        )
-            |. oneOf
-                [ Advanced.chompIf Helpers.isNewline (Parser.Expecting "A single non-newline char.")
-                , Advanced.end (Parser.Expecting "End")
-                ]
+        |. oneOf
+            [ token (Advanced.Token "   " (Parser.Expecting "   "))
+            , token (Advanced.Token "  " (Parser.Expecting "  "))
+            , token (Advanced.Token " " (Parser.Expecting " "))
+            , succeed ()
+            ]
+        |= innerParagraphParser
+        |. oneOf
+            [ Advanced.chompIf Helpers.isNewline (Parser.Expecting "A single non-newline char.")
+            , Advanced.end (Parser.Expecting "End")
+            ]
+
+
+innerParagraphParser =
+    getChompedString <|
+        succeed ()
+            |. Advanced.chompIf (\c -> not <| Helpers.isSpaceOrTab c && (not <| Helpers.isNewline c)) (Parser.Expecting "Not a space or tab.")
+            |. Advanced.chompUntilEndOr "\n"
 
 
 blockQuote : Parser RawBlock
@@ -812,12 +818,14 @@ joinRawStringsWith joinWith string1 string2 =
 thematicBreak : Parser RawBlock
 thematicBreak =
     succeed ThematicBreak
-        |. oneOf
-            [ symbol (Advanced.Token "   " (Parser.Problem "Expecting 3 spaces"))
-            , symbol (Advanced.Token "  " (Parser.Problem "Expecting 2 spaces"))
-            , symbol (Advanced.Token " " (Parser.Problem "Expecting space"))
-            , succeed ()
-            ]
+        |. Advanced.backtrackable
+            (oneOf
+                [ symbol (Advanced.Token "   " (Parser.Problem "Expecting 3 spaces"))
+                , symbol (Advanced.Token "  " (Parser.Problem "Expecting 2 spaces"))
+                , symbol (Advanced.Token " " (Parser.Problem "Expecting space"))
+                , succeed ()
+                ]
+            )
         |. oneOf
             [ symbol (Advanced.Token "---" (Parser.Expecting "---"))
                 |. chompWhile
