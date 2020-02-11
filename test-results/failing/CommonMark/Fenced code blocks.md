@@ -132,7 +132,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>&gt;<code>&gt; aaa</code></p><p>bbb</p>
+ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
 ```
 ## [Example 100](https://spec.commonmark.org/0.29/#example-100)
 

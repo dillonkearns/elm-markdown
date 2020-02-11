@@ -77,6 +77,7 @@ renderMarkdown markdown =
                         _ ->
                             Html.text "TODO maye use a type here to clean it up... this will never happen"
             , raw = Html.p []
+            , blockQuote = Html.blockquote []
             , bold =
                 \content -> Html.strong [] [ Html.text content ]
             , italic =
@@ -99,21 +100,28 @@ renderMarkdown markdown =
                         (items
                             |> List.map
                                 (\item ->
-                                    case item.task of
-                                        Just complete ->
+                                    case item of
+                                        Markdown.TaskItem status body ->
                                             let
                                                 checkbox =
                                                     Html.input
                                                         [ Attr.disabled True
-                                                        , Attr.checked complete
+                                                        , Attr.checked
+                                                            (case status of
+                                                                Markdown.Complete ->
+                                                                    True
+
+                                                                Markdown.Incomplete ->
+                                                                    False
+                                                            )
                                                         , Attr.type_ "checkbox"
                                                         ]
                                                         []
                                             in
-                                            Html.li [] (checkbox :: item.body)
+                                            Html.li [] (checkbox :: body)
 
-                                        Nothing ->
-                                            Html.li [] item.body
+                                        Markdown.NonTaskItem body ->
+                                            Html.li [] body
                                 )
                         )
             , orderedList =

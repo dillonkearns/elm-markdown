@@ -22,5 +22,5 @@ Should give output:
 But instead was:
 
 ```html
-<p>&gt; A list within a blockquote: &gt; &gt;<em>asterisk 1 &gt;</em>asterisk 2 &gt;<em>asterisk 3</em></p>
+ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
 ```

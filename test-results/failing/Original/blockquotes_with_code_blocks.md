@@ -28,5 +28,5 @@ Should give output:
 But instead was:
 
 ```html
-<p>&gt; Example: &gt; &gt; sub status { &gt; print &quot;working&quot;; &gt; } &gt; &gt; Or: &gt; &gt; sub status { &gt; return &quot;working&quot;; &gt; }</p>
+ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
 ```

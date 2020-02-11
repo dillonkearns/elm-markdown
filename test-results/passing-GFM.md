@@ -269,6 +269,27 @@ Gives this correct output:
 
 ```
 
+## Block quotes
+
+### [Example 209](https://spec.commonmark.org/0.29/#example-209)
+
+This markdown:
+
+
+```markdown
+>
+
+```
+
+Gives this correct output:
+
+
+```html
+<blockquote>
+</blockquote>
+
+```
+
 ## Code spans
 
 ### [Example 328](https://spec.commonmark.org/0.29/#example-328)
@@ -2325,6 +2346,27 @@ Gives this correct output:
 ```html
 <pre><code>foo	baz		bim
 </code></pre>
+
+```
+
+### [Example 6](https://spec.commonmark.org/0.29/#example-6)
+
+This markdown:
+
+
+```markdown
+>		foo
+
+```
+
+Gives this correct output:
+
+
+```html
+<blockquote>
+<pre><code>  foo
+</code></pre>
+</blockquote>
 
 ```
 

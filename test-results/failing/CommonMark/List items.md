@@ -23,7 +23,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>A paragraph with two lines.</p><pre><code>indented code</code></pre><p>&gt; A block quote.</p>
+ERROR Problem at row 9 Expecting --- Problem at row 9 Expecting *** Problem at row 9 Expecting ___
 ```
 ## [Example 224](https://spec.commonmark.org/0.29/#example-224)
 
@@ -180,7 +180,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 5 Expecting --- Problem at row 5 Expecting *** Problem at row 5 Expecting ___
+ERROR Problem at row 4 Expecting --- Problem at row 4 Expecting *** Problem at row 4 Expecting ___
 ```
 ## [Example 232](https://spec.commonmark.org/0.29/#example-232)
 
@@ -695,7 +695,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>&gt; 1. &gt; Blockquote continued here.</p>
+ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
 ```
 ## [Example 263](https://spec.commonmark.org/0.29/#example-263)
 
@@ -716,7 +716,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>&gt; 1. &gt; Blockquote &gt; continued here.</p>
+ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
 ```
 ## [Example 264](https://spec.commonmark.org/0.29/#example-264)
 

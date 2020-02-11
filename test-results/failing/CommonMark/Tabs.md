@@ -85,26 +85,6 @@ But instead was:
 ```html
 <ul><li>foo</li></ul><pre><code>bar</code></pre>
 ```
-## [Example 6](https://spec.commonmark.org/0.29/#example-6)
-
-This markdown:
-
-```markdown
->		foo
-
-```
-
-Should give output:
-
-```html
-<blockquote><pre><code>foo</code></pre></blockquote>
-```
-
-But instead was:
-
-```html
-<p>&gt; foo</p>
-```
 ## [Example 7](https://spec.commonmark.org/0.29/#example-7)
 
 This markdown:

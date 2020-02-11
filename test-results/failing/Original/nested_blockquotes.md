@@ -22,5 +22,5 @@ Should give output:
 But instead was:
 
 ```html
-<p>&gt; foo &gt; &gt; &gt; bar &gt; &gt; foo</p>
+ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
 ```

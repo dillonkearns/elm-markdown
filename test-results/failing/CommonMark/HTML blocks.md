@@ -522,7 +522,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>&gt; &lt;div&gt; &gt; foo</p><p>bar</p>
+ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
 ```
 ## [Example 144](https://spec.commonmark.org/0.29/#example-144)
 

@@ -84,7 +84,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>| abc | def | | --- | --- | | bar | baz | &gt; bar</p>
+ERROR Problem at row 7 Expecting --- Problem at row 7 Expecting *** Problem at row 7 Expecting ___
 ```
 ## [Example 202](https://github.github.com/gfm/#example-202)
 

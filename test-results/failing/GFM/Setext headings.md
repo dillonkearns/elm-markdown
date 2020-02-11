@@ -296,7 +296,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>&gt; Foo</p><hr>
+ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
 ```
 ## [Example 63](https://spec.commonmark.org/0.29/#example-63)
 
@@ -318,7 +318,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>&gt; foo bar ===</p>
+ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
 ```
 ## [Example 65](https://spec.commonmark.org/0.29/#example-65)
 
@@ -386,7 +386,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>&gt; foo</p><hr>
+ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
 ```
 ## [Example 72](https://spec.commonmark.org/0.29/#example-72)
 
