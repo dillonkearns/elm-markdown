@@ -23,7 +23,7 @@ import Markdown.RawBlock exposing (Attribute, RawBlock(..), UnparsedInlines(..))
 import Markdown.UnorderedList
 import Parser
 import Parser.Advanced as Advanced exposing ((|.), (|=), Nestable(..), Step(..), andThen, chompIf, chompUntil, chompWhile, getChompedString, inContext, int, lazy, loop, map, multiComment, oneOf, problem, succeed, symbol, token)
-import Parser.Extra exposing (zeroOrMore)
+import Parser.Extra exposing (oneOrMore, zeroOrMore)
 import XmlParser exposing (Node(..))
 
 
@@ -460,12 +460,25 @@ parseInlines rawBlock =
             succeed Nothing
 
         BlockQuote rawBlocks ->
-            parseAllInlines rawBlocks
-                |> map Block.BlockQuote
-                |> map Just
+            case Advanced.run rawBlockParser rawBlocks of
+                Ok value ->
+                    parseAllInlines value
+                        |> map
+                            (\parsedBlocks ->
+                                Block.BlockQuote parsedBlocks
+                                    |> Just
+                            )
+
+                Err error ->
+                    Advanced.problem (Parser.Expecting "TODO")
 
 
 
+--just (Block.BlockQuote [])
+--Debug.todo "parse inlines or raw String for BlockQuote"
+--parseAllInlines rawBlocks
+--    |> map Block.BlockQuote
+--    |> map Just
 --|> just
 --just
 --    Block.ThematicBreak
@@ -487,17 +500,24 @@ parseRawInline wrap (UnparsedInlines unparsedInlines) =
 
 plainLine : Parser RawBlock
 plainLine =
-    succeed
+    --succeed
+    map
         (\rawLine ->
             rawLine
                 |> UnparsedInlines
                 |> Body
         )
-        |= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
-        |. oneOf
-            [ Advanced.chompIf Helpers.isNewline (Parser.Expecting "A single non-newline char.")
-            , Advanced.end (Parser.Expecting "End")
-            ]
+    <|
+        (getChompedString <|
+            succeed ()
+                |. Advanced.chompIf (\c -> not <| Helpers.isSpaceOrTab c && (not <| Helpers.isNewline c)) (Parser.Expecting "Not a space or tab.")
+                |. Advanced.chompUntilEndOr "\n"
+         --|= Advanced.getChompedString
+        )
+            |. oneOf
+                [ Advanced.chompIf Helpers.isNewline (Parser.Expecting "A single non-newline char.")
+                , Advanced.end (Parser.Expecting "End")
+                ]
 
 
 blockQuote : Parser RawBlock
@@ -507,11 +527,11 @@ blockQuote =
             [ symbol (Advanced.Token "> " (Parser.Expecting "> "))
             , symbol (Advanced.Token ">" (Parser.Expecting ">"))
             ]
-        |= rawBlockParser
-
-
-
---|= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
+        |= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
+        |. oneOf
+            [ Advanced.end (Parser.Problem "Expecting end")
+            , chompIf Helpers.isNewline (Parser.Problem "Expecting newline")
+            ]
 
 
 unorderedListBlock : Parser RawBlock
@@ -695,39 +715,20 @@ statementsHelp2 revStmts =
                             , revStmts
                             )
                         of
+                            ( BlockQuote body1, (BlockQuote body2) :: rest ) ->
+                                (BlockQuote (joinRawStringsWith "\n" body2 body1)
+                                    :: rest
+                                )
+                                    |> Loop
+
+                            ( BlockQuote children1, rest ) ->
+                                Loop (stmts :: revStmts)
+
                             ( Body (UnparsedInlines body1), (Body (UnparsedInlines body2)) :: rest ) ->
-                                let
-                                    body1Trimmed =
-                                        String.trim body1
-
-                                    body2Trimmed =
-                                        String.trim body2
-                                in
-                                --if body1Trimmed == "" || body2Trimmed == "" then
-                                case ( body1Trimmed, body2Trimmed ) of
-                                    ( "", "" ) ->
-                                        Loop
-                                            (Body (UnparsedInlines (body2Trimmed ++ body1Trimmed))
-                                                :: rest
-                                            )
-
-                                    ( "", _ ) ->
-                                        Loop
-                                            (Body (UnparsedInlines (body2Trimmed ++ body1Trimmed))
-                                                :: rest
-                                            )
-
-                                    ( _, "" ) ->
-                                        Loop
-                                            (Body (UnparsedInlines (body2Trimmed ++ body1Trimmed))
-                                                :: rest
-                                            )
-
-                                    _ ->
-                                        Loop
-                                            (Body (UnparsedInlines (body2Trimmed ++ " " ++ body1Trimmed))
-                                                :: rest
-                                            )
+                                Loop
+                                    (Body (UnparsedInlines (joinRawStringsWith " " body2 body1))
+                                        :: rest
+                                    )
 
                             _ ->
                                 Loop (stmts :: revStmts)
@@ -746,6 +747,41 @@ statementsHelp2 revStmts =
         , plainLine |> keepLooping
         , succeed (Done revStmts)
         ]
+
+
+joinRawStringsWith joinWith string1 string2 =
+    let
+        string1Trimmed =
+            String.trim string1
+
+        string2Trimmed =
+            String.trim string2
+    in
+    case ( string1Trimmed, string2Trimmed ) of
+        ( "", "" ) ->
+            String.concat
+                [ string1Trimmed
+                , string2Trimmed
+                ]
+
+        ( "", _ ) ->
+            String.concat
+                [ string1Trimmed
+                , string2Trimmed
+                ]
+
+        ( _, "" ) ->
+            String.concat
+                [ string1Trimmed
+                , string2Trimmed
+                ]
+
+        _ ->
+            String.concat
+                [ string1Trimmed
+                , joinWith
+                , string2Trimmed
+                ]
 
 
 thematicBreak : Parser RawBlock

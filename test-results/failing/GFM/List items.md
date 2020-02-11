@@ -155,7 +155,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 4 Expecting --- Problem at row 4 Expecting *** Problem at row 4 Expecting ___
+ERROR Problem at row 5 Expecting --- Problem at row 5 Expecting *** Problem at row 5 Expecting ___
 ```
 ## [Example 232](https://spec.commonmark.org/0.29/#example-232)
 
@@ -670,7 +670,7 @@ Should give output:
 But instead was:
 
 ```html
-<blockquote><ol><li>&gt; Blockquote</li></ol><p>continued here.</p></blockquote>
+ERROR Problem at row 5 Expecting TODO
 ```
 ## [Example 263](https://spec.commonmark.org/0.29/#example-263)
 
@@ -691,7 +691,7 @@ Should give output:
 But instead was:
 
 ```html
-<blockquote><ol><li>&gt; Blockquote</li></ol><blockquote><p>continued here.</p></blockquote></blockquote>
+<blockquote><ol><li>&gt; Blockquote</li></ol><p>continued here.</p></blockquote>
 ```
 ## [Example 264](https://spec.commonmark.org/0.29/#example-264)
 

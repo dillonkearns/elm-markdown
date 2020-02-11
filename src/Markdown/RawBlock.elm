@@ -26,4 +26,4 @@ type RawBlock
     | CodeBlock CodeBlock
     | ThematicBreak
     | BlankLine
-    | BlockQuote (List RawBlock)
+    | BlockQuote String

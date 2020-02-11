@@ -522,7 +522,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 5 Expecting symbol
+ERROR Problem at row 8 Expecting TODO
 ```
 ## [Example 144](https://spec.commonmark.org/0.29/#example-144)
 

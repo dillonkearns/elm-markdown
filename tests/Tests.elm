@@ -341,6 +341,20 @@ qwer
                     "> This is a quote\n"
                         |> parse
                         |> Expect.equal (Ok [ Block.BlockQuote [ Block.Body (unstyledText "This is a quote") ] ])
+            , test "consecutive block quote lines are combined" <|
+                \() ->
+                    """> # Heading
+> Body
+"""
+                        |> parse
+                        |> Expect.equal
+                            (Ok
+                                [ Block.BlockQuote
+                                    [ Block.Heading 1 (unstyledText "Heading")
+                                    , Block.Body (unstyledText "Body")
+                                    ]
+                                ]
+                            )
             ]
         ]
 

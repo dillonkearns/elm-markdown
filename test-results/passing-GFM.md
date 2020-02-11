@@ -271,6 +271,126 @@ Gives this correct output:
 
 ## Block quotes
 
+### [Example 198](https://spec.commonmark.org/0.29/#example-198)
+
+This markdown:
+
+
+```markdown
+> # Foo
+> bar
+> baz
+
+```
+
+Gives this correct output:
+
+
+```html
+<blockquote>
+<h1>Foo</h1>
+<p>bar
+baz</p>
+</blockquote>
+
+```
+
+### [Example 199](https://spec.commonmark.org/0.29/#example-199)
+
+This markdown:
+
+
+```markdown
+># Foo
+>bar
+> baz
+
+```
+
+Gives this correct output:
+
+
+```html
+<blockquote>
+<h1>Foo</h1>
+<p>bar
+baz</p>
+</blockquote>
+
+```
+
+### [Example 204](https://spec.commonmark.org/0.29/#example-204)
+
+This markdown:
+
+
+```markdown
+> foo
+---
+
+```
+
+Gives this correct output:
+
+
+```html
+<blockquote>
+<p>foo</p>
+</blockquote>
+<hr />
+
+```
+
+### [Example 205](https://spec.commonmark.org/0.29/#example-205)
+
+This markdown:
+
+
+```markdown
+> - foo
+- bar
+
+```
+
+Gives this correct output:
+
+
+```html
+<blockquote>
+<ul>
+<li>foo</li>
+</ul>
+</blockquote>
+<ul>
+<li>bar</li>
+</ul>
+
+```
+
+### [Example 206](https://spec.commonmark.org/0.29/#example-206)
+
+This markdown:
+
+
+```markdown
+>     foo
+    bar
+
+```
+
+Gives this correct output:
+
+
+```html
+<blockquote>
+<pre><code>foo
+</code></pre>
+</blockquote>
+<pre><code>bar
+</code></pre>
+
+```
+
 ### [Example 209](https://spec.commonmark.org/0.29/#example-209)
 
 This markdown:
@@ -286,6 +406,96 @@ Gives this correct output:
 
 ```html
 <blockquote>
+</blockquote>
+
+```
+
+### [Example 210](https://spec.commonmark.org/0.29/#example-210)
+
+This markdown:
+
+
+```markdown
+>
+>  
+> 
+
+```
+
+Gives this correct output:
+
+
+```html
+<blockquote>
+</blockquote>
+
+```
+
+### [Example 211](https://spec.commonmark.org/0.29/#example-211)
+
+This markdown:
+
+
+```markdown
+>
+> foo
+>  
+
+```
+
+Gives this correct output:
+
+
+```html
+<blockquote>
+<p>foo</p>
+</blockquote>
+
+```
+
+### [Example 212](https://spec.commonmark.org/0.29/#example-212)
+
+This markdown:
+
+
+```markdown
+> foo
+
+> bar
+
+```
+
+Gives this correct output:
+
+
+```html
+<blockquote>
+<p>foo</p>
+</blockquote>
+<blockquote>
+<p>bar</p>
+</blockquote>
+
+```
+
+### [Example 213](https://spec.commonmark.org/0.29/#example-213)
+
+This markdown:
+
+
+```markdown
+> foo
+> bar
+
+```
+
+Gives this correct output:
+
+
+```html
+<blockquote>
+<p>foo
+bar</p>
 </blockquote>
 
 ```
@@ -312,13 +522,40 @@ Gives this correct output:
 
 ```
 
-### [Example 217](https://spec.commonmark.org/0.29/#example-217)
+### [Example 216](https://spec.commonmark.org/0.29/#example-216)
+
+This markdown:
+
+
+```markdown
+> aaa
+***
+> bbb
+
+```
+
+Gives this correct output:
+
+
+```html
+<blockquote>
+<p>aaa</p>
+</blockquote>
+<hr />
+<blockquote>
+<p>bbb</p>
+</blockquote>
+
+```
+
+### [Example 218](https://spec.commonmark.org/0.29/#example-218)
 
 This markdown:
 
 
 ```markdown
 > bar
+
 baz
 
 ```
@@ -328,20 +565,21 @@ Gives this correct output:
 
 ```html
 <blockquote>
-<p>bar
-baz</p>
+<p>bar</p>
 </blockquote>
+<p>baz</p>
 
 ```
 
-### [Example 220](https://spec.commonmark.org/0.29/#example-220)
+### [Example 219](https://spec.commonmark.org/0.29/#example-219)
 
 This markdown:
 
 
 ```markdown
-> > > foo
-bar
+> bar
+>
+baz
 
 ```
 
@@ -350,13 +588,9 @@ Gives this correct output:
 
 ```html
 <blockquote>
-<blockquote>
-<blockquote>
-<p>foo
-bar</p>
+<p>bar</p>
 </blockquote>
-</blockquote>
-</blockquote>
+<p>baz</p>
 
 ```
 
@@ -2275,15 +2509,14 @@ Gives this correct output:
 
 ## Setext headings
 
-### [Example 63](https://spec.commonmark.org/0.29/#example-63)
+### [Example 62](https://spec.commonmark.org/0.29/#example-62)
 
 This markdown:
 
 
 ```markdown
-> foo
-bar
-===
+> Foo
+---
 
 ```
 
@@ -2292,10 +2525,9 @@ Gives this correct output:
 
 ```html
 <blockquote>
-<p>foo
-bar
-===</p>
+<p>Foo</p>
 </blockquote>
+<hr />
 
 ```
 
@@ -2399,6 +2631,28 @@ Gives this correct output:
 ```html
 <pre><code>foo
 </code></pre>
+<hr />
+
+```
+
+### [Example 71](https://spec.commonmark.org/0.29/#example-71)
+
+This markdown:
+
+
+```markdown
+> foo
+-----
+
+```
+
+Gives this correct output:
+
+
+```html
+<blockquote>
+<p>foo</p>
+</blockquote>
 <hr />
 
 ```

@@ -22,5 +22,5 @@ Should give output:
 But instead was:
 
 ```html
-<blockquote><p>A list within a blockquote:</p><blockquote><blockquote><p><em>asterisk 1</em></p><blockquote><p><em>asterisk 2</em></p><blockquote><p><em>asterisk 3</em></p></blockquote></blockquote></blockquote></blockquote></blockquote>
+<blockquote><p>A list within a blockquote:<em>asterisk 1</em>asterisk 2<em>asterisk 3</em></p></blockquote>
 ```
