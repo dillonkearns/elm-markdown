@@ -226,28 +226,6 @@ But instead was:
 ```html
 ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
 ```
-## [Example 104](https://spec.commonmark.org/0.29/#example-104)
-
-This markdown:
-
-```markdown
-    ```
-    aaa
-    ```
-
-```
-
-Should give output:
-
-```html
-<pre><code>``` aaa ```</code></pre>
-```
-
-But instead was:
-
-```html
-<pre><code>```</code></pre><pre><code>aaa</code></pre><pre><code>```</code></pre>
-```
 ## [Example 105](https://spec.commonmark.org/0.29/#example-105)
 
 This markdown:

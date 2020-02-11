@@ -184,7 +184,7 @@ Should give output:
 But instead was:
 
 ```html
-<ol><li>foo</li></ol><pre><code>```</code></pre><pre><code>bar</code></pre><pre><code>```</code></pre><pre><code>baz</code></pre><pre><code>&gt; bam</code></pre>
+<ol><li>foo</li></ol><pre><code>``` bar ```</code></pre><pre><code>baz</code></pre><pre><code>&gt; bam</code></pre>
 ```
 ## [Example 234](https://spec.commonmark.org/0.29/#example-234)
 
@@ -581,7 +581,7 @@ Should give output:
 But instead was:
 
 ```html
-<pre><code>1. A paragraph</code></pre><pre><code>with two lines.</code></pre><pre><code>indented code</code></pre><pre><code>&gt; A block quote.</code></pre>
+<pre><code>1. A paragraph with two lines.</code></pre><pre><code>indented code</code></pre><pre><code>&gt; A block quote.</code></pre>
 ```
 ## [Example 260](https://spec.commonmark.org/0.29/#example-260)
 

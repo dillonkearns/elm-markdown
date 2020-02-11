@@ -370,6 +370,20 @@ I'm part of the block quote
                                 ]
                             )
             ]
+        , test "indented code" <|
+            \() ->
+                """    sum a b =
+      a + b
+"""
+                    |> parse
+                    |> Expect.equal
+                        (Ok
+                            [ Block.CodeBlock
+                                { body = "sum a b =\n  a + b"
+                                , language = Nothing
+                                }
+                            ]
+                        )
         ]
 
 

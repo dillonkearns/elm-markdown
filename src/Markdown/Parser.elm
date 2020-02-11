@@ -566,7 +566,7 @@ orderedListBlock lastBlock =
 
 blankLine : Parser RawBlock
 blankLine =
-    token (Advanced.Token "\n" (Parser.Expecting "\n"))
+    token (Advanced.Token "\n" (Parser.Expecting "\\n"))
         |. chompWhile Helpers.isNewline
         |> map (\() -> BlankLine)
 
@@ -710,6 +710,15 @@ statementsHelp2 revStmts =
                             , revStmts
                             )
                         of
+                            ( CodeBlock block1, (CodeBlock block2) :: rest ) ->
+                                (CodeBlock
+                                    { body = joinStringsPreserveIndentation block2.body block1.body
+                                    , language = Nothing
+                                    }
+                                    :: rest
+                                )
+                                    |> Loop
+
                             ( Body (UnparsedInlines body1), (BlockQuote body2) :: rest ) ->
                                 (BlockQuote (joinRawStringsWith "\n" body2 body1)
                                     :: rest
@@ -747,6 +756,21 @@ statementsHelp2 revStmts =
         , htmlParser |> keepLooping
         , plainLine |> keepLooping
         , succeed (Done revStmts)
+        ]
+
+
+joinStringsPreserveIndentation string1 string2 =
+    let
+        string1Trimmed =
+            String.trimRight string1
+
+        string2Trimmed =
+            String.trimRight string2
+    in
+    String.concat
+        [ string1Trimmed
+        , "\n"
+        , string2Trimmed
         ]
 
 

@@ -1,27 +1,5 @@
 # GFM - Block quotes
 
-## [Example 201](https://spec.commonmark.org/0.29/#example-201)
-
-This markdown:
-
-```markdown
-    > # Foo
-    > bar
-    > baz
-
-```
-
-Should give output:
-
-```html
-<pre><code>&gt; # Foo &gt; bar &gt; baz</code></pre>
-```
-
-But instead was:
-
-```html
-<pre><code>&gt; # Foo</code></pre><pre><code>&gt; bar</code></pre><pre><code>&gt; baz</code></pre>
-```
 ## [Example 207](https://spec.commonmark.org/0.29/#example-207)
 
 This markdown:
