@@ -330,6 +330,13 @@ qwer
                                 ]
                             ]
                         )
+        , describe "block quotes"
+            [ test "Simple block quote" <|
+                \() ->
+                    ">This is a quote\n"
+                        |> parse
+                        |> Expect.equal (Ok [ Block.BlockQuote [ Block.Body (unstyledText "This is a quote") ] ])
+            ]
         ]
 
 

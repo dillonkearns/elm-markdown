@@ -62,6 +62,7 @@ type Block
     | OrderedListBlock Int (List (List Inline))
     | CodeBlock Markdown.CodeBlock.CodeBlock
     | ThematicBreak
+    | BlockQuote (List Block)
 
 
 {-| Represents styled inline text. For example, a header can include links, emphasis, etc.

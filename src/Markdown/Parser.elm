@@ -43,6 +43,7 @@ You could render to any type you want. Here are some useful things you might ren
 type alias Renderer view =
     { heading : { level : Int, rawText : String, children : List view } -> view
     , raw : List view -> view
+    , blockQuote : List view -> view
     , html : Markdown.Html.Renderer (List view -> view)
     , plain : String -> view
     , code : String -> view
@@ -96,6 +97,7 @@ defaultHtmlRenderer =
                 _ ->
                     Html.text "TODO maye use a type here to clean it up... this will never happen"
     , raw = Html.p []
+    , blockQuote = Html.blockquote []
     , bold =
         \content -> Html.strong [] [ Html.text content ]
     , italic =
@@ -282,6 +284,11 @@ renderHelper renderer blocks =
 
                 Block.ThematicBreak ->
                     Ok renderer.thematicBreak
+
+                Block.BlockQuote nestedBlocks ->
+                    renderHelper renderer nestedBlocks
+                        |> combineResults
+                        |> Result.map renderer.blockQuote
         )
         blocks
 
@@ -452,6 +459,17 @@ parseInlines rawBlock =
         BlankLine ->
             succeed Nothing
 
+        BlockQuote rawBlocks ->
+            parseAllInlines rawBlocks
+                |> map Block.BlockQuote
+                |> map Just
+
+
+
+--|> just
+--just
+--    Block.ThematicBreak
+
 
 just value =
     succeed (Just value)
@@ -480,6 +498,17 @@ plainLine =
             [ Advanced.chompIf Helpers.isNewline (Parser.Expecting "A single non-newline char.")
             , Advanced.end (Parser.Expecting "End")
             ]
+
+
+blockQuote : Parser RawBlock
+blockQuote =
+    succeed BlockQuote
+        |. symbol (Advanced.Token ">" (Parser.Expecting ">"))
+        |= rawBlockParser
+
+
+
+--|= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
 
 
 unorderedListBlock : Parser RawBlock
@@ -605,7 +634,7 @@ childToParser node =
 
 multiParser2 : Parser (List Block)
 multiParser2 =
-    loop [] statementsHelp2
+    rawBlockParser
         |. succeed Advanced.end
         |> andThen parseAllInlines
         -- TODO find a more elegant way to exclude empty blocks for each blank lines
@@ -620,6 +649,11 @@ multiParser2 =
                             True
                 )
             )
+
+
+rawBlockParser : Parser (List RawBlock)
+rawBlockParser =
+    loop [] statementsHelp2
 
 
 parseAllInlines : List RawBlock -> Parser (List Block)
@@ -699,6 +733,7 @@ statementsHelp2 revStmts =
     oneOf
         [ Advanced.end (Parser.Expecting "End") |> map (\() -> Done revStmts)
         , blankLine |> keepLooping
+        , blockQuote |> keepLooping
         , Markdown.CodeBlock.parser |> map CodeBlock |> keepLooping
         , thematicBreak |> keepLooping
         , unorderedListBlock |> keepLooping
