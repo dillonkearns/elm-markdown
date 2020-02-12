@@ -91,7 +91,29 @@ Should give output:
 But instead was:
 
 ```html
-<pre><code>chunk1</code></pre><pre><code>chunk2</code></pre><p>chunk3</p>
+<pre><code>chunk1</code></pre><pre><code>chunk2</code></pre><pre><code>chunk3</code></pre>
+```
+## [Example 82](https://spec.commonmark.org/0.29/#example-82)
+
+This markdown:
+
+```markdown
+    chunk1
+      
+      chunk2
+
+```
+
+Should give output:
+
+```html
+<pre><code>chunk1 chunk2</code></pre>
+```
+
+But instead was:
+
+```html
+<pre><code>chunk1</code></pre><pre><code>chunk2</code></pre>
 ```
 ## [Example 83](https://spec.commonmark.org/0.29/#example-83)
 

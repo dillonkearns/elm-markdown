@@ -330,6 +330,13 @@ qwer
                                 ]
                             ]
                         )
+        , describe "blank line"
+            [ test "even though paragraphs can start with blank lines, it is not a paragraph if there are only blanks" <|
+                \() ->
+                    "  \n"
+                        |> parse
+                        |> Expect.equal (Ok [])
+            ]
         , describe "block quotes"
             [ test "Simple block quote" <|
                 \() ->

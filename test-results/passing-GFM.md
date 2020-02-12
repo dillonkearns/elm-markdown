@@ -269,6 +269,34 @@ Gives this correct output:
 
 ```
 
+## Blank lines
+
+### [Example 197](https://spec.commonmark.org/0.29/#example-197)
+
+This markdown:
+
+
+```markdown
+  
+
+aaa
+  
+
+# aaa
+
+  
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>aaa</p>
+<h1>aaa</h1>
+
+```
+
 ## Block quotes
 
 ### [Example 198](https://spec.commonmark.org/0.29/#example-198)
@@ -591,6 +619,29 @@ Gives this correct output:
 <blockquote>
 <p>foo
 bar</p>
+</blockquote>
+
+```
+
+### [Example 214](https://spec.commonmark.org/0.29/#example-214)
+
+This markdown:
+
+
+```markdown
+> foo
+>
+> bar
+
+```
+
+Gives this correct output:
+
+
+```html
+<blockquote>
+<p>foo</p>
+<p>bar</p>
 </blockquote>
 
 ```
@@ -2047,29 +2098,6 @@ Gives this correct output:
 ```html
 <pre><code>a simple
   indented code block
-</code></pre>
-
-```
-
-### [Example 82](https://spec.commonmark.org/0.29/#example-82)
-
-This markdown:
-
-
-```markdown
-    chunk1
-      
-      chunk2
-
-```
-
-Gives this correct output:
-
-
-```html
-<pre><code>chunk1
-  
-  chunk2
 </code></pre>
 
 ```

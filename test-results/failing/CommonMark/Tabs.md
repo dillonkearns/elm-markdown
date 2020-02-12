@@ -18,7 +18,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 1 Expecting Not a space or tab.
+
 ```
 ## [Example 4](https://spec.commonmark.org/0.29/#example-4)
 

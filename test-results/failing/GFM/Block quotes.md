@@ -43,28 +43,6 @@ But instead was:
 ```html
 <blockquote><p>foo</p></blockquote><pre><code>- bar</code></pre>
 ```
-## [Example 214](https://spec.commonmark.org/0.29/#example-214)
-
-This markdown:
-
-```markdown
-> foo
->
-> bar
-
-```
-
-Should give output:
-
-```html
-<blockquote><p>foo</p><p>bar</p></blockquote>
-```
-
-But instead was:
-
-```html
-<blockquote><p>foo bar</p></blockquote>
-```
 ## [Example 219](https://spec.commonmark.org/0.29/#example-219)
 
 This markdown:

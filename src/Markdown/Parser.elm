@@ -495,12 +495,14 @@ plainLine =
                 |> UnparsedInlines
                 |> Body
         )
-        |. oneOf
-            [ token (Advanced.Token "   " (Parser.Expecting "   "))
-            , token (Advanced.Token "  " (Parser.Expecting "  "))
-            , token (Advanced.Token " " (Parser.Expecting " "))
-            , succeed ()
-            ]
+        |. Advanced.backtrackable
+            (oneOf
+                [ token (Advanced.Token "   " (Parser.Expecting "   "))
+                , token (Advanced.Token "  " (Parser.Expecting "  "))
+                , token (Advanced.Token " " (Parser.Expecting " "))
+                , succeed ()
+                ]
+            )
         |= innerParagraphParser
         |. oneOf
             [ Advanced.chompIf Helpers.isNewline (Parser.Expecting "A single non-newline char.")
@@ -557,7 +559,7 @@ unorderedListBlock =
 
                         ListItem.PlainItem body ->
                             { body = UnparsedInlines body
-                            , task = Nothing -- unparsedListItem.task
+                            , task = Nothing
                             }
                 )
             )
@@ -572,8 +574,9 @@ orderedListBlock lastBlock =
 
 blankLine : Parser RawBlock
 blankLine =
-    token (Advanced.Token "\n" (Parser.Expecting "\\n"))
-        |. chompWhile Helpers.isNewline
+    --    |. chompWhile Helpers.isNewline
+    Advanced.backtrackable (chompWhile (\c -> Helpers.isSpaceOrTab c))
+        |. token (Advanced.Token "\n" (Parser.Expecting "\\n"))
         |> map (\() -> BlankLine)
 
 

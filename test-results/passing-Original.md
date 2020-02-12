@@ -1,5 +1,49 @@
 # Original
 
+## blockquotes_with_code_blocks
+
+### Example undefined
+
+This markdown:
+
+
+```markdown
+> Example:
+> 
+>     sub status {
+>         print "working";
+>     }
+> 
+> Or:
+> 
+>     sub status {
+>         return "working";
+>     }
+
+```
+
+Gives this correct output:
+
+
+```html
+<blockquote>
+  <p>Example:</p>
+
+<pre><code>sub status {
+    print "working";
+}
+</code></pre>
+  
+  <p>Or:</p>
+
+<pre><code>sub status {
+    return "working";
+}
+</code></pre>
+</blockquote>
+
+```
+
 ## code_blocks
 
 ### Example undefined
@@ -47,6 +91,38 @@ all contain trailing spaces
 
 <pre><code>code block on the last line
 </code></pre>
+
+```
+
+## nested_blockquotes
+
+### Example undefined
+
+This markdown:
+
+
+```markdown
+> foo
+>
+> > bar
+>
+> foo
+
+```
+
+Gives this correct output:
+
+
+```html
+<blockquote>
+  <p>foo</p>
+  
+  <blockquote>
+    <p>bar</p>
+  </blockquote>
+  
+  <p>foo</p>
+</blockquote>
 
 ```
 

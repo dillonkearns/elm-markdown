@@ -52,7 +52,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 7 Expecting Problem at row 2 Expecting Not a space or tab.
+<table><tr><pre><code></code></pre><td><pre><code>hi</code></pre></td></tr></table><p>okay.</p>
 ```
 ## [Example 120](https://spec.commonmark.org/0.29/#example-120)
 
@@ -902,5 +902,5 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 11 Expecting Problem at row 3 Expecting Not a space or tab.
+<table><tr><pre><code></code></pre><td><pre><code>Hi</code></pre></td></tr></table>
 ```

@@ -111,7 +111,7 @@ Should give output:
 But instead was:
 
 ```html
-<blockquote><blockquote><ol><li>one</li></ol><p>two</p></blockquote></blockquote>
+<blockquote><blockquote><ol><li>one</li></ol><pre><code>two</code></pre></blockquote></blockquote>
 ```
 ## [Example 232](https://spec.commonmark.org/0.29/#example-232)
 
