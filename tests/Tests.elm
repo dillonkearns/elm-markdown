@@ -404,6 +404,36 @@ I'm part of the block quote
                                 ]
                             ]
                         )
+        , test "blank lines separate paragraphs within block quote" <|
+            \() ->
+                """> foo
+>
+> bar
+"""
+                    |> parse
+                    |> Expect.equal
+                        (Ok
+                            [ Block.BlockQuote
+                                [ Block.Body (unstyledText "foo")
+                                , Block.Body (unstyledText "bar")
+                                ]
+                            ]
+                        )
+        , test "keeps items grouped in a paragraph within block quotes when there are no blank lines separating them" <|
+            \() ->
+                """> # Foo
+> bar
+> baz
+"""
+                    |> parse
+                    |> Expect.equal
+                        (Ok
+                            [ Block.BlockQuote
+                                [ Block.Heading 1 (unstyledText "Foo")
+                                , Block.Body (unstyledText "bar baz")
+                                ]
+                            ]
+                        )
         ]
 
 

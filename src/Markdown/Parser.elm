@@ -732,13 +732,10 @@ statementsHelp2 revStmts =
                                     |> Loop
 
                             ( BlockQuote body1, (BlockQuote body2) :: rest ) ->
-                                (BlockQuote (joinRawStringsWith "\n" body2 body1)
+                                (BlockQuote (joinStringsPreserveAll body2 body1)
                                     :: rest
                                 )
                                     |> Loop
-
-                            ( BlockQuote children1, rest ) ->
-                                Loop (stmts :: revStmts)
 
                             ( Body (UnparsedInlines body1), (Body (UnparsedInlines body2)) :: rest ) ->
                                 Loop
@@ -762,6 +759,23 @@ statementsHelp2 revStmts =
         , htmlParser |> keepLooping
         , plainLine |> keepLooping
         , succeed (Done revStmts)
+        ]
+
+
+joinStringsPreserveAll string1 string2 =
+    let
+        string1Trimmed =
+            --String.trimRight
+            string1
+
+        string2Trimmed =
+            --String.trimRight
+            string2
+    in
+    String.concat
+        [ string1Trimmed
+        , "\n"
+        , string2Trimmed
         ]
 
 
