@@ -307,6 +307,36 @@ qwer
                 """    foo = 123"""
                     |> parse
                     |> Expect.equal (Ok [ Block.CodeBlock { body = "foo = 123", language = Nothing } ])
+        , only <|
+            describe "paragraphs need a blank line to be interrupted by an indented code block"
+                [ test "an indented code block cannot interrupt a paragraph" <|
+                    \() ->
+                        """Foo
+    bar
+"""
+                            |> parse
+                            |> Expect.equal
+                                (Ok
+                                    [ Block.Body (unstyledText "Foo\nbar")
+                                    ]
+                                )
+                , test "an indented code block with a blank line first does interrupt a paragraph" <|
+                    \() ->
+                        """Foo
+               
+    bar
+"""
+                            |> parse
+                            |> Expect.equal
+                                (Ok
+                                    [ Block.Body (unstyledText "Foo")
+                                    , Block.CodeBlock
+                                        { body = "bar"
+                                        , language = Nothing
+                                        }
+                                    ]
+                                )
+                ]
         , test "indented code block with tab" <|
             \() ->
                 """\tfoo = 123"""

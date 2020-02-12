@@ -574,7 +574,6 @@ orderedListBlock lastBlock =
 
 blankLine : Parser RawBlock
 blankLine =
-    --    |. chompWhile Helpers.isNewline
     Advanced.backtrackable (chompWhile (\c -> Helpers.isSpaceOrTab c))
         |. token (Advanced.Token "\n" (Parser.Expecting "\\n"))
         |> map (\() -> BlankLine)
@@ -718,7 +717,17 @@ statementsHelp2 revStmts =
                             ( stmts
                             , revStmts
                             )
+                                |> Debug.log "pair"
                         of
+                            -- TODO @@@@@@@@@ need to differentiate fenced vs. indented code blocks in RawBlock
+                            -- Because Fenced blocks *do* interrupt paragraphs
+                            -- https://spec.commonmark.org/0.29/#example-83
+                            ( CodeBlock block1, (Body (UnparsedInlines rawParagraph)) :: rest ) ->
+                                (Body (UnparsedInlines (joinRawStringsWith "\n" rawParagraph block1.body))
+                                    :: rest
+                                )
+                                    |> Loop
+
                             ( CodeBlock block1, (CodeBlock block2) :: rest ) ->
                                 (CodeBlock
                                     { body = joinStringsPreserveIndentation block2.body block1.body
