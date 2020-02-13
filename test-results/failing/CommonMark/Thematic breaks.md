@@ -61,7 +61,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+<p>- - -</p>
 ```
 ## [Example 22](https://spec.commonmark.org/0.29/#example-22)
 
@@ -81,7 +81,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+<p><strong></strong><strong></strong><em></em><strong></strong><strong></strong></p>
 ```
 ## [Example 23](https://spec.commonmark.org/0.29/#example-23)
 
@@ -146,26 +146,6 @@ But instead was:
 
 ```html
 ERROR Problem at row 7 Expecting end Problem at row 7 Expecting newline
-```
-## [Example 26](https://spec.commonmark.org/0.29/#example-26)
-
-This markdown:
-
-```markdown
- *-*
-
-```
-
-Should give output:
-
-```html
-<p><em>-</em></p>
-```
-
-But instead was:
-
-```html
-ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
 ```
 ## [Example 29](https://spec.commonmark.org/0.29/#example-29)
 

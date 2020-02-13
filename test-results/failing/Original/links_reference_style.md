@@ -88,5 +88,5 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 32 Expecting --- Problem at row 32 Expecting *** Problem at row 32 Expecting ___
+ERROR Problem at row 107 Expecting Problem at row 1 Expecting symbol (
 ```

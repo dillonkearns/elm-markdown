@@ -72,5 +72,5 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 25 Expecting --- Problem at row 25 Expecting *** Problem at row 25 Expecting ___
+ERROR Problem at row 93 Expecting Problem at row 1 Expecting symbol (
 ```

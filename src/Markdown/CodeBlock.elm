@@ -31,6 +31,10 @@ indentedBlock =
             , Advanced.symbol (Advanced.Token "\t" (Parser.ExpectingSymbol "Indentation"))
             ]
         |= getChompedString (Advanced.chompUntilEndOr "\n")
+        |. oneOf
+            [ Advanced.symbol (Advanced.Token "\n" (Parser.ExpectingSymbol "\\n"))
+            , Advanced.end (Parser.Expecting "End of input")
+            ]
 
 
 parserHelp : String -> Parser CodeBlock

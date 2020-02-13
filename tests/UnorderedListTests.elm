@@ -2,7 +2,8 @@ module UnorderedListTests exposing (suite)
 
 import Expect exposing (Expectation)
 import Markdown.Inlines
-import Markdown.Parser exposing (..)
+import Markdown.ListItem as ListItem exposing (ListItem)
+import Markdown.Parser
 import Markdown.UnorderedList
 import Parser
 import Parser.Advanced as Advanced
@@ -25,9 +26,9 @@ suite =
                     |> Advanced.run Markdown.UnorderedList.parser
                     |> Expect.equal
                         (Ok
-                            [ "Item 1"
-                            , "Item 2"
-                            , "Item 3"
+                            [ plainItem "Item 1"
+                            , plainItem "Item 2"
+                            , plainItem "Item 3"
                             ]
                         )
         , test "list that ends without newline" <|
@@ -38,9 +39,9 @@ suite =
                     |> Advanced.run Markdown.UnorderedList.parser
                     |> Expect.equal
                         (Ok
-                            [ "Item 1"
-                            , "Item 2"
-                            , "Item 3"
+                            [ plainItem "Item 1"
+                            , plainItem "Item 2"
+                            , plainItem "Item 3"
                             ]
                         )
         , test "basic list with '+'" <|
@@ -52,9 +53,9 @@ suite =
                     |> Advanced.run Markdown.UnorderedList.parser
                     |> Expect.equal
                         (Ok
-                            [ "Item 1"
-                            , "Item 2"
-                            , "Item 3"
+                            [ plainItem "Item 1"
+                            , plainItem "Item 2"
+                            , plainItem "Item 3"
                             ]
                         )
         , test "basic list with '*'" <|
@@ -66,9 +67,9 @@ suite =
                     |> Advanced.run Markdown.UnorderedList.parser
                     |> Expect.equal
                         (Ok
-                            [ "Item 1"
-                            , "Item 2"
-                            , "Item 3"
+                            [ plainItem "Item 1"
+                            , plainItem "Item 2"
+                            , plainItem "Item 3"
                             ]
                         )
         , test "sibling lists with different markers" <|
@@ -86,9 +87,9 @@ suite =
                     |> Advanced.run Markdown.UnorderedList.parser
                     |> Expect.equal
                         (Ok
-                            [ "Item 1"
-                            , "Item 2"
-                            , "Item 3"
+                            [ plainItem "Item 1"
+                            , plainItem "Item 2"
+                            , plainItem "Item 3"
                             ]
                         )
         , test "A list item with emphasis in it and starting with '*'" <|
@@ -101,9 +102,9 @@ suite =
                     |> Advanced.run Markdown.UnorderedList.parser
                     |> Expect.equal
                         (Ok
-                            [ "Item 1 is *emphasized*"
-                            , "Item 2"
-                            , "Item 3"
+                            [ plainItem "Item 1 is *emphasized*"
+                            , plainItem "Item 2"
+                            , plainItem "Item 3"
                             ]
                         )
         , test "When there is an empty item" <|
@@ -115,17 +116,22 @@ suite =
                     |> Advanced.run Markdown.UnorderedList.parser
                     |> Expect.equal
                         (Ok
-                            [ "foo"
-                            , ""
-                            , "bar"
+                            [ plainItem "foo"
+                            , plainItem ""
+                            , plainItem "bar"
                             ]
                         )
         ]
 
 
+plainItem : String -> ListItem
+plainItem body =
+    ListItem.PlainItem body
+
+
 parserError : String -> Expect.Expectation
 parserError markdown =
-    case parse markdown of
+    case Markdown.Parser.parse markdown of
         Ok _ ->
             Expect.fail "Expected a parser failure!"
 

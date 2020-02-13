@@ -66,7 +66,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+<p>Foo<em>bar baz</em>====</p>
 ```
 ## [Example 53](https://spec.commonmark.org/0.29/#example-53)
 
@@ -117,7 +117,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+<p>Foo</p><hr><p>Foo</p><hr><p>Foo ===</p>
 ```
 ## [Example 55](https://spec.commonmark.org/0.29/#example-55)
 
@@ -141,7 +141,7 @@ Should give output:
 But instead was:
 
 ```html
-<pre><code>Foo</code></pre><pre><code>---</code></pre><pre><code>Foo</code></pre><hr>
+<pre><code>Foo ---</code></pre><pre><code>Foo</code></pre><hr>
 ```
 ## [Example 56](https://spec.commonmark.org/0.29/#example-56)
 
@@ -277,49 +277,6 @@ But instead was:
 ```html
 <p><code>Foo</code></p><hr><a></a>
 ```
-## [Example 62](https://spec.commonmark.org/0.29/#example-62)
-
-This markdown:
-
-```markdown
-> Foo
----
-
-```
-
-Should give output:
-
-```html
-<blockquote><p>Foo</p></blockquote><hr>
-```
-
-But instead was:
-
-```html
-<p>&gt; Foo</p><hr>
-```
-## [Example 63](https://spec.commonmark.org/0.29/#example-63)
-
-This markdown:
-
-```markdown
-> foo
-bar
-===
-
-```
-
-Should give output:
-
-```html
-<blockquote><p>foo bar ===</p></blockquote>
-```
-
-But instead was:
-
-```html
-<p>&gt; foo bar ===</p>
-```
 ## [Example 65](https://spec.commonmark.org/0.29/#example-65)
 
 This markdown:
@@ -366,27 +323,6 @@ But instead was:
 
 ```html
 <hr><p>Foo</p><hr><p>Bar</p><hr><p>Baz</p>
-```
-## [Example 71](https://spec.commonmark.org/0.29/#example-71)
-
-This markdown:
-
-```markdown
-> foo
------
-
-```
-
-Should give output:
-
-```html
-<blockquote><p>foo</p></blockquote><hr>
-```
-
-But instead was:
-
-```html
-<p>&gt; foo</p><hr>
 ```
 ## [Example 72](https://spec.commonmark.org/0.29/#example-72)
 

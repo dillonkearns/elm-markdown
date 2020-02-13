@@ -30,5 +30,5 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 4 Expecting --- Problem at row 4 Expecting *** Problem at row 4 Expecting ___
+ERROR Problem at row 18 Expecting end Problem at row 18 Expecting newline
 ```

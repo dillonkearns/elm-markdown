@@ -145,9 +145,9 @@ Hello!
                     |> Expect.equal
                         (Ok
                             [ Block.UnorderedListBlock
-                                [ unstyledText "One"
-                                , unstyledText "Two"
-                                , unstyledText "Three"
+                                [ plainListItem "One"
+                                , plainListItem "Two"
+                                , plainListItem "Three"
                                 ]
 
                             -- TODO why is this extra block here? Fix
@@ -170,19 +170,19 @@ Hello!
                     |> Expect.equal
                         (Ok
                             [ Block.UnorderedListBlock
-                                [ unstyledText "Item 1"
-                                , unstyledText "Item 2"
-                                , unstyledText "Item 3"
+                                [ plainListItem "Item 1"
+                                , plainListItem "Item 2"
+                                , plainListItem "Item 3"
                                 ]
                             , Block.UnorderedListBlock
-                                [ unstyledText "Item 4"
-                                , unstyledText "Item 5"
-                                , unstyledText "Item 6"
+                                [ plainListItem "Item 4"
+                                , plainListItem "Item 5"
+                                , plainListItem "Item 6"
                                 ]
                             , Block.UnorderedListBlock
-                                [ unstyledText "Item 7"
-                                , unstyledText "Item 8"
-                                , unstyledText "Item 9"
+                                [ plainListItem "Item 7"
+                                , plainListItem "Item 8"
+                                , plainListItem "Item 9"
                                 ]
                             ]
                         )
@@ -266,8 +266,8 @@ Text after
                         (Ok
                             [ Block.Heading 1 (unstyledText "Title")
                             , Block.UnorderedListBlock
-                                [ unstyledText "This is an item"
-                                , unstyledText "And so is this"
+                                [ plainListItem "This is an item"
+                                , plainListItem "And so is this"
                                 ]
                             , Block.Body (unstyledText "Text after")
 
@@ -335,7 +335,134 @@ qwer
                                 ]
                             ]
                         )
+        , describe "blank line"
+            [ test "even though paragraphs can start with blank lines, it is not a paragraph if there are only blanks" <|
+                \() ->
+                    "  \n"
+                        |> parse
+                        |> Expect.equal (Ok [])
+            ]
+        , describe "block quotes"
+            [ test "Simple block quote" <|
+                \() ->
+                    ">This is a quote\n"
+                        |> parse
+                        |> Expect.equal (Ok [ Block.BlockQuote [ Block.Body (unstyledText "This is a quote") ] ])
+            , test "block quote with a space after" <|
+                \() ->
+                    "> This is a quote\n"
+                        |> parse
+                        |> Expect.equal (Ok [ Block.BlockQuote [ Block.Body (unstyledText "This is a quote") ] ])
+            , test "consecutive block quote lines are combined" <|
+                \() ->
+                    """> # Heading
+> Body
+"""
+                        |> parse
+                        |> Expect.equal
+                            (Ok
+                                [ Block.BlockQuote
+                                    [ Block.Heading 1 (unstyledText "Heading")
+                                    , Block.Body (unstyledText "Body")
+                                    ]
+                                ]
+                            )
+            , test "plain lines immediately after block quote lines are combined" <|
+                \() ->
+                    """> # Heading
+I'm part of the block quote
+"""
+                        |> parse
+                        |> Expect.equal
+                            (Ok
+                                [ Block.BlockQuote
+                                    [ Block.Heading 1 (unstyledText "Heading")
+                                    , Block.Body (unstyledText "I'm part of the block quote")
+                                    ]
+                                ]
+                            )
+            ]
+        , test "indented code" <|
+            \() ->
+                """    sum a b =
+      a + b
+"""
+                    |> parse
+                    |> Expect.equal
+                        (Ok
+                            [ Block.CodeBlock
+                                { body = "sum a b =\n  a + b"
+                                , language = Nothing
+                                }
+                            ]
+                        )
+        , test "block quotes eat the first space and allow paragraphs to start with 3 spaces" <|
+            \() ->
+                """>     code
+
+>    not code
+"""
+                    |> parse
+                    |> Expect.equal
+                        (Ok
+                            [ Block.BlockQuote
+                                [ Block.CodeBlock
+                                    { body = "code"
+                                    , language = Nothing
+                                    }
+                                ]
+                            , Block.BlockQuote
+                                [ Block.Body (unstyledText "not code")
+                                ]
+                            ]
+                        )
+        , test "blank lines separate paragraphs within block quote" <|
+            \() ->
+                """> foo
+>
+> bar
+"""
+                    |> parse
+                    |> Expect.equal
+                        (Ok
+                            [ Block.BlockQuote
+                                [ Block.Body (unstyledText "foo")
+                                , Block.Body (unstyledText "bar")
+                                ]
+                            ]
+                        )
+        , test "keeps items grouped in a paragraph within block quotes when there are no blank lines separating them" <|
+            \() ->
+                """> # Foo
+> bar
+> baz
+"""
+                    |> parse
+                    |> Expect.equal
+                        (Ok
+                            [ Block.BlockQuote
+                                [ Block.Heading 1 (unstyledText "Foo")
+                                , Block.Body (unstyledText "bar baz")
+                                ]
+                            ]
+                        )
         ]
+
+
+plainListItem : String -> { body : List Block.Inline, task : Maybe Bool }
+plainListItem body =
+    { body =
+        [ { string = body
+          , style =
+                { isCode = False
+                , isBold = False
+                , isItalic = False
+                , link = Nothing
+                }
+          }
+        ]
+    , task = Nothing
+    }
 
 
 unstyledText : String -> List Block.Inline

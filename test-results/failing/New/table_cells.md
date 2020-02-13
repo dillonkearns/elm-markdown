@@ -72,5 +72,5 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 68 Expecting --- Problem at row 68 Expecting *** Problem at row 68 Expecting ___
+<p>|1| |-| |1|</p><p>|1| |-| |\||</p><p>|1| |-| |1\\1|</p><p>|1| |-| |\\\\||</p><p>|1| |-| |\\\\\||</p><p>|1|2| |-|-| ||2|</p><p>|1|2| |-|-| |1\|\\|2\|\\|</p><p>|1|2| |-|-| | |2|</p><p>1|2 -|- 1\|\\|2\|\\</p><p>1|2 -|- |2</p><p>1|2 -|- 1|2\|</p><p>1|2 -|- 1|2\|</p><p>|1|2| |-|-| |1|2\||</p><p>|1|2| |-|-| |1|2\||</p>
 ```

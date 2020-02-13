@@ -16,8 +16,14 @@ type RawBlock
     = Heading Int UnparsedInlines
     | Body UnparsedInlines
     | Html String (List Attribute) (List Block)
-    | UnorderedListBlock (List UnparsedInlines)
+    | UnorderedListBlock
+        (List
+            { task : Maybe Bool
+            , body : UnparsedInlines
+            }
+        )
     | OrderedListBlock Int (List UnparsedInlines)
     | CodeBlock CodeBlock
     | ThematicBreak
     | BlankLine
+    | BlockQuote String

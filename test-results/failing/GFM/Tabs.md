@@ -18,28 +18,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
-```
-## [Example 3](https://spec.commonmark.org/0.29/#example-3)
 
-This markdown:
-
-```markdown
-    a	a
-    ὐ	a
-
-```
-
-Should give output:
-
-```html
-<pre><code>a a ὐ a</code></pre>
-```
-
-But instead was:
-
-```html
-<pre><code>a a</code></pre><pre><code>ὐ a</code></pre>
 ```
 ## [Example 4](https://spec.commonmark.org/0.29/#example-4)
 
@@ -61,7 +40,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+<p>- foo</p><pre><code>bar</code></pre>
 ```
 ## [Example 5](https://spec.commonmark.org/0.29/#example-5)
 
@@ -85,26 +64,6 @@ But instead was:
 ```html
 <ul><li>foo</li></ul><pre><code>bar</code></pre>
 ```
-## [Example 6](https://spec.commonmark.org/0.29/#example-6)
-
-This markdown:
-
-```markdown
->		foo
-
-```
-
-Should give output:
-
-```html
-<blockquote><pre><code>foo</code></pre></blockquote>
-```
-
-But instead was:
-
-```html
-<p>&gt; foo</p>
-```
 ## [Example 7](https://spec.commonmark.org/0.29/#example-7)
 
 This markdown:
@@ -124,27 +83,6 @@ But instead was:
 
 ```html
 <p>- foo</p>
-```
-## [Example 8](https://spec.commonmark.org/0.29/#example-8)
-
-This markdown:
-
-```markdown
-    foo
-	bar
-
-```
-
-Should give output:
-
-```html
-<pre><code>foo bar</code></pre>
-```
-
-But instead was:
-
-```html
-<pre><code>foo</code></pre><pre><code>bar</code></pre>
 ```
 ## [Example 9](https://spec.commonmark.org/0.29/#example-9)
 
@@ -166,7 +104,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+<p>- foo - bar</p><pre><code>- baz</code></pre>
 ```
 ## [Example 11](https://spec.commonmark.org/0.29/#example-11)
 
