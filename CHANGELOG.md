@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [3.0.0] - 2020-02-13
+
 ### Fixed
 - Added parsing for block quotes
 - Added task list item parsing (breaking change: see [an example here](https://github.com/dillonkearns/elm-markdown/blob/ed1bbe6f653e77d75a1b86710813a6b3c21a4cec/examples/src/ElmUi.elm#L198-L222), or [the full diff including ElmUi.elm here](https://github.com/dillonkearns/elm-markdown/compare/2.0.2...bc51469?expand=1#diff-5d05b9d569f6fb96977355f9ff688eb4L1-R231)).
