@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+- Lines with only tabs or spaces no longer cause parsing errors. Instead, they go through the correct
+    blank line handling. See [#28](https://github.com/dillonkearns/elm-markdown/pull/28).
+
 ## [2.0.2] - 2020-02-07
 
 ### Fixed

@@ -247,6 +247,11 @@ Hello!
                             [ Block.ThematicBreak
                             ]
                         )
+        , test "blank lines are ignored" <|
+            \() ->
+                " \n  \n    \n\t\n"
+                    |> parse
+                    |> Expect.equal (Ok [])
         , test "mixed content with list" <|
             \() ->
                 """# Title

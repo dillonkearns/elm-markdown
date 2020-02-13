@@ -587,7 +587,6 @@ orderedListBlock lastBlock =
 
 blankLine : Parser RawBlock
 blankLine =
-    --    |. chompWhile Helpers.isNewline
     Advanced.backtrackable (chompWhile (\c -> Helpers.isSpaceOrTab c))
         |. token (Advanced.Token "\n" (Parser.Expecting "\\n"))
         |> map (\() -> BlankLine)
