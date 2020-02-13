@@ -1,4 +1,4 @@
-module ElmUi exposing (main)
+module ElmUi exposing (main, renderer)
 
 import Element exposing (Element)
 import Element.Background
