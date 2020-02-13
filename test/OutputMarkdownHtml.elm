@@ -101,27 +101,30 @@ renderMarkdown markdown =
                             |> List.map
                                 (\item ->
                                     case item of
-                                        Markdown.TaskItem status body ->
+                                        Markdown.ListItem task children ->
                                             let
                                                 checkbox =
-                                                    Html.input
-                                                        [ Attr.disabled True
-                                                        , Attr.checked
-                                                            (case status of
-                                                                Markdown.Complete ->
-                                                                    True
+                                                    case task of
+                                                        Markdown.NoTask ->
+                                                            Html.text ""
 
-                                                                Markdown.Incomplete ->
-                                                                    False
-                                                            )
-                                                        , Attr.type_ "checkbox"
-                                                        ]
-                                                        []
+                                                        Markdown.IncompleteTask ->
+                                                            Html.input
+                                                                [ Attr.disabled True
+                                                                , Attr.checked False
+                                                                , Attr.type_ "checkbox"
+                                                                ]
+                                                                []
+
+                                                        Markdown.CompletedTask ->
+                                                            Html.input
+                                                                [ Attr.disabled True
+                                                                , Attr.checked True
+                                                                , Attr.type_ "checkbox"
+                                                                ]
+                                                                []
                                             in
-                                            Html.li [] (checkbox :: body)
-
-                                        Markdown.NonTaskItem body ->
-                                            Html.li [] body
+                                            Html.li [] (checkbox :: children)
                                 )
                         )
             , orderedList =

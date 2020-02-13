@@ -1,11 +1,16 @@
 module Markdown.Parser exposing
     ( Renderer, defaultHtmlRenderer, deadEndToString, parse, render
-    , ListItem(..), TaskStatus(..)
+    , ListItem(..), Task(..)
     )
 
 {-|
 
 @docs Renderer, defaultHtmlRenderer, deadEndToString, parse, render
+
+
+## List Item types
+
+@docs ListItem, Task
 
 -}
 
@@ -58,14 +63,18 @@ type alias Renderer view =
     }
 
 
-type TaskStatus
-    = Complete
-    | Incomplete
-
-
+{-| The value for an unordered list item, which may contain a task.
+-}
 type ListItem view
-    = TaskItem TaskStatus (List view)
-    | NonTaskItem (List view)
+    = ListItem Task (List view)
+
+
+{-| A task (or no task), which may be contained in a ListItem.
+-}
+type Task
+    = NoTask
+    | IncompleteTask
+    | CompletedTask
 
 
 {-| This renders `Html` in an attempt to be as close as possible to
@@ -121,27 +130,30 @@ defaultHtmlRenderer =
                     |> List.map
                         (\item ->
                             case item of
-                                TaskItem status body ->
+                                ListItem task children ->
                                     let
                                         checkbox =
-                                            Html.input
-                                                [ Attr.disabled True
-                                                , Attr.checked
-                                                    (case status of
-                                                        Complete ->
-                                                            True
+                                            case task of
+                                                NoTask ->
+                                                    Html.text ""
 
-                                                        Incomplete ->
-                                                            False
-                                                    )
-                                                , Attr.type_ "checkbox"
-                                                ]
-                                                []
+                                                IncompleteTask ->
+                                                    Html.input
+                                                        [ Attr.disabled True
+                                                        , Attr.checked False
+                                                        , Attr.type_ "checkbox"
+                                                        ]
+                                                        []
+
+                                                CompletedTask ->
+                                                    Html.input
+                                                        [ Attr.disabled True
+                                                        , Attr.checked True
+                                                        , Attr.type_ "checkbox"
+                                                        ]
+                                                        []
                                     in
-                                    Html.li [] (checkbox :: body)
-
-                                NonTaskItem body ->
-                                    Html.li [] body
+                                    Html.li [] (checkbox :: children)
                         )
                 )
     , orderedList =
@@ -252,20 +264,21 @@ renderHelper renderer blocks =
                                 renderStyled renderer item.body
                                     |> Result.map
                                         (\renderedBody ->
-                                            case item.task of
-                                                Just complete ->
-                                                    TaskItem
-                                                        (case complete of
-                                                            True ->
-                                                                Complete
+                                            let
+                                                task =
+                                                    case item.task of
+                                                        Just complete ->
+                                                            case complete of
+                                                                True ->
+                                                                    CompletedTask
 
-                                                            False ->
-                                                                Incomplete
-                                                        )
-                                                        renderedBody
+                                                                False ->
+                                                                    IncompleteTask
 
-                                                Nothing ->
-                                                    NonTaskItem renderedBody
+                                                        Nothing ->
+                                                            NoTask
+                                            in
+                                            ListItem task renderedBody
                                         )
                             )
                         |> combineResults
