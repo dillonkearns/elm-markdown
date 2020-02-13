@@ -1,11 +1,16 @@
 module Markdown.Parser exposing
     ( Renderer, defaultHtmlRenderer, deadEndToString, parse, render
-    , ListItem(..), TaskStatus(..)
+    , ListItem(..), Task(..)
     )
 
 {-|
 
 @docs Renderer, defaultHtmlRenderer, deadEndToString, parse, render
+
+
+## List Item types
+
+@docs ListItem, Task
 
 -}
 
@@ -23,7 +28,7 @@ import Markdown.RawBlock exposing (Attribute, RawBlock(..), UnparsedInlines(..))
 import Markdown.UnorderedList
 import Parser
 import Parser.Advanced as Advanced exposing ((|.), (|=), Nestable(..), Step(..), andThen, chompIf, chompUntil, chompWhile, getChompedString, inContext, int, lazy, loop, map, multiComment, oneOf, problem, succeed, symbol, token)
-import Parser.Extra exposing (zeroOrMore)
+import Parser.Extra exposing (oneOrMore, zeroOrMore)
 import XmlParser exposing (Node(..))
 
 
@@ -43,6 +48,7 @@ You could render to any type you want. Here are some useful things you might ren
 type alias Renderer view =
     { heading : { level : Int, rawText : String, children : List view } -> view
     , raw : List view -> view
+    , blockQuote : List view -> view
     , html : Markdown.Html.Renderer (List view -> view)
     , plain : String -> view
     , code : String -> view
@@ -57,14 +63,18 @@ type alias Renderer view =
     }
 
 
-type TaskStatus
-    = Complete
-    | Incomplete
-
-
+{-| The value for an unordered list item, which may contain a task.
+-}
 type ListItem view
-    = TaskItem TaskStatus (List view)
-    | NonTaskItem (List view)
+    = ListItem Task (List view)
+
+
+{-| A task (or no task), which may be contained in a ListItem.
+-}
+type Task
+    = NoTask
+    | IncompleteTask
+    | CompletedTask
 
 
 {-| This renders `Html` in an attempt to be as close as possible to
@@ -96,6 +106,7 @@ defaultHtmlRenderer =
                 _ ->
                     Html.text "TODO maye use a type here to clean it up... this will never happen"
     , raw = Html.p []
+    , blockQuote = Html.blockquote []
     , bold =
         \content -> Html.strong [] [ Html.text content ]
     , italic =
@@ -119,27 +130,30 @@ defaultHtmlRenderer =
                     |> List.map
                         (\item ->
                             case item of
-                                TaskItem status body ->
+                                ListItem task children ->
                                     let
                                         checkbox =
-                                            Html.input
-                                                [ Attr.disabled True
-                                                , Attr.checked
-                                                    (case status of
-                                                        Complete ->
-                                                            True
+                                            case task of
+                                                NoTask ->
+                                                    Html.text ""
 
-                                                        Incomplete ->
-                                                            False
-                                                    )
-                                                , Attr.type_ "checkbox"
-                                                ]
-                                                []
+                                                IncompleteTask ->
+                                                    Html.input
+                                                        [ Attr.disabled True
+                                                        , Attr.checked False
+                                                        , Attr.type_ "checkbox"
+                                                        ]
+                                                        []
+
+                                                CompletedTask ->
+                                                    Html.input
+                                                        [ Attr.disabled True
+                                                        , Attr.checked True
+                                                        , Attr.type_ "checkbox"
+                                                        ]
+                                                        []
                                     in
-                                    Html.li [] (checkbox :: body)
-
-                                NonTaskItem body ->
-                                    Html.li [] body
+                                    Html.li [] (checkbox :: children)
                         )
                 )
     , orderedList =
@@ -250,20 +264,21 @@ renderHelper renderer blocks =
                                 renderStyled renderer item.body
                                     |> Result.map
                                         (\renderedBody ->
-                                            case item.task of
-                                                Just complete ->
-                                                    TaskItem
-                                                        (case complete of
-                                                            True ->
-                                                                Complete
+                                            let
+                                                task =
+                                                    case item.task of
+                                                        Just complete ->
+                                                            case complete of
+                                                                True ->
+                                                                    CompletedTask
 
-                                                            False ->
-                                                                Incomplete
-                                                        )
-                                                        renderedBody
+                                                                False ->
+                                                                    IncompleteTask
 
-                                                Nothing ->
-                                                    NonTaskItem renderedBody
+                                                        Nothing ->
+                                                            NoTask
+                                            in
+                                            ListItem task renderedBody
                                         )
                             )
                         |> combineResults
@@ -282,6 +297,11 @@ renderHelper renderer blocks =
 
                 Block.ThematicBreak ->
                     Ok renderer.thematicBreak
+
+                Block.BlockQuote nestedBlocks ->
+                    renderHelper renderer nestedBlocks
+                        |> combineResults
+                        |> Result.map renderer.blockQuote
         )
         blocks
 
@@ -452,6 +472,19 @@ parseInlines rawBlock =
         BlankLine ->
             succeed Nothing
 
+        BlockQuote rawBlocks ->
+            case Advanced.run rawBlockParser rawBlocks of
+                Ok value ->
+                    parseAllInlines value
+                        |> map
+                            (\parsedBlocks ->
+                                Block.BlockQuote parsedBlocks
+                                    |> Just
+                            )
+
+                Err error ->
+                    Advanced.problem (Parser.Problem (deadEndsToString error))
+
 
 just value =
     succeed (Just value)
@@ -475,10 +508,45 @@ plainLine =
                 |> UnparsedInlines
                 |> Body
         )
-        |= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
+        |. Advanced.backtrackable
+            (oneOf
+                [ token (Advanced.Token "   " (Parser.Expecting "   "))
+                , token (Advanced.Token "  " (Parser.Expecting "  "))
+                , token (Advanced.Token " " (Parser.Expecting " "))
+                , succeed ()
+                ]
+            )
+        |= innerParagraphParser
         |. oneOf
             [ Advanced.chompIf Helpers.isNewline (Parser.Expecting "A single non-newline char.")
             , Advanced.end (Parser.Expecting "End")
+            ]
+
+
+innerParagraphParser =
+    getChompedString <|
+        succeed ()
+            |. Advanced.chompIf (\c -> not <| Helpers.isSpaceOrTab c && (not <| Helpers.isNewline c)) (Parser.Expecting "Not a space or tab.")
+            |. Advanced.chompUntilEndOr "\n"
+
+
+blockQuote : Parser RawBlock
+blockQuote =
+    succeed BlockQuote
+        |. oneOf
+            [ symbol (Advanced.Token "   > " (Parser.Expecting "   > "))
+            , symbol (Advanced.Token "  > " (Parser.Expecting "  > "))
+            , symbol (Advanced.Token " > " (Parser.Expecting " > "))
+            , symbol (Advanced.Token "> " (Parser.Expecting "> "))
+            , symbol (Advanced.Token "   >" (Parser.Expecting "   >"))
+            , symbol (Advanced.Token "  >" (Parser.Expecting "  >"))
+            , symbol (Advanced.Token " >" (Parser.Expecting " >"))
+            , symbol (Advanced.Token ">" (Parser.Expecting ">"))
+            ]
+        |= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
+        |. oneOf
+            [ Advanced.end (Parser.Problem "Expecting end")
+            , chompIf Helpers.isNewline (Parser.Problem "Expecting newline")
             ]
 
 
@@ -504,7 +572,7 @@ unorderedListBlock =
 
                         ListItem.PlainItem body ->
                             { body = UnparsedInlines body
-                            , task = Nothing -- unparsedListItem.task
+                            , task = Nothing
                             }
                 )
             )
@@ -519,8 +587,9 @@ orderedListBlock lastBlock =
 
 blankLine : Parser RawBlock
 blankLine =
-    token (Advanced.Token "\n" (Parser.Expecting "\n"))
-        |. chompWhile Helpers.isNewline
+    --    |. chompWhile Helpers.isNewline
+    Advanced.backtrackable (chompWhile (\c -> Helpers.isSpaceOrTab c))
+        |. token (Advanced.Token "\n" (Parser.Expecting "\\n"))
         |> map (\() -> BlankLine)
 
 
@@ -605,7 +674,7 @@ childToParser node =
 
 multiParser2 : Parser (List Block)
 multiParser2 =
-    loop [] statementsHelp2
+    rawBlockParser
         |. succeed Advanced.end
         |> andThen parseAllInlines
         -- TODO find a more elegant way to exclude empty blocks for each blank lines
@@ -620,6 +689,11 @@ multiParser2 =
                             True
                 )
             )
+
+
+rawBlockParser : Parser (List RawBlock)
+rawBlockParser =
+    loop [] statementsHelp2
 
 
 parseAllInlines : List RawBlock -> Parser (List Block)
@@ -658,39 +732,32 @@ statementsHelp2 revStmts =
                             , revStmts
                             )
                         of
+                            ( CodeBlock block1, (CodeBlock block2) :: rest ) ->
+                                (CodeBlock
+                                    { body = joinStringsPreserveIndentation block2.body block1.body
+                                    , language = Nothing
+                                    }
+                                    :: rest
+                                )
+                                    |> Loop
+
+                            ( Body (UnparsedInlines body1), (BlockQuote body2) :: rest ) ->
+                                (BlockQuote (joinRawStringsWith "\n" body2 body1)
+                                    :: rest
+                                )
+                                    |> Loop
+
+                            ( BlockQuote body1, (BlockQuote body2) :: rest ) ->
+                                (BlockQuote (joinStringsPreserveAll body2 body1)
+                                    :: rest
+                                )
+                                    |> Loop
+
                             ( Body (UnparsedInlines body1), (Body (UnparsedInlines body2)) :: rest ) ->
-                                let
-                                    body1Trimmed =
-                                        String.trim body1
-
-                                    body2Trimmed =
-                                        String.trim body2
-                                in
-                                --if body1Trimmed == "" || body2Trimmed == "" then
-                                case ( body1Trimmed, body2Trimmed ) of
-                                    ( "", "" ) ->
-                                        Loop
-                                            (Body (UnparsedInlines (body2Trimmed ++ body1Trimmed))
-                                                :: rest
-                                            )
-
-                                    ( "", _ ) ->
-                                        Loop
-                                            (Body (UnparsedInlines (body2Trimmed ++ body1Trimmed))
-                                                :: rest
-                                            )
-
-                                    ( _, "" ) ->
-                                        Loop
-                                            (Body (UnparsedInlines (body2Trimmed ++ body1Trimmed))
-                                                :: rest
-                                            )
-
-                                    _ ->
-                                        Loop
-                                            (Body (UnparsedInlines (body2Trimmed ++ " " ++ body1Trimmed))
-                                                :: rest
-                                            )
+                                Loop
+                                    (Body (UnparsedInlines (joinRawStringsWith " " body2 body1))
+                                        :: rest
+                                    )
 
                             _ ->
                                 Loop (stmts :: revStmts)
@@ -699,6 +766,7 @@ statementsHelp2 revStmts =
     oneOf
         [ Advanced.end (Parser.Expecting "End") |> map (\() -> Done revStmts)
         , blankLine |> keepLooping
+        , blockQuote |> keepLooping
         , Markdown.CodeBlock.parser |> map CodeBlock |> keepLooping
         , thematicBreak |> keepLooping
         , unorderedListBlock |> keepLooping
@@ -710,15 +778,84 @@ statementsHelp2 revStmts =
         ]
 
 
+joinStringsPreserveAll string1 string2 =
+    let
+        string1Trimmed =
+            --String.trimRight
+            string1
+
+        string2Trimmed =
+            --String.trimRight
+            string2
+    in
+    String.concat
+        [ string1Trimmed
+        , "\n"
+        , string2Trimmed
+        ]
+
+
+joinStringsPreserveIndentation string1 string2 =
+    let
+        string1Trimmed =
+            String.trimRight string1
+
+        string2Trimmed =
+            String.trimRight string2
+    in
+    String.concat
+        [ string1Trimmed
+        , "\n"
+        , string2Trimmed
+        ]
+
+
+joinRawStringsWith joinWith string1 string2 =
+    let
+        string1Trimmed =
+            String.trim string1
+
+        string2Trimmed =
+            String.trim string2
+    in
+    case ( string1Trimmed, string2Trimmed ) of
+        ( "", "" ) ->
+            String.concat
+                [ string1Trimmed
+                , string2Trimmed
+                ]
+
+        ( "", _ ) ->
+            String.concat
+                [ string1Trimmed
+                , string2Trimmed
+                ]
+
+        ( _, "" ) ->
+            String.concat
+                [ string1Trimmed
+                , string2Trimmed
+                ]
+
+        _ ->
+            String.concat
+                [ string1Trimmed
+                , joinWith
+                , string2Trimmed
+                ]
+
+
 thematicBreak : Parser RawBlock
 thematicBreak =
     succeed ThematicBreak
-        |. oneOf
-            [ symbol (Advanced.Token "   " (Parser.Problem "Expecting 3 spaces"))
-            , symbol (Advanced.Token "  " (Parser.Problem "Expecting 2 spaces"))
-            , symbol (Advanced.Token " " (Parser.Problem "Expecting space"))
-            , succeed ()
-            ]
+        |. Advanced.backtrackable
+            (oneOf
+                [ symbol (Advanced.Token "   " (Parser.Problem "Expecting 3 spaces"))
+                , symbol (Advanced.Token "  " (Parser.Problem "Expecting 2 spaces"))
+                , symbol (Advanced.Token " " (Parser.Problem "Expecting space"))
+                , succeed ()
+                ]
+            )
         |. oneOf
             [ symbol (Advanced.Token "---" (Parser.Expecting "---"))
                 |. chompWhile

@@ -1,26 +1,5 @@
 # GFM - Indented code blocks
 
-## [Example 77](https://spec.commonmark.org/0.29/#example-77)
-
-This markdown:
-
-```markdown
-    a simple
-      indented code block
-
-```
-
-Should give output:
-
-```html
-<pre><code>a simple indented code block</code></pre>
-```
-
-But instead was:
-
-```html
-<pre><code>a simple</code></pre><pre><code>indented code block</code></pre>
-```
 ## [Example 78](https://spec.commonmark.org/0.29/#example-78)
 
 This markdown:
@@ -41,7 +20,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 1 Expecting --- Problem at row 1 Expecting *** Problem at row 1 Expecting ___
+<p>- foo</p><pre><code>bar</code></pre>
 ```
 ## [Example 79](https://spec.commonmark.org/0.29/#example-79)
 
@@ -86,7 +65,7 @@ Should give output:
 But instead was:
 
 ```html
-<pre><code>&lt;a/&gt;</code></pre><pre><code>*hi*</code></pre><pre><code>- one</code></pre>
+<pre><code>&lt;a/&gt; *hi*</code></pre><pre><code>- one</code></pre>
 ```
 ## [Example 81](https://spec.commonmark.org/0.29/#example-81)
 
@@ -112,7 +91,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 6 Expecting --- Problem at row 6 Expecting *** Problem at row 6 Expecting ___
+<pre><code>chunk1</code></pre><pre><code>chunk2</code></pre><pre><code>chunk3</code></pre>
 ```
 ## [Example 82](https://spec.commonmark.org/0.29/#example-82)
 
@@ -134,7 +113,7 @@ Should give output:
 But instead was:
 
 ```html
-<pre><code>chunk1</code></pre><pre><code></code></pre><pre><code>chunk2</code></pre>
+<pre><code>chunk1</code></pre><pre><code>chunk2</code></pre>
 ```
 ## [Example 83](https://spec.commonmark.org/0.29/#example-83)
 
@@ -182,49 +161,4 @@ But instead was:
 
 ```html
 <h1>Heading</h1><pre><code>foo</code></pre><p>Heading</p><hr><pre><code>foo</code></pre><hr>
-```
-## [Example 86](https://spec.commonmark.org/0.29/#example-86)
-
-This markdown:
-
-```markdown
-        foo
-    bar
-
-```
-
-Should give output:
-
-```html
-<pre><code>foo bar</code></pre>
-```
-
-But instead was:
-
-```html
-<pre><code>foo</code></pre><pre><code>bar</code></pre>
-```
-## [Example 87](https://spec.commonmark.org/0.29/#example-87)
-
-This markdown:
-
-```markdown
-
-    
-    foo
-    
-
-
-```
-
-Should give output:
-
-```html
-<pre><code>foo</code></pre>
-```
-
-But instead was:
-
-```html
-<pre><code></code></pre><pre><code>foo</code></pre><pre><code></code></pre>
 ```

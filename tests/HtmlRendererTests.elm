@@ -43,6 +43,7 @@ testRenderer htmlRenderer =
         \{ level, children } ->
             Unexpected "heading"
     , raw = \_ -> Unexpected "String"
+    , blockQuote = \_ -> Unexpected "String"
     , bold =
         \content -> Unexpected "String"
     , italic =

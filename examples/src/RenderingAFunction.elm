@@ -10,7 +10,7 @@ import Element.Region
 import Html exposing (Attribute, Html)
 import Html.Attributes
 import Markdown.Html
-import Markdown.Parser
+import Markdown.Parser exposing (ListItem(..), Task(..))
 
 
 view : Model -> { title : String, body : List (Html Msg) }
@@ -72,16 +72,29 @@ renderer =
             Ok <|
                 \number ->
                     Element.image [ Element.width Element.fill ] { src = image.src, description = body }
+    , blockQuote = \_ -> Debug.todo ""
     , unorderedList =
         \items number ->
             Element.column [ Element.spacing 15 ]
                 (items
                     |> List.map
-                        (\itemBlocks ->
+                        (\(ListItem task children) ->
                             Element.row [ Element.spacing 5 ]
                                 [ Element.row
                                     [ Element.alignTop ]
-                                    (Element.text "• " :: List.map (\fn -> fn number) itemBlocks)
+                                    ((case task of
+                                        IncompleteTask ->
+                                            Element.Input.defaultCheckbox False
+
+                                        CompletedTask ->
+                                            Element.Input.defaultCheckbox True
+
+                                        NoTask ->
+                                            Element.text "•"
+                                     )
+                                        :: Element.text " "
+                                        :: List.map (\fn -> fn number) children
+                                    )
                                 ]
                         )
                 )
@@ -93,7 +106,7 @@ renderer =
                         (\index itemBlocks ->
                             Element.row [ Element.spacing 5 ]
                                 [ Element.row [ Element.alignTop ]
-                                    (Element.text (String.fromInt index ++ " ")
+                                    (Element.text (String.fromInt (startingIndex + index) ++ " ")
                                         :: List.map (\fn -> fn number) itemBlocks
                                     )
                                 ]

@@ -56,5 +56,5 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 3 Expecting --- Problem at row 3 Expecting *** Problem at row 3 Expecting ___
+ERROR Problem at row 78 Expecting Problem at row 1 Expecting symbol (
 ```

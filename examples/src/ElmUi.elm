@@ -1,4 +1,4 @@
-module ElmUi exposing (main)
+module ElmUi exposing (main, renderer)
 
 import Element exposing (Element)
 import Element.Background
@@ -10,7 +10,7 @@ import Html exposing (Attribute, Html)
 import Html.Attributes
 import Markdown.Block exposing (Block, Inline, InlineStyle)
 import Markdown.Html
-import Markdown.Parser exposing (ListItem(..), TaskStatus(..))
+import Markdown.Parser exposing (ListItem(..), Task(..))
 
 
 main : Html msg
@@ -37,6 +37,11 @@ markdownBody =
 - [ ] A
 - [ ] B
 - [X] C
+
+## Block quotes
+
+> This is a
+> block quote
 
 ## Ebur iamque mecum
 
@@ -181,23 +186,36 @@ renderer =
         \image body ->
             Element.image [ Element.width Element.fill ] { src = image.src, description = body }
                 |> Ok
+    , blockQuote =
+        \children ->
+            Element.paragraph
+                [ Element.Border.widthEach { top = 0, right = 0, bottom = 0, left = 10 }
+                , Element.padding 10
+                , Element.Border.color (Element.rgb255 145 145 145)
+                , Element.Background.color (Element.rgb255 245 245 245)
+                ]
+                children
     , unorderedList =
         \items ->
             Element.column [ Element.spacing 15 ]
                 (items
                     |> List.map
-                        (\item ->
+                        (\(ListItem task children) ->
                             Element.row [ Element.spacing 5 ]
                                 [ Element.row
                                     [ Element.alignTop ]
-                                    (case item of
-                                        TaskItem status children ->
-                                            checkbox status
-                                                :: Element.text " "
-                                                :: children
+                                    ((case task of
+                                        IncompleteTask ->
+                                            Element.Input.defaultCheckbox False
 
-                                        NonTaskItem children ->
-                                            Element.text "• " :: children
+                                        CompletedTask ->
+                                            Element.Input.defaultCheckbox True
+
+                                        NoTask ->
+                                            Element.text "•"
+                                     )
+                                        :: Element.text " "
+                                        :: children
                                     )
                                 ]
                         )
@@ -210,25 +228,13 @@ renderer =
                         (\index itemBlocks ->
                             Element.row [ Element.spacing 5 ]
                                 [ Element.row [ Element.alignTop ]
-                                    (Element.text (String.fromInt index ++ " ") :: itemBlocks)
+                                    (Element.text (String.fromInt (index + startingIndex) ++ " ") :: itemBlocks)
                                 ]
                         )
                 )
     , codeBlock = codeBlock
     , html = Markdown.Html.oneOf []
     }
-
-
-checkbox : TaskStatus -> Element msg
-checkbox status =
-    Element.Input.defaultCheckbox
-        (case status of
-            Incomplete ->
-                False
-
-            Complete ->
-                True
-        )
 
 
 rawTextToId rawText =

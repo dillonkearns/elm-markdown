@@ -323,5 +323,5 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 44 Expecting --- Problem at row 44 Expecting *** Problem at row 44 Expecting ___
+ERROR Problem at row 496 Expecting Problem at row 1 Expecting symbol (
 ```

@@ -5,6 +5,7 @@ import Element.Background
 import Element.Border
 import Element.Font as Font
 import Element.Region
+import ElmUi
 import Html exposing (Attribute, Html)
 import Html.Attributes
 import Markdown.Block exposing (Block, Inline, InlineStyle)
@@ -177,104 +178,10 @@ view markdown =
 
 renderer : Markdown.Parser.Renderer (Element msg)
 renderer =
-    { heading = heading
-    , raw =
-        Element.paragraph
-            [ Element.spacing 15 ]
-    , thematicBreak = Element.none
-    , plain = Element.text
-    , bold = \content -> Element.row [ Font.bold ] [ Element.text content ]
-    , italic = \content -> Element.row [ Font.italic ] [ Element.text content ]
-    , code = code
-    , link =
-        \{ title, destination } body ->
-            Element.newTabLink
-                [ Element.htmlAttribute (Html.Attributes.style "display" "inline-flex") ]
-                { url = destination
-                , label =
-                    Element.paragraph
-                        [ Font.color (Element.rgb255 0 0 255)
-                        ]
-                        body
-                }
-                |> Ok
-    , image =
-        \image body ->
-            Element.image [ Element.width Element.fill ] { src = image.src, description = body }
-                |> Ok
-    , unorderedList =
-        \items ->
-            Element.column [ Element.spacing 15 ]
-                (items
-                    |> List.map
-                        (\itemBlocks ->
-                            Element.row [ Element.spacing 5 ]
-                                [ Element.row
-                                    [ Element.alignTop ]
-                                    (Element.text "• " :: itemBlocks)
-                                ]
-                        )
-                )
-    , orderedList =
-        \startingIndex items ->
-            Element.column [ Element.spacing 15 ]
-                (items
-                    |> List.indexedMap
-                        (\index itemBlocks ->
-                            Element.row [ Element.spacing 5 ]
-                                [ Element.row [ Element.alignTop ]
-                                    (Element.text (String.fromInt index ++ " ") :: itemBlocks)
-                                ]
-                        )
-                )
-    , codeBlock = codeBlock
-    , html = Markdown.Html.oneOf []
-    }
+    ElmUi.renderer
 
 
 rawTextToId rawText =
     rawText
         |> String.toLower
         |> String.replace " " ""
-
-
-heading : { level : Int, rawText : String, children : List (Element msg) } -> Element msg
-heading { level, rawText, children } =
-    Element.paragraph
-        [ Font.size
-            (case level of
-                1 ->
-                    36
-
-                2 ->
-                    24
-
-                _ ->
-                    20
-            )
-        , Font.bold
-        , Font.family [ Font.typeface "Montserrat" ]
-        , Element.Region.heading level
-        , Element.htmlAttribute
-            (Html.Attributes.attribute "name" (rawTextToId rawText))
-        , Element.htmlAttribute
-            (Html.Attributes.id (rawTextToId rawText))
-        ]
-        children
-
-
-code : String -> Element msg
-code snippet =
-    Element.el
-        [ Element.Background.color
-            (Element.rgba 0 0 0 0.04)
-        , Element.Border.rounded 2
-        , Element.paddingXY 5 3
-        , Font.family [ Font.monospace ]
-        ]
-        (Element.text snippet)
-
-
-codeBlock : { body : String, language : Maybe String } -> Element msg
-codeBlock details =
-    Element.el [] (Element.text details.body)

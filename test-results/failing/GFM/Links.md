@@ -405,7 +405,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 3 Expecting --- Problem at row 3 Expecting *** Problem at row 3 Expecting ___
+ERROR Problem at row 5 Expecting Problem at row 1 Link destinations can&#39;t contain whitespace, if you would like to include them please wrap your URL with &lt; .. &gt;
 ```
 ## [Example 507](https://spec.commonmark.org/0.29/#example-507)
 
@@ -1056,7 +1056,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 3 Expecting --- Problem at row 3 Expecting *** Problem at row 3 Expecting ___
+ERROR Problem at row 8 Expecting Problem at row 1 Expecting symbol (
 ```
 ## [Example 538](https://spec.commonmark.org/0.29/#example-538)
 
@@ -1303,7 +1303,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 3 Expecting --- Problem at row 3 Expecting *** Problem at row 3 Expecting ___
+ERROR Problem at row 10 Expecting Problem at row 1 Expecting symbol (
 ```
 ## [Example 549](https://spec.commonmark.org/0.29/#example-549)
 

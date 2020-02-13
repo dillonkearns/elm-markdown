@@ -77,6 +77,7 @@ renderMarkdown markdown =
                         _ ->
                             Html.text "TODO maye use a type here to clean it up... this will never happen"
             , raw = Html.p []
+            , blockQuote = Html.blockquote []
             , bold =
                 \content -> Html.strong [] [ Html.text content ]
             , italic =
@@ -99,21 +100,31 @@ renderMarkdown markdown =
                         (items
                             |> List.map
                                 (\item ->
-                                    case item.task of
-                                        Just complete ->
+                                    case item of
+                                        Markdown.ListItem task children ->
                                             let
                                                 checkbox =
-                                                    Html.input
-                                                        [ Attr.disabled True
-                                                        , Attr.checked complete
-                                                        , Attr.type_ "checkbox"
-                                                        ]
-                                                        []
-                                            in
-                                            Html.li [] (checkbox :: item.body)
+                                                    case task of
+                                                        Markdown.NoTask ->
+                                                            Html.text ""
 
-                                        Nothing ->
-                                            Html.li [] item.body
+                                                        Markdown.IncompleteTask ->
+                                                            Html.input
+                                                                [ Attr.disabled True
+                                                                , Attr.checked False
+                                                                , Attr.type_ "checkbox"
+                                                                ]
+                                                                []
+
+                                                        Markdown.CompletedTask ->
+                                                            Html.input
+                                                                [ Attr.disabled True
+                                                                , Attr.checked True
+                                                                , Attr.type_ "checkbox"
+                                                                ]
+                                                                []
+                                            in
+                                            Html.li [] (checkbox :: children)
                                 )
                         )
             , orderedList =
