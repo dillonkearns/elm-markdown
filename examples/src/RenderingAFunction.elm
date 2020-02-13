@@ -72,7 +72,15 @@ renderer =
             Ok <|
                 \number ->
                     Element.image [ Element.width Element.fill ] { src = image.src, description = body }
-    , blockQuote = \_ -> Debug.todo ""
+    , blockQuote =
+        \children number ->
+            Element.paragraph
+                [ Element.Border.widthEach { top = 0, right = 0, bottom = 0, left = 10 }
+                , Element.padding 10
+                , Element.Border.color (Element.rgb255 145 145 145)
+                , Element.Background.color (Element.rgb255 245 245 245)
+                ]
+                (children |> List.map (\fn -> fn number))
     , unorderedList =
         \items number ->
             Element.column [ Element.spacing 15 ]
