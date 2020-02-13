@@ -10,8 +10,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 
 ### Fixed
+- Added parsing for block quotes
+- Added task list item parsing (breaking change: see [an example here](https://github.com/dillonkearns/elm-markdown/blob/ed1bbe6f653e77d75a1b86710813a6b3c21a4cec/examples/src/ElmUi.elm#L198-L222), or [the full diff including ElmUi.elm here](https://github.com/dillonkearns/elm-markdown/compare/2.0.2...bc51469?expand=1#diff-5d05b9d569f6fb96977355f9ff688eb4L1-R231)).
 - Lines with only tabs or spaces no longer cause parsing errors. Instead, they go through the correct
     blank line handling. See [#28](https://github.com/dillonkearns/elm-markdown/pull/28).
+- Fixed some other various cases, see [the new test cases that are passing]( https://github.com/dillonkearns/elm-markdown/compare/2.0.2...bc51469?expand=1#diff-3a49125c58477a39487c1c1ef69be134)
 
 ## [2.0.2] - 2020-02-07
 
