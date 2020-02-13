@@ -219,7 +219,7 @@ renderer =
                         (\index itemBlocks ->
                             Element.row [ Element.spacing 5 ]
                                 [ Element.row [ Element.alignTop ]
-                                    (Element.text (String.fromInt index ++ " ") :: itemBlocks)
+                                    (Element.text (String.fromInt (index + startingIndex) ++ " ") :: itemBlocks)
                                 ]
                         )
                 )
