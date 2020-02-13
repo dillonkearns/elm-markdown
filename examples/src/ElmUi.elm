@@ -38,6 +38,11 @@ markdownBody =
 - [ ] B
 - [X] C
 
+## Block quotes
+
+> This is a
+> block quote
+
 ## Ebur iamque mecum
 
 Lorem markdownum [vitae](http://minantia.io/herbis-caelumque.aspx) crines
@@ -182,9 +187,13 @@ renderer =
             Element.image [ Element.width Element.fill ] { src = image.src, description = body }
                 |> Ok
     , blockQuote =
-        -- TODO add block quote styling
         \children ->
-            Element.paragraph []
+            Element.paragraph
+                [ Element.Border.widthEach { top = 0, right = 0, bottom = 0, left = 10 }
+                , Element.padding 10
+                , Element.Border.color (Element.rgb255 145 145 145)
+                , Element.Background.color (Element.rgb255 245 245 245)
+                ]
                 children
     , unorderedList =
         \items ->
