@@ -224,7 +224,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><code>aaa</code></p><pre><code>aaa</code></pre><p>aaa</p>
+ERROR Problem at row 11 Expecting Problem at row 1 Expecting `
 ```
 ## [Example 105](https://spec.commonmark.org/0.29/#example-105)
 

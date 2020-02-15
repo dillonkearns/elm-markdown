@@ -18,7 +18,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>foo<code>bar</code></p>
+ERROR Problem at row 3 Expecting Problem at row 1 Expecting `
 ```
 ## [Example 330](https://spec.commonmark.org/0.29/#example-330)
 
@@ -124,7 +124,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><code>foo\</code>bar</p>
+ERROR Problem at row 3 Expecting Problem at row 1 Expecting `
 ```
 ## [Example 339](https://spec.commonmark.org/0.29/#example-339)
 
@@ -144,7 +144,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>foo<code>bar</code></p>
+ERROR Problem at row 3 Expecting Problem at row 1 Expecting `
 ```
 ## [Example 340](https://spec.commonmark.org/0.29/#example-340)
 
@@ -184,7 +184,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><em>foo</em></p>
+<p><em>foo</em><em>*</em></p>
 ```
 ## [Example 342](https://spec.commonmark.org/0.29/#example-342)
 
@@ -204,7 +204,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><a href="/foo`">not a<code>link</code></a></p>
+ERROR Problem at row 1 Expecting `
 ```
 ## [Example 343](https://spec.commonmark.org/0.29/#example-343)
 
@@ -224,7 +224,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><code>&lt;a href=&quot;</code>&quot;&gt;</p>
+ERROR Problem at row 3 Expecting Problem at row 1 Expecting `
 ```
 ## [Example 344](https://spec.commonmark.org/0.29/#example-344)
 
@@ -264,7 +264,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><code>&lt;http://foo.bar.</code>baz&gt;</p>
+ERROR Problem at row 3 Expecting Problem at row 1 Expecting `
 ```
 ## [Example 346](https://spec.commonmark.org/0.29/#example-346)
 
@@ -324,7 +324,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><code>foo</code></p>
+ERROR Problem at row 3 Expecting Problem at row 1 Expecting `
 ```
 ## [Example 349](https://spec.commonmark.org/0.29/#example-349)
 
@@ -344,5 +344,5 @@ Should give output:
 But instead was:
 
 ```html
-<p><code>foo</code><code>bar</code></p>
+ERROR Problem at row 3 Expecting Problem at row 1 Expecting `
 ```

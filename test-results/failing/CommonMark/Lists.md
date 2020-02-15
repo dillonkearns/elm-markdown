@@ -320,7 +320,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li>a</li><li></li></ul><p>b</p><ul><li>c</li></ul>
+ERROR Problem at row 13 Expecting Problem at row 1 Expecting `
 ```
 ## [Example 289](https://spec.commonmark.org/0.29/#example-289)
 
@@ -437,7 +437,7 @@ Should give output:
 But instead was:
 
 ```html
-<ol><li></li></ol><p>foo</p><p>bar</p>
+ERROR Problem at row 10 Expecting Problem at row 1 Expecting `
 ```
 ## [Example 295](https://spec.commonmark.org/0.29/#example-295)
 

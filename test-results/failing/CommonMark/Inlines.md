@@ -18,5 +18,5 @@ Should give output:
 But instead was:
 
 ```html
-<p><code>hi</code>lo</p>
+ERROR Problem at row 3 Expecting Problem at row 1 Expecting `
 ```

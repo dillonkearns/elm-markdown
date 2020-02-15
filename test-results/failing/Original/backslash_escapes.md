@@ -137,5 +137,5 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 180 Expecting Problem at row 1 Expecting symbol ]
+ERROR Problem at row 180 Expecting Problem at row 1 Expecting `
 ```

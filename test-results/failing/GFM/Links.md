@@ -705,7 +705,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><a href="/uri">foo</a></p>
+ERROR Problem at row 3 Expecting Problem at row 1 Expecting `
 ```
 ## [Example 522](https://spec.commonmark.org/0.29/#example-522)
 

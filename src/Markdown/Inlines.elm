@@ -122,32 +122,41 @@ parse =
 
 
 parseHelp : State -> Parser (Step State (List Inline))
-parseHelp (( _, _, allFailed ) as state) =
-    andThen
-        (\chompedString ->
-            oneOf
-                [ Link.parser
-                    |> map (\link -> nextStepWhenFoundLink link state chompedString)
-                , map
-                    (\_ -> nextStepWhenFoundCode state chompedString)
-                    (token (Token "`" (Parser.Expecting "`")))
-                , map
-                    (\_ -> nextStepWhenFoundBold state chompedString)
-                    (token (Token "**" (Parser.Expecting "**")))
-                , map
-                    (\_ -> nextStepWhenFoundItalic state chompedString)
-                    (token (Token "*" (Parser.Expecting "*")))
-                , succeed identity
-                    |= succeed (nextStepWhenFoundNothing state chompedString)
-                    |. end (Parser.Expecting "End of inlines")
-                , succeed (nextStepWhenAllFailed state chompedString)
-                ]
-        )
-        (case allFailed of
-            Nothing ->
-                getChompedString (chompWhile isUninteresting)
+parseHelp (( inlineStyle, _, allFailed ) as state) =
+    if inlineStyle.isCode then
+        Advanced.succeed
+            (\chompedString ->
+                nextStepWhenFoundCode state chompedString
+            )
+            |= Advanced.getChompedString (Advanced.chompUntil (Advanced.Token "`" (Parser.Expecting "`")))
+            |. token (Token "`" (Parser.Expecting "`"))
 
-            Just unhandledString ->
-                succeed (\chomped -> unhandledString ++ chomped)
-                    |= getChompedString (chompIf (\_ -> True) (Parser.Expecting "*"))
-        )
+    else
+        andThen
+            (\chompedString ->
+                oneOf
+                    [ Link.parser
+                        |> map (\link -> nextStepWhenFoundLink link state chompedString)
+                    , map
+                        (\_ -> nextStepWhenFoundCode state chompedString)
+                        (token (Token "`" (Parser.Expecting "`")))
+                    , map
+                        (\_ -> nextStepWhenFoundBold state chompedString)
+                        (token (Token "**" (Parser.Expecting "**")))
+                    , map
+                        (\_ -> nextStepWhenFoundItalic state chompedString)
+                        (token (Token "*" (Parser.Expecting "*")))
+                    , succeed identity
+                        |= succeed (nextStepWhenFoundNothing state chompedString)
+                        |. end (Parser.Expecting "End of inlines")
+                    , succeed (nextStepWhenAllFailed state chompedString)
+                    ]
+            )
+            (case allFailed of
+                Nothing ->
+                    getChompedString (chompWhile isUninteresting)
+
+                Just unhandledString ->
+                    succeed (\chomped -> unhandledString ++ chomped)
+                        |= getChompedString (chompIf (\_ -> True) (Parser.Expecting "*"))
+            )

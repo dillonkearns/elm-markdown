@@ -275,7 +275,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><code>Foo</code></p><hr><a></a>
+ERROR Problem at row 10 Expecting Problem at row 1 Expecting `
 ```
 ## [Example 65](https://spec.commonmark.org/0.29/#example-65)
 
