@@ -79,9 +79,9 @@ renderMarkdown markdown =
             , raw = Html.p []
             , blockQuote = Html.blockquote []
             , bold =
-                \content -> Html.strong [] [ Html.text content ]
+                \child -> Html.strong [] [ child ]
             , italic =
-                \content -> Html.em [] [ Html.text content ]
+                \child -> Html.em [] [ child ]
             , code =
                 \content -> Html.code [] [ Html.text content ]
             , link =

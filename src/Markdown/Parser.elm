@@ -52,8 +52,8 @@ type alias Renderer view =
     , html : Markdown.Html.Renderer (List view -> view)
     , plain : String -> view
     , code : String -> view
-    , bold : String -> view
-    , italic : String -> view
+    , bold : view -> view
+    , italic : view -> view
     , link : { title : Maybe String, destination : String } -> List view -> Result String view
     , image : { src : String } -> String -> Result String view
     , unorderedList : List (ListItem view) -> view
@@ -108,9 +108,9 @@ defaultHtmlRenderer =
     , raw = Html.p []
     , blockQuote = Html.blockquote []
     , bold =
-        \content -> Html.strong [] [ Html.text content ]
+        \child -> Html.strong [] [ child ]
     , italic =
-        \content -> Html.em [] [ Html.text content ]
+        \child -> Html.em [] [ child ]
     , code =
         \content -> Html.code [] [ Html.text content ]
     , link =
@@ -195,67 +195,50 @@ renderStyled renderer styledStrings =
 foldThing : Renderer view -> TopLevelInline -> List (Result String view) -> List (Result String view)
 foldThing renderer topLevelInline soFar =
     case topLevelInline of
-        Block.Link record inline ->
-            Debug.todo ""
+        Block.Link { href } inlines ->
+            (renderStyled renderer [ Block.InlineContent inlines ]
+                |> Result.andThen
+                    (\children ->
+                        renderer.link { title = Nothing, destination = href } children
+                    )
+            )
+                :: soFar
 
+        --                    Ok styledLine ->
+        --                        (renderStyled renderer styledLine
+        --                            |> Result.andThen
+        --                                (\children ->
+        --                                    renderer.link { title = link.title, destination = destination } children
+        --                                )
+        --                        )
+        --                            :: soFar
+        --
+        --                    Err error ->
+        --                        (error |> List.map deadEndToString |> List.map Err)
+        --                            ++ soFar
         Block.InlineContent inline ->
-            Debug.todo ""
+            renderSingleInline renderer inline :: soFar
 
 
+renderSingleInline : Renderer view -> Inline -> Result String view
+renderSingleInline renderer inline =
+    case inline of
+        Block.Bold innerInlines ->
+            renderSingleInline renderer innerInlines
+                |> Result.map renderer.bold
 
---case inline of
---    Block.Bold inline ->
---
---
---    Block.Italic inline ->
---
---
---    Block.Image string ->
---
---
---    Block.Text string ->
---
---
---    Block.CodeSpan string ->
---
---case style.link of
---    Just link ->
---        case link.destination of
---            Block.Link destination ->
---                case Advanced.run Inlines.parse string of
---                    Ok styledLine ->
---                        (renderStyled renderer styledLine
---                            |> Result.andThen
---                                (\children ->
---                                    renderer.link { title = link.title, destination = destination } children
---                                )
---                        )
---                            :: soFar
---
---                    Err error ->
---                        (error |> List.map deadEndToString |> List.map Err)
---                            ++ soFar
---
---            Block.Image src ->
---                renderer.image { src = src } string
---                    :: soFar
---
---    Nothing ->
---        if style.isBold then
---            (renderer.bold string |> Ok)
---                :: soFar
---
---        else if style.isItalic then
---            (renderer.italic string |> Ok)
---                :: soFar
---
---        else if style.isCode then
---            (renderer.code string |> Ok)
---                :: soFar
---
---        else
---            (renderer.plain string |> Ok)
---                :: soFar
+        Block.Italic innerInlines ->
+            renderSingleInline renderer innerInlines
+                |> Result.map renderer.italic
+
+        Block.Image src ->
+            renderer.image { src = src } "TODO remove this"
+
+        Block.Text string ->
+            renderer.plain string |> Ok
+
+        Block.CodeSpan string ->
+            renderer.code string |> Ok
 
 
 renderHelper :
