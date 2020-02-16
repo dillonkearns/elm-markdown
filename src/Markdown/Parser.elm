@@ -17,7 +17,7 @@ module Markdown.Parser exposing
 import Helpers
 import Html exposing (Html)
 import Html.Attributes as Attr
-import Markdown.Block as Block exposing (Block, Inline)
+import Markdown.Block as Block exposing (Block, Inline, TopLevelInline)
 import Markdown.CodeBlock
 import Markdown.Html
 import Markdown.HtmlRenderer
@@ -185,53 +185,77 @@ defaultHtmlRenderer =
     }
 
 
-renderStyled : Renderer view -> List Inline -> Result String (List view)
+renderStyled : Renderer view -> List TopLevelInline -> Result String (List view)
 renderStyled renderer styledStrings =
     styledStrings
         |> List.foldr (foldThing renderer) []
         |> combineResults
 
 
-foldThing : Renderer view -> Inline -> List (Result String view) -> List (Result String view)
-foldThing renderer { style, string } soFar =
-    case style.link of
-        Just link ->
-            case link.destination of
-                Block.Link destination ->
-                    case Advanced.run Inlines.parse string of
-                        Ok styledLine ->
-                            (renderStyled renderer styledLine
-                                |> Result.andThen
-                                    (\children ->
-                                        renderer.link { title = link.title, destination = destination } children
-                                    )
-                            )
-                                :: soFar
+foldThing : Renderer view -> TopLevelInline -> List (Result String view) -> List (Result String view)
+foldThing renderer topLevelInline soFar =
+    case topLevelInline of
+        Block.Link record inline ->
+            Debug.todo ""
 
-                        Err error ->
-                            (error |> List.map deadEndToString |> List.map Err)
-                                ++ soFar
+        Block.InlineContent inline ->
+            Debug.todo ""
 
-                Block.Image src ->
-                    renderer.image { src = src } string
-                        :: soFar
 
-        Nothing ->
-            if style.isBold then
-                (renderer.bold string |> Ok)
-                    :: soFar
 
-            else if style.isItalic then
-                (renderer.italic string |> Ok)
-                    :: soFar
-
-            else if style.isCode then
-                (renderer.code string |> Ok)
-                    :: soFar
-
-            else
-                (renderer.plain string |> Ok)
-                    :: soFar
+--case inline of
+--    Block.Bold inline ->
+--
+--
+--    Block.Italic inline ->
+--
+--
+--    Block.Image string ->
+--
+--
+--    Block.Text string ->
+--
+--
+--    Block.CodeSpan string ->
+--
+--case style.link of
+--    Just link ->
+--        case link.destination of
+--            Block.Link destination ->
+--                case Advanced.run Inlines.parse string of
+--                    Ok styledLine ->
+--                        (renderStyled renderer styledLine
+--                            |> Result.andThen
+--                                (\children ->
+--                                    renderer.link { title = link.title, destination = destination } children
+--                                )
+--                        )
+--                            :: soFar
+--
+--                    Err error ->
+--                        (error |> List.map deadEndToString |> List.map Err)
+--                            ++ soFar
+--
+--            Block.Image src ->
+--                renderer.image { src = src } string
+--                    :: soFar
+--
+--    Nothing ->
+--        if style.isBold then
+--            (renderer.bold string |> Ok)
+--                :: soFar
+--
+--        else if style.isItalic then
+--            (renderer.italic string |> Ok)
+--                :: soFar
+--
+--        else if style.isCode then
+--            (renderer.code string |> Ok)
+--                :: soFar
+--
+--        else
+--            (renderer.plain string |> Ok)
+--                :: soFar
 
 
 renderHelper :
@@ -490,7 +514,7 @@ just value =
     succeed (Just value)
 
 
-parseRawInline : (List Inline -> a) -> UnparsedInlines -> Advanced.Parser c Parser.Problem a
+parseRawInline : (List TopLevelInline -> a) -> UnparsedInlines -> Advanced.Parser c Parser.Problem a
 parseRawInline wrap (UnparsedInlines unparsedInlines) =
     case Advanced.run Inlines.parse unparsedInlines of
         Ok styledLine ->

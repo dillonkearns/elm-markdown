@@ -1,6 +1,6 @@
 module Markdown.Block exposing
     ( Block(..)
-    , Inline, InlineLink(..), InlineStyle
+    , Inline(..), TopLevelInline(..)
     )
 
 {-|
@@ -10,7 +10,7 @@ module Markdown.Block exposing
 
 ## Inlines
 
-@docs Inline, InlineLink, InlineStyle
+@docs Inline, TopLevelInline
 
 -}
 
@@ -50,39 +50,46 @@ In the simplest case, you can pass this directly to a renderer:
 
 -}
 type Block
-    = Heading Int (List Inline)
-    | Body (List Inline)
+    = Heading Int (List TopLevelInline)
+    | Body (List TopLevelInline)
     | Html String (List Attribute) (List Block)
     | UnorderedListBlock
         (List
             { task : Maybe Bool
-            , body : List Inline
+            , body : List TopLevelInline
             }
         )
-    | OrderedListBlock Int (List (List Inline))
+    | OrderedListBlock Int (List (List TopLevelInline))
     | CodeBlock Markdown.CodeBlock.CodeBlock
     | ThematicBreak
     | BlockQuote (List Block)
 
 
+type TopLevelInline
+    = Link { href : String } Inline
+    | InlineContent Inline
+
+
 {-| Represents styled inline text. For example, a header can include links, emphasis, etc.
 -}
-type alias Inline =
-    { style : InlineStyle, string : String }
+type Inline
+    = Bold Inline
+    | Italic Inline
+    | Image String
+    | Text String
+    | CodeSpan String
 
 
-{-| The style of a section of an inline block.
--}
-type alias InlineStyle =
-    { isCode : Bool
-    , isBold : Bool
-    , isItalic : Bool
-    , link : Maybe { title : Maybe String, destination : InlineLink }
-    }
+example1 : TopLevelInline
+example1 =
+    Link { href = "" } <| Bold <| Italic <| Text "Hello"
 
 
-{-| A link is either to an image URL or a page URL.
--}
-type InlineLink
-    = Image String
-    | Link String
+example2 : TopLevelInline
+example2 =
+    Link { href = "" } <| Bold <| Italic <| Text "Hello"
+
+
+example3 : TopLevelInline
+example3 =
+    InlineContent <| CodeSpan "this is code"

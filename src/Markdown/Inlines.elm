@@ -2,18 +2,37 @@ module Markdown.Inlines exposing (State, isUninteresting, nextStepWhenFoundBold,
 
 import Char
 import Helpers
-import Html exposing (Html)
-import Html.Attributes as Attr
-import Markdown.Block as Block exposing (Inline, InlineStyle)
+import Markdown.Block as Block
 import Markdown.Link as Link exposing (Link)
 import Parser
 import Parser.Advanced as Advanced exposing (..)
 
 
-toString : List Inline -> String
+type alias Inline =
+    { style : InlineStyle, string : String }
+
+
+type alias InlineStyle =
+    { isCode : Bool
+    , isBold : Bool
+    , isItalic : Bool
+    , link : Maybe { title : Maybe String, destination : InlineLink }
+    }
+
+
+type InlineLink
+    = Image String
+    | Link String
+
+
+toString : List Block.TopLevelInline -> String
 toString list =
-    List.map .string list
-        |> String.join "-"
+    "TODO"
+
+
+
+--List.map .string list
+--    |> String.join "-"
 
 
 type alias Parser a =
@@ -58,7 +77,7 @@ nextStepWhenFoundLink link ( currStyle, revStyledStrings, _ ) string =
         Link.Link record ->
             Loop
                 ( currStyle
-                , { style = { currStyle | link = Just { title = record.title, destination = Block.Link record.destination } }, string = record.description }
+                , { style = { currStyle | link = Just { title = record.title, destination = Link record.destination } }, string = record.description }
                     :: { style = currStyle, string = string }
                     :: revStyledStrings
                 , Nothing
@@ -67,7 +86,7 @@ nextStepWhenFoundLink link ( currStyle, revStyledStrings, _ ) string =
         Link.Image record ->
             Loop
                 ( currStyle
-                , { style = { currStyle | link = Just { title = Nothing, destination = Block.Image record.src } }, string = record.alt }
+                , { style = { currStyle | link = Just { title = Nothing, destination = Image record.src } }, string = record.alt }
                     :: { style = currStyle, string = string }
                     :: revStyledStrings
                 , Nothing
@@ -107,18 +126,25 @@ nextStepWhenAllFailed ( currStyle, revStyledStrings, _ ) string =
         ( currStyle, revStyledStrings, Just string )
 
 
-parse : Parser (List Inline)
+parse : Parser (List Block.TopLevelInline)
 parse =
-    loop
-        ( { isCode = False
-          , isBold = False
-          , isItalic = False
-          , link = Nothing
-          }
-        , []
-        , Nothing
-        )
-        parseHelp
+    Advanced.succeed <|
+        [ Block.InlineContent
+            (Block.CodeSpan "code")
+        ]
+
+
+
+--loop
+--    ( { isCode = False
+--      , isBold = False
+--      , isItalic = False
+--      , link = Nothing
+--      }
+--    , []
+--    , Nothing
+--    )
+--    parseHelp
 
 
 parseHelp : State -> Parser (Step State (List Inline))
@@ -158,5 +184,5 @@ parseHelp (( inlineStyle, _, allFailed ) as state) =
 
                 Just unhandledString ->
                     succeed (\chomped -> unhandledString ++ chomped)
-                        |= getChompedString (chompIf (\_ -> True) (Parser.Expecting "*"))
+                        |= getChompedString (chompIf (\_ -> True) (Parser.Expecting ""))
             )
