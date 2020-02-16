@@ -128,10 +128,20 @@ nextStepWhenAllFailed ( currStyle, revStyledStrings, _ ) string =
 
 parse : Parser (List Block.TopLevelInline)
 parse =
-    Advanced.succeed <|
-        [ Block.InlineContent
-            (Block.CodeSpan "code")
-        ]
+    loop
+        ( { isCode = False
+          , isBold = False
+          , isItalic = False
+          , link = Nothing
+          }
+        , []
+        , Nothing
+        )
+        parseHelpNew
+        |> map
+            (\items ->
+                List.map Block.InlineContent items
+            )
 
 
 
@@ -145,6 +155,13 @@ parse =
 --    , Nothing
 --    )
 --    parseHelp
+
+
+parseHelpNew : State -> Parser (Step State (List Block.Inline))
+parseHelpNew (( inlineStyle, soFar, allFailed ) as state) =
+    Advanced.succeed <|
+        Done <|
+            [ Block.CodeSpan "code" ]
 
 
 parseHelp : State -> Parser (Step State (List Inline))
