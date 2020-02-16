@@ -76,7 +76,24 @@ suite =
                             [ Block.Link
                                 { href = "/contact"
                                 }
-                                (Block.Text "Contact")
+                                [ Block.Text "Contact" ]
+                            ]
+                        )
+        , test "link with formatting" <|
+            \() ->
+                """[This `code` is *really* awesome](/contact)"""
+                    |> Advanced.run Inlines.parse
+                    |> Expect.equal
+                        (Ok
+                            [ Block.Link
+                                { href = "/contact"
+                                }
+                                [ Block.Text "This "
+                                , Block.CodeSpan "code"
+                                , Block.Text " is "
+                                , Block.Italic (Block.Text "really")
+                                , Block.Text " awesome"
+                                ]
                             ]
                         )
 

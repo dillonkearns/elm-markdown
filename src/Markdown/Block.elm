@@ -66,7 +66,7 @@ type Block
 
 
 type TopLevelInline
-    = Link { href : String } Inline
+    = Link { href : String } (List Inline)
     | InlineContent Inline
 
 
@@ -78,18 +78,3 @@ type Inline
     | Image String
     | Text String
     | CodeSpan String
-
-
-example1 : TopLevelInline
-example1 =
-    Link { href = "" } <| Bold <| Italic <| Text "Hello"
-
-
-example2 : TopLevelInline
-example2 =
-    Link { href = "" } <| Bold <| Italic <| Text "Hello"
-
-
-example3 : TopLevelInline
-example3 =
-    InlineContent <| CodeSpan "this is code"

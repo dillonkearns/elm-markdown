@@ -145,31 +145,56 @@ parse =
 --    (\items ->
 --        List.map Block.InlineContent items
 --    )
---parseInnerOnly : Parser (List Block.Inline)
---parseInnerOnly =
---    loop
---        ( { isCode = False
---          , isBold = False
---          , isItalic = False
---          , link = Nothing
---          }
---        , []
---        , Nothing
---        )
---        parseHelpNew
+
+
+parseInnerOnly : Parser (List Block.Inline)
+parseInnerOnly =
+    loop
+        ( { isCode = False
+          , isBold = False
+          , isItalic = False
+          , link = Nothing
+          }
+        , []
+        , Nothing
+        )
+        parseHelpNew
+        |> map
+            (\inlines ->
+                List.map
+                    (\inline ->
+                        case inline of
+                            Block.InlineContent inlineContent ->
+                                inlineContent
+
+                            _ ->
+                                Debug.todo "fix this"
+                    )
+                    inlines
+            )
 
 
 topLevelParseHelp : State -> Parser (Step State (List Block.TopLevelInline))
 topLevelParseHelp (( inlineStyle, soFar, allFailed ) as state) =
     succeed
         (\description destination ->
+            let
+                parsedInnerInlines : List Block.Inline
+                parsedInnerInlines =
+                    case run parseInnerOnly description of
+                        Ok innerInlines ->
+                            innerInlines
+
+                        Err error ->
+                            Debug.todo ""
+            in
             Loop
                 ( { isCode = False
                   , isBold = False
                   , isItalic = False
                   , link = Nothing
                   }
-                , Block.Link { href = destination } (Block.Text description)
+                , Block.Link { href = destination } parsedInnerInlines
                     :: soFar
                 , Nothing
                 )

@@ -196,7 +196,7 @@ foldThing : Renderer view -> TopLevelInline -> List (Result String view) -> List
 foldThing renderer topLevelInline soFar =
     case topLevelInline of
         Block.Link { href } inlines ->
-            (renderStyled renderer [ Block.InlineContent inlines ]
+            (renderStyled renderer (inlines |> List.map Block.InlineContent)
                 |> Result.andThen
                     (\children ->
                         renderer.link { title = Nothing, destination = href } children
