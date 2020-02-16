@@ -55,6 +55,18 @@ suite =
                                 )
                             ]
                         )
+        , test "multiple code spans" <|
+            \() ->
+                """` `
+`  `
+"""
+                    |> Advanced.run Inlines.parse
+                    |> Expect.equal
+                        (Ok
+                            [ Block.InlineContent (Block.CodeSpan " ")
+                            , Block.InlineContent (Block.CodeSpan "  ")
+                            ]
+                        )
 
         --        , test "heading within HTML" <|
         --            \() ->

@@ -48,12 +48,6 @@ isUninteresting char =
         '`' ->
             False
 
-        '[' ->
-            False
-
-        '!' ->
-            False
-
         _ ->
             True
 
@@ -167,7 +161,11 @@ parseHelpNew (( inlineStyle, soFar, allFailed ) as state) =
             |. token (Token "``" (Parser.Expecting "``"))
         , succeed
             (\rawCode ->
-                Loop ( inlineStyle, Block.CodeSpan rawCode :: soFar, Nothing )
+                Loop
+                    ( inlineStyle
+                    , Block.CodeSpan rawCode :: soFar
+                    , Nothing
+                    )
             )
             |. token (Token "`" (Parser.Expecting "`"))
             |= getChompedString
@@ -175,20 +173,61 @@ parseHelpNew (( inlineStyle, soFar, allFailed ) as state) =
             |. token (Token "`" (Parser.Expecting "`"))
         , succeed
             (\rawText ->
-                Done
-                    [ rawText
-                        |> Block.Text
-                        |> Block.Italic
-                    ]
+                Loop
+                    ( inlineStyle
+                    , (rawText |> Block.Text |> Block.Bold) :: soFar
+                    , Nothing
+                    )
+            )
+            |. token (Token "**" (Parser.Expecting "**"))
+            |= getChompedString (chompUntil (Token "**" (Parser.Expecting "**")))
+            |. token (Token "**" (Parser.Expecting "**"))
+        , succeed
+            (\rawText ->
+                Loop
+                    ( inlineStyle
+                    , (rawText |> Block.Text |> Block.Italic) :: soFar
+                    , Nothing
+                    )
             )
             |. token (Token "*" (Parser.Expecting "*"))
             |= getChompedString (chompUntil (Token "*" (Parser.Expecting "*")))
             |. token (Token "*" (Parser.Expecting "*"))
         , succeed
             (\rawText ->
-                Loop ( inlineStyle, Block.Text rawText :: soFar, Nothing )
+                case rawText of
+                    "" ->
+                        Loop
+                            ( inlineStyle
+                            , soFar
+                            , Nothing
+                            )
+
+                    "\n" ->
+                        Loop
+                            ( inlineStyle
+                            , soFar
+                            , Nothing
+                            )
+
+                    _ ->
+                        Loop
+                            ( inlineStyle
+                            , Block.Text rawText :: soFar
+                            , Nothing
+                            )
             )
-            |= (getChompedString <| Advanced.chompUntilEndOr "\n")
+            |= getChompedString (chompWhile isUninteresting)
+
+        --, succeed
+        --    (\rawText ->
+        --        Loop ( inlineStyle, Block.Text rawText :: soFar, Nothing )
+        --    )
+        --    |= (getChompedString <| Advanced.chompUntilEndOr "\n")
+        --    |. oneOf
+        --        [ Advanced.end (Parser.Problem "Expecting end")
+        --        , chompIf Helpers.isNewline (Parser.Problem "Expecting newline")
+        --        ]
         ]
 
 
