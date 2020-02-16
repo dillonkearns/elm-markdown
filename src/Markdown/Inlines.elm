@@ -1,4 +1,4 @@
-module Markdown.Inlines exposing (State, isUninteresting, nextStepWhenFoundBold, nextStepWhenFoundItalic, nextStepWhenFoundNothing, parse, parseHelp, toString)
+module Markdown.Inlines exposing (State, isUninteresting, parse, toString)
 
 import Char
 import Helpers
@@ -59,71 +59,72 @@ isUninteresting char =
 
 
 type alias State =
-    ( InlineStyle, List Inline, Maybe String )
+    ( InlineStyle, List Block.Inline, Maybe String )
 
 
-nextStepWhenFoundBold : State -> String -> Step State (List Inline)
-nextStepWhenFoundBold ( currStyle, revStyledStrings, _ ) string =
-    Loop
-        ( { currStyle | isBold = not currStyle.isBold }
-        , { style = currStyle, string = string } :: revStyledStrings
-        , Nothing
-        )
 
-
-nextStepWhenFoundLink : Link -> State -> String -> Step State (List Inline)
-nextStepWhenFoundLink link ( currStyle, revStyledStrings, _ ) string =
-    case link of
-        Link.Link record ->
-            Loop
-                ( currStyle
-                , { style = { currStyle | link = Just { title = record.title, destination = Link record.destination } }, string = record.description }
-                    :: { style = currStyle, string = string }
-                    :: revStyledStrings
-                , Nothing
-                )
-
-        Link.Image record ->
-            Loop
-                ( currStyle
-                , { style = { currStyle | link = Just { title = Nothing, destination = Image record.src } }, string = record.alt }
-                    :: { style = currStyle, string = string }
-                    :: revStyledStrings
-                , Nothing
-                )
-
-
-nextStepWhenFoundCode : State -> String -> Step State (List Inline)
-nextStepWhenFoundCode ( currStyle, revStyledStrings, _ ) string =
-    Loop
-        ( { currStyle | isCode = not currStyle.isCode }
-        , { style = currStyle, string = string } :: revStyledStrings
-        , Nothing
-        )
-
-
-nextStepWhenFoundItalic : State -> String -> Step State (List Inline)
-nextStepWhenFoundItalic ( currStyle, revStyledStrings, _ ) string =
-    Loop
-        ( { currStyle | isItalic = not currStyle.isItalic }
-        , { style = currStyle, string = string } :: revStyledStrings
-        , Nothing
-        )
-
-
-nextStepWhenFoundNothing : State -> String -> Step State (List Inline)
-nextStepWhenFoundNothing ( currStyle, revStyledStrings, _ ) string =
-    Done
-        (List.reverse
-            ({ style = currStyle, string = string } :: revStyledStrings)
-            |> List.filter (\thing -> not <| Helpers.isEmptyString thing.string)
-        )
-
-
-nextStepWhenAllFailed : State -> String -> Step State (List Inline)
-nextStepWhenAllFailed ( currStyle, revStyledStrings, _ ) string =
-    Loop
-        ( currStyle, revStyledStrings, Just string )
+--nextStepWhenFoundBold : State -> String -> Step State (List Inline)
+--nextStepWhenFoundBold ( currStyle, revStyledStrings, _ ) string =
+--    Loop
+--        ( { currStyle | isBold = not currStyle.isBold }
+--        , { style = currStyle, string = string } :: revStyledStrings
+--        , Nothing
+--        )
+--
+--
+--nextStepWhenFoundLink : Link -> State -> String -> Step State (List Inline)
+--nextStepWhenFoundLink link ( currStyle, revStyledStrings, _ ) string =
+--    case link of
+--        Link.Link record ->
+--            Loop
+--                ( currStyle
+--                , { style = { currStyle | link = Just { title = record.title, destination = Link record.destination } }, string = record.description }
+--                    :: { style = currStyle, string = string }
+--                    :: revStyledStrings
+--                , Nothing
+--                )
+--
+--        Link.Image record ->
+--            Loop
+--                ( currStyle
+--                , { style = { currStyle | link = Just { title = Nothing, destination = Image record.src } }, string = record.alt }
+--                    :: { style = currStyle, string = string }
+--                    :: revStyledStrings
+--                , Nothing
+--                )
+--
+--
+--nextStepWhenFoundCode : State -> String -> Step State (List Inline)
+--nextStepWhenFoundCode ( currStyle, revStyledStrings, _ ) string =
+--    Loop
+--        ( { currStyle | isCode = not currStyle.isCode }
+--        , { style = currStyle, string = string } :: revStyledStrings
+--        , Nothing
+--        )
+--
+--
+--nextStepWhenFoundItalic : State -> String -> Step State (List Inline)
+--nextStepWhenFoundItalic ( currStyle, revStyledStrings, _ ) string =
+--    Loop
+--        ( { currStyle | isItalic = not currStyle.isItalic }
+--        , { style = currStyle, string = string } :: revStyledStrings
+--        , Nothing
+--        )
+--
+--
+--nextStepWhenFoundNothing : State -> String -> Step State (List Inline)
+--nextStepWhenFoundNothing ( currStyle, revStyledStrings, _ ) string =
+--    Done
+--        (List.reverse
+--            ({ style = currStyle, string = string } :: revStyledStrings)
+--            |> List.filter (\thing -> not <| Helpers.isEmptyString thing.string)
+--        )
+--
+--
+--nextStepWhenAllFailed : State -> String -> Step State (List Inline)
+--nextStepWhenAllFailed ( currStyle, revStyledStrings, _ ) string =
+--    Loop
+--        ( currStyle, revStyledStrings, Just string )
 
 
 parse : Parser (List Block.TopLevelInline)
@@ -147,20 +148,31 @@ parse =
 parseHelpNew : State -> Parser (Step State (List Block.Inline))
 parseHelpNew (( inlineStyle, soFar, allFailed ) as state) =
     oneOf
-        [ succeed
+        [ succeed identity
+            |. end (Parser.Expecting "End of inlines")
+            |= succeed
+                (Done
+                    (List.reverse soFar
+                     --({ style = currStyle, string = string } :: revStyledStrings)
+                     --|> List.filter (\thing -> not <| Helpers.isEmptyString thing.string)
+                    )
+                )
+        , succeed
             (\rawCode ->
-                Done [ Block.CodeSpan rawCode ]
+                Loop ( inlineStyle, Block.CodeSpan rawCode :: soFar, Nothing )
             )
             |. token (Token "``" (Parser.Expecting "``"))
             |= getChompedString
                 (chompUntil (Token "``" (Parser.Expecting "``")))
+            |. token (Token "``" (Parser.Expecting "``"))
         , succeed
             (\rawCode ->
-                Done [ Block.CodeSpan rawCode ]
+                Loop ( inlineStyle, Block.CodeSpan rawCode :: soFar, Nothing )
             )
             |. token (Token "`" (Parser.Expecting "`"))
             |= getChompedString
                 (chompUntil (Token "`" (Parser.Expecting "`")))
+            |. token (Token "`" (Parser.Expecting "`"))
         , succeed
             (\rawText ->
                 Done
@@ -170,54 +182,53 @@ parseHelpNew (( inlineStyle, soFar, allFailed ) as state) =
                     ]
             )
             |. token (Token "*" (Parser.Expecting "*"))
-            |= getChompedString
-                (chompUntil (Token "*" (Parser.Expecting "*")))
+            |= getChompedString (chompUntil (Token "*" (Parser.Expecting "*")))
+            |. token (Token "*" (Parser.Expecting "*"))
         , succeed
             (\rawText ->
-                Done
-                    [ Block.Text rawText
-                    ]
+                Loop ( inlineStyle, Block.Text rawText :: soFar, Nothing )
             )
             |= (getChompedString <| Advanced.chompUntilEndOr "\n")
         ]
 
 
-parseHelp : State -> Parser (Step State (List Inline))
-parseHelp (( inlineStyle, _, allFailed ) as state) =
-    if inlineStyle.isCode then
-        Advanced.succeed
-            (\chompedString ->
-                nextStepWhenFoundCode state chompedString
-            )
-            |= Advanced.getChompedString (Advanced.chompUntil (Advanced.Token "`" (Parser.Expecting "`")))
-            |. token (Token "`" (Parser.Expecting "`"))
 
-    else
-        andThen
-            (\chompedString ->
-                oneOf
-                    [ Link.parser
-                        |> map (\link -> nextStepWhenFoundLink link state chompedString)
-                    , map
-                        (\_ -> nextStepWhenFoundCode state chompedString)
-                        (token (Token "`" (Parser.Expecting "`")))
-                    , map
-                        (\_ -> nextStepWhenFoundBold state chompedString)
-                        (token (Token "**" (Parser.Expecting "**")))
-                    , map
-                        (\_ -> nextStepWhenFoundItalic state chompedString)
-                        (token (Token "*" (Parser.Expecting "*")))
-                    , succeed identity
-                        |= succeed (nextStepWhenFoundNothing state chompedString)
-                        |. end (Parser.Expecting "End of inlines")
-                    , succeed (nextStepWhenAllFailed state chompedString)
-                    ]
-            )
-            (case allFailed of
-                Nothing ->
-                    getChompedString (chompWhile isUninteresting)
-
-                Just unhandledString ->
-                    succeed (\chomped -> unhandledString ++ chomped)
-                        |= getChompedString (chompIf (\_ -> True) (Parser.Expecting ""))
-            )
+--parseHelp : State -> Parser (Step State (List Inline))
+--parseHelp (( inlineStyle, _, allFailed ) as state) =
+--    if inlineStyle.isCode then
+--        Advanced.succeed
+--            (\chompedString ->
+--                nextStepWhenFoundCode state chompedString
+--            )
+--            |= Advanced.getChompedString (Advanced.chompUntil (Advanced.Token "`" (Parser.Expecting "`")))
+--            |. token (Token "`" (Parser.Expecting "`"))
+--
+--    else
+--        andThen
+--            (\chompedString ->
+--                oneOf
+--                    [ Link.parser
+--                        |> map (\link -> nextStepWhenFoundLink link state chompedString)
+--                    , map
+--                        (\_ -> nextStepWhenFoundCode state chompedString)
+--                        (token (Token "`" (Parser.Expecting "`")))
+--                    , map
+--                        (\_ -> nextStepWhenFoundBold state chompedString)
+--                        (token (Token "**" (Parser.Expecting "**")))
+--                    , map
+--                        (\_ -> nextStepWhenFoundItalic state chompedString)
+--                        (token (Token "*" (Parser.Expecting "*")))
+--                    , succeed identity
+--                        |= succeed (nextStepWhenFoundNothing state chompedString)
+--                        |. end (Parser.Expecting "End of inlines")
+--                    , succeed (nextStepWhenAllFailed state chompedString)
+--                    ]
+--            )
+--            (case allFailed of
+--                Nothing ->
+--                    getChompedString (chompWhile isUninteresting)
+--
+--                Just unhandledString ->
+--                    succeed (\chomped -> unhandledString ++ chomped)
+--                        |= getChompedString (chompIf (\_ -> True) (Parser.Expecting ""))
+--            )
