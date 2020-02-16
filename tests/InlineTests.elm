@@ -69,8 +69,7 @@ suite =
                         )
         , test "simple link" <|
             \() ->
-                """[Contact](/contact)
-        """
+                """[Contact](/contact)"""
                     |> Advanced.run Inlines.parse
                     |> Expect.equal
                         (Ok
@@ -79,21 +78,6 @@ suite =
                                 }
                                 (Block.Text "Contact")
                             ]
-                         --[ Block.Body
-                         --    [ { string = "Contact"
-                         --      , style =
-                         --            { isCode = False
-                         --            , isBold = False
-                         --            , isItalic = False
-                         --            , link =
-                         --                Just
-                         --                    { destination = Block.Link "/contact"
-                         --                    , title = Nothing
-                         --                    }
-                         --            }
-                         --      }
-                         --    ]
-                         --]
                         )
 
         --        , test "heading within HTML" <|

@@ -169,7 +169,7 @@ topLevelParseHelp (( inlineStyle, soFar, allFailed ) as state) =
                   , isItalic = False
                   , link = Nothing
                   }
-                , Block.Link { href = destination } (Block.Text "Contact")
+                , Block.Link { href = destination } (Block.Text description)
                     :: soFar
                 , Nothing
                 )
