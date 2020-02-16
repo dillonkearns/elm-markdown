@@ -1,6 +1,6 @@
 module Markdown.Block exposing
     ( Block(..)
-    , Inline(..), TopLevelInline(..)
+    , Inline(..)
     )
 
 {-|
@@ -50,30 +50,26 @@ In the simplest case, you can pass this directly to a renderer:
 
 -}
 type Block
-    = Heading Int (List TopLevelInline)
-    | Body (List TopLevelInline)
+    = Heading Int (List Inline)
+    | Body (List Inline)
     | Html String (List Attribute) (List Block)
     | UnorderedListBlock
         (List
             { task : Maybe Bool
-            , body : List TopLevelInline
+            , body : List Inline
             }
         )
-    | OrderedListBlock Int (List (List TopLevelInline))
+    | OrderedListBlock Int (List (List Inline))
     | CodeBlock Markdown.CodeBlock.CodeBlock
     | ThematicBreak
     | BlockQuote (List Block)
 
 
-type TopLevelInline
-    = Link { href : String } (List Inline)
-    | InlineContent Inline
-
-
 {-| Represents styled inline text. For example, a header can include links, emphasis, etc.
 -}
 type Inline
-    = Bold Inline
+    = Link { href : String } (List Inline)
+    | Bold Inline
     | Italic Inline
     | Image { src : String, alt : String }
     | Text String

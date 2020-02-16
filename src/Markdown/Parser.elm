@@ -17,7 +17,7 @@ module Markdown.Parser exposing
 import Helpers
 import Html exposing (Html)
 import Html.Attributes as Attr
-import Markdown.Block as Block exposing (Block, Inline, TopLevelInline)
+import Markdown.Block as Block exposing (Block, Inline)
 import Markdown.CodeBlock
 import Markdown.Html
 import Markdown.HtmlRenderer
@@ -185,39 +185,29 @@ defaultHtmlRenderer =
     }
 
 
-renderStyled : Renderer view -> List TopLevelInline -> Result String (List view)
+renderStyled : Renderer view -> List Inline -> Result String (List view)
 renderStyled renderer styledStrings =
     styledStrings
         |> List.foldr (foldThing renderer) []
         |> combineResults
 
 
-foldThing : Renderer view -> TopLevelInline -> List (Result String view) -> List (Result String view)
+foldThing : Renderer view -> Inline -> List (Result String view) -> List (Result String view)
 foldThing renderer topLevelInline soFar =
-    case topLevelInline of
-        Block.Link { href } inlines ->
-            (renderStyled renderer (inlines |> List.map Block.InlineContent)
-                |> Result.andThen
-                    (\children ->
-                        renderer.link { title = Nothing, destination = href } children
-                    )
-            )
-                :: soFar
-
-        --                    Ok styledLine ->
-        --                        (renderStyled renderer styledLine
-        --                            |> Result.andThen
-        --                                (\children ->
-        --                                    renderer.link { title = link.title, destination = destination } children
-        --                                )
-        --                        )
-        --                            :: soFar
-        --
-        --                    Err error ->
-        --                        (error |> List.map deadEndToString |> List.map Err)
-        --                            ++ soFar
-        Block.InlineContent inline ->
-            renderSingleInline renderer inline :: soFar
+    --                    Ok styledLine ->
+    --                        (renderStyled renderer styledLine
+    --                            |> Result.andThen
+    --                                (\children ->
+    --                                    renderer.link { title = link.title, destination = destination } children
+    --                                )
+    --                        )
+    --                            :: soFar
+    --
+    --                    Err error ->
+    --                        (error |> List.map deadEndToString |> List.map Err)
+    --                            ++ soFar
+    --Block.InlineContent inline ->
+    renderSingleInline renderer topLevelInline :: soFar
 
 
 renderSingleInline : Renderer view -> Inline -> Result String view
@@ -239,6 +229,17 @@ renderSingleInline renderer inline =
 
         Block.CodeSpan string ->
             renderer.code string |> Ok
+
+        Block.Link { href } inlines ->
+            renderStyled renderer inlines
+                |> Result.andThen
+                    (\children ->
+                        renderer.link { title = Nothing, destination = href } children
+                    )
+
+
+
+--:: soFar
 
 
 renderHelper :
@@ -497,7 +498,7 @@ just value =
     succeed (Just value)
 
 
-parseRawInline : (List TopLevelInline -> a) -> UnparsedInlines -> Advanced.Parser c Parser.Problem a
+parseRawInline : (List Inline -> a) -> UnparsedInlines -> Advanced.Parser c Parser.Problem a
 parseRawInline wrap (UnparsedInlines unparsedInlines) =
     case Advanced.run Inlines.parse unparsedInlines of
         Ok styledLine ->
@@ -980,4 +981,6 @@ parse : String -> Result (List (Advanced.DeadEnd String Parser.Problem)) (List B
 parse input =
     Advanced.run
         multiParser2
-        input
+        (input
+         --|> Debug.log "input"
+        )

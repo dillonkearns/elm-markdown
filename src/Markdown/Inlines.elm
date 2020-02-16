@@ -8,17 +8,13 @@ import Parser
 import Parser.Advanced as Advanced exposing (..)
 
 
-type alias Inline =
-    { style : InlineStyle, string : String }
-
-
 type alias InlineStyle =
     { isBold : Bool
     , isItalic : Bool
     }
 
 
-toString : List Block.TopLevelInline -> String
+toString : List Block.Inline -> String
 toString list =
     "TODO"
 
@@ -35,8 +31,9 @@ type alias Parser a =
 isUninteresting : Char -> Bool
 isUninteresting char =
     case char of
-        --'[' ->
-        --    False
+        '[' ->
+            False
+
         --'!' ->
         --    False
         '*' ->
@@ -50,7 +47,7 @@ isUninteresting char =
 
 
 type alias State =
-    ( InlineStyle, List Block.TopLevelInline, Maybe String )
+    ( InlineStyle, List Block.Inline, Maybe String )
 
 
 
@@ -118,7 +115,7 @@ type alias State =
 --        ( currStyle, revStyledStrings, Just string )
 
 
-parse : Parser (List Block.TopLevelInline)
+parse : Parser (List Block.Inline)
 parse =
     loop
         ( { isBold = False
@@ -127,12 +124,7 @@ parse =
         , []
         , Nothing
         )
-        (\state ->
-            oneOf
-                [ topLevelParseHelp state
-                , parseHelpNew state
-                ]
-        )
+        parseHelpNew
 
 
 
@@ -142,39 +134,14 @@ parse =
 --    )
 
 
-parseInnerOnly : Parser (List Block.Inline)
-parseInnerOnly =
-    loop
-        ( { isBold = False
-          , isItalic = False
-          }
-        , []
-        , Nothing
-        )
-        parseHelpNew
-        |> map
-            (\inlines ->
-                List.map
-                    (\inline ->
-                        case inline of
-                            Block.InlineContent inlineContent ->
-                                inlineContent
-
-                            _ ->
-                                Debug.todo "fix this"
-                    )
-                    inlines
-            )
-
-
-topLevelParseHelp : State -> Parser (Step State (List Block.TopLevelInline))
+topLevelParseHelp : State -> Parser (Step State (List Block.Inline))
 topLevelParseHelp (( inlineStyle, soFar, allFailed ) as state) =
     succeed
         (\description destination ->
             let
                 parsedInnerInlines : List Block.Inline
                 parsedInnerInlines =
-                    case run parseInnerOnly description of
+                    case run parse description of
                         Ok innerInlines ->
                             innerInlines
 
@@ -237,13 +204,13 @@ cantContainWhitespace untrimmed =
         succeed destination
 
 
-parseHelpNew : State -> Parser (Step State (List Block.TopLevelInline))
+parseHelpNew : State -> Parser (Step State (List Block.Inline))
 parseHelpNew (( inlineStyle, soFar, allFailed ) as state) =
     let
         --_ =
         --    Debug.log "state" state
         addToLoop thing =
-            Loop ( inlineStyle, Block.InlineContent thing :: soFar, Nothing )
+            Loop ( inlineStyle, thing :: soFar, Nothing )
 
         doNothingLoop updatedStyle =
             Loop ( updatedStyle, soFar, Nothing )
@@ -260,10 +227,11 @@ parseHelpNew (( inlineStyle, soFar, allFailed ) as state) =
                 )
         , succeed
             (\escapedChar ->
-                Loop ( inlineStyle, (Block.InlineContent <| Block.Text escapedChar) :: soFar, Just escapedChar )
+                Loop ( inlineStyle, Block.Text escapedChar :: soFar, Just escapedChar )
             )
             |. token (Token "\\" (Parser.Expecting "\\"))
             |= getChompedString (chompIf (\_ -> True) (Parser.Expecting "character"))
+        , topLevelParseHelp state
         , succeed
             (\rawCode ->
                 addToLoop <| Block.CodeSpan rawCode

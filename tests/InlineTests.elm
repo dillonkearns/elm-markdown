@@ -21,26 +21,25 @@ suite =
                 """`code`"""
                     |> Advanced.run Inlines.parse
                     |> Expect.equal
-                        (Ok [ Block.InlineContent (Block.CodeSpan "code") ])
+                        (Ok [ Block.CodeSpan "code" ])
         , test "code span with double backtick skips over internal single backtick" <|
             \() ->
                 """``this can have a ` character inside``"""
                     |> Advanced.run Inlines.parse
                     |> Expect.equal
-                        (Ok [ Block.InlineContent (Block.CodeSpan "this can have a ` character inside") ])
+                        (Ok [ Block.CodeSpan "this can have a ` character inside" ])
         , test "inline code takes precedence over italics" <|
             \() ->
                 "`find . -name '*.html'`"
                     |> Advanced.run Inlines.parse
-                    |> Expect.equal (Ok [ Block.InlineContent (Block.CodeSpan "find . -name '*.html'") ])
+                    |> Expect.equal (Ok [ Block.CodeSpan "find . -name '*.html'" ])
         , test "plain text" <|
             \() ->
                 "Nothing interesting here!"
                     |> Advanced.run Inlines.parse
                     |> Expect.equal
                         (Ok
-                            [ Block.InlineContent
-                                (Block.Text "Nothing interesting here!")
+                            [ Block.Text "Nothing interesting here!"
                             ]
                         )
         , test "emphasis parsing" <|
@@ -49,10 +48,8 @@ suite =
                     |> Advanced.run Inlines.parse
                     |> Expect.equal
                         (Ok
-                            [ Block.InlineContent
-                                (Block.Italic <|
-                                    Block.Text "hello!"
-                                )
+                            [ Block.Italic <|
+                                Block.Text "hello!"
                             ]
                         )
         , test "multiple code spans" <|
@@ -63,8 +60,8 @@ suite =
                     |> Advanced.run Inlines.parse
                     |> Expect.equal
                         (Ok
-                            [ Block.InlineContent (Block.CodeSpan " ")
-                            , Block.InlineContent (Block.CodeSpan "  ")
+                            [ Block.CodeSpan " "
+                            , Block.CodeSpan "  "
                             ]
                         )
         , test "simple link" <|
@@ -100,30 +97,30 @@ suite =
             \() ->
                 "*foo [bar*](/url)"
                     |> expectInlines
-                        [ Block.InlineContent (Block.Text "*foo ")
+                        [ Block.Text "*foo "
                         , Block.Link { href = "/url" } [ Block.Text "bar*" ]
                         ]
         , test "string ends while expecting closing italic" <|
             \() ->
                 "*this is just a literal star because it's unclosed"
                     |> expectInlines
-                        [ Block.InlineContent (Block.Text "*this is just a literal star because it's unclosed")
+                        [ Block.Text "*this is just a literal star because it's unclosed"
                         ]
         , test "italicized codespan" <|
             \() ->
                 "*`italic codespan`*"
                     |> expectInlines
-                        [ Block.InlineContent (Block.Italic <| Block.CodeSpan "italic codespan") ]
+                        [ Block.Italic <| Block.CodeSpan "italic codespan" ]
         , test "unlike GFM and commonmark, elm-markdown parses image alt as raw text" <|
             \() ->
                 "![foo ![bar](/url)](/url2)\n"
                     |> expectInlines
-                        [ Block.InlineContent (Block.Italic <| Block.Image { src = "/url2", alt = "foo ![bar](/url)" }) ]
+                        [ Block.Italic <| Block.Image { src = "/url2", alt = "foo ![bar](/url)" } ]
         , test "backslash escape" <|
             \() ->
                 "\\\\"
                     |> expectInlines
-                        [ Block.InlineContent (Block.Text "\\")
+                        [ Block.Text "\\"
                         ]
 
         --, only <|
