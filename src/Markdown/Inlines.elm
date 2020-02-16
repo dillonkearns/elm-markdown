@@ -144,24 +144,15 @@ parse =
             )
 
 
-
---loop
---    ( { isCode = False
---      , isBold = False
---      , isItalic = False
---      , link = Nothing
---      }
---    , []
---    , Nothing
---    )
---    parseHelp
-
-
 parseHelpNew : State -> Parser (Step State (List Block.Inline))
 parseHelpNew (( inlineStyle, soFar, allFailed ) as state) =
-    Advanced.succeed <|
-        Done <|
-            [ Block.CodeSpan "code" ]
+    Advanced.succeed
+        (\rawCode ->
+            Done [ Block.CodeSpan rawCode ]
+        )
+        |. token (Token "`" (Parser.Expecting "`"))
+        |= getChompedString
+            (chompUntil (Token "`" (Parser.Expecting "`")))
 
 
 parseHelp : State -> Parser (Step State (List Inline))

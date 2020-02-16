@@ -21,37 +21,13 @@ suite =
                 """`code`"""
                     |> Advanced.run Inlines.parse
                     |> Expect.equal
-                        (Ok
-                            [ Block.InlineContent
-                                (Block.CodeSpan "code")
+                        (Ok [ Block.InlineContent (Block.CodeSpan "code") ])
+        , test "inline code takes precedence over italics" <|
+            \() ->
+                "`find . -name '*.html'`"
+                    |> Advanced.run Inlines.parse
+                    |> Expect.equal (Ok [ Block.InlineContent (Block.CodeSpan "find . -name '*.html'") ])
 
-                            --{ string = "code"
-                            -- , style =
-                            --       { isCode = True
-                            --       , isBold = False
-                            --       , isItalic = False
-                            --       , link = Nothing
-                            --       }
-                            -- }
-                            ]
-                        )
-
-        --        , test "inline code takes precedence over italics" <|
-        --            \() ->
-        --                "`find . -name '*.html'`"
-        --                    |> Advanced.run Inlines.parse
-        --                    |> Expect.equal
-        --                        (Ok
-        --                            [ { string = "find . -name '*.html'"
-        --                              , style =
-        --                                    { isCode = True
-        --                                    , isBold = False
-        --                                    , isItalic = False
-        --                                    , link = Nothing
-        --                                    }
-        --                              }
-        --                            ]
-        --                        )
         --        , test "heading within HTML" <|
         --            \() ->
         --                """# Heading
