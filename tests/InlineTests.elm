@@ -22,6 +22,12 @@ suite =
                     |> Advanced.run Inlines.parse
                     |> Expect.equal
                         (Ok [ Block.InlineContent (Block.CodeSpan "code") ])
+        , test "code span with double backtick skips over internal single backtick" <|
+            \() ->
+                """``this can have a ` character inside``"""
+                    |> Advanced.run Inlines.parse
+                    |> Expect.equal
+                        (Ok [ Block.InlineContent (Block.CodeSpan "this can have a ` character inside") ])
         , test "inline code takes precedence over italics" <|
             \() ->
                 "`find . -name '*.html'`"

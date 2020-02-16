@@ -151,6 +151,13 @@ parseHelpNew (( inlineStyle, soFar, allFailed ) as state) =
             (\rawCode ->
                 Done [ Block.CodeSpan rawCode ]
             )
+            |. token (Token "``" (Parser.Expecting "``"))
+            |= getChompedString
+                (chompUntil (Token "``" (Parser.Expecting "``")))
+        , succeed
+            (\rawCode ->
+                Done [ Block.CodeSpan rawCode ]
+            )
             |. token (Token "`" (Parser.Expecting "`"))
             |= getChompedString
                 (chompUntil (Token "`" (Parser.Expecting "`")))
