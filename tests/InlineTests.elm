@@ -27,6 +27,28 @@ suite =
                 "`find . -name '*.html'`"
                     |> Advanced.run Inlines.parse
                     |> Expect.equal (Ok [ Block.InlineContent (Block.CodeSpan "find . -name '*.html'") ])
+        , test "plain text" <|
+            \() ->
+                "Nothing interesting here!"
+                    |> Advanced.run Inlines.parse
+                    |> Expect.equal
+                        (Ok
+                            [ Block.InlineContent
+                                (Block.Text "Nothing interesting here!")
+                            ]
+                        )
+        , test "emphasis parsing" <|
+            \() ->
+                "*hello!*"
+                    |> Advanced.run Inlines.parse
+                    |> Expect.equal
+                        (Ok
+                            [ Block.InlineContent
+                                (Block.Italic <|
+                                    Block.Text "hello!"
+                                )
+                            ]
+                        )
 
         --        , test "heading within HTML" <|
         --            \() ->

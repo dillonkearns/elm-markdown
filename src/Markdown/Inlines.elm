@@ -146,13 +146,33 @@ parse =
 
 parseHelpNew : State -> Parser (Step State (List Block.Inline))
 parseHelpNew (( inlineStyle, soFar, allFailed ) as state) =
-    Advanced.succeed
-        (\rawCode ->
-            Done [ Block.CodeSpan rawCode ]
-        )
-        |. token (Token "`" (Parser.Expecting "`"))
-        |= getChompedString
-            (chompUntil (Token "`" (Parser.Expecting "`")))
+    oneOf
+        [ succeed
+            (\rawCode ->
+                Done [ Block.CodeSpan rawCode ]
+            )
+            |. token (Token "`" (Parser.Expecting "`"))
+            |= getChompedString
+                (chompUntil (Token "`" (Parser.Expecting "`")))
+        , succeed
+            (\rawText ->
+                Done
+                    [ rawText
+                        |> Block.Text
+                        |> Block.Italic
+                    ]
+            )
+            |. token (Token "*" (Parser.Expecting "*"))
+            |= getChompedString
+                (chompUntil (Token "*" (Parser.Expecting "*")))
+        , succeed
+            (\rawText ->
+                Done
+                    [ Block.Text rawText
+                    ]
+            )
+            |= (getChompedString <| Advanced.chompUntilEndOr "\n")
+        ]
 
 
 parseHelp : State -> Parser (Step State (List Inline))
