@@ -13,16 +13,9 @@ type alias Inline =
 
 
 type alias InlineStyle =
-    { isCode : Bool
-    , isBold : Bool
+    { isBold : Bool
     , isItalic : Bool
-    , link : Maybe { title : Maybe String, destination : InlineLink }
     }
-
-
-type InlineLink
-    = Image String
-    | Link String
 
 
 toString : List Block.TopLevelInline -> String
@@ -42,6 +35,10 @@ type alias Parser a =
 isUninteresting : Char -> Bool
 isUninteresting char =
     case char of
+        --'[' ->
+        --    False
+        --'!' ->
+        --    False
         '*' ->
             False
 
@@ -124,10 +121,8 @@ type alias State =
 parse : Parser (List Block.TopLevelInline)
 parse =
     loop
-        ( { isCode = False
-          , isBold = False
+        ( { isBold = False
           , isItalic = False
-          , link = Nothing
           }
         , []
         , Nothing
@@ -150,10 +145,8 @@ parse =
 parseInnerOnly : Parser (List Block.Inline)
 parseInnerOnly =
     loop
-        ( { isCode = False
-          , isBold = False
+        ( { isBold = False
           , isItalic = False
-          , link = Nothing
           }
         , []
         , Nothing
@@ -189,10 +182,8 @@ topLevelParseHelp (( inlineStyle, soFar, allFailed ) as state) =
                             Debug.todo ""
             in
             Loop
-                ( { isCode = False
-                  , isBold = False
+                ( { isBold = False
                   , isItalic = False
-                  , link = Nothing
                   }
                 , Block.Link { href = destination } parsedInnerInlines
                     :: soFar
@@ -249,8 +240,13 @@ cantContainWhitespace untrimmed =
 parseHelpNew : State -> Parser (Step State (List Block.TopLevelInline))
 parseHelpNew (( inlineStyle, soFar, allFailed ) as state) =
     let
+        --_ =
+        --    Debug.log "state" state
         addToLoop thing =
             Loop ( inlineStyle, Block.InlineContent thing :: soFar, Nothing )
+
+        doNothingLoop updatedStyle =
+            Loop ( updatedStyle, soFar, Nothing )
     in
     oneOf
         [ succeed identity
@@ -263,6 +259,12 @@ parseHelpNew (( inlineStyle, soFar, allFailed ) as state) =
                     )
                 )
         , succeed
+            (\escapedChar ->
+                Loop ( inlineStyle, (Block.InlineContent <| Block.Text escapedChar) :: soFar, Just escapedChar )
+            )
+            |. token (Token "\\" (Parser.Expecting "\\"))
+            |= getChompedString (chompIf (\_ -> True) (Parser.Expecting "character"))
+        , succeed
             (\rawCode ->
                 addToLoop <| Block.CodeSpan rawCode
             )
@@ -272,7 +274,11 @@ parseHelpNew (( inlineStyle, soFar, allFailed ) as state) =
             |. token (Token "``" (Parser.Expecting "``"))
         , succeed
             (\rawCode ->
-                addToLoop <| Block.CodeSpan rawCode
+                if inlineStyle.isItalic then
+                    addToLoop <| Block.Italic <| Block.CodeSpan rawCode
+
+                else
+                    addToLoop <| Block.CodeSpan rawCode
             )
             |. token (Token "`" (Parser.Expecting "`"))
             |= getChompedString
@@ -288,13 +294,36 @@ parseHelpNew (( inlineStyle, soFar, allFailed ) as state) =
             |. token (Token "**" (Parser.Expecting "**"))
             |= getChompedString (chompUntil (Token "**" (Parser.Expecting "**")))
             |. token (Token "**" (Parser.Expecting "**"))
-        , succeed
-            (\rawText ->
-                rawText |> Block.Text |> Block.Italic |> addToLoop
-            )
-            |. token (Token "*" (Parser.Expecting "*"))
-            |= getChompedString (chompUntil (Token "*" (Parser.Expecting "*")))
-            |. token (Token "*" (Parser.Expecting "*"))
+        , if inlineStyle.isItalic then
+            succeed
+                (doNothingLoop { inlineStyle | isItalic = False })
+                |. token (Token "*" (Parser.Expecting "*"))
+
+          else
+            succeed identity
+                |. token (Token "*" (Parser.Expecting "*"))
+                |= getChompedString (chompWhile isUninteresting)
+                |> andThen
+                    (\stringSoFar ->
+                        oneOf
+                            [ succeed identity
+                                |. token (Token "*" (Parser.Expecting "*"))
+                                |= (stringSoFar |> Block.Text |> Block.Italic |> addToLoop |> succeed)
+                            , succeed ("*" ++ stringSoFar |> Block.Text |> addToLoop)
+                                |. end (Parser.Expecting "End of italic")
+
+                            --, succeed
+                            --    ("*" ++ stringSoFar |> Block.Text |> addToLoop)
+                            , succeed <| Loop ( { inlineStyle | isItalic = True }, soFar, Just stringSoFar )
+                            ]
+                    )
+
+        --, getChompedString (chompWhile isUninteresting)
+        --    |> map
+        --        (\rawText ->
+        --            rawText |> Block.Text |> Block.Italic |> addToLoop
+        --        )
+        --]
         , succeed
             (\rawText ->
                 case rawText of

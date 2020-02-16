@@ -55,7 +55,7 @@ type alias Renderer view =
     , bold : view -> view
     , italic : view -> view
     , link : { title : Maybe String, destination : String } -> List view -> Result String view
-    , image : { src : String } -> String -> Result String view
+    , image : { alt : String, src : String } -> Result String view
     , unorderedList : List (ListItem view) -> view
     , orderedList : Int -> List (List view) -> view
     , codeBlock : { body : String, language : Maybe String } -> view
@@ -118,8 +118,8 @@ defaultHtmlRenderer =
             Html.a [ Attr.href link.destination ] content
                 |> Ok
     , image =
-        \image content ->
-            Html.img [ Attr.src image.src ] [ Html.text content ]
+        \imageInfo ->
+            Html.img [ Attr.src imageInfo.src ] [ Html.text imageInfo.alt ]
                 |> Ok
     , plain =
         Html.text
@@ -231,8 +231,8 @@ renderSingleInline renderer inline =
             renderSingleInline renderer innerInlines
                 |> Result.map renderer.italic
 
-        Block.Image src ->
-            renderer.image { src = src } "TODO remove this"
+        Block.Image imageInfo ->
+            renderer.image imageInfo
 
         Block.Text string ->
             renderer.plain string |> Ok

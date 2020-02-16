@@ -96,7 +96,41 @@ suite =
                                 ]
                             ]
                         )
+        , test "links have precedence over *" <|
+            \() ->
+                "*foo [bar*](/url)"
+                    |> expectInlines
+                        [ Block.InlineContent (Block.Text "*foo ")
+                        , Block.Link { href = "/url" } [ Block.Text "bar*" ]
+                        ]
+        , test "string ends while expecting closing italic" <|
+            \() ->
+                "*this is just a literal star because it's unclosed"
+                    |> expectInlines
+                        [ Block.InlineContent (Block.Text "*this is just a literal star because it's unclosed")
+                        ]
+        , test "italicized codespan" <|
+            \() ->
+                "*`italic codespan`*"
+                    |> expectInlines
+                        [ Block.InlineContent (Block.Italic <| Block.CodeSpan "italic codespan") ]
+        , test "unlike GFM and commonmark, elm-markdown parses image alt as raw text" <|
+            \() ->
+                "![foo ![bar](/url)](/url2)\n"
+                    |> expectInlines
+                        [ Block.InlineContent (Block.Italic <| Block.Image { src = "/url2", alt = "foo ![bar](/url)" }) ]
+        , test "backslash escape" <|
+            \() ->
+                "\\\\"
+                    |> expectInlines
+                        [ Block.InlineContent (Block.Text "\\")
+                        ]
 
+        --, only <|
+        --    test "unknown" <|
+        --        \() ->
+        --            "\\!\\\"\\#\\$\\%\\&\\'\\(\\)\\*\\+\\,\\-\\.\\/\\:\\;\\<\\=\\>\\?\\@\\[\\\\\\]\\^\\_\\`\\{\\|\\}\\~\n"
+        --                |> expectInlines []
         --        , test "heading within HTML" <|
         --            \() ->
         --                """# Heading
@@ -146,6 +180,12 @@ suite =
         --                            ]
         --                        )
         ]
+
+
+expectInlines expected input =
+    input
+        |> Advanced.run Inlines.parse
+        |> Expect.equal (Ok expected)
 
 
 

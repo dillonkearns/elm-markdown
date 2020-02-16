@@ -75,6 +75,6 @@ type TopLevelInline
 type Inline
     = Bold Inline
     | Italic Inline
-    | Image String
+    | Image { src : String, alt : String }
     | Text String
     | CodeSpan String

@@ -89,8 +89,8 @@ renderMarkdown markdown =
                     Html.a [ Attr.href link.destination ] content
                         |> Ok
             , image =
-                \image content ->
-                    Html.img [ Attr.src image.src ] [ Html.text content ]
+                \imageInfo ->
+                    Html.img [ Attr.src imageInfo.src ] [ Html.text imageInfo.alt ]
                         |> Ok
             , plain =
                 Html.text
