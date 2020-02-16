@@ -53,7 +53,7 @@ isUninteresting char =
 
 
 type alias State =
-    ( InlineStyle, List Block.Inline, Maybe String )
+    ( InlineStyle, List Block.TopLevelInline, Maybe String )
 
 
 
@@ -132,15 +132,101 @@ parse =
         , []
         , Nothing
         )
-        parseHelpNew
-        |> map
-            (\items ->
-                List.map Block.InlineContent items
-            )
+        (\state ->
+            oneOf
+                [ topLevelParseHelp state
+                , parseHelpNew state
+                ]
+        )
 
 
-parseHelpNew : State -> Parser (Step State (List Block.Inline))
+
+--|> map
+--    (\items ->
+--        List.map Block.InlineContent items
+--    )
+--parseInnerOnly : Parser (List Block.Inline)
+--parseInnerOnly =
+--    loop
+--        ( { isCode = False
+--          , isBold = False
+--          , isItalic = False
+--          , link = Nothing
+--          }
+--        , []
+--        , Nothing
+--        )
+--        parseHelpNew
+
+
+topLevelParseHelp : State -> Parser (Step State (List Block.TopLevelInline))
+topLevelParseHelp (( inlineStyle, soFar, allFailed ) as state) =
+    succeed
+        (\description destination ->
+            Loop
+                ( { isCode = False
+                  , isBold = False
+                  , isItalic = False
+                  , link = Nothing
+                  }
+                , Block.Link { href = destination } (Block.Text "Contact")
+                    :: soFar
+                , Nothing
+                )
+        )
+        |. symbol (Token "[" (Parser.ExpectingSymbol "["))
+        |= getChompedString
+            (chompUntil (Token "]" (Parser.ExpectingSymbol "]")))
+        |. symbol (Token "]" (Parser.ExpectingSymbol "]"))
+        |. symbol (Token "(" (Parser.ExpectingSymbol "("))
+        |= linkDestination
+        |. symbol (Token ")" (Parser.ExpectingSymbol ")"))
+
+
+linkDestination : Parser String
+linkDestination =
+    oneOf
+        [ succeed identity
+            |. Advanced.symbol (Advanced.Token "<" (Parser.ExpectingSymbol "<"))
+            |= getChompedString
+                (chompUntil (Advanced.Token ">" (Parser.ExpectingSymbol ">")))
+            |. Advanced.symbol (Advanced.Token ">" (Parser.ExpectingSymbol ">"))
+            |> andThen cantContainNewline
+        , succeed identity
+            |= getChompedString
+                (chompUntil (Advanced.Token ")" (Parser.ExpectingSymbol ")")))
+            |> andThen cantContainWhitespace
+        ]
+
+
+cantContainNewline : String -> Parser String
+cantContainNewline destination =
+    if String.contains "\n" destination then
+        problem (Parser.Problem "Link destinations can't contain new lines")
+
+    else
+        succeed destination
+
+
+cantContainWhitespace : String -> Parser String
+cantContainWhitespace untrimmed =
+    let
+        destination =
+            String.trim untrimmed
+    in
+    if String.any Helpers.isGfmWhitespace destination then
+        problem (Parser.Problem "Link destinations can't contain whitespace, if you would like to include them please wrap your URL with < .. >")
+
+    else
+        succeed destination
+
+
+parseHelpNew : State -> Parser (Step State (List Block.TopLevelInline))
 parseHelpNew (( inlineStyle, soFar, allFailed ) as state) =
+    let
+        addToLoop thing =
+            Loop ( inlineStyle, Block.InlineContent thing :: soFar, Nothing )
+    in
     oneOf
         [ succeed identity
             |. end (Parser.Expecting "End of inlines")
@@ -153,7 +239,7 @@ parseHelpNew (( inlineStyle, soFar, allFailed ) as state) =
                 )
         , succeed
             (\rawCode ->
-                Loop ( inlineStyle, Block.CodeSpan rawCode :: soFar, Nothing )
+                addToLoop <| Block.CodeSpan rawCode
             )
             |. token (Token "``" (Parser.Expecting "``"))
             |= getChompedString
@@ -161,11 +247,7 @@ parseHelpNew (( inlineStyle, soFar, allFailed ) as state) =
             |. token (Token "``" (Parser.Expecting "``"))
         , succeed
             (\rawCode ->
-                Loop
-                    ( inlineStyle
-                    , Block.CodeSpan rawCode :: soFar
-                    , Nothing
-                    )
+                addToLoop <| Block.CodeSpan rawCode
             )
             |. token (Token "`" (Parser.Expecting "`"))
             |= getChompedString
@@ -173,22 +255,17 @@ parseHelpNew (( inlineStyle, soFar, allFailed ) as state) =
             |. token (Token "`" (Parser.Expecting "`"))
         , succeed
             (\rawText ->
-                Loop
-                    ( inlineStyle
-                    , (rawText |> Block.Text |> Block.Bold) :: soFar
-                    , Nothing
-                    )
+                rawText
+                    |> Block.Text
+                    |> Block.Bold
+                    |> addToLoop
             )
             |. token (Token "**" (Parser.Expecting "**"))
             |= getChompedString (chompUntil (Token "**" (Parser.Expecting "**")))
             |. token (Token "**" (Parser.Expecting "**"))
         , succeed
             (\rawText ->
-                Loop
-                    ( inlineStyle
-                    , (rawText |> Block.Text |> Block.Italic) :: soFar
-                    , Nothing
-                    )
+                rawText |> Block.Text |> Block.Italic |> addToLoop
             )
             |. token (Token "*" (Parser.Expecting "*"))
             |= getChompedString (chompUntil (Token "*" (Parser.Expecting "*")))
@@ -211,11 +288,7 @@ parseHelpNew (( inlineStyle, soFar, allFailed ) as state) =
                             )
 
                     _ ->
-                        Loop
-                            ( inlineStyle
-                            , Block.Text rawText :: soFar
-                            , Nothing
-                            )
+                        Block.Text rawText |> addToLoop
             )
             |= getChompedString (chompWhile isUninteresting)
 

@@ -67,6 +67,34 @@ suite =
                             , Block.InlineContent (Block.CodeSpan "  ")
                             ]
                         )
+        , test "simple link" <|
+            \() ->
+                """[Contact](/contact)
+        """
+                    |> Advanced.run Inlines.parse
+                    |> Expect.equal
+                        (Ok
+                            [ Block.Link
+                                { href = "/contact"
+                                }
+                                (Block.Text "Contact")
+                            ]
+                         --[ Block.Body
+                         --    [ { string = "Contact"
+                         --      , style =
+                         --            { isCode = False
+                         --            , isBold = False
+                         --            , isItalic = False
+                         --            , link =
+                         --                Just
+                         --                    { destination = Block.Link "/contact"
+                         --                    , title = Nothing
+                         --                    }
+                         --            }
+                         --      }
+                         --    ]
+                         --]
+                        )
 
         --        , test "heading within HTML" <|
         --            \() ->
@@ -83,29 +111,6 @@ suite =
         --                            , Block.Html "div"
         --                                []
         --                                [ Block.Heading 1 (unstyledText "Heading in a div!")
-        --                                ]
-        --                            ]
-        --                        )
-        --        , test "simple link" <|
-        --            \() ->
-        --                """[Contact](/contact)
-        --"""
-        --                    |> Markdown.Parser.parse
-        --                    |> Expect.equal
-        --                        (Ok
-        --                            [ Block.Body
-        --                                [ { string = "Contact"
-        --                                  , style =
-        --                                        { isCode = False
-        --                                        , isBold = False
-        --                                        , isItalic = False
-        --                                        , link =
-        --                                            Just
-        --                                                { destination = Block.Link "/contact"
-        --                                                , title = Nothing
-        --                                                }
-        --                                        }
-        --                                  }
         --                                ]
         --                            ]
         --                        )
