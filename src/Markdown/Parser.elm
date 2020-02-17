@@ -14,8 +14,6 @@ module Markdown.Parser exposing
 
 -}
 
---import Markdown.Inlines as Inlines
-
 import Dict
 import Helpers
 import Html exposing (Html)

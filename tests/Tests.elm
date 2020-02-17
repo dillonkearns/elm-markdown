@@ -2,7 +2,7 @@ module Tests exposing (suite)
 
 import Expect exposing (Expectation)
 import Markdown.Block as Block exposing (Block)
-import Markdown.Inlines
+import Markdown.Inline as Inline exposing (Inline)
 import Markdown.Parser as Markdown exposing (..)
 import Parser
 import Parser.Advanced as Advanced
@@ -324,14 +324,17 @@ qwer
                     |> Expect.equal
                         (Ok
                             [ Block.Body
-                                [ { string = "This is an image"
-                                  , style =
-                                        { isBold = False
-                                        , isCode = False
-                                        , isItalic = False
-                                        , link = Just { destination = Block.Image "/my/image.jpg", title = Nothing }
-                                        }
-                                  }
+                                [ Inline.Image "/my/image.jpg" Nothing []
+
+                                --{ string = "This is an image"
+                                -- , style =
+                                --       { isBold = False
+                                --       , isCode = False
+                                --       , isItalic = False
+                                --       , link = Just { destination = Block.Image "/my/image.jpg", title = Nothing }
+                                --       }
+                                --
+                                -- }
                                 ]
                             ]
                         )
@@ -449,58 +452,23 @@ I'm part of the block quote
         ]
 
 
-plainListItem : String -> { body : List Block.Inline, task : Maybe Bool }
+plainListItem : String -> { body : List Inline, task : Maybe Bool }
 plainListItem body =
-    { body =
-        [ { string = body
-          , style =
-                { isCode = False
-                , isBold = False
-                , isItalic = False
-                , link = Nothing
-                }
-          }
-        ]
+    { body = [ Inline.Text body ]
     , task = Nothing
     }
 
 
-unstyledText : String -> List Block.Inline
+unstyledText : String -> List Inline
 unstyledText body =
-    [ { string = body
-      , style =
-            { isCode = False
-            , isBold = False
-            , isItalic = False
-            , link = Nothing
-            }
-      }
-    ]
+    [ Inline.Text body ]
 
 
-emphasisText : String -> List Block.Inline
+emphasisText : String -> List Inline
 emphasisText body =
-    [ { string = body
-      , style =
-            { isCode = False
-            , isBold = False
-            , isItalic = True
-            , link = Nothing
-            }
-      }
+    [ Inline.Emphasis 1 <|
+        [ Inline.Text body ]
     ]
-
-
-unstyledTextSingle : String -> Block.Inline
-unstyledTextSingle body =
-    { string = body
-    , style =
-        { isCode = False
-        , isBold = False
-        , isItalic = False
-        , link = Nothing
-        }
-    }
 
 
 parserError : String -> Expect.Expectation

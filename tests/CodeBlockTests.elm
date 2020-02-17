@@ -1,9 +1,7 @@
 module CodeBlockTests exposing (suite)
 
 import Expect
-import Markdown.Block as Block exposing (Inline, InlineStyle)
 import Markdown.CodeBlock
-import Markdown.Inlines
 import Markdown.Parser exposing (..)
 import Parser.Advanced as Advanced
 import Test exposing (..)
@@ -47,11 +45,6 @@ $ echo hello world
                             }
                         )
         ]
-
-
-unstyledText : String -> List Inline
-unstyledText body =
-    [ { string = body, style = { isCode = False, isBold = False, isItalic = False, link = Nothing } } ]
 
 
 parserError : String -> Expect.Expectation

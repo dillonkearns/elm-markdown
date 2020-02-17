@@ -1,9 +1,9 @@
 module InlineTests exposing (suite)
 
+import Dict
 import Expect exposing (Expectation)
-import Markdown.Block as Block exposing (Block, Inline)
-import Markdown.Inlines as Inlines
-import Markdown.Parser exposing (..)
+import Markdown.Inline as Inlines
+import Markdown.InlineParser
 import Parser
 import Parser.Advanced as Advanced
 import Test exposing (..)
@@ -19,127 +19,103 @@ suite =
         [ test "code spans" <|
             \() ->
                 """`code`"""
-                    |> Advanced.run Inlines.parse
-                    |> Expect.equal
-                        (Ok [ Block.CodeSpan "code" ])
+                    |> expectInlines
+                        [ Inlines.CodeInline "code" ]
         , test "code span with double backtick skips over internal single backtick" <|
             \() ->
                 """``this can have a ` character inside``"""
-                    |> Advanced.run Inlines.parse
-                    |> Expect.equal
-                        (Ok [ Block.CodeSpan "this can have a ` character inside" ])
+                    |> expectInlines
+                        [ Inlines.CodeInline "this can have a ` character inside" ]
         , test "inline code takes precedence over italics" <|
             \() ->
                 "`find . -name '*.html'`"
-                    |> Advanced.run Inlines.parse
-                    |> Expect.equal (Ok [ Block.CodeSpan "find . -name '*.html'" ])
+                    |> expectInlines [ Inlines.CodeInline "find . -name '*.html'" ]
         , test "plain text" <|
             \() ->
                 "Nothing interesting here!"
-                    |> Advanced.run Inlines.parse
-                    |> Expect.equal
-                        (Ok
-                            [ Block.Text "Nothing interesting here!"
-                            ]
-                        )
+                    |> expectInlines
+                        [ Inlines.Text "Nothing interesting here!"
+                        ]
         , test "emphasis parsing" <|
             \() ->
                 "*hello!*"
-                    |> Advanced.run Inlines.parse
-                    |> Expect.equal
-                        (Ok
-                            [ Block.Italic <|
-                                Block.Text "hello!"
-                            ]
-                        )
+                    |> expectInlines
+                        [ Inlines.Emphasis 1 [ Inlines.Text "hello!" ]
+                        ]
         , test "multiple code spans" <|
             \() ->
                 """` `
 `  `
 """
-                    |> Advanced.run Inlines.parse
-                    |> Expect.equal
-                        (Ok
-                            [ Block.CodeSpan " "
-                            , Block.CodeSpan "  "
-                            ]
-                        )
+                    |> expectInlines
+                        [ Inlines.CodeInline " "
+                        , Inlines.CodeInline "  "
+                        ]
         , test "simple link" <|
             \() ->
                 """[Contact](/contact)"""
-                    |> Advanced.run Inlines.parse
-                    |> Expect.equal
-                        (Ok
-                            [ Block.Link
-                                { href = "/contact"
-                                }
-                                [ Block.Text "Contact" ]
-                            ]
-                        )
+                    |> expectInlines
+                        [ Inlines.Link "/contact" Nothing [ Inlines.Text "Contact" ] ]
         , test "link with formatting" <|
             \() ->
                 """[This `code` is *really* awesome](/contact)"""
-                    |> Advanced.run Inlines.parse
-                    |> Expect.equal
-                        (Ok
-                            [ Block.Link
-                                { href = "/contact"
-                                }
-                                [ Block.Text "This "
-                                , Block.CodeSpan "code"
-                                , Block.Text " is "
-                                , Block.Italic (Block.Text "really")
-                                , Block.Text " awesome"
-                                ]
+                    |> expectInlines
+                        [ Inlines.Link "/contact"
+                            Nothing
+                            [ Inlines.Text "This "
+                            , Inlines.CodeInline "code"
+                            , Inlines.Text " is "
+                            , Inlines.Emphasis 1 [ Inlines.Text "really" ]
+                            , Inlines.Text " awesome"
                             ]
-                        )
+                        ]
         , test "links have precedence over *" <|
             \() ->
                 "*foo [bar*](/url)"
                     |> expectInlines
-                        [ Block.Text "*foo "
-                        , Block.Link { href = "/url" } [ Block.Text "bar*" ]
+                        [ Inlines.Text "*foo "
+                        , Inlines.Link "/url" Nothing [ Inlines.Text "bar*" ]
                         ]
         , test "string ends while expecting closing italic" <|
             \() ->
                 "*this is just a literal star because it's unclosed"
                     |> expectInlines
-                        [ Block.Text "*this is just a literal star because it's unclosed"
+                        [ Inlines.Text "*this is just a literal star because it's unclosed"
                         ]
         , test "italicized codespan" <|
             \() ->
                 "*`italic codespan`*"
                     |> expectInlines
-                        [ Block.Italic <| Block.CodeSpan "italic codespan" ]
+                        [ Inlines.Emphasis 1 [ Inlines.CodeInline "italic codespan" ] ]
 
         --, skip <|
         --    test "unlike GFM and commonmark, elm-markdown parses image alt as raw text" <|
         --        \() ->
         --            "![foo ![bar](/url)](/url2)\n"
         --                |> expectInlines
-        --                    [ Block.Italic <| Block.Image { src = "/url2", alt = "foo ![bar](/url)" } ]
+        --                    [ Inlines.Italic <| Inlines.Image { src = "/url2", alt = "foo ![bar](/url)" } ]
         , test "backslash escape" <|
             \() ->
                 "\\\\"
                     |> expectInlines
-                        [ Block.Text "\\"
+                        [ Inlines.Text "\\"
                         ]
         , test "hard line break" <|
             \() ->
                 "foo\\\nbaz"
                     |> expectInlines
-                        [ Block.Text "foo"
-                        , Block.HardLineBreak
-                        , Block.Text "baz"
+                        [ Inlines.Text "foo"
+                        , Inlines.HardLineBreak
+                        , Inlines.Text "baz"
                         ]
         , test "backslash newline at end is not hard line break" <|
             \() ->
                 "foo\\\n"
-                    |> expectInlines [ Block.Text "foo\\" ]
+                    |> expectInlines [ Inlines.Text "foo\\" ]
         , test "escaping italics" <|
             \() ->
                 "\\*not emphasized*"
-                    |> expectInlines [ Block.Text "*not emphasized*" ]
+                    |> expectInlines [ Inlines.Text "*not emphasized*" ]
 
         --, only <|
         --    test "unknown" <|
@@ -157,10 +133,10 @@ suite =
         --                    |> Markdown.Parser.parse
         --                    |> Expect.equal
         --                        (Ok
-        --                            [ Block.Heading 1 (unstyledText "Heading")
-        --                            , Block.Html "div"
+        --                            [ Inlines.Heading 1 (unstyledText "Heading")
+        --                            , Inlines.Html "div"
         --                                []
-        --                                [ Block.Heading 1 (unstyledText "Heading in a div!")
+        --                                [ Inlines.Heading 1 (unstyledText "Heading in a div!")
         --                                ]
         --                            ]
         --                        )
@@ -170,7 +146,7 @@ suite =
         --                    |> Markdown.Parser.parse
         --                    |> Expect.equal
         --                        (Ok
-        --                            [ Block.Body
+        --                            [ Inlines.Body
         --                                [ { string = "This is an intro and "
         --                                  , style =
         --                                        { isCode = False
@@ -186,7 +162,7 @@ suite =
         --                                        , isItalic = False
         --                                        , link =
         --                                            Just
-        --                                                { destination = Block.Link "/my/page"
+        --                                                { destination = Inlines.Link "/my/page"
         --                                                , title = Nothing
         --                                                }
         --                                        }
@@ -197,31 +173,8 @@ suite =
         ]
 
 
+expectInlines : List Inlines.Inline -> String -> Expectation
 expectInlines expected input =
     input
-        |> Advanced.run Inlines.parse
-        |> Expect.equal (Ok expected)
-
-
-
---unstyledText : String -> List Inline
---unstyledText body =
---    [ { string = body
---      , style =
---            { isCode = False
---            , isBold = False
---            , isItalic = False
---            , link = Nothing
---            }
---      }
---    ]
-
-
-parserError : String -> Expect.Expectation
-parserError markdown =
-    case parse markdown of
-        Ok _ ->
-            Expect.fail "Expected a parser failure!"
-
-        Err _ ->
-            Expect.pass
+        |> Markdown.InlineParser.parse Dict.empty
+        |> Expect.equal expected

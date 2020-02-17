@@ -1,7 +1,6 @@
 module TaskItemTests exposing (suite)
 
 import Expect exposing (Expectation)
-import Markdown.Inlines
 import Markdown.ListItem exposing (Completion(..), ListItem(..))
 import Markdown.Parser
 import Parser

@@ -1126,6 +1126,7 @@ htmlRegex =
 
 htmlFromRegex : Parser -> MatchModel -> Regex.Match -> Maybe Parser
 htmlFromRegex model match regexMatch =
+    -- TODO use HTML parser here
     case regexMatch.submatches of
         maybeClose :: (Just tag) :: maybeAttributes :: maybeSelfClosing :: _ ->
             let

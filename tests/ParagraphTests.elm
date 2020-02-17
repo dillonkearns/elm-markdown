@@ -2,7 +2,7 @@ module ParagraphTests exposing (suite)
 
 import Expect exposing (Expectation)
 import Markdown.Block as Block exposing (Block)
-import Markdown.Inlines
+import Markdown.Inline as Inline exposing (Inline)
 import Markdown.Parser exposing (..)
 import Parser
 import Parser.Advanced as Advanced
@@ -51,36 +51,6 @@ Line after blank line"""
         ]
 
 
-unstyledText : String -> List Block.Inline
+unstyledText : String -> List Inline
 unstyledText body =
-    [ { string = body
-      , style =
-            { isCode = False
-            , isBold = False
-            , isItalic = False
-            , link = Nothing
-            }
-      }
-    ]
-
-
-unstyledTextSingle : String -> Block.Inline
-unstyledTextSingle body =
-    { string = body
-    , style =
-        { isCode = False
-        , isBold = False
-        , isItalic = False
-        , link = Nothing
-        }
-    }
-
-
-parserError : String -> Expect.Expectation
-parserError markdown =
-    case parse markdown of
-        Ok _ ->
-            Expect.fail "Expected a parser failure!"
-
-        Err _ ->
-            Expect.pass
+    [ Inline.Text body ]

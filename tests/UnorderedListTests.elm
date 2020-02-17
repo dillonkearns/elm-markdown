@@ -1,7 +1,6 @@
 module UnorderedListTests exposing (suite)
 
 import Expect exposing (Expectation)
-import Markdown.Inlines
 import Markdown.ListItem as ListItem exposing (ListItem)
 import Markdown.Parser
 import Markdown.UnorderedList

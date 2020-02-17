@@ -3,7 +3,6 @@ module HtmlRendererTests exposing (suite)
 import Expect exposing (Expectation)
 import Markdown.Block as Block exposing (Block)
 import Markdown.Html
-import Markdown.Inlines
 import Markdown.Parser as Markdown exposing (..)
 import Parser
 import Parser.Advanced as Advanced
@@ -48,12 +47,10 @@ testRenderer htmlRenderer =
         \content -> Unexpected "String"
     , italic =
         \content -> Unexpected "String"
+    , hardLineBreak = Unexpected "String"
     , code =
         \content -> Unexpected "String"
-    , image =
-        \link content ->
-            Unexpected "String"
-                |> Ok
+    , image = \link -> Unexpected "String" |> Ok
     , link =
         \link content ->
             Unexpected "String"
