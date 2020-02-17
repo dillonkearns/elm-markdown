@@ -34,6 +34,9 @@ isUninteresting char =
         '[' ->
             False
 
+        '\\' ->
+            False
+
         --'!' ->
         --    False
         '*' ->
@@ -209,8 +212,17 @@ parseHelpNew (( inlineStyle, soFar, allFailed ) as state) =
     let
         --_ =
         --    Debug.log "state" state
-        addToLoop thing =
-            Loop ( inlineStyle, thing :: soFar, Nothing )
+        addToLoop newBlock =
+            Loop
+                ( inlineStyle
+                , case ( newBlock, soFar ) of
+                    ( Block.Text newRawText, (Block.Text rawText) :: rest ) ->
+                        Block.Text (rawText ++ newRawText) :: rest
+
+                    _ ->
+                        newBlock :: soFar
+                , Nothing
+                )
 
         doNothingLoop updatedStyle =
             Loop ( updatedStyle, soFar, Nothing )
@@ -226,11 +238,27 @@ parseHelpNew (( inlineStyle, soFar, allFailed ) as state) =
                     )
                 )
         , succeed
-            (\escapedChar ->
-                Loop ( inlineStyle, Block.Text escapedChar :: soFar, Just escapedChar )
+            (\escapedChar isEndOfInlines ->
+                addToLoop
+                    (case escapedChar of
+                        "\n" ->
+                            if isEndOfInlines then
+                                Block.Text "\\"
+
+                            else
+                                Block.HardLineBreak
+
+                        _ ->
+                            Block.Text escapedChar
+                    )
+             --, Just escapedChar
             )
             |. token (Token "\\" (Parser.Expecting "\\"))
             |= getChompedString (chompIf (\_ -> True) (Parser.Expecting "character"))
+            |= oneOf
+                [ succeed True |. end (Parser.Expecting "End of italic")
+                , succeed False
+                ]
         , topLevelParseHelp state
         , succeed
             (\rawCode ->

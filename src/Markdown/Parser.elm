@@ -54,6 +54,7 @@ type alias Renderer view =
     , code : String -> view
     , bold : view -> view
     , italic : view -> view
+    , hardLineBreak : view
     , link : { title : Maybe String, destination : String } -> List view -> Result String view
     , image : { alt : String, src : String } -> Result String view
     , unorderedList : List (ListItem view) -> view
@@ -106,6 +107,7 @@ defaultHtmlRenderer =
                 _ ->
                     Html.text "TODO maye use a type here to clean it up... this will never happen"
     , raw = Html.p []
+    , hardLineBreak = Html.br [] []
     , blockQuote = Html.blockquote []
     , bold =
         \child -> Html.strong [] [ child ]
@@ -236,6 +238,9 @@ renderSingleInline renderer inline =
                     (\children ->
                         renderer.link { title = Nothing, destination = href } children
                     )
+
+        Block.HardLineBreak ->
+            renderer.hardLineBreak |> Ok
 
 
 

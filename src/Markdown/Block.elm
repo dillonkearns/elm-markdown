@@ -74,3 +74,4 @@ type Inline
     | Image { src : String, alt : String }
     | Text String
     | CodeSpan String
+    | HardLineBreak

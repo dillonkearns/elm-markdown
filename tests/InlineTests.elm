@@ -122,6 +122,18 @@ suite =
                     |> expectInlines
                         [ Block.Text "\\"
                         ]
+        , test "hard line break" <|
+            \() ->
+                "foo\\\nbaz"
+                    |> expectInlines
+                        [ Block.Text "foo"
+                        , Block.HardLineBreak
+                        , Block.Text "baz"
+                        ]
+        , test "backslash newline at end is not hard line break" <|
+            \() ->
+                "foo\\\n"
+                    |> expectInlines [ Block.Text "foo\\" ]
 
         --, only <|
         --    test "unknown" <|

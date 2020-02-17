@@ -77,6 +77,7 @@ renderMarkdown markdown =
                         _ ->
                             Html.text "TODO maye use a type here to clean it up... this will never happen"
             , raw = Html.p []
+            , hardLineBreak = Html.br [] []
             , blockQuote = Html.blockquote []
             , bold =
                 \child -> Html.strong [] [ child ]
