@@ -24,5 +24,5 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 11 Expecting Problem at row 1 Expecting symbol (
+<p>Foo [bar][].</p><p>Foo [bar](/url/ &quot;Title with &quot;quotes&quot; inside&quot;).</p><p>[bar]: /url/ &quot;Title with &quot;quotes&quot; inside&quot;</p>
 ```

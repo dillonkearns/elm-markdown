@@ -20,5 +20,5 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+<p>[hi]</p><p>[HI]: /url</p>
 ```

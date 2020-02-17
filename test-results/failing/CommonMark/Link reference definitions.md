@@ -20,7 +20,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+<p>[foo]: /url &quot;title&quot;</p><p>[foo]</p>
 ```
 ## [Example 162](https://spec.commonmark.org/0.29/#example-162)
 
@@ -44,7 +44,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 10 Expecting Problem at row 1 Expecting symbol (
+<p>[foo]:</p><pre><code>/url &#39;the title&#39;</code></pre><p>[foo]</p>
 ```
 ## [Example 163](https://spec.commonmark.org/0.29/#example-163)
 
@@ -66,7 +66,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+<p>[Foo*bar]]:my_(url) &#39;title (with parens)&#39;</p><p>[Foo*bar]]</p>
 ```
 ## [Example 164](https://spec.commonmark.org/0.29/#example-164)
 
@@ -120,31 +120,7 @@ line2
 But instead was:
 
 ```html
-ERROR Problem at row 14 Expecting Problem at row 1 Expecting symbol (
-```
-## [Example 166](https://spec.commonmark.org/0.29/#example-166)
-
-This markdown:
-
-```markdown
-[foo]: /url 'title
-
-with blank line'
-
-[foo]
-
-```
-
-Should give output:
-
-```html
-<p>[foo]: /url &#39;title</p><p>with blank line&#39;</p><p>[foo]</p>
-```
-
-But instead was:
-
-```html
-ERROR Problem at row 9 Expecting Problem at row 1 Expecting symbol (
+<p>[foo]: /url &#39; title line1 line2 &#39;</p><p>[foo]</p>
 ```
 ## [Example 167](https://spec.commonmark.org/0.29/#example-167)
 
@@ -167,29 +143,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 8 Expecting Problem at row 1 Expecting symbol (
-```
-## [Example 168](https://spec.commonmark.org/0.29/#example-168)
-
-This markdown:
-
-```markdown
-[foo]:
-
-[foo]
-
-```
-
-Should give output:
-
-```html
-<p>[foo]:</p><p>[foo]</p>
-```
-
-But instead was:
-
-```html
-ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+<p>[foo]: /url</p><p>[foo]</p>
 ```
 ## [Example 169](https://spec.commonmark.org/0.29/#example-169)
 
@@ -211,29 +165,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
-```
-## [Example 170](https://spec.commonmark.org/0.29/#example-170)
-
-This markdown:
-
-```markdown
-[foo]: <bar>(baz)
-
-[foo]
-
-```
-
-Should give output:
-
-```html
-<p>[foo]:<bar>(baz)</p><p>[foo]</p>
-```
-
-But instead was:
-
-```html
-ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+<p>[foo]: &lt;&gt;</p><p>[foo]</p>
 ```
 ## [Example 171](https://spec.commonmark.org/0.29/#example-171)
 
@@ -255,7 +187,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+<p>[foo]: /url\bar*baz &quot;foo&quot;bar\baz&quot;</p><p>[foo]</p>
 ```
 ## [Example 172](https://spec.commonmark.org/0.29/#example-172)
 
@@ -277,7 +209,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+<p>[foo]</p><p>[foo]: url</p>
 ```
 ## [Example 173](https://spec.commonmark.org/0.29/#example-173)
 
@@ -300,7 +232,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 8 Expecting Problem at row 1 Expecting symbol (
+<p>[foo]</p><p>[foo]: first [foo]: second</p>
 ```
 ## [Example 174](https://spec.commonmark.org/0.29/#example-174)
 
@@ -322,7 +254,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+<p>[FOO]: /url</p><p>[Foo]</p>
 ```
 ## [Example 175](https://spec.commonmark.org/0.29/#example-175)
 
@@ -344,7 +276,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+<p>[ΑΓΩ]: /φου</p><p>[αγω]</p>
 ```
 ## [Example 176](https://spec.commonmark.org/0.29/#example-176)
 
@@ -364,7 +296,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 3 Expecting Problem at row 1 Expecting symbol (
+<p>[foo]: /url</p>
 ```
 ## [Example 177](https://spec.commonmark.org/0.29/#example-177)
 
@@ -387,27 +319,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 9 Expecting Problem at row 1 Expecting symbol (
-```
-## [Example 178](https://spec.commonmark.org/0.29/#example-178)
-
-This markdown:
-
-```markdown
-[foo]: /url "title" ok
-
-```
-
-Should give output:
-
-```html
-<p>[foo]: /url &quot;title&quot; ok</p>
-```
-
-But instead was:
-
-```html
-ERROR Problem at row 3 Expecting Problem at row 1 Expecting symbol (
+<p>[ foo ]: /url bar</p>
 ```
 ## [Example 179](https://spec.commonmark.org/0.29/#example-179)
 
@@ -428,76 +340,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 5 Expecting Problem at row 1 Expecting symbol (
-```
-## [Example 180](https://spec.commonmark.org/0.29/#example-180)
-
-This markdown:
-
-```markdown
-    [foo]: /url "title"
-
-[foo]
-
-```
-
-Should give output:
-
-```html
-<pre><code>[foo]: /url &quot;title&quot;</code></pre><p>[foo]</p>
-```
-
-But instead was:
-
-```html
-ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
-```
-## [Example 181](https://spec.commonmark.org/0.29/#example-181)
-
-This markdown:
-
-```markdown
-```
-[foo]: /url
-```
-
-[foo]
-
-```
-
-Should give output:
-
-```html
-<pre><code>[foo]: /url</code></pre><p>[foo]</p>
-```
-
-But instead was:
-
-```html
-ERROR Problem at row 9 Expecting Problem at row 1 Expecting symbol (
-```
-## [Example 182](https://spec.commonmark.org/0.29/#example-182)
-
-This markdown:
-
-```markdown
-Foo
-[bar]: /baz
-
-[bar]
-
-```
-
-Should give output:
-
-```html
-<p>Foo [bar]: /baz</p><p>[bar]</p>
-```
-
-But instead was:
-
-```html
-ERROR Problem at row 8 Expecting Problem at row 1 Expecting symbol (
+<p>[foo]: /url &quot;title&quot; ok</p>
 ```
 ## [Example 183](https://spec.commonmark.org/0.29/#example-183)
 
@@ -519,7 +362,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 7 Expecting Problem at row 1 Expecting symbol (
+<h1>[Foo]</h1><p>[foo]: /url</p><blockquote><p>bar</p></blockquote>
 ```
 ## [Example 184](https://spec.commonmark.org/0.29/#example-184)
 
@@ -542,7 +385,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 9 Expecting Problem at row 1 Expecting symbol (
+<p>[foo]: /url bar === [foo]</p>
 ```
 ## [Example 185](https://spec.commonmark.org/0.29/#example-185)
 
@@ -564,7 +407,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 7 Expecting Problem at row 1 Expecting symbol (
+<p>[foo]: /url === [foo]</p>
 ```
 ## [Example 186](https://spec.commonmark.org/0.29/#example-186)
 
@@ -591,7 +434,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 16 Expecting Problem at row 1 Expecting symbol (
+<p>[foo]: /foo-url &quot;foo&quot; [bar]: /bar-url &quot;bar&quot; [baz]: /baz-url</p><p>[foo], [bar], [baz]</p>
 ```
 ## [Example 187](https://spec.commonmark.org/0.29/#example-187)
 
@@ -613,7 +456,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+<p>[foo]</p><blockquote><p>[foo]: /url</p></blockquote>
 ```
 ## [Example 188](https://spec.commonmark.org/0.29/#example-188)
 
@@ -633,5 +476,5 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 3 Expecting Problem at row 1 Expecting symbol (
+<p>[foo]: /url</p>
 ```

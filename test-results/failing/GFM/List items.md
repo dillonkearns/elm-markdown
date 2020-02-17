@@ -328,7 +328,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 17 Expecting Problem at row 1 Expecting `
+<p>- foo -<code>bar</code>-</p><pre><code>baz</code></pre>
 ```
 ## [Example 249](https://spec.commonmark.org/0.29/#example-249)
 

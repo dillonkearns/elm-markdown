@@ -1,7 +1,4 @@
-module Markdown.Block exposing
-    ( Block(..)
-    , Inline(..)
-    )
+module Markdown.Block exposing (Block(..))
 
 {-|
 
@@ -15,6 +12,7 @@ module Markdown.Block exposing
 -}
 
 import Markdown.CodeBlock
+import Markdown.Inline
 
 
 type alias Attribute =
@@ -67,11 +65,16 @@ type Block
 
 {-| Represents styled inline text. For example, a header can include links, emphasis, etc.
 -}
-type Inline
-    = Link { href : String } (List Inline)
-    | Bold Inline
-    | Italic Inline
-    | Image { src : String, alt : String }
-    | Text String
-    | CodeSpan String
-    | HardLineBreak
+type alias Inline =
+    Markdown.Inline.Inline
+
+
+
+--type Inline
+--    = Link { href : String } (List Inline)
+--    | Bold Inline
+--    | Italic Inline
+--    | Image { src : String, alt : String }
+--    | Text String
+--    | CodeSpan String
+--    | HardLineBreak

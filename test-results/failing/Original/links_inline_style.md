@@ -32,5 +32,5 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 24 Expecting Problem at row 1 Link destinations can&#39;t contain whitespace, if you would like to include them please wrap your URL with &lt; .. &gt;
+<p>Just a<a href="/url/">URL</a>.</p><p><a href="/url/" title="title">URL and title</a>.</p><p><a href="/url/" title="title preceded by two spaces">URL and title</a>.</p><p><a href="/url/" title="title preceded by a tab">URL and title</a>.</p><p><a href="/url/" title="title has spaces afterward">URL and title</a>.</p><p>[URL and title]( /url/has space ).</p><p>[URL and title]( /url/has space/ &quot;url has space and title&quot;).</p><p><a href="">Empty</a>.</p>
 ```

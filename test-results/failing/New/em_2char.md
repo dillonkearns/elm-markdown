@@ -42,5 +42,5 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 39 Expecting Problem at row 1 Expecting **
+<p><em>123</em></p><p><em>123</em></p><p><em>12</em></p><p><em>12</em></p><p><em>1</em></p><p><em>1</em></p><p>__</p><p>**</p><p>_123 _</p><p>*123 *</p><p>_ 123_</p><p><em>1</em>_</p><p><em>1</em>*</p>
 ```

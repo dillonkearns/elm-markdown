@@ -1,27 +1,5 @@
 # CommonMark - Thematic breaks
 
-## [Example 16](https://spec.commonmark.org/0.29/#example-16)
-
-This markdown:
-
-```markdown
---
-**
-__
-
-```
-
-Should give output:
-
-```html
-<p>-- ** __</p>
-```
-
-But instead was:
-
-```html
-ERROR Problem at row 7 Expecting Problem at row 1 Expecting **
-```
 ## [Example 19](https://spec.commonmark.org/0.29/#example-19)
 
 This markdown:
@@ -81,7 +59,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 3 Expecting Problem at row 1 Expecting **
+<p>** * ** * ** * **</p>
 ```
 ## [Example 23](https://spec.commonmark.org/0.29/#example-23)
 
@@ -189,7 +167,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li>Foo</li><li><em></em></li><li>Bar</li></ul>
+<ul><li>Foo</li><li>* *</li><li>Bar</li></ul>
 ```
 ## [Example 31](https://spec.commonmark.org/0.29/#example-31)
 
@@ -210,5 +188,5 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li>Foo</li><li><em></em>*</li></ul>
+<ul><li>Foo</li><li>* * *</li></ul>
 ```

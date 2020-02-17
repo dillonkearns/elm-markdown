@@ -3,7 +3,6 @@ port module OutputMarkdownHtml exposing (main)
 import Html.String as Html
 import Html.String.Attributes as Attr
 import Markdown.Html
-import Markdown.Inlines
 import Markdown.Parser as Markdown
 
 
@@ -80,19 +79,44 @@ renderMarkdown markdown =
             , hardLineBreak = Html.br [] []
             , blockQuote = Html.blockquote []
             , bold =
-                \child -> Html.strong [] [ child ]
+                \children -> Html.strong [] children
             , italic =
-                \child -> Html.em [] [ child ]
+                \children -> Html.em [] children
             , code =
                 \content -> Html.code [] [ Html.text content ]
             , link =
                 \link content ->
-                    Html.a [ Attr.href link.destination ] content
-                        |> Ok
+                    case link.title of
+                        Just title ->
+                            Html.a
+                                [ Attr.href link.destination
+                                , Attr.title title
+                                ]
+                                content
+                                |> Ok
+
+                        Nothing ->
+                            Html.a [ Attr.href link.destination ] content
+                                |> Ok
             , image =
                 \imageInfo ->
-                    Html.img [ Attr.src imageInfo.src ] [ Html.text imageInfo.alt ]
-                        |> Ok
+                    case imageInfo.title of
+                        Just title ->
+                            Html.img
+                                [ Attr.src imageInfo.src
+                                , Attr.alt imageInfo.alt
+                                , Attr.title title
+                                ]
+                                []
+                                |> Ok
+
+                        Nothing ->
+                            Html.img
+                                [ Attr.src imageInfo.src
+                                , Attr.alt imageInfo.alt
+                                ]
+                                []
+                                |> Ok
             , plain =
                 Html.text
             , unorderedList =

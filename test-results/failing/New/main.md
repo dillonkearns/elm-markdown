@@ -72,5 +72,5 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 93 Expecting Problem at row 1 Expecting symbol (
+ERROR oneOf failed parsing this value:<aside>Parsing failed in the following 2 ways: (1) Expected a but was aside (2) Expected div but was aside (3) Expected th but was aside (4) Expected pre but was aside (5) Expected td but was aside (6) Expected tr but was aside (7) Expected table but was aside
 ```

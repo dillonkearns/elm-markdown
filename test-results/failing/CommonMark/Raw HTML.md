@@ -82,26 +82,6 @@ But instead was:
 ```html
 ERROR Problem at row 2 Expecting symbol =
 ```
-## [Example 613](https://spec.commonmark.org/0.29/#example-613)
-
-This markdown:
-
-```markdown
-Foo <responsive-image src="foo.jpg" />
-
-```
-
-Should give output:
-
-```html
-<p>Foo<responsive-image src="foo.jpg"></p>
-```
-
-But instead was:
-
-```html
-<p>Foo &lt;responsive-image src=&quot;foo.jpg&quot; /&gt;</p>
-```
 ## [Example 614](https://spec.commonmark.org/0.29/#example-614)
 
 This markdown:
@@ -324,47 +304,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 3 Expecting Problem at row 1 Expecting symbol (
-```
-## [Example 627](https://spec.commonmark.org/0.29/#example-627)
-
-This markdown:
-
-```markdown
-foo <a href="&ouml;">
-
-```
-
-Should give output:
-
-```html
-<p>foo<a href="ö"></p>
-```
-
-But instead was:
-
-```html
-<p>foo &lt;a href=&quot;&amp;ouml;&quot;&gt;</p>
-```
-## [Example 628](https://spec.commonmark.org/0.29/#example-628)
-
-This markdown:
-
-```markdown
-foo <a href="\*">
-
-```
-
-Should give output:
-
-```html
-<p>foo<a href="\*"></p>
-```
-
-But instead was:
-
-```html
-<p>foo &lt;a href=&quot;*&quot;&gt;</p>
+<p>foo &lt;![CDATA[&gt;&amp;&lt;]]&gt;</p>
 ```
 ## [Example 629](https://spec.commonmark.org/0.29/#example-629)
 

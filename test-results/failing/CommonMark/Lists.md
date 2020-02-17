@@ -294,7 +294,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 10 Expecting Problem at row 1 Expecting symbol (
+<ul><li>a</li><li>b</li></ul><p>[ref]: /url</p><ul><li>d</li></ul>
 ```
 ## [Example 288](https://spec.commonmark.org/0.29/#example-288)
 
@@ -320,7 +320,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 13 Expecting Problem at row 1 Expecting ``
+<ul><li>a</li><li>```</li></ul><p>b</p><p>```</p><ul><li>c</li></ul>
 ```
 ## [Example 289](https://spec.commonmark.org/0.29/#example-289)
 
@@ -437,7 +437,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 10 Expecting Problem at row 1 Expecting ``
+<ol><li>```</li></ol><p>foo ```</p><p>bar</p>
 ```
 ## [Example 295](https://spec.commonmark.org/0.29/#example-295)
 

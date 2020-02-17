@@ -37,5 +37,5 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 32 Expecting Problem at row 1 Expecting symbol (
+<p>This is the [simple case].</p><p>[simple case]: /simple</p><p>This one has a [line break].</p><p>This one has a [line break] with a line-ending space.</p><p>[line break]: /foo</p><p>[this] [that] and the [other]</p><p>[this]: /this [that]: /that [other]: /other</p>
 ```

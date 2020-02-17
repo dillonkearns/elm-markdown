@@ -14,14 +14,18 @@ module Markdown.Parser exposing
 
 -}
 
+--import Markdown.Inlines as Inlines
+
+import Dict
 import Helpers
 import Html exposing (Html)
 import Html.Attributes as Attr
-import Markdown.Block as Block exposing (Block, Inline)
+import Markdown.Block as Block exposing (Block)
 import Markdown.CodeBlock
 import Markdown.Html
 import Markdown.HtmlRenderer
-import Markdown.Inlines as Inlines
+import Markdown.Inline as Inline exposing (Inline)
+import Markdown.InlineParser
 import Markdown.ListItem as ListItem
 import Markdown.OrderedList
 import Markdown.RawBlock exposing (Attribute, RawBlock(..), UnparsedInlines(..))
@@ -52,11 +56,11 @@ type alias Renderer view =
     , html : Markdown.Html.Renderer (List view -> view)
     , plain : String -> view
     , code : String -> view
-    , bold : view -> view
-    , italic : view -> view
+    , bold : List view -> view
+    , italic : List view -> view
     , hardLineBreak : view
     , link : { title : Maybe String, destination : String } -> List view -> Result String view
-    , image : { alt : String, src : String } -> Result String view
+    , image : { alt : String, src : String, title : Maybe String } -> Result String view
     , unorderedList : List (ListItem view) -> view
     , orderedList : Int -> List (List view) -> view
     , codeBlock : { body : String, language : Maybe String } -> view
@@ -110,19 +114,44 @@ defaultHtmlRenderer =
     , hardLineBreak = Html.br [] []
     , blockQuote = Html.blockquote []
     , bold =
-        \child -> Html.strong [] [ child ]
+        \children -> Html.strong [] children
     , italic =
-        \child -> Html.em [] [ child ]
+        \children -> Html.em [] children
     , code =
         \content -> Html.code [] [ Html.text content ]
     , link =
         \link content ->
-            Html.a [ Attr.href link.destination ] content
-                |> Ok
+            case link.title of
+                Just title ->
+                    Html.a
+                        [ Attr.href link.destination
+                        , Attr.title title
+                        ]
+                        content
+                        |> Ok
+
+                Nothing ->
+                    Html.a [ Attr.href link.destination ] content
+                        |> Ok
     , image =
         \imageInfo ->
-            Html.img [ Attr.src imageInfo.src ] [ Html.text imageInfo.alt ]
-                |> Ok
+            case imageInfo.title of
+                Just title ->
+                    Html.img
+                        [ Attr.src imageInfo.src
+                        , Attr.alt imageInfo.alt
+                        , Attr.title title
+                        ]
+                        []
+                        |> Ok
+
+                Nothing ->
+                    Html.img
+                        [ Attr.src imageInfo.src
+                        , Attr.alt imageInfo.alt
+                        ]
+                        []
+                        |> Ok
     , plain =
         Html.text
     , unorderedList =
@@ -215,35 +244,50 @@ foldThing renderer topLevelInline soFar =
 renderSingleInline : Renderer view -> Inline -> Result String view
 renderSingleInline renderer inline =
     case inline of
-        Block.Bold innerInlines ->
-            renderSingleInline renderer innerInlines
-                |> Result.map renderer.bold
+        Inline.Emphasis delimeterLength innerInlines ->
+            case delimeterLength of
+                1 ->
+                    --renderSingleInline renderer innerInlines
+                    innerInlines
+                        |> renderStyled renderer
+                        |> Result.map renderer.italic
 
-        Block.Italic innerInlines ->
-            renderSingleInline renderer innerInlines
-                |> Result.map renderer.italic
+                2 ->
+                    --renderSingleInline renderer innerInlines
+                    --    |> Result.map renderer.bold
+                    innerInlines
+                        |> renderStyled renderer
+                        |> Result.map renderer.bold
 
-        Block.Image imageInfo ->
-            renderer.image imageInfo
+                _ ->
+                    Debug.todo "Not handling more than 2 delimiter length"
 
-        Block.Text string ->
+        Inline.Image src title children ->
+            renderer.image { alt = Inline.extractText children, src = src, title = title }
+
+        Inline.Text string ->
             renderer.plain string |> Ok
 
-        Block.CodeSpan string ->
+        Inline.CodeInline string ->
             renderer.code string |> Ok
 
-        Block.Link { href } inlines ->
+        Inline.Link destination title inlines ->
             renderStyled renderer inlines
                 |> Result.andThen
                     (\children ->
-                        renderer.link { title = Nothing, destination = href } children
+                        renderer.link { title = title, destination = destination } children
                     )
 
-        Block.HardLineBreak ->
+        Inline.HardLineBreak ->
             renderer.hardLineBreak |> Ok
 
+        Inline.HtmlInline string list inlines ->
+            Debug.todo "handle html in"
 
 
+
+--, html : Markdown.Html.Renderer (List view -> view)
+--    renderer.html
 --:: soFar
 
 
@@ -260,7 +304,7 @@ renderHelper renderer blocks =
                         |> Result.map
                             (\children ->
                                 renderer.heading
-                                    { level = level, rawText = Inlines.toString content, children = children }
+                                    { level = level, rawText = Inline.extractText content, children = children }
                             )
 
                 Block.Body content ->
@@ -432,20 +476,12 @@ parseInlines : RawBlock -> Parser (Maybe Block)
 parseInlines rawBlock =
     case rawBlock of
         Heading level (UnparsedInlines unparsedInlines) ->
-            case Advanced.run Inlines.parse unparsedInlines of
-                Ok styledLine ->
-                    just (Block.Heading level styledLine)
-
-                Err error ->
-                    problem (Parser.Expecting (error |> List.map deadEndToString |> String.join "\n"))
+            Markdown.InlineParser.parse Dict.empty unparsedInlines
+                |> (\styledLine -> just (Block.Heading level styledLine))
 
         Body (UnparsedInlines unparsedInlines) ->
-            case Advanced.run Inlines.parse unparsedInlines of
-                Ok styledLine ->
-                    just (Block.Body styledLine)
-
-                Err error ->
-                    problem (Parser.Expecting (error |> List.map deadEndToString |> String.join "\n"))
+            Markdown.InlineParser.parse Dict.empty unparsedInlines
+                |> (\styledLine -> just (Block.Body styledLine))
 
         Html tagName attributes children ->
             Block.Html tagName attributes children
@@ -505,12 +541,9 @@ just value =
 
 parseRawInline : (List Inline -> a) -> UnparsedInlines -> Advanced.Parser c Parser.Problem a
 parseRawInline wrap (UnparsedInlines unparsedInlines) =
-    case Advanced.run Inlines.parse unparsedInlines of
-        Ok styledLine ->
-            succeed (wrap styledLine)
-
-        Err error ->
-            problem (Parser.Expecting (error |> List.map deadEndToString |> String.join "\n"))
+    Markdown.InlineParser.parse Dict.empty unparsedInlines
+        |> (\styledLine -> wrap styledLine)
+        |> succeed
 
 
 plainLine : Parser RawBlock

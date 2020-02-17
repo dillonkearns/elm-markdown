@@ -24,7 +24,7 @@ Should give output:
 But instead was:
 
 ```html
-<table><tr><td><pre><p><strong>Hello</strong>,</p><p>_world_.</p></pre></td></tr></table>
+<table><tr><td><pre><p><strong>Hello</strong>,</p><p><em>world</em>.</p></pre></td></tr></table>
 ```
 ## [Example 119](https://spec.commonmark.org/0.29/#example-119)
 
@@ -53,28 +53,6 @@ But instead was:
 
 ```html
 <table><tr><pre><code></code></pre><td><pre><code>hi</code></pre></td></tr></table><p>okay.</p>
-```
-## [Example 120](https://spec.commonmark.org/0.29/#example-120)
-
-This markdown:
-
-```markdown
- <div>
-  *hello*
-         <foo><a>
-
-```
-
-Should give output:
-
-```html
-<div>*hello*<foo><a>
-```
-
-But instead was:
-
-```html
-<p>&lt;div&gt;<em>hello</em></p><pre><code>&lt;foo&gt;&lt;a&gt;</code></pre>
 ```
 ## [Example 121](https://spec.commonmark.org/0.29/#example-121)
 
@@ -524,27 +502,6 @@ But instead was:
 ```html
 ERROR Problem at row 8 Problem at row 2 Expecting symbol
 ```
-## [Example 144](https://spec.commonmark.org/0.29/#example-144)
-
-This markdown:
-
-```markdown
-- <div>
-- foo
-
-```
-
-Should give output:
-
-```html
-<ul><li><div></li><li>foo</li></ul>
-```
-
-But instead was:
-
-```html
-<ul><li>&lt;div&gt;</li><li>foo</li></ul>
-```
 ## [Example 145](https://spec.commonmark.org/0.29/#example-145)
 
 This markdown:
@@ -731,28 +688,6 @@ But instead was:
 
 ```html
 <p>&lt;!-- foo --&gt;</p><pre><code>&lt;!-- foo --&gt;</code></pre>
-```
-## [Example 153](https://spec.commonmark.org/0.29/#example-153)
-
-This markdown:
-
-```markdown
-  <div>
-
-    <div>
-
-```
-
-Should give output:
-
-```html
-<div><pre><code>&lt;div&gt;</code></pre>
-```
-
-But instead was:
-
-```html
-<p>&lt;div&gt;</p><pre><code>&lt;div&gt;</code></pre>
 ```
 ## [Example 154](https://spec.commonmark.org/0.29/#example-154)
 

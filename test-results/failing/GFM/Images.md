@@ -1,25 +1,5 @@
 # GFM - Images
 
-## [Example 568](https://spec.commonmark.org/0.29/#example-568)
-
-This markdown:
-
-```markdown
-![foo](/url "title")
-
-```
-
-Should give output:
-
-```html
-<p><img alt="foo" src="/url" title="title"></p>
-```
-
-But instead was:
-
-```html
-ERROR Problem at row 3 Expecting Problem at row 1 Link destinations can&#39;t contain whitespace, if you would like to include them please wrap your URL with &lt; .. &gt;
-```
 ## [Example 569](https://spec.commonmark.org/0.29/#example-569)
 
 This markdown:
@@ -40,7 +20,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+<p>![foo<em>bar</em>]</p><p>[foo<em>bar</em>]: train.jpg &quot;train &amp; tracks&quot;</p>
 ```
 ## [Example 572](https://spec.commonmark.org/0.29/#example-572)
 
@@ -62,7 +42,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+<p>![foo<em>bar</em>][]</p><p>[foo<em>bar</em>]: train.jpg &quot;train &amp; tracks&quot;</p>
 ```
 ## [Example 573](https://spec.commonmark.org/0.29/#example-573)
 
@@ -84,87 +64,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
-```
-## [Example 574](https://spec.commonmark.org/0.29/#example-574)
-
-This markdown:
-
-```markdown
-![foo](train.jpg)
-
-```
-
-Should give output:
-
-```html
-<p><img alt="foo" src="train.jpg"></p>
-```
-
-But instead was:
-
-```html
-<p>!<a href="train.jpg">foo</a></p>
-```
-## [Example 575](https://spec.commonmark.org/0.29/#example-575)
-
-This markdown:
-
-```markdown
-My ![foo bar](/path/to/train.jpg  "title"   )
-
-```
-
-Should give output:
-
-```html
-<p>My<img alt="foo bar" src="/path/to/train.jpg" title="title"></p>
-```
-
-But instead was:
-
-```html
-ERROR Problem at row 3 Expecting Problem at row 1 Link destinations can&#39;t contain whitespace, if you would like to include them please wrap your URL with &lt; .. &gt;
-```
-## [Example 576](https://spec.commonmark.org/0.29/#example-576)
-
-This markdown:
-
-```markdown
-![foo](<url>)
-
-```
-
-Should give output:
-
-```html
-<p><img alt="foo" src="url"></p>
-```
-
-But instead was:
-
-```html
-<p>!<a href="url">foo</a></p>
-```
-## [Example 577](https://spec.commonmark.org/0.29/#example-577)
-
-This markdown:
-
-```markdown
-![](/url)
-
-```
-
-Should give output:
-
-```html
-<p><img alt="" src="/url"></p>
-```
-
-But instead was:
-
-```html
-<p>!<a href="/url"></a></p>
+<p>![foo<em>bar</em>][foobar]</p><p>[FOOBAR]: train.jpg &quot;train &amp; tracks&quot;</p>
 ```
 ## [Example 578](https://spec.commonmark.org/0.29/#example-578)
 
@@ -186,7 +86,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+<p>![foo][bar]</p><p>[bar]: /url</p>
 ```
 ## [Example 579](https://spec.commonmark.org/0.29/#example-579)
 
@@ -208,7 +108,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+<p>![foo][bar]</p><p>[BAR]: /url</p>
 ```
 ## [Example 580](https://spec.commonmark.org/0.29/#example-580)
 
@@ -230,7 +130,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+<p>![foo][]</p><p>[foo]: /url &quot;title&quot;</p>
 ```
 ## [Example 581](https://spec.commonmark.org/0.29/#example-581)
 
@@ -252,7 +152,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+<p>![<em>foo</em>bar][]</p><p>[<em>foo</em>bar]: /url &quot;title&quot;</p>
 ```
 ## [Example 582](https://spec.commonmark.org/0.29/#example-582)
 
@@ -274,7 +174,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+<p>![Foo][]</p><p>[foo]: /url &quot;title&quot;</p>
 ```
 ## [Example 583](https://spec.commonmark.org/0.29/#example-583)
 
@@ -297,7 +197,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 8 Expecting Problem at row 1 Expecting symbol (
+<p>![foo] []</p><p>[foo]: /url &quot;title&quot;</p>
 ```
 ## [Example 584](https://spec.commonmark.org/0.29/#example-584)
 
@@ -319,7 +219,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+<p>![foo]</p><p>[foo]: /url &quot;title&quot;</p>
 ```
 ## [Example 585](https://spec.commonmark.org/0.29/#example-585)
 
@@ -341,29 +241,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
-```
-## [Example 586](https://spec.commonmark.org/0.29/#example-586)
-
-This markdown:
-
-```markdown
-![[foo]]
-
-[[foo]]: /url "title"
-
-```
-
-Should give output:
-
-```html
-<p>![[foo]]</p><p>[[foo]]: /url &quot;title&quot;</p>
-```
-
-But instead was:
-
-```html
-ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+<p>![<em>foo</em>bar]</p><p>[<em>foo</em>bar]: /url &quot;title&quot;</p>
 ```
 ## [Example 587](https://spec.commonmark.org/0.29/#example-587)
 
@@ -385,7 +263,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+<p>![Foo]</p><p>[foo]: /url &quot;title&quot;</p>
 ```
 ## [Example 588](https://spec.commonmark.org/0.29/#example-588)
 
@@ -407,7 +285,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+<p>![foo]</p><p>[foo]: /url &quot;title&quot;</p>
 ```
 ## [Example 589](https://spec.commonmark.org/0.29/#example-589)
 
@@ -429,5 +307,5 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+<p>![foo]</p><p>[foo]: /url &quot;title&quot;</p>
 ```

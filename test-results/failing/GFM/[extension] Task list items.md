@@ -20,5 +20,5 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 7 Expecting Problem at row 1 Expecting symbol (
+<ul><li><input checked="" disabled="" type="checkbox">foo</li></ul><p>- [ ] bar - [x] baz</p><ul><li><input disabled="" type="checkbox">bim</li></ul>
 ```

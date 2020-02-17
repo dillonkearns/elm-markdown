@@ -48,5 +48,5 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 48 Expecting Problem at row 1 Expecting symbol (
+ERROR oneOf failed parsing this value:<span>Parsing failed in the following 2 ways: (1) Expected a but was span (2) Expected div but was span (3) Expected th but was span (4) Expected pre but was span (5) Expected td but was span (6) Expected tr but was span (7) Expected table but was span
 ```

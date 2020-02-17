@@ -30,5 +30,5 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 21 Expecting Problem at row 1 Expecting symbol (
+<h3>Heading with a<a href="http://github.com/">link</a></h3><h3>Heading with some<em>italic text</em></h3><h3>Or some<strong>strong</strong></h3><p>(which doesn&#39;t really make any difference, here)</p><h3>Or even<code>code</code></h3><h3>What about ~~strikethrough~~</h3><h2>And a ref [link][destination]</h2><p>[destination]: /some/url &quot;link to nowhere&quot;</p>
 ```

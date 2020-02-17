@@ -124,5 +124,5 @@ Should give output:
 But instead was:
 
 ```html
-<p><em></em>*</p>
+<p>* * *</p>
 ```

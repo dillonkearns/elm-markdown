@@ -22,5 +22,5 @@ Should give output:
 But instead was:
 
 ```html
-<blockquote><p>A list within a blockquote:</p><p><em>asterisk 1</em>asterisk 2 * asterisk 3</p></blockquote>
+<blockquote><p>A list within a blockquote:</p><p>* asterisk 1 * asterisk 2 * asterisk 3</p></blockquote>
 ```

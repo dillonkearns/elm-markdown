@@ -22,5 +22,5 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 9 Expecting Problem at row 1 Expecting symbol (
+<p>Link: [constructor][].</p><p><a href="https://example.com/1">One</a>(<a href="https://example.com/2">Two</a>)<a href="https://example.com/3">Three</a></p><p>[constructor]: https://example.org/</p>
 ```

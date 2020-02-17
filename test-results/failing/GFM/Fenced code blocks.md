@@ -178,7 +178,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 11 Expecting Problem at row 1 Expecting `
+<p><code>aaa aaa aaa</code></p>
 ```
 ## [Example 103](https://spec.commonmark.org/0.29/#example-103)
 
@@ -202,7 +202,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 11 Expecting Problem at row 1 Expecting ``
+<p>``` aaa</p><pre><code>aaa</code></pre><p>aaa ```</p>
 ```
 ## [Example 105](https://spec.commonmark.org/0.29/#example-105)
 
@@ -246,7 +246,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 7 Expecting Problem at row 1 Expecting `
+<p><code>aaa</code></p>
 ```
 ## [Example 107](https://spec.commonmark.org/0.29/#example-107)
 

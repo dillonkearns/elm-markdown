@@ -38,5 +38,5 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 33 Expecting Problem at row 1 Expecting symbol (
+<p>AT&amp;T has an ampersand in their name.</p><p>AT&amp;T is another way to write it.</p><p>This &amp; that.</p><p>4 &lt; 5.</p><p>6 &gt; 5.</p><p>Here&#39;s a [link] [1] with an ampersand in the URL.</p><p>Here&#39;s a link with an amersand in the link text: [AT&amp;T] [2].</p><p>Here&#39;s an inline<a href="/script?foo=1&amp;bar=2">link</a>.</p><p>Here&#39;s an inline<a href="/script?foo=1&amp;bar=2">link</a>.</p><p>[1]: http://example.com/?foo=1&amp;bar=2 [2]: http://att.com/ &quot;AT&amp;T&quot;</p>
 ```

@@ -166,5 +166,5 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 7 Expecting Problem at row 1 Expecting character
+<h3>foo \</h3><h2>foo #\</h2><h1>foo \</h1>
 ```

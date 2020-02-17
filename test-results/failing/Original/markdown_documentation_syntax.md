@@ -904,5 +904,5 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 1448 Expecting Problem at row 1 Expecting symbol (
+ERROR oneOf failed parsing this value:<li>Parsing failed in the following 2 ways: (1) Expected a but was li (2) Expected div but was li (3) Expected th but was li (4) Expected pre but was li (5) Expected td but was li (6) Expected tr but was li (7) Expected table but was li
 ```

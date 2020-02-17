@@ -1,25 +1,5 @@
 # CommonMark - Backslash escapes
 
-## [Example 299](https://spec.commonmark.org/0.29/#example-299)
-
-This markdown:
-
-```markdown
-\	\A\a\ \3\φ\«
-
-```
-
-Should give output:
-
-```html
-<p>\ \A\a\ \3\φ\«</p>
-```
-
-But instead was:
-
-```html
-<p>Aa 3φ«</p>
-```
 ## [Example 300](https://spec.commonmark.org/0.29/#example-300)
 
 This markdown:
@@ -46,7 +26,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 19 Expecting Problem at row 1 Expecting `
+<p>*not emphasized* &lt;br/&gt; not a tag [not a link](/foo) `not code` 1. not a list * not a list # not a heading [foo]: /url &quot;not a reference&quot; ö not a character entity</p>
 ```
 ## [Example 302](https://spec.commonmark.org/0.29/#example-302)
 
@@ -67,7 +47,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>foo bar</p>
+<p>foo\ bar</p>
 ```
 ## [Example 306](https://spec.commonmark.org/0.29/#example-306)
 
@@ -109,26 +89,6 @@ But instead was:
 ```html
 ERROR Problem at row 2 Expecting symbol
 ```
-## [Example 308](https://spec.commonmark.org/0.29/#example-308)
-
-This markdown:
-
-```markdown
-[foo](/bar\* "ti\*tle")
-
-```
-
-Should give output:
-
-```html
-<p><a href="/bar*" title="ti*tle">foo</a></p>
-```
-
-But instead was:
-
-```html
-ERROR Problem at row 3 Expecting Problem at row 1 Link destinations can&#39;t contain whitespace, if you would like to include them please wrap your URL with &lt; .. &gt;
-```
 ## [Example 309](https://spec.commonmark.org/0.29/#example-309)
 
 This markdown:
@@ -149,7 +109,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
+<p>[foo]</p><p>[foo]: /bar* &quot;ti*tle&quot;</p>
 ```
 ## [Example 310](https://spec.commonmark.org/0.29/#example-310)
 
