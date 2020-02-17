@@ -116,6 +116,21 @@ suite =
             \() ->
                 "\\*not emphasized*"
                     |> expectInlines [ Inlines.Text "*not emphasized*" ]
+        , describe "html"
+            [ test "empty div with closing tag" <|
+                \() ->
+                    "<div></div>"
+                        |> expectInlines [ Inlines.HtmlInline "div" [] [] ]
+            , test "empty div with attributes tag" <|
+                \() ->
+                    "<div class=\"foo\"></div>"
+                        |> expectInlines
+                            [ Inlines.HtmlInline "div"
+                                [ ( "class", Just "foo" )
+                                ]
+                                []
+                            ]
+            ]
 
         --, only <|
         --    test "unknown" <|
