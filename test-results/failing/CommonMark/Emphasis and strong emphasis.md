@@ -320,3 +320,63 @@ But instead was:
 ```html
 ERROR Problem at row 1 Expecting end Problem at row 1 Expecting newline
 ```
+## [Example 474](https://spec.commonmark.org/0.29/#example-474)
+
+This markdown:
+
+```markdown
+*<img src="foo" title="*"/>
+
+```
+
+Should give output:
+
+```html
+<p>*<img src="foo" title="*"></p>
+```
+
+But instead was:
+
+```html
+ERROR oneOf failed parsing this value:<img src="foo" title="*">Parsing failed in the following 2 ways: (1) Expected a but was img (2) Expected div but was img (3) Expected th but was img (4) Expected pre but was img (5) Expected td but was img (6) Expected tr but was img (7) Expected table but was img
+```
+## [Example 475](https://spec.commonmark.org/0.29/#example-475)
+
+This markdown:
+
+```markdown
+**<a href="**">
+
+```
+
+Should give output:
+
+```html
+<p>**<a href="**"></p>
+```
+
+But instead was:
+
+```html
+<p>**<a href="**"><p></p></a></p>
+```
+## [Example 476](https://spec.commonmark.org/0.29/#example-476)
+
+This markdown:
+
+```markdown
+__<a href="__">
+
+```
+
+Should give output:
+
+```html
+<p>__<a href="__"></p>
+```
+
+But instead was:
+
+```html
+<p>__<a href="__"><p></p></a></p>
+```

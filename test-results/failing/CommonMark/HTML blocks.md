@@ -54,6 +54,28 @@ But instead was:
 ```html
 <table><tr><pre><code></code></pre><td><pre><code>hi</code></pre></td></tr></table><p>okay.</p>
 ```
+## [Example 120](https://spec.commonmark.org/0.29/#example-120)
+
+This markdown:
+
+```markdown
+ <div>
+  *hello*
+         <foo><a>
+
+```
+
+Should give output:
+
+```html
+<div>*hello*<foo><a>
+```
+
+But instead was:
+
+```html
+<p><div><p></p></div><em>hello</em></p><pre><code>&lt;foo&gt;&lt;a&gt;</code></pre>
+```
 ## [Example 121](https://spec.commonmark.org/0.29/#example-121)
 
 This markdown:
@@ -502,6 +524,27 @@ But instead was:
 ```html
 ERROR Problem at row 8 Problem at row 2 Expecting symbol
 ```
+## [Example 144](https://spec.commonmark.org/0.29/#example-144)
+
+This markdown:
+
+```markdown
+- <div>
+- foo
+
+```
+
+Should give output:
+
+```html
+<ul><li><div></li><li>foo</li></ul>
+```
+
+But instead was:
+
+```html
+<ul><li><div><p></p></div></li><li>foo</li></ul>
+```
 ## [Example 145](https://spec.commonmark.org/0.29/#example-145)
 
 This markdown:
@@ -688,6 +731,28 @@ But instead was:
 
 ```html
 <p>&lt;!-- foo --&gt;</p><pre><code>&lt;!-- foo --&gt;</code></pre>
+```
+## [Example 153](https://spec.commonmark.org/0.29/#example-153)
+
+This markdown:
+
+```markdown
+  <div>
+
+    <div>
+
+```
+
+Should give output:
+
+```html
+<div><pre><code>&lt;div&gt;</code></pre>
+```
+
+But instead was:
+
+```html
+<p><div><p></p></div></p><pre><code>&lt;div&gt;</code></pre>
 ```
 ## [Example 154](https://spec.commonmark.org/0.29/#example-154)
 

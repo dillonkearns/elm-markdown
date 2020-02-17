@@ -72,17 +72,7 @@ statementsHelp listMarker firstItem revStmts =
     oneOf
         [ succeed
             (\offsetBefore stmt offsetAfter ->
-                -- let
-                --     madeProgress =
-                --         offsetAfter
-                --             > offsetBefore
-                --             |> Debug.log "progress"
-                -- in
-                -- if madeProgress then
                 Loop (stmt :: revStmts)
-             --
-             -- else
-             --     Done (List.reverse (stmt :: revStmts))
             )
             |= Advanced.getOffset
             |= singleItemParser listMarker

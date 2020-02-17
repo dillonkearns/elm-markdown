@@ -167,6 +167,28 @@ But instead was:
 ```html
 <p>[foo]: &lt;&gt;</p><p>[foo]</p>
 ```
+## [Example 170](https://spec.commonmark.org/0.29/#example-170)
+
+This markdown:
+
+```markdown
+[foo]: <bar>(baz)
+
+[foo]
+
+```
+
+Should give output:
+
+```html
+<p>[foo]:<bar>(baz)</p><p>[foo]</p>
+```
+
+But instead was:
+
+```html
+ERROR oneOf failed parsing this value:<bar>Parsing failed in the following 2 ways: (1) Expected a but was bar (2) Expected div but was bar (3) Expected th but was bar (4) Expected pre but was bar (5) Expected td but was bar (6) Expected tr but was bar (7) Expected table but was bar
+```
 ## [Example 171](https://spec.commonmark.org/0.29/#example-171)
 
 This markdown:

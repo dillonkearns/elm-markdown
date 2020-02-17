@@ -82,6 +82,26 @@ But instead was:
 ```html
 ERROR Problem at row 2 Expecting symbol =
 ```
+## [Example 613](https://spec.commonmark.org/0.29/#example-613)
+
+This markdown:
+
+```markdown
+Foo <responsive-image src="foo.jpg" />
+
+```
+
+Should give output:
+
+```html
+<p>Foo<responsive-image src="foo.jpg"></p>
+```
+
+But instead was:
+
+```html
+ERROR oneOf failed parsing this value:<responsive-image src="foo.jpg">Parsing failed in the following 2 ways: (1) Expected a but was responsive-image (2) Expected div but was responsive-image (3) Expected th but was responsive-image (4) Expected pre but was responsive-image (5) Expected td but was responsive-image (6) Expected tr but was responsive-image (7) Expected table but was responsive-image
+```
 ## [Example 614](https://spec.commonmark.org/0.29/#example-614)
 
 This markdown:
@@ -305,6 +325,46 @@ But instead was:
 
 ```html
 <p>foo &lt;![CDATA[&gt;&amp;&lt;]]&gt;</p>
+```
+## [Example 627](https://spec.commonmark.org/0.29/#example-627)
+
+This markdown:
+
+```markdown
+foo <a href="&ouml;">
+
+```
+
+Should give output:
+
+```html
+<p>foo<a href="ö"></p>
+```
+
+But instead was:
+
+```html
+<p>foo<a href="ö"><p></p></a></p>
+```
+## [Example 628](https://spec.commonmark.org/0.29/#example-628)
+
+This markdown:
+
+```markdown
+foo <a href="\*">
+
+```
+
+Should give output:
+
+```html
+<p>foo<a href="\*"></p>
+```
+
+But instead was:
+
+```html
+<p>foo<a href="\*"><p></p></a></p>
 ```
 ## [Example 629](https://spec.commonmark.org/0.29/#example-629)
 

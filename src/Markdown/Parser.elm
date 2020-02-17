@@ -258,7 +258,7 @@ renderSingleInline renderer inline =
                         |> Result.map renderer.bold
 
                 _ ->
-                    Debug.todo "Not handling more than 2 delimiter length"
+                    Err "TODO not handled yet"
 
         Inline.Image src title children ->
             renderer.image { alt = Inline.extractText children, src = src, title = title }
@@ -279,11 +279,41 @@ renderSingleInline renderer inline =
         Inline.HardLineBreak ->
             renderer.hardLineBreak |> Ok
 
-        Inline.HtmlInline string list inlines ->
-            Debug.todo "handle html in"
+        Inline.HtmlInline tag rawAttributes inlines ->
+            --Err "TODO not handled yet"
+            let
+                attributes =
+                    rawAttributes
+                        |> List.map
+                            (\( key, maybeValue ) ->
+                                case maybeValue of
+                                    Just value ->
+                                        { name = key
+                                        , value = value
+                                        }
+
+                                    Nothing ->
+                                        { name = key
+                                        , value = ""
+                                        }
+                            )
+
+                children =
+                    inlines
+                        |> Block.Body
+                        |> List.singleton
+            in
+            renderHtmlNode renderer tag attributes children
 
 
 
+--renderHtmlNode : Renderer view -> String -> List Attribute -> List Block -> Result String view
+--renderHtmlNode renderer tag attributes children =
+--    renderHtml tag
+--        attributes
+--        children
+--        renderer.html
+--        (renderHelper renderer children)
 --, html : Markdown.Html.Renderer (List view -> view)
 --    renderer.html
 --:: soFar

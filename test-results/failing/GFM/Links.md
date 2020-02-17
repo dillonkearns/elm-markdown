@@ -20,6 +20,27 @@ But instead was:
 ```html
 <p>[link](&lt;/my uri&gt;)</p>
 ```
+## [Example 488](https://spec.commonmark.org/0.29/#example-488)
+
+This markdown:
+
+```markdown
+[link](<foo
+bar>)
+
+```
+
+Should give output:
+
+```html
+<p>[link](<foo bar="">)</p>
+```
+
+But instead was:
+
+```html
+ERROR oneOf failed parsing this value:<foo bar="">Parsing failed in the following 2 ways: (1) Expected a but was foo (2) Expected div but was foo (3) Expected th but was foo (4) Expected pre but was foo (5) Expected td but was foo (6) Expected tr but was foo (7) Expected table but was foo
+```
 ## [Example 490](https://spec.commonmark.org/0.29/#example-490)
 
 This markdown:
@@ -39,6 +60,28 @@ But instead was:
 
 ```html
 <p><a href="foo%5C">link</a></p>
+```
+## [Example 491](https://spec.commonmark.org/0.29/#example-491)
+
+This markdown:
+
+```markdown
+[a](<b)c
+[a](<b)c>
+[a](<b>c)
+
+```
+
+Should give output:
+
+```html
+<p>[a](&lt;b)c [a](&lt;b)c&gt; [a](<b>c)</p>
+```
+
+But instead was:
+
+```html
+ERROR oneOf failed parsing this value:<b>Parsing failed in the following 2 ways: (1) Expected a but was b (2) Expected div but was b (3) Expected th but was b (4) Expected pre but was b (5) Expected td but was b (6) Expected tr but was b (7) Expected table but was b
 ```
 ## [Example 493](https://spec.commonmark.org/0.29/#example-493)
 
@@ -99,6 +142,26 @@ But instead was:
 
 ```html
 <p><a and\"="" href="/url" title="title \" title"="">link</a></p>
+```
+## [Example 520](https://spec.commonmark.org/0.29/#example-520)
+
+This markdown:
+
+```markdown
+[foo <bar attr="](baz)">
+
+```
+
+Should give output:
+
+```html
+<p>[foo<bar attr="](baz)"></p>
+```
+
+But instead was:
+
+```html
+ERROR oneOf failed parsing this value:<bar attr="](baz)">Parsing failed in the following 2 ways: (1) Expected a but was bar (2) Expected div but was bar (3) Expected th but was bar (4) Expected pre but was bar (5) Expected td but was bar (6) Expected tr but was bar (7) Expected table but was bar
 ```
 ## [Example 523](https://spec.commonmark.org/0.29/#example-523)
 
@@ -297,6 +360,28 @@ But instead was:
 
 ```html
 <p>[foo *bar][ref]</p><p>[ref]: /uri</p>
+```
+## [Example 532](https://spec.commonmark.org/0.29/#example-532)
+
+This markdown:
+
+```markdown
+[foo <bar attr="][ref]">
+
+[ref]: /uri
+
+```
+
+Should give output:
+
+```html
+<p>[foo<bar attr="][ref]"></p>
+```
+
+But instead was:
+
+```html
+ERROR oneOf failed parsing this value:<bar attr="][ref]">Parsing failed in the following 2 ways: (1) Expected a but was bar (2) Expected div but was bar (3) Expected th but was bar (4) Expected pre but was bar (5) Expected td but was bar (6) Expected tr but was bar (7) Expected table but was bar
 ```
 ## [Example 533](https://spec.commonmark.org/0.29/#example-533)
 
