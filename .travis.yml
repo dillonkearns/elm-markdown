@@ -1,6 +1,6 @@
 language: elm
 
-node_js: "10"
+node_js: "13"
 
 before_script:
   - npm run test:ete || true
