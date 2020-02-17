@@ -324,7 +324,7 @@ qwer
                     |> Expect.equal
                         (Ok
                             [ Block.Body
-                                [ Inline.Image "/my/image.jpg" Nothing []
+                                [ Inline.Image "/my/image.jpg" Nothing [ Inline.Text "This is an image" ]
 
                                 --{ string = "This is an image"
                                 -- , style =
