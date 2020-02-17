@@ -1,25 +1,40 @@
 module SimpleHtml exposing (main)
 
+import Browser
 import Html exposing (Attribute, Html, div, text)
-import Html.Attributes
-import Markdown.Block exposing (Block)
-import Markdown.Html
+import Html.Attributes as Attr
+import Html.Events
 import Markdown.Parser as Markdown
 
 
-main : Html msg
-main =
-    case
-        markdownBody
-            |> Markdown.parse
-            |> Result.mapError deadEndsToString
-            |> Result.andThen (\ast -> Markdown.render Markdown.defaultHtmlRenderer ast)
-    of
-        Ok rendered ->
-            div [] rendered
+view : String -> Html Msg
+view markdownInput =
+    Html.div [ Attr.style "padding" "20px" ]
+        [ markdownInputView markdownInput
+        , case
+            markdownInput
+                |> Markdown.parse
+                |> Result.mapError deadEndsToString
+                |> Result.andThen (\ast -> Markdown.render Markdown.defaultHtmlRenderer ast)
+          of
+            Ok rendered ->
+                div [] rendered
 
-        Err errors ->
-            text errors
+            Err errors ->
+                text errors
+        ]
+
+
+markdownInputView : String -> Html Msg
+markdownInputView markdownInput =
+    Html.textarea
+        [ Attr.value markdownInput
+        , Html.Events.onInput OnMarkdownInput
+        , Attr.style "width" "100%"
+        , Attr.style "height" "500px"
+        , Attr.style "font-size" "18px"
+        ]
+        []
 
 
 deadEndsToString deadEnds =
@@ -95,3 +110,31 @@ sequantur praemia doleam pectusque fumantia hospes, cum silvaque caputque. Domat
 et annis corpus est aperire amoris. Concha non quae columbas, quae tenuem,
 pervia, euntis?
 """
+
+
+type Msg
+    = OnMarkdownInput String
+
+
+type alias Flags =
+    ()
+
+
+type alias Model =
+    String
+
+
+main : Platform.Program Flags Model Msg
+main =
+    Browser.document
+        { init = \flags -> ( markdownBody, Cmd.none )
+        , view = \model -> { body = [ view model ], title = "Markdown Example" }
+        , update = update
+        , subscriptions = \model -> Sub.none
+        }
+
+
+update msg model =
+    case msg of
+        OnMarkdownInput newMarkdown ->
+            ( newMarkdown, Cmd.none )
