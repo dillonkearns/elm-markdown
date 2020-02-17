@@ -1,27 +1,5 @@
 # GFM - Fenced code blocks
 
-## [Example 91](https://spec.commonmark.org/0.29/#example-91)
-
-This markdown:
-
-```markdown
-``
-foo
-``
-
-```
-
-Should give output:
-
-```html
-<p><code>foo</code></p>
-```
-
-But instead was:
-
-```html
-<p>foo</p>
-```
 ## [Example 94](https://spec.commonmark.org/0.29/#example-94)
 
 This markdown:
@@ -200,7 +178,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><code>aaa aaa aaa</code></p>
+ERROR Problem at row 11 Expecting Problem at row 1 Expecting `
 ```
 ## [Example 103](https://spec.commonmark.org/0.29/#example-103)
 
@@ -224,7 +202,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 11 Expecting Problem at row 1 Expecting `
+ERROR Problem at row 11 Expecting Problem at row 1 Expecting ``
 ```
 ## [Example 105](https://spec.commonmark.org/0.29/#example-105)
 
@@ -268,7 +246,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><code>aaa</code></p>
+ERROR Problem at row 7 Expecting Problem at row 1 Expecting `
 ```
 ## [Example 107](https://spec.commonmark.org/0.29/#example-107)
 

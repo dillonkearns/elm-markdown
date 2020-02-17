@@ -42,46 +42,6 @@ But instead was:
 ```html
 <h1>5 bolt</h1><h1>hashtag</h1>
 ```
-## [Example 35](https://spec.commonmark.org/0.29/#example-35)
-
-This markdown:
-
-```markdown
-\## foo
-
-```
-
-Should give output:
-
-```html
-<p>## foo</p>
-```
-
-But instead was:
-
-```html
-<p>\## foo</p>
-```
-## [Example 36](https://spec.commonmark.org/0.29/#example-36)
-
-This markdown:
-
-```markdown
-# foo *bar* \*baz\*
-
-```
-
-Should give output:
-
-```html
-<h1>foo<em>bar</em>*baz*</h1>
-```
-
-But instead was:
-
-```html
-<h1>foo<em>bar</em>\<em>baz\</em></h1>
-```
 ## [Example 38](https://spec.commonmark.org/0.29/#example-38)
 
 This markdown:
@@ -206,5 +166,5 @@ Should give output:
 But instead was:
 
 ```html
-<h3>foo \</h3><h2>foo #\</h2><h1>foo \</h1>
+ERROR Problem at row 7 Expecting Problem at row 1 Expecting character
 ```

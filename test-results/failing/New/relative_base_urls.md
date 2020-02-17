@@ -44,5 +44,5 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 1 Expecting symbol ]
+<h1>Absolutization of RFC 3986 URIs</h1><h2>Absolute URI</h2><p><a href="http://example.com/logo">![section 4.3</a>](http://example.com/)</p><h2>Network-path reference</h2><p><a href="//example.com/logo">![section 4.2</a>](//example.com/)</p><h2>Absolute path</h2><p><a href="/path/to/img">![section 4.2</a>](/path/to/content)</p><h2>Relative path</h2><p><a href="img">![section 4.2</a>](content)</p><h2>Dot-relative path</h2><p><a href="./img">![section 3.3</a>](./content)</p><p><a href="../img">![section 3.3</a>](../content)</p><h2>Same-document query</h2><p><a href="?type=image">![section 4.4</a>](?)</p><h2>Same-document fragment</h2><p><a href="#img">![section 4.4</a>](#)</p><h2>Empty</h2><p><a href="">section 4.2</a></p>
 ```

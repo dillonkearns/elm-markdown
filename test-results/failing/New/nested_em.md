@@ -20,5 +20,5 @@ Should give output:
 But instead was:
 
 ```html
-<p><em>test</em><strong>test</strong><em>test</em></p><p>_test __test__ test_</p>
+<p><em>test</em><em>test</em><em>test</em></p><p>_test __test__ test_</p>
 ```

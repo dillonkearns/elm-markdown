@@ -30,6 +30,42 @@ Gives this correct output:
 
 ```
 
+### [Example 35](https://spec.commonmark.org/0.29/#example-35)
+
+This markdown:
+
+
+```markdown
+\## foo
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>## foo</p>
+
+```
+
+### [Example 36](https://spec.commonmark.org/0.29/#example-36)
+
+This markdown:
+
+
+```markdown
+# foo *bar* \*baz\*
+
+```
+
+Gives this correct output:
+
+
+```html
+<h1>foo <em>bar</em> *baz*</h1>
+
+```
+
 ### [Example 37](https://spec.commonmark.org/0.29/#example-37)
 
 This markdown:
@@ -211,13 +247,13 @@ Gives this correct output:
 
 ## Backslash escapes
 
-### [Example 299](https://spec.commonmark.org/0.29/#example-299)
+### [Example 298](https://spec.commonmark.org/0.29/#example-298)
 
 This markdown:
 
 
 ```markdown
-\	\A\a\ \3\φ\«
+\!\"\#\$\%\&\'\(\)\*\+\,\-\.\/\:\;\<\=\>\?\@\[\\\]\^\_\`\{\|\}\~
 
 ```
 
@@ -225,7 +261,43 @@ Gives this correct output:
 
 
 ```html
-<p>\	\A\a\ \3\φ\«</p>
+<p>!&quot;#$%&amp;'()*+,-./:;&lt;=&gt;?@[\]^_`{|}~</p>
+
+```
+
+### [Example 301](https://spec.commonmark.org/0.29/#example-301)
+
+This markdown:
+
+
+```markdown
+\\*emphasis*
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>\<em>emphasis</em></p>
+
+```
+
+### [Example 303](https://spec.commonmark.org/0.29/#example-303)
+
+This markdown:
+
+
+```markdown
+`` \[\` ``
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><code>\[\`</code></p>
 
 ```
 
@@ -839,6 +911,24 @@ Gives this correct output:
 
 ```
 
+### [Example 329](https://spec.commonmark.org/0.29/#example-329)
+
+This markdown:
+
+
+```markdown
+`` foo ` bar ``
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><code>foo ` bar</code></p>
+
+```
+
 ### [Example 332](https://spec.commonmark.org/0.29/#example-332)
 
 This markdown:
@@ -895,6 +985,48 @@ Gives this correct output:
 
 ```
 
+### [Example 335](https://spec.commonmark.org/0.29/#example-335)
+
+This markdown:
+
+
+```markdown
+``
+foo
+bar  
+baz
+``
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><code>foo bar   baz</code></p>
+
+```
+
+### [Example 336](https://spec.commonmark.org/0.29/#example-336)
+
+This markdown:
+
+
+```markdown
+``
+foo 
+``
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><code>foo </code></p>
+
+```
+
 ### [Example 337](https://spec.commonmark.org/0.29/#example-337)
 
 This markdown:
@@ -911,6 +1043,24 @@ Gives this correct output:
 
 ```html
 <p><code>foo   bar  baz</code></p>
+
+```
+
+### [Example 339](https://spec.commonmark.org/0.29/#example-339)
+
+This markdown:
+
+
+```markdown
+``foo`bar``
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><code>foo`bar</code></p>
 
 ```
 
@@ -1075,6 +1225,24 @@ Gives this correct output:
 
 ```html
 <p>aa_&quot;bb&quot;_cc</p>
+
+```
+
+### [Example 364](https://spec.commonmark.org/0.29/#example-364)
+
+This markdown:
+
+
+```markdown
+_foo*
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>_foo*</p>
 
 ```
 
@@ -1498,6 +1666,42 @@ Gives this correct output:
 
 ```
 
+### [Example 442](https://spec.commonmark.org/0.29/#example-442)
+
+This markdown:
+
+
+```markdown
+*foo**
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><em>foo</em>*</p>
+
+```
+
+### [Example 445](https://spec.commonmark.org/0.29/#example-445)
+
+This markdown:
+
+
+```markdown
+**foo***
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><strong>foo</strong>*</p>
+
+```
+
 ### [Example 447](https://spec.commonmark.org/0.29/#example-447)
 
 This markdown:
@@ -1567,6 +1771,24 @@ Gives this correct output:
 
 ```html
 <p><em>foo _bar</em> baz_</p>
+
+```
+
+### [Example 472](https://spec.commonmark.org/0.29/#example-472)
+
+This markdown:
+
+
+```markdown
+*[bar*](/url)
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>*<a href="/url">bar*</a></p>
 
 ```
 
@@ -1732,6 +1954,26 @@ Gives this correct output:
 <pre><code>&lt;
  &gt;
 </code></pre>
+
+```
+
+### [Example 91](https://spec.commonmark.org/0.29/#example-91)
+
+This markdown:
+
+
+```markdown
+``
+foo
+``
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><code>foo</code></p>
 
 ```
 
@@ -2007,24 +2249,6 @@ Gives this correct output:
 
 ```
 
-### [Example 641](https://spec.commonmark.org/0.29/#example-641)
-
-This markdown:
-
-
-```markdown
-foo\
-
-```
-
-Gives this correct output:
-
-
-```html
-<p>foo\</p>
-
-```
-
 ### [Example 642](https://spec.commonmark.org/0.29/#example-642)
 
 This markdown:
@@ -2040,24 +2264,6 @@ Gives this correct output:
 
 ```html
 <p>foo</p>
-
-```
-
-### [Example 643](https://spec.commonmark.org/0.29/#example-643)
-
-This markdown:
-
-
-```markdown
-### foo\
-
-```
-
-Gives this correct output:
-
-
-```html
-<h3>foo\</h3>
 
 ```
 
@@ -2299,6 +2505,60 @@ Gives this correct output:
 <p><a href="#fragment">link</a></p>
 <p><a href="http://example.com#fragment">link</a></p>
 <p><a href="http://example.com?foo=3#frag">link</a></p>
+
+```
+
+### [Example 511](https://spec.commonmark.org/0.29/#example-511)
+
+This markdown:
+
+
+```markdown
+[link \[bar](/uri)
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><a href="/uri">link [bar</a></p>
+
+```
+
+### [Example 517](https://spec.commonmark.org/0.29/#example-517)
+
+This markdown:
+
+
+```markdown
+*[foo*](/uri)
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>*<a href="/uri">foo*</a></p>
+
+```
+
+### [Example 518](https://spec.commonmark.org/0.29/#example-518)
+
+This markdown:
+
+
+```markdown
+[foo *bar](baz*)
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><a href="baz*">foo *bar</a></p>
 
 ```
 
@@ -2639,6 +2899,31 @@ Gives this correct output:
 <li></li>
 <li>bar</li>
 </ol>
+
+```
+
+### [Example 255](https://spec.commonmark.org/0.29/#example-255)
+
+This markdown:
+
+
+```markdown
+foo
+*
+
+foo
+1.
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>foo
+*</p>
+<p>foo
+1.</p>
 
 ```
 
@@ -3151,6 +3436,30 @@ Gives this correct output:
 bar</p>
 <hr />
 <p>baz</p>
+
+```
+
+### [Example 76](https://spec.commonmark.org/0.29/#example-76)
+
+This markdown:
+
+
+```markdown
+Foo
+bar
+\---
+baz
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>Foo
+bar
+---
+baz</p>
 
 ```
 

@@ -249,7 +249,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>Foo\</p><hr>
+ERROR Problem at row 4 Expecting Problem at row 1 Expecting character
 ```
 ## [Example 61](https://spec.commonmark.org/0.29/#example-61)
 
@@ -343,7 +343,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>\&gt; foo</p><hr>
+<p>&gt; foo</p><hr>
 ```
 ## [Example 73](https://spec.commonmark.org/0.29/#example-73)
 
@@ -391,27 +391,4 @@ But instead was:
 
 ```html
 <p>Foo bar</p><ul><li><em></em></li></ul><p>baz</p>
-```
-## [Example 76](https://spec.commonmark.org/0.29/#example-76)
-
-This markdown:
-
-```markdown
-Foo
-bar
-\---
-baz
-
-```
-
-Should give output:
-
-```html
-<p>Foo bar --- baz</p>
-```
-
-But instead was:
-
-```html
-<p>Foo bar \--- baz</p>
 ```

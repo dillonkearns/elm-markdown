@@ -100,26 +100,6 @@ But instead was:
 ```html
 <p>foo-_(bar)_</p>
 ```
-## [Example 364](https://spec.commonmark.org/0.29/#example-364)
-
-This markdown:
-
-```markdown
-_foo*
-
-```
-
-Should give output:
-
-```html
-<p>_foo*</p>
-```
-
-But instead was:
-
-```html
-<p>_foo</p>
-```
 ## [Example 365](https://spec.commonmark.org/0.29/#example-365)
 
 This markdown:
@@ -419,7 +399,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><em>(</em><strong>foo</strong><em>)</em></p>
+<p><em>(</em><em>foo</em><em>)</em></p>
 ```
 ## [Example 393](https://spec.commonmark.org/0.29/#example-393)
 
@@ -440,7 +420,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><strong>Gomphocarpus (</strong><strong>Gomphocarpus physocarpus</strong><strong>, syn.</strong><strong>Asclepias physocarpa</strong><strong>)</strong></p>
+<p><strong>Gomphocarpus (*Gomphocarpus physocarpus*, syn. *Asclepias physocarpa*)</strong></p>
 ```
 ## [Example 394](https://spec.commonmark.org/0.29/#example-394)
 
@@ -460,7 +440,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><strong>foo &quot;</strong><strong>bar</strong><strong>&quot; foo</strong></p>
+<p><strong>foo &quot;*bar*&quot; foo</strong></p>
 ```
 ## [Example 398](https://spec.commonmark.org/0.29/#example-398)
 
@@ -540,7 +520,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><em>foo</em><a href="/url">bar</a></p>
+<p>*foo<a href="/url">bar</a>*</p>
 ```
 ## [Example 405](https://spec.commonmark.org/0.29/#example-405)
 
@@ -620,7 +600,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><em>foo</em>bar</p>
+ERROR Problem at row 3 Expecting Problem at row 1 Expecting **
 ```
 ## [Example 409](https://spec.commonmark.org/0.29/#example-409)
 
@@ -640,7 +620,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><em>foo</em><strong>bar</strong><em>baz</em></p>
+<p><em>foo</em><em>bar</em><em>baz</em></p>
 ```
 ## [Example 410](https://spec.commonmark.org/0.29/#example-410)
 
@@ -660,7 +640,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><em>foo</em><strong>bar</strong><em>baz</em></p>
+<p><em>foo</em><em>bar</em><em>baz</em></p>
 ```
 ## [Example 411](https://spec.commonmark.org/0.29/#example-411)
 
@@ -680,7 +660,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><em>foo</em><strong>bar</strong></p>
+<p><em>foo</em><em>bar</em></p>
 ```
 ## [Example 412](https://spec.commonmark.org/0.29/#example-412)
 
@@ -720,7 +700,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><em>foo</em><strong>bar</strong></p>
+ERROR Problem at row 3 Expecting Problem at row 1 Expecting **
 ```
 ## [Example 414](https://spec.commonmark.org/0.29/#example-414)
 
@@ -740,7 +720,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><em>foo</em><strong>bar</strong></p>
+ERROR Problem at row 3 Expecting Problem at row 1 Expecting **
 ```
 ## [Example 415](https://spec.commonmark.org/0.29/#example-415)
 
@@ -760,7 +740,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>foo<strong>bar</strong>baz</p>
+<p>foo<strong>*bar</strong>*baz</p>
 ```
 ## [Example 416](https://spec.commonmark.org/0.29/#example-416)
 
@@ -780,7 +760,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>foo<strong>bar</strong><strong>baz</strong></p>
+ERROR Problem at row 3 Expecting Problem at row 1 Expecting **
 ```
 ## [Example 417](https://spec.commonmark.org/0.29/#example-417)
 
@@ -800,7 +780,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><em>foo</em><strong>bar</strong><strong>baz</strong><strong>bim</strong><em>bop</em></p>
+<p><em>foo</em><em>bar</em>baz<em>bim</em><em>bop</em></p>
 ```
 ## [Example 418](https://spec.commonmark.org/0.29/#example-418)
 
@@ -820,7 +800,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><em>foo</em><a href="/url"><em>bar</em></a></p>
+<p>*foo<a href="/url"><em>bar</em></a>*</p>
 ```
 ## [Example 419](https://spec.commonmark.org/0.29/#example-419)
 
@@ -840,7 +820,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><strong>is not an empty emphasis</strong></p>
+ERROR Problem at row 3 Expecting Problem at row 1 Expecting **
 ```
 ## [Example 420](https://spec.commonmark.org/0.29/#example-420)
 
@@ -880,7 +860,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><strong>foo</strong><a href="/url">bar</a></p>
+<p><strong>foo [bar](/url)</strong></p>
 ```
 ## [Example 423](https://spec.commonmark.org/0.29/#example-423)
 
@@ -960,7 +940,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><strong>foo</strong>bar</p>
+<p><strong>foo</strong>bar<strong></strong></p>
 ```
 ## [Example 427](https://spec.commonmark.org/0.29/#example-427)
 
@@ -980,7 +960,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><strong>foo</strong><strong>bar</strong><strong>baz</strong></p>
+<p><strong>foo *bar* baz</strong></p>
 ```
 ## [Example 428](https://spec.commonmark.org/0.29/#example-428)
 
@@ -1000,7 +980,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><strong>foo</strong><strong>bar</strong><strong>baz</strong></p>
+<p><strong>foo*bar*baz</strong></p>
 ```
 ## [Example 429](https://spec.commonmark.org/0.29/#example-429)
 
@@ -1040,7 +1020,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><strong>foo</strong><strong>bar</strong></p>
+<p><strong>foo *bar</strong>*</p>
 ```
 ## [Example 431](https://spec.commonmark.org/0.29/#example-431)
 
@@ -1061,7 +1041,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><strong>foo</strong><strong>bar</strong><em>baz</em><strong>bim</strong><strong>bop</strong></p>
+<p><strong>foo *bar</strong>baz<strong>bim* bop</strong></p>
 ```
 ## [Example 432](https://spec.commonmark.org/0.29/#example-432)
 
@@ -1081,7 +1061,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><strong>foo</strong><a href="/url"><em>bar</em></a></p>
+<p><strong>foo [*bar*](/url)</strong></p>
 ```
 ## [Example 434](https://spec.commonmark.org/0.29/#example-434)
 
@@ -1121,7 +1101,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>foo</p>
+ERROR Problem at row 3 Expecting Problem at row 1 Expecting **
 ```
 ## [Example 436](https://spec.commonmark.org/0.29/#example-436)
 
@@ -1141,7 +1121,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>foo<em>\</em></p>
+<p>foo *</p>
 ```
 ## [Example 438](https://spec.commonmark.org/0.29/#example-438)
 
@@ -1161,7 +1141,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>foo</p>
+<p>foo<strong></strong>*</p>
 ```
 ## [Example 439](https://spec.commonmark.org/0.29/#example-439)
 
@@ -1181,7 +1161,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>foo<strong>\</strong></p>
+<p>foo<strong>\</strong>*</p>
 ```
 ## [Example 441](https://spec.commonmark.org/0.29/#example-441)
 
@@ -1201,27 +1181,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><strong>foo</strong></p>
-```
-## [Example 442](https://spec.commonmark.org/0.29/#example-442)
-
-This markdown:
-
-```markdown
-*foo**
-
-```
-
-Should give output:
-
-```html
-<p><em>foo</em>*</p>
-```
-
-But instead was:
-
-```html
-<p><em>foo</em></p>
+ERROR Problem at row 3 Expecting Problem at row 1 Expecting **
 ```
 ## [Example 443](https://spec.commonmark.org/0.29/#example-443)
 
@@ -1263,26 +1223,6 @@ But instead was:
 ```html
 ERROR Problem at row 1 Expecting end Problem at row 1 Expecting newline
 ```
-## [Example 445](https://spec.commonmark.org/0.29/#example-445)
-
-This markdown:
-
-```markdown
-**foo***
-
-```
-
-Should give output:
-
-```html
-<p><strong>foo</strong>*</p>
-```
-
-But instead was:
-
-```html
-<p><strong>foo</strong></p>
-```
 ## [Example 446](https://spec.commonmark.org/0.29/#example-446)
 
 This markdown:
@@ -1301,7 +1241,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><em>foo</em></p>
+ERROR Problem at row 3 Expecting Problem at row 1 Expecting **
 ```
 ## [Example 448](https://spec.commonmark.org/0.29/#example-448)
 
@@ -1321,7 +1261,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>foo _\__</p>
+<p>foo ___</p>
 ```
 ## [Example 449](https://spec.commonmark.org/0.29/#example-449)
 
@@ -1341,7 +1281,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>foo _<em>_</em></p>
+<p>foo _*_</p>
 ```
 ## [Example 451](https://spec.commonmark.org/0.29/#example-451)
 
@@ -1361,7 +1301,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>foo __\___</p>
+<p>foo _____</p>
 ```
 ## [Example 452](https://spec.commonmark.org/0.29/#example-452)
 
@@ -1381,7 +1321,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>foo __<em>__</em></p>
+<p>foo __*__</p>
 ```
 ## [Example 453](https://spec.commonmark.org/0.29/#example-453)
 
@@ -1681,7 +1621,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><em>foo __bar</em>baz bim__ bam</p>
+<p><em>foo __bar</em>baz bim__ bam*</p>
 ```
 ## [Example 470](https://spec.commonmark.org/0.29/#example-470)
 
@@ -1701,7 +1641,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><strong>foo</strong>bar baz</p>
+ERROR Problem at row 3 Expecting Problem at row 1 Expecting **
 ```
 ## [Example 471](https://spec.commonmark.org/0.29/#example-471)
 
@@ -1721,27 +1661,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><em>foo</em>bar baz</p>
-```
-## [Example 472](https://spec.commonmark.org/0.29/#example-472)
-
-This markdown:
-
-```markdown
-*[bar*](/url)
-
-```
-
-Should give output:
-
-```html
-<p>*<a href="/url">bar*</a></p>
-```
-
-But instead was:
-
-```html
-<p><a href="/url">bar</a></p>
+<p><em>foo</em>bar baz*</p>
 ```
 ## [Example 474](https://spec.commonmark.org/0.29/#example-474)
 
@@ -1821,7 +1741,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><em>a</em><em>*</em></p>
+<p><em><code>*</code></em></p>
 ```
 ## [Example 478](https://spec.commonmark.org/0.29/#example-478)
 

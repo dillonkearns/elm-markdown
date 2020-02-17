@@ -20,7 +20,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>--<strong>__</strong></p>
+ERROR Problem at row 7 Expecting Problem at row 1 Expecting **
 ```
 ## [Example 19](https://spec.commonmark.org/0.29/#example-19)
 
@@ -81,7 +81,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><strong></strong><strong></strong><em></em><strong></strong><strong></strong></p>
+ERROR Problem at row 3 Expecting Problem at row 1 Expecting **
 ```
 ## [Example 23](https://spec.commonmark.org/0.29/#example-23)
 
@@ -210,5 +210,5 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li>Foo</li><li><em></em></li></ul>
+<ul><li>Foo</li><li><em></em>*</li></ul>
 ```

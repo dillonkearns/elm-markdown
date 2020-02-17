@@ -1,25 +1,5 @@
 # GFM - Code spans
 
-## [Example 329](https://spec.commonmark.org/0.29/#example-329)
-
-This markdown:
-
-```markdown
-`` foo ` bar ``
-
-```
-
-Should give output:
-
-```html
-<p><code>foo ` bar</code></p>
-```
-
-But instead was:
-
-```html
-ERROR Problem at row 3 Expecting Problem at row 1 Expecting `
-```
 ## [Example 330](https://spec.commonmark.org/0.29/#example-330)
 
 This markdown:
@@ -60,52 +40,6 @@ But instead was:
 ```html
 <p><code></code><code></code></p>
 ```
-## [Example 335](https://spec.commonmark.org/0.29/#example-335)
-
-This markdown:
-
-```markdown
-``
-foo
-bar  
-baz
-``
-
-```
-
-Should give output:
-
-```html
-<p><code>foo bar baz</code></p>
-```
-
-But instead was:
-
-```html
-<p>foo bar baz</p>
-```
-## [Example 336](https://spec.commonmark.org/0.29/#example-336)
-
-This markdown:
-
-```markdown
-``
-foo 
-``
-
-```
-
-Should give output:
-
-```html
-<p><code>foo</code></p>
-```
-
-But instead was:
-
-```html
-<p>foo</p>
-```
 ## [Example 338](https://spec.commonmark.org/0.29/#example-338)
 
 This markdown:
@@ -119,26 +53,6 @@ Should give output:
 
 ```html
 <p><code>foo\</code>bar`</p>
-```
-
-But instead was:
-
-```html
-ERROR Problem at row 3 Expecting Problem at row 1 Expecting `
-```
-## [Example 339](https://spec.commonmark.org/0.29/#example-339)
-
-This markdown:
-
-```markdown
-``foo`bar``
-
-```
-
-Should give output:
-
-```html
-<p><code>foo`bar</code></p>
 ```
 
 But instead was:
@@ -184,27 +98,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><em>foo</em><em>*</em></p>
-```
-## [Example 342](https://spec.commonmark.org/0.29/#example-342)
-
-This markdown:
-
-```markdown
-[not a `link](/foo`)
-
-```
-
-Should give output:
-
-```html
-<p>[not a<code>link](/foo</code>)</p>
-```
-
-But instead was:
-
-```html
-ERROR Problem at row 1 Expecting `
+<p><em><code>*</code></em></p>
 ```
 ## [Example 343](https://spec.commonmark.org/0.29/#example-343)
 

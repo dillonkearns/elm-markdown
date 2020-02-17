@@ -62,7 +62,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>| f\|oo | | ------ | | b<code>\|</code>az | | b<strong>\|</strong>im |</p>
+<p>| f|oo | | ------ | | b<code>\|</code>az | | b<strong>\|</strong>im |</p>
 ```
 ## [Example 201](https://github.github.com/gfm/#example-201)
 

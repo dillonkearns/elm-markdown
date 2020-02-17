@@ -320,7 +320,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 13 Expecting Problem at row 1 Expecting `
+ERROR Problem at row 13 Expecting Problem at row 1 Expecting ``
 ```
 ## [Example 289](https://spec.commonmark.org/0.29/#example-289)
 
@@ -437,7 +437,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 10 Expecting Problem at row 1 Expecting `
+ERROR Problem at row 10 Expecting Problem at row 1 Expecting ``
 ```
 ## [Example 295](https://spec.commonmark.org/0.29/#example-295)
 
@@ -460,7 +460,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li>foo</li></ul><p><em>bar</em></p><p>baz</p>
+<ul><li>foo</li></ul><p>* bar</p><p>baz</p>
 ```
 ## [Example 296](https://spec.commonmark.org/0.29/#example-296)
 

@@ -22,5 +22,5 @@ Should give output:
 But instead was:
 
 ```html
-<p><em>item1</em></p><pre><code>* item2</code></pre><p>text</p>
+<p>* item1</p><pre><code>* item2</code></pre><p>text</p>
 ```

@@ -18,7 +18,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><img src="/url \" title\""=""></p>
+ERROR Problem at row 3 Expecting Problem at row 1 Link destinations can&#39;t contain whitespace, if you would like to include them please wrap your URL with &lt; .. &gt;
 ```
 ## [Example 569](https://spec.commonmark.org/0.29/#example-569)
 
@@ -41,46 +41,6 @@ But instead was:
 
 ```html
 ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
-```
-## [Example 570](https://spec.commonmark.org/0.29/#example-570)
-
-This markdown:
-
-```markdown
-![foo ![bar](/url)](/url2)
-
-```
-
-Should give output:
-
-```html
-<p><img alt="foo bar" src="/url2"></p>
-```
-
-But instead was:
-
-```html
-<p><img src="/url">](/url2)</p>
-```
-## [Example 571](https://spec.commonmark.org/0.29/#example-571)
-
-This markdown:
-
-```markdown
-![foo [bar](/url)](/url2)
-
-```
-
-Should give output:
-
-```html
-<p><img alt="foo bar" src="/url2"></p>
-```
-
-But instead was:
-
-```html
-<p><img src="/url">](/url2)</p>
 ```
 ## [Example 572](https://spec.commonmark.org/0.29/#example-572)
 
@@ -144,7 +104,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><img src="train.jpg"></p>
+<p>!<a href="train.jpg">foo</a></p>
 ```
 ## [Example 575](https://spec.commonmark.org/0.29/#example-575)
 
@@ -164,7 +124,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>My<img "="" src="/path/to/train.jpg  \" title\"=""></p>
+ERROR Problem at row 3 Expecting Problem at row 1 Link destinations can&#39;t contain whitespace, if you would like to include them please wrap your URL with &lt; .. &gt;
 ```
 ## [Example 576](https://spec.commonmark.org/0.29/#example-576)
 
@@ -184,7 +144,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><img src="&lt;url&gt;"></p>
+<p>!<a href="url">foo</a></p>
 ```
 ## [Example 577](https://spec.commonmark.org/0.29/#example-577)
 
@@ -204,7 +164,7 @@ Should give output:
 But instead was:
 
 ```html
-
+<p>!<a href="/url"></a></p>
 ```
 ## [Example 578](https://spec.commonmark.org/0.29/#example-578)
 

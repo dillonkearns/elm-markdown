@@ -19,5 +19,5 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 4 Expecting Problem at row 1 Expecting `
+ERROR Problem at row 4 Expecting Problem at row 1 Expecting ``
 ```

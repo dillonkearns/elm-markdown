@@ -1,24 +1,24 @@
 # GFM - Backslash escapes
 
-## [Example 298](https://spec.commonmark.org/0.29/#example-298)
+## [Example 299](https://spec.commonmark.org/0.29/#example-299)
 
 This markdown:
 
 ```markdown
-\!\"\#\$\%\&\'\(\)\*\+\,\-\.\/\:\;\<\=\>\?\@\[\\\]\^\_\`\{\|\}\~
+\	\A\a\ \3\φ\«
 
 ```
 
 Should give output:
 
 ```html
-<p>!&quot;#$%&amp;&#39;()*+,-./:;&lt;=&gt;?@[\]^_`{|}~</p>
+<p>\ \A\a\ \3\φ\«</p>
 ```
 
 But instead was:
 
 ```html
-ERROR Problem at row 3 Expecting Problem at row 1 Expecting symbol (
+<p>Aa 3φ«</p>
 ```
 ## [Example 300](https://spec.commonmark.org/0.29/#example-300)
 
@@ -46,27 +46,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 19 Expecting Problem at row 1 Expecting symbol (
-```
-## [Example 301](https://spec.commonmark.org/0.29/#example-301)
-
-This markdown:
-
-```markdown
-\\*emphasis*
-
-```
-
-Should give output:
-
-```html
-<p>\<em>emphasis</em></p>
-```
-
-But instead was:
-
-```html
-<p>\\<em>emphasis</em></p>
+ERROR Problem at row 19 Expecting Problem at row 1 Expecting `
 ```
 ## [Example 302](https://spec.commonmark.org/0.29/#example-302)
 
@@ -87,27 +67,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>foo\ bar</p>
-```
-## [Example 303](https://spec.commonmark.org/0.29/#example-303)
-
-This markdown:
-
-```markdown
-`` \[\` ``
-
-```
-
-Should give output:
-
-```html
-<p><code>\[\`</code></p>
-```
-
-But instead was:
-
-```html
-ERROR Problem at row 3 Expecting Problem at row 1 Expecting symbol ]
+<p>foo bar</p>
 ```
 ## [Example 306](https://spec.commonmark.org/0.29/#example-306)
 

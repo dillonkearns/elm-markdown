@@ -111,11 +111,13 @@ suite =
                 "*`italic codespan`*"
                     |> expectInlines
                         [ Block.Italic <| Block.CodeSpan "italic codespan" ]
-        , test "unlike GFM and commonmark, elm-markdown parses image alt as raw text" <|
-            \() ->
-                "![foo ![bar](/url)](/url2)\n"
-                    |> expectInlines
-                        [ Block.Italic <| Block.Image { src = "/url2", alt = "foo ![bar](/url)" } ]
+
+        --, skip <|
+        --    test "unlike GFM and commonmark, elm-markdown parses image alt as raw text" <|
+        --        \() ->
+        --            "![foo ![bar](/url)](/url2)\n"
+        --                |> expectInlines
+        --                    [ Block.Italic <| Block.Image { src = "/url2", alt = "foo ![bar](/url)" } ]
         , test "backslash escape" <|
             \() ->
                 "\\\\"
@@ -134,6 +136,10 @@ suite =
             \() ->
                 "foo\\\n"
                     |> expectInlines [ Block.Text "foo\\" ]
+        , test "escaping italics" <|
+            \() ->
+                "\\*not emphasized*"
+                    |> expectInlines [ Block.Text "*not emphasized*" ]
 
         --, only <|
         --    test "unknown" <|

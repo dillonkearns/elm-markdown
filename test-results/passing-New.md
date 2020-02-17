@@ -32,6 +32,26 @@ Gives this correct output:
 
 ```
 
+## escaped_angles
+
+### Example undefined
+
+This markdown:
+
+
+```markdown
+\>
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>&gt;</p>
+
+```
+
 ## lazy_blockquotes
 
 ### Example undefined
@@ -53,6 +73,26 @@ Gives this correct output:
   <p>hi there
 bud</p>
 </blockquote>
+
+```
+
+## not_a_link
+
+### Example undefined
+
+This markdown:
+
+
+```markdown
+\[test](not a link)
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>[test](not a link)</p>
 
 ```
 

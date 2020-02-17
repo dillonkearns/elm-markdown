@@ -222,7 +222,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><a href="foo\">link</a>\:)</p>
+<p><a href="foo\">link</a>:)</p>
 ```
 ## [Example 498](https://spec.commonmark.org/0.29/#example-498)
 
@@ -467,46 +467,6 @@ But instead was:
 ```html
 ERROR Problem at row 3 Expecting Problem at row 1 Expecting symbol (
 ```
-## [Example 510](https://spec.commonmark.org/0.29/#example-510)
-
-This markdown:
-
-```markdown
-[link [bar](/uri)
-
-```
-
-Should give output:
-
-```html
-<p>[link<a href="/uri">bar</a></p>
-```
-
-But instead was:
-
-```html
-ERROR Problem at row 1 Expecting symbol ]
-```
-## [Example 511](https://spec.commonmark.org/0.29/#example-511)
-
-This markdown:
-
-```markdown
-[link \[bar](/uri)
-
-```
-
-Should give output:
-
-```html
-<p><a href="/uri">link [bar</a></p>
-```
-
-But instead was:
-
-```html
-ERROR Problem at row 1 Expecting symbol ]
-```
 ## [Example 512](https://spec.commonmark.org/0.29/#example-512)
 
 This markdown:
@@ -525,127 +485,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><a href="/uri">link<em>foo</em><strong>bar</strong><em></em><em>#</em></a></p>
-```
-## [Example 513](https://spec.commonmark.org/0.29/#example-513)
-
-This markdown:
-
-```markdown
-[![moon](moon.jpg)](/uri)
-
-```
-
-Should give output:
-
-```html
-<p><a href="/uri"><img alt="moon" src="moon.jpg"></a></p>
-```
-
-But instead was:
-
-```html
-ERROR Problem at row 1 Expecting symbol ]
-```
-## [Example 514](https://spec.commonmark.org/0.29/#example-514)
-
-This markdown:
-
-```markdown
-[foo [bar](/uri)](/uri)
-
-```
-
-Should give output:
-
-```html
-<p>[foo<a href="/uri">bar</a>](/uri)</p>
-```
-
-But instead was:
-
-```html
-ERROR Problem at row 1 Expecting symbol ]
-```
-## [Example 515](https://spec.commonmark.org/0.29/#example-515)
-
-This markdown:
-
-```markdown
-[foo *[bar [baz](/uri)](/uri)*](/uri)
-
-```
-
-Should give output:
-
-```html
-<p>[foo<em>[bar<a href="/uri">baz</a>](/uri)</em>](/uri)</p>
-```
-
-But instead was:
-
-```html
-ERROR Problem at row 1 Expecting symbol ]
-```
-## [Example 516](https://spec.commonmark.org/0.29/#example-516)
-
-This markdown:
-
-```markdown
-![[[foo](uri1)](uri2)](uri3)
-
-```
-
-Should give output:
-
-```html
-<p><img alt="[foo](uri2)" src="uri3"></p>
-```
-
-But instead was:
-
-```html
-<p><img src="uri1">](uri2)](uri3)</p>
-```
-## [Example 517](https://spec.commonmark.org/0.29/#example-517)
-
-This markdown:
-
-```markdown
-*[foo*](/uri)
-
-```
-
-Should give output:
-
-```html
-<p>*<a href="/uri">foo*</a></p>
-```
-
-But instead was:
-
-```html
-<p><a href="/uri">foo</a></p>
-```
-## [Example 518](https://spec.commonmark.org/0.29/#example-518)
-
-This markdown:
-
-```markdown
-[foo *bar](baz*)
-
-```
-
-Should give output:
-
-```html
-<p><a href="baz*">foo *bar</a></p>
-```
-
-But instead was:
-
-```html
-<p><a href="baz*">foo<em>bar</em></a></p>
+<p><a href="/uri">link<em>foo</em><em>bar</em><em><code>#</code></em></a></p>
 ```
 ## [Example 519](https://spec.commonmark.org/0.29/#example-519)
 
@@ -686,26 +526,6 @@ But instead was:
 
 ```html
 <p><a href="baz">foo &lt;bar attr=&quot;</a>&quot;&gt;</p>
-```
-## [Example 521](https://spec.commonmark.org/0.29/#example-521)
-
-This markdown:
-
-```markdown
-[foo`](/uri)`
-
-```
-
-Should give output:
-
-```html
-<p>[foo<code>](/uri)</code></p>
-```
-
-But instead was:
-
-```html
-ERROR Problem at row 3 Expecting Problem at row 1 Expecting `
 ```
 ## [Example 522](https://spec.commonmark.org/0.29/#example-522)
 

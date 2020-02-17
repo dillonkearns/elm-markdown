@@ -137,8 +137,8 @@ parse =
 --    )
 
 
-topLevelParseHelp : State -> Parser (Step State (List Block.Inline))
-topLevelParseHelp (( inlineStyle, soFar, allFailed ) as state) =
+linkParser : State -> Parser (Step State (List Block.Inline))
+linkParser (( inlineStyle, soFar, allFailed ) as state) =
     succeed
         (\description destination ->
             let
@@ -155,8 +155,15 @@ topLevelParseHelp (( inlineStyle, soFar, allFailed ) as state) =
                 ( { isBold = False
                   , isItalic = False
                   }
-                , Block.Link { href = destination } parsedInnerInlines
-                    :: soFar
+                , case blockFromState state of
+                    Just addBlock ->
+                        Block.Link { href = destination } parsedInnerInlines
+                            :: addBlock
+                            :: soFar
+
+                    Nothing ->
+                        Block.Link { href = destination } parsedInnerInlines
+                            :: soFar
                 , Nothing
                 )
         )
@@ -167,6 +174,16 @@ topLevelParseHelp (( inlineStyle, soFar, allFailed ) as state) =
         |. symbol (Token "(" (Parser.ExpectingSymbol "("))
         |= linkDestination
         |. symbol (Token ")" (Parser.ExpectingSymbol ")"))
+
+
+blockFromState : State -> Maybe Block.Inline
+blockFromState ( inlineStyle, _, unusedText ) =
+    if inlineStyle.isItalic then
+        unusedText
+            |> Maybe.map Block.Text
+
+    else
+        Nothing
 
 
 linkDestination : Parser String
@@ -259,7 +276,7 @@ parseHelpNew (( inlineStyle, soFar, allFailed ) as state) =
                 [ succeed True |. end (Parser.Expecting "End of italic")
                 , succeed False
                 ]
-        , topLevelParseHelp state
+        , linkParser state
         , succeed
             (\rawCode ->
                 addToLoop <| Block.CodeSpan rawCode
@@ -310,7 +327,9 @@ parseHelpNew (( inlineStyle, soFar, allFailed ) as state) =
 
                             --, succeed
                             --    ("*" ++ stringSoFar |> Block.Text |> addToLoop)
-                            , succeed <| Loop ( { inlineStyle | isItalic = True }, soFar, Just stringSoFar )
+                            -- TODO need to store the pending literal "*"  separately from the text
+                            -- (in some cases, the * will be ignored and the text will turn into italics, right?)
+                            , succeed <| Loop ( { inlineStyle | isItalic = True }, soFar, Just ("*" ++ stringSoFar) )
                             ]
                     )
 

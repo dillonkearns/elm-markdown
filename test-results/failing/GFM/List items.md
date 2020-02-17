@@ -328,7 +328,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>- foo -<code>bar</code>-</p><pre><code>baz</code></pre>
+ERROR Problem at row 17 Expecting Problem at row 1 Expecting `
 ```
 ## [Example 249](https://spec.commonmark.org/0.29/#example-249)
 
@@ -391,31 +391,7 @@ Should give output:
 But instead was:
 
 ```html
-
-```
-## [Example 255](https://spec.commonmark.org/0.29/#example-255)
-
-This markdown:
-
-```markdown
-foo
-*
-
-foo
-1.
-
-```
-
-Should give output:
-
-```html
-<p>foo *</p><p>foo 1.</p>
-```
-
-But instead was:
-
-```html
-<p>foo</p><p>foo 1.</p>
+<p>*</p>
 ```
 ## [Example 256](https://spec.commonmark.org/0.29/#example-256)
 

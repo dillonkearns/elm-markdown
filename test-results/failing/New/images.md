@@ -26,5 +26,5 @@ Should give output:
 But instead was:
 
 ```html
-<p><img src="javascript:alert"></p><p><img src="vbscript:alert"></p><p><img src="javascript:alert(1)"></p><p><img src="javascript:document;alert(1)"></p><p><img src="data:text/html;base64,PHNjcmlwdD5hbGVydCgnWFNTJyk8L3NjcmlwdD4K"></p>
+<p>!<a href="javascript:alert">Image</a></p><p>!<a href="vbscript:alert">Image</a></p><p>!<a href="javascript:alert(1)">Image</a></p><p>!<a href="javascript:document;alert(1)">Image</a></p><p>!<a href="data:text/html;base64,PHNjcmlwdD5hbGVydCgnWFNTJyk8L3NjcmlwdD4K">Image</a></p>
 ```
