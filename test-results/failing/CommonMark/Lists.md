@@ -50,32 +50,6 @@ But instead was:
 ```html
 <ul><li>foo</li></ul><p>- bar</p><pre><code>- baz</code></pre><pre><code>bim</code></pre>
 ```
-## [Example 278](https://spec.commonmark.org/0.29/#example-278)
-
-This markdown:
-
-```markdown
-- foo
-- bar
-
-<!-- -->
-
-- baz
-- bim
-
-```
-
-Should give output:
-
-```html
-<ul><li>foo</li><li>bar</li></ul><ul><li>baz</li><li>bim</li></ul>
-```
-
-But instead was:
-
-```html
-ERROR Problem at row 6 Expecting symbol =
-```
 ## [Example 279](https://spec.commonmark.org/0.29/#example-279)
 
 This markdown:
@@ -102,7 +76,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 10 Expecting symbol =
+<ul><li>foo</li></ul><pre><code>notcode</code></pre><ul><li>foo</li></ul><pre><code>code</code></pre>
 ```
 ## [Example 280](https://spec.commonmark.org/0.29/#example-280)
 

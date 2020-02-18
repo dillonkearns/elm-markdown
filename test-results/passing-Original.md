@@ -143,6 +143,50 @@ all contain trailing spaces
 
 ```
 
+## inline_html_comments
+
+### Example undefined
+
+This markdown:
+
+
+```markdown
+Paragraph one.
+
+<!-- This is a simple comment -->
+
+<!--
+	This is another comment.
+-->
+
+Paragraph two.
+
+<!-- one comment block -- -- with two comments -->
+
+The end.
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>Paragraph one.</p>
+
+<!-- This is a simple comment -->
+
+<!--
+    This is another comment.
+-->
+
+<p>Paragraph two.</p>
+
+<!-- one comment block -- -- with two comments -->
+
+<p>The end.</p>
+
+```
+
 ## nested_blockquotes
 
 ### Example undefined

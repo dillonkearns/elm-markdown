@@ -20,6 +20,21 @@ suite =
             \() ->
                 """<div></div>"""
                     |> expectHtml (XmlParser.Element "div" [] [])
+        , test "empty comment" <|
+            \() ->
+                """<!---->"""
+                    |> expectHtml (XmlParser.Comment "")
+        , test "simple comment" <|
+            \() ->
+                """<!-- hello! -->"""
+                    |> expectHtml (XmlParser.Comment " hello! ")
+        , test "multi-line comment" <|
+            \() ->
+                """<!--
+hello!
+next line
+-->"""
+                    |> expectHtml (XmlParser.Comment "\nhello!\nnext line\n")
         ]
 
 

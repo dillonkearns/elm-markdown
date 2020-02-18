@@ -217,6 +217,7 @@
       122,
       123,
       124,
+      148,
       157
     ],
     "Hard line breaks": [
@@ -320,6 +321,7 @@
       273,
       274,
       275,
+      278,
       292
     ],
     "Paragraphs": [
@@ -596,6 +598,7 @@
       122,
       123,
       124,
+      148,
       157
     ],
     "Hard line breaks": [
@@ -699,6 +702,7 @@
       273,
       274,
       275,
+      278,
       292
     ],
     "Paragraphs": [
@@ -815,6 +819,9 @@
       null
     ],
     "code_blocks": [
+      null
+    ],
+    "inline_html_comments": [
       null
     ],
     "nested_blockquotes": [

@@ -16,6 +16,7 @@ type RawBlock
     = Heading Int UnparsedInlines
     | Body UnparsedInlines
     | Html String (List Attribute) (List Block)
+    | HtmlComment String
     | UnorderedListBlock
         (List
             { task : Maybe Bool

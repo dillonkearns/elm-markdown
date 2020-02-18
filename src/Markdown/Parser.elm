@@ -371,6 +371,11 @@ renderHelper renderer blocks =
                     renderHelper renderer nestedBlocks
                         |> combineResults
                         |> Result.map renderer.blockQuote
+
+                Block.HtmlComment string ->
+                    -- TODO @@@@@@@@ this should be skipped...
+                    -- if you want to do something with HTML comments, you sould do so with the AST parsing.
+                    Ok renderer.thematicBreak
         )
         blocks
 
@@ -546,6 +551,9 @@ parseInlines rawBlock =
                 Err error ->
                     Advanced.problem (Parser.Problem (deadEndsToString error))
 
+        HtmlComment string ->
+            succeed Nothing
+
 
 just value =
     succeed (Just value)
@@ -677,6 +685,9 @@ xmlNodeToHtmlNode parser =
                                 )
                         )
                         (nodesToBlocksParser children)
+
+                Comment string ->
+                    succeed <| HtmlComment string
         )
         parser
 
@@ -727,6 +738,9 @@ childToParser node =
                                 |> String.join "\n"
                             )
                         )
+
+        Comment string ->
+            succeed [ Block.HtmlComment string ]
 
 
 multiParser2 : Parser (List Block)

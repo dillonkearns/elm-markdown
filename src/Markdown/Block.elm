@@ -46,11 +46,23 @@ In the simplest case, you can pass this directly to a renderer:
             Err errors ->
                 Html.text "Encountered parsing errors."
 
+
+## `HtmlComment`s
+
+`HtmlComment`s contain the raw comment text, completely unprocessed. That means
+you'll need to trim it if you want to strip the leading or trailing whitespace.
+
+Renderer's do not process `HtmlComment`s. If you want to do any special processing
+based on HTML comments, you can inspect the `Markdown.Block.Block`s before rendering
+it and perform any special processing based on that. You could even add or remove
+`Block`s, for example, based on the presence of certain comment values.
+
 -}
 type Block
     = Heading Int (List Inline)
     | Body (List Inline)
     | Html String (List Attribute) (List Block)
+    | HtmlComment String
     | UnorderedListBlock
         (List
             { task : Maybe Bool

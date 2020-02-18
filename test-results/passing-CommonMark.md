@@ -3838,6 +3838,32 @@ Gives this correct output:
 
 ```
 
+### [Example 148](https://spec.commonmark.org/0.29/#example-148)
+
+This markdown:
+
+
+```markdown
+<!-- Foo
+
+bar
+   baz -->
+okay
+
+```
+
+Gives this correct output:
+
+
+```html
+<!-- Foo
+
+bar
+   baz -->
+<p>okay</p>
+
+```
+
 ### [Example 157](https://spec.commonmark.org/0.29/#example-157)
 
 This markdown:
@@ -5602,6 +5628,38 @@ Gives this correct output:
 <ol>
 <li>The number of doors is 6.</li>
 </ol>
+
+```
+
+### [Example 278](https://spec.commonmark.org/0.29/#example-278)
+
+This markdown:
+
+
+```markdown
+- foo
+- bar
+
+<!-- -->
+
+- baz
+- bim
+
+```
+
+Gives this correct output:
+
+
+```html
+<ul>
+<li>foo</li>
+<li>bar</li>
+</ul>
+<!-- -->
+<ul>
+<li>baz</li>
+<li>bim</li>
+</ul>
 
 ```
 

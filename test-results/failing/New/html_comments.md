@@ -72,5 +72,5 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 4 Expecting symbol =
+<h3>Example 1</h3><h3>Example 2</h3><h3>Example 3</h3><h3>Example 4</h3><h3>Example 5</h3><h3>Example 6</h3><h3>Example 7</h3><h3>Example 8</h3><h3>Example 9</h3><h3>Example 10</h3><h3>Example 11</h3><p>&lt;!-- indented comment --&gt;</p><pre><code>&lt;!-- too much indentation --&gt;</code></pre><h3>Example 12</h3><p>--&gt;</p>
 ```

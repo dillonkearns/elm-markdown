@@ -585,7 +585,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 1 Expecting symbol =
+<p><em>bar</em><em>baz</em></p>
 ```
 ## [Example 147](https://spec.commonmark.org/0.29/#example-147)
 
@@ -608,30 +608,6 @@ But instead was:
 
 ```html
 ERROR oneOf failed parsing this value:<script>Parsing failed in the following 2 ways: (1) Expected a but was script (2) Expected div but was script (3) Expected th but was script (4) Expected pre but was script (5) Expected td but was script (6) Expected tr but was script (7) Expected table but was script
-```
-## [Example 148](https://spec.commonmark.org/0.29/#example-148)
-
-This markdown:
-
-```markdown
-<!-- Foo
-
-bar
-   baz -->
-okay
-
-```
-
-Should give output:
-
-```html
-<p>okay</p>
-```
-
-But instead was:
-
-```html
-ERROR Problem at row 3 Expecting symbol =
 ```
 ## [Example 149](https://spec.commonmark.org/0.29/#example-149)
 

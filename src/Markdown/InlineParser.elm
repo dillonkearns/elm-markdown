@@ -1159,7 +1159,7 @@ htmlFromRegex model match regexMatch =
                     }
                 )
                 |= Advanced.getOffset
-                |= XmlParser.xmlParser
+                |= XmlParser.element
                 |= Advanced.getOffset
 
         _ =
@@ -1185,11 +1185,14 @@ htmlFromRegex model match regexMatch =
             let
                 htmlToken =
                     HtmlToken False
-                        (case htmlTag.root of
+                        (case htmlTag of
                             XmlParser.Element tag attributes _ ->
                                 { tag = tag
                                 , attributes = attributes
                                 }
+
+                            XmlParser.Comment comment ->
+                                { tag = "TODO handle comment", attributes = [] }
 
                             _ ->
                                 { tag = "TODO", attributes = [] }
