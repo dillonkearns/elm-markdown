@@ -11,22 +11,11 @@ module Markdown.Inline exposing
 @docs Inline
 
 
-# Renders
-
-@docs toHtml, defaultHtml
-
-
 # Helpers
 
 @docs extractText
 
 -}
-
-import Html exposing (Html, a, br, code, em, img, node, strong, text)
-import Html.Attributes exposing (alt, attribute, href, src, title)
-import Markdown.Helpers exposing (Attribute)
-
-
 
 ----------------------------------------------------------------------
 -------------------------------- Model -------------------------------

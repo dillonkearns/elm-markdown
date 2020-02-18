@@ -4,15 +4,10 @@ module Markdown.Block exposing (Block(..))
 
 @docs Block
 
-
-## Inlines
-
-@docs Inline, TopLevelInline
-
 -}
 
 import Markdown.CodeBlock
-import Markdown.Inline
+import Markdown.Inline exposing (Inline)
 
 
 type alias Attribute =
@@ -73,12 +68,6 @@ type Block
     | CodeBlock Markdown.CodeBlock.CodeBlock
     | ThematicBreak
     | BlockQuote (List Block)
-
-
-{-| Represents styled inline text. For example, a header can include links, emphasis, etc.
--}
-type alias Inline =
-    Markdown.Inline.Inline
 
 
 
