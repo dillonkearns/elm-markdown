@@ -358,7 +358,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>**<a href="**"><p></p></a></p>
+<p><strong>&lt;a href=&quot;</strong>&quot;&gt;</p>
 ```
 ## [Example 476](https://spec.commonmark.org/0.29/#example-476)
 
@@ -378,5 +378,5 @@ Should give output:
 But instead was:
 
 ```html
-<p>__<a href="__"><p></p></a></p>
+<p><strong>&lt;a href=&quot;</strong>&quot;&gt;</p>
 ```

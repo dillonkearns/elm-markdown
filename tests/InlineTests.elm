@@ -119,14 +119,18 @@ suite =
         , describe "html"
             [ test "empty div with closing tag" <|
                 \() ->
-                    "<div></div>"
-                        |> expectInlines [ Inlines.HtmlInline "div" [] [] ]
+                    "Hello <div></div> Goodbye"
+                        |> expectInlines
+                            [ Inlines.Text "Hello "
+                            , Inlines.HtmlInline "div" [] []
+                            , Inlines.Text "Goodbye"
+                            ]
             , test "empty div with attributes tag" <|
                 \() ->
-                    "<div class=\"foo\"></div>"
+                    """<div class="foo"></div>"""
                         |> expectInlines
                             [ Inlines.HtmlInline "div"
-                                [ ( "class", Just "foo" )
+                                [ { name = "class", value = "foo" }
                                 ]
                                 []
                             ]

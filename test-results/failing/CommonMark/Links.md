@@ -39,7 +39,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR oneOf failed parsing this value:<foo bar="">Parsing failed in the following 2 ways: (1) Expected a but was foo (2) Expected div but was foo (3) Expected th but was foo (4) Expected pre but was foo (5) Expected td but was foo (6) Expected tr but was foo (7) Expected table but was foo
+<p>[link](&lt;foo bar&gt;)</p>
 ```
 ## [Example 490](https://spec.commonmark.org/0.29/#example-490)
 
@@ -81,7 +81,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR oneOf failed parsing this value:<b>Parsing failed in the following 2 ways: (1) Expected a but was b (2) Expected div but was b (3) Expected th but was b (4) Expected pre but was b (5) Expected td but was b (6) Expected tr but was b (7) Expected table but was b
+<p><a href="%3Cb">a</a>c<a href="%3Cb">a</a>c&gt;<a href="%3Cb%3Ec">a</a></p>
 ```
 ## [Example 493](https://spec.commonmark.org/0.29/#example-493)
 
@@ -161,7 +161,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR oneOf failed parsing this value:<bar attr="](baz)">Parsing failed in the following 2 ways: (1) Expected a but was bar (2) Expected div but was bar (3) Expected th but was bar (4) Expected pre but was bar (5) Expected td but was bar (6) Expected tr but was bar (7) Expected table but was bar
+<p><a href="baz">foo &lt;bar attr=&quot;</a>&quot;&gt;</p>
 ```
 ## [Example 523](https://spec.commonmark.org/0.29/#example-523)
 
@@ -381,7 +381,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR oneOf failed parsing this value:<bar attr="][ref]">Parsing failed in the following 2 ways: (1) Expected a but was bar (2) Expected div but was bar (3) Expected th but was bar (4) Expected pre but was bar (5) Expected td but was bar (6) Expected tr but was bar (7) Expected table but was bar
+<p>[foo &lt;bar attr=&quot;][ref]&quot;&gt;</p><p>[ref]: /uri</p>
 ```
 ## [Example 533](https://spec.commonmark.org/0.29/#example-533)
 

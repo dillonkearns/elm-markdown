@@ -14,7 +14,7 @@ type alias References =
 
 
 type alias Attribute =
-    ( String, Maybe String )
+    { name : String, value : String }
 
 
 insideSquareBracketRegex : String

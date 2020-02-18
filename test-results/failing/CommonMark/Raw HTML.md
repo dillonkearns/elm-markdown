@@ -344,7 +344,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>foo<a href="ö"><p></p></a></p>
+<p>foo &lt;a href=&quot;ö&quot;&gt;</p>
 ```
 ## [Example 628](https://spec.commonmark.org/0.29/#example-628)
 
@@ -364,7 +364,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>foo<a href="\*"><p></p></a></p>
+<p>foo &lt;a href=&quot;*&quot;&gt;</p>
 ```
 ## [Example 629](https://spec.commonmark.org/0.29/#example-629)
 

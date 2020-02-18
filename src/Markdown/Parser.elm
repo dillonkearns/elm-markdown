@@ -279,25 +279,9 @@ renderSingleInline renderer inline =
         Inline.HardLineBreak ->
             renderer.hardLineBreak |> Ok
 
-        Inline.HtmlInline tag rawAttributes inlines ->
+        Inline.HtmlInline tag attributes inlines ->
             --Err "TODO not handled yet"
             let
-                attributes =
-                    rawAttributes
-                        |> List.map
-                            (\( key, maybeValue ) ->
-                                case maybeValue of
-                                    Just value ->
-                                        { name = key
-                                        , value = value
-                                        }
-
-                                    Nothing ->
-                                        { name = key
-                                        , value = ""
-                                        }
-                            )
-
                 children =
                     inlines
                         |> Block.Body

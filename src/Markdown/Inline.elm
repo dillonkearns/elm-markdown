@@ -50,24 +50,13 @@ type Inline
     | CodeInline String
     | Link String (Maybe String) (List Inline)
     | Image String (Maybe String) (List Inline)
-    | HtmlInline String (List ( String, Maybe String )) (List Inline)
+    | HtmlInline String (List Attribute) (List Inline)
+      --| Html String (List Attribute) (List Block)
     | Emphasis Int (List Inline)
 
 
-
-----------------------------------------------------------------------
------------------------- Inline Html Renderer ------------------------
-----------------------------------------------------------------------
-
-
-attributesToHtmlAttributes : List Attribute -> List (Html.Attribute msg)
-attributesToHtmlAttributes =
-    List.map attributeToAttribute
-
-
-attributeToAttribute : Attribute -> Html.Attribute msg
-attributeToAttribute ( name, maybeValue ) =
-    attribute name (Maybe.withDefault name maybeValue)
+type alias Attribute =
+    { name : String, value : String }
 
 
 

@@ -2,7 +2,7 @@ module XmlParser exposing
     ( Xml, ProcessingInstruction, DocType, DocTypeDefinition(..), Node(..), Attribute
     , parse
     , format
-    , element
+    , Parser, element, xmlParser
     )
 
 {-| The XML Parser.
@@ -137,7 +137,10 @@ xml =
             |. repeat zeroOrMore (oneOf [ whiteSpace1, comment ])
             |= element
             |. repeat zeroOrMore (oneOf [ whiteSpace1, comment ])
-            |. end
+
+
+
+--|. end
 
 
 processingInstruction : Parser ProcessingInstruction
@@ -765,6 +768,11 @@ maybe parser =
 zeroOrMore : Count
 zeroOrMore =
     AtLeast 0
+
+
+xmlParser : Parser Xml
+xmlParser =
+    xml
 
 
 oneOrMore : Count

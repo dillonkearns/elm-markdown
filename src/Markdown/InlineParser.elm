@@ -3,8 +3,10 @@ module Markdown.InlineParser exposing (parse, query, walk)
 import Dict exposing (Dict)
 import Markdown.Helpers exposing (Attribute, References, cleanWhitespaces, formatStr, ifError, insideSquareBracketRegex, isEven, prepareRefLabel, returnFirstJust, titleRegex, whiteSpaceChars)
 import Markdown.Inline exposing (..)
+import Parser.Advanced as Advanced exposing ((|.), (|=))
 import Regex exposing (Regex)
 import Url
+import XmlParser
 
 
 
@@ -1126,77 +1128,174 @@ htmlRegex =
 
 htmlFromRegex : Parser -> MatchModel -> Regex.Match -> Maybe Parser
 htmlFromRegex model match regexMatch =
-    -- TODO use HTML parser here
-    case regexMatch.submatches of
-        maybeClose :: (Just tag) :: maybeAttributes :: maybeSelfClosing :: _ ->
-            let
-                updateModel : List Attribute -> Parser
-                updateModel attrs =
-                    { index = match.start
-                    , length = match.end - match.start
-                    , meaning =
-                        HtmlToken
-                            (maybeClose
-                                == Nothing
-                                && maybeSelfClosing
-                                == Nothing
-                            )
-                            (HtmlModel tag attrs)
+    let
+        --Advanced.andThen
+        --    (\xmlNode ->
+        --        case xmlNode of
+        --            XmlParser.Text innerText ->
+        --                -- TODO is this right?
+        --                Body
+        --                    (UnparsedInlines innerText)
+        --                    |> Advanced.succeed
+        --
+        --            XmlParser.Element tag attributes children ->
+        --                Advanced.andThen
+        --                    (\parsedChildren ->
+        --                        Advanced.succeed
+        --                            (Html tag
+        --                                attributes
+        --                                parsedChildren
+        --                            )
+        --                    )
+        --                    (nodesToBlocksParser children)
+        --    )
+        --    parser
+        --consumedCharacters : XmlParser.Parser XmlParser.Xml
+        consumedCharacters =
+            Advanced.succeed
+                (\startOffset htmlTag endOffset ->
+                    { length = endOffset - startOffset
+                    , htmlTag = htmlTag
                     }
-                        |> addToken model
+                )
+                |= Advanced.getOffset
+                |= XmlParser.xmlParser
+                |= Advanced.getOffset
 
-                attributes : List Attribute
-                attributes =
-                    Maybe.map applyAttributesRegex maybeAttributes
-                        |> Maybe.withDefault []
+        _ =
+            log "match" match
 
-                filterAttributes : List Attribute -> List String -> List Attribute
-                filterAttributes attrs allowed =
-                    List.filter
-                        (\attr ->
-                            List.member (Tuple.first attr) allowed
+        parsed =
+            model.rawText
+                |> log "rawText"
+                |> String.dropLeft match.start
+                |> log "dropped"
+                --|> XmlParser.parse
+                |> Advanced.run consumedCharacters
+
+        --_ =
+        --    log "model"
+        --        { model = model
+        --        , match = match
+        --        , parsed = parsed
+        --        }
+    in
+    case parsed of
+        Ok { htmlTag, length } ->
+            let
+                htmlToken =
+                    HtmlToken False
+                        (case htmlTag.root of
+                            XmlParser.Element tag attributes _ ->
+                                { tag = tag
+                                , attributes = attributes
+                                }
+
+                            _ ->
+                                { tag = "TODO", attributes = [] }
                         )
-                        attrs
-
-                noAttributesInCloseTag : Bool
-                noAttributesInCloseTag =
-                    maybeClose
-                        == Nothing
-                        || maybeClose
-                        /= Nothing
-                        && attributes
-                        == []
             in
-            --case model.options.rawHtml of
-            --ParseUnsafe ->
-            if noAttributesInCloseTag then
-                Just (updateModel attributes)
+            { index = match.start
+            , length = length
+            , meaning = htmlToken
+            }
+                |> addToken model
+                |> Just
 
-            else
-                Nothing
-
-        --Sanitize { allowedHtmlElements, allowedHtmlAttributes } ->
-        --    if
-        --        List.member tag allowedHtmlElements
-        --            && noAttributesInCloseTag
-        --    then
-        --        filterAttributes attributes allowedHtmlAttributes
-        --            |> updateModel
-        --            |> Just
-        --
-        --    else
-        --        Nothing
-        --
-        --DontParse ->
-        --    Nothing
-        _ ->
+        --|> log "Just"
+        --                { index = match.start
+        --                , length = match.end - match.start
+        --                , meaning =
+        --                    HtmlToken
+        --                        (maybeClose
+        --                            == Nothing
+        --                            && maybeSelfClosing
+        --                            == Nothing
+        --                        )
+        --                        (HtmlModel tag attrs)
+        --                }
+        --                    |> addToken model
+        Err error ->
+            let
+                _ =
+                    log "error" error
+            in
             Nothing
 
 
-applyAttributesRegex : String -> List Attribute
-applyAttributesRegex =
-    Regex.find htmlAttributesRegex
-        >> List.filterMap attributesFromRegex
+log label value =
+    value
+
+
+
+-- TODO use HTML parser here
+--case regexMatch.submatches of
+--    maybeClose :: (Just tag) :: maybeAttributes :: maybeSelfClosing :: _ ->
+--        let
+--            updateModel : List Attribute -> Parser
+--            updateModel attrs =
+--                { index = match.start
+--                , length = match.end - match.start
+--                , meaning =
+--                    HtmlToken
+--                        (maybeClose
+--                            == Nothing
+--                            && maybeSelfClosing
+--                            == Nothing
+--                        )
+--                        (HtmlModel tag attrs)
+--                }
+--                    |> addToken model
+--
+--            attributes : List Attribute
+--            attributes =
+--                Maybe.map applyAttributesRegex maybeAttributes
+--                    |> Maybe.withDefault []
+--
+--            filterAttributes : List Attribute -> List String -> List Attribute
+--            filterAttributes attrs allowed =
+--                List.filter
+--                    (\attr ->
+--                        List.member (Tuple.first attr) allowed
+--                    )
+--                    attrs
+--
+--            noAttributesInCloseTag : Bool
+--            noAttributesInCloseTag =
+--                maybeClose
+--                    == Nothing
+--                    || maybeClose
+--                    /= Nothing
+--                    && attributes
+--                    == []
+--        in
+--        --case model.options.rawHtml of
+--        --ParseUnsafe ->
+--        if noAttributesInCloseTag then
+--            Just (updateModel attributes)
+--
+--        else
+--            Nothing
+--_ ->
+--    Nothing
+--Sanitize { allowedHtmlElements, allowedHtmlAttributes } ->
+--    if
+--        List.member tag allowedHtmlElements
+--            && noAttributesInCloseTag
+--    then
+--        filterAttributes attributes allowedHtmlAttributes
+--            |> updateModel
+--            |> Just
+--
+--    else
+--        Nothing
+--
+--DontParse ->
+--    Nothing
+--applyAttributesRegex : String -> List Attribute
+--applyAttributesRegex =
+--    Regex.find htmlAttributesRegex
+--        >> List.filterMap attributesFromRegex
 
 
 htmlAttributesRegex : Regex
@@ -1205,26 +1304,27 @@ htmlAttributesRegex =
         |> Maybe.withDefault Regex.never
 
 
-attributesFromRegex : Regex.Match -> Maybe Attribute
-attributesFromRegex regexMatch =
-    case regexMatch.submatches of
-        (Just "") :: _ ->
-            Nothing
 
-        (Just name) :: maybeDoubleQuotes :: maybeSingleQuotes :: maybeUnquoted :: _ ->
-            let
-                maybeValue : Maybe String
-                maybeValue =
-                    returnFirstJust
-                        [ maybeDoubleQuotes
-                        , maybeSingleQuotes
-                        , maybeUnquoted
-                        ]
-            in
-            Just ( name, maybeValue )
-
-        _ ->
-            Nothing
+--attributesFromRegex : Regex.Match -> Maybe Attribute
+--attributesFromRegex regexMatch =
+--    case regexMatch.submatches of
+--        (Just "") :: _ ->
+--            Nothing
+--
+--        (Just name) :: maybeDoubleQuotes :: maybeSingleQuotes :: maybeUnquoted :: _ ->
+--            let
+--                maybeValue : Maybe String
+--                maybeValue =
+--                    returnFirstJust
+--                        [ maybeDoubleQuotes
+--                        , maybeSingleQuotes
+--                        , maybeUnquoted
+--                        ]
+--            in
+--            Just ( { name = name, maybeValue )
+--
+--        _ ->
+--            Nothing
 
 
 htmlElementTTM : ( List Token, Parser ) -> Parser
@@ -1877,9 +1977,7 @@ matchToInline (Match match) =
                 (matchesToInlines match.matches)
 
         HtmlType model ->
-            HtmlInline model.tag
-                model.attributes
-                (matchesToInlines match.matches)
+            HtmlInline model.tag model.attributes (matchesToInlines match.matches)
 
         EmphasisType length ->
             Emphasis length

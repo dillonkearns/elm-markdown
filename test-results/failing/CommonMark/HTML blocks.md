@@ -74,7 +74,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><div><p></p></div><em>hello</em></p><pre><code>&lt;foo&gt;&lt;a&gt;</code></pre>
+<p>&lt;div&gt;<em>hello</em></p><pre><code>&lt;foo&gt;&lt;a&gt;</code></pre>
 ```
 ## [Example 121](https://spec.commonmark.org/0.29/#example-121)
 
@@ -543,7 +543,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li><div><p></p></div></li><li>foo</li></ul>
+<ul><li>&lt;div&gt;</li><li>foo</li></ul>
 ```
 ## [Example 145](https://spec.commonmark.org/0.29/#example-145)
 
@@ -752,7 +752,7 @@ Should give output:
 But instead was:
 
 ```html
-<p><div><p></p></div></p><pre><code>&lt;div&gt;</code></pre>
+<p>&lt;div&gt;</p><pre><code>&lt;div&gt;</code></pre>
 ```
 ## [Example 154](https://spec.commonmark.org/0.29/#example-154)
 

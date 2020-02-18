@@ -8,8 +8,9 @@ import Element.Input
 import Element.Region
 import Html exposing (Attribute, Html)
 import Html.Attributes
-import Markdown.Block exposing (Block, Inline, InlineStyle)
+import Markdown.Block exposing (Block)
 import Markdown.Html
+import Markdown.Inline as Inline exposing (Inline)
 import Markdown.Parser exposing (ListItem(..), Task(..))
 
 
@@ -128,9 +129,12 @@ buildToc blocks =
 
 
 styledToString : List Inline -> String
-styledToString list =
-    List.map .string list
-        |> String.join "-"
+styledToString inlines =
+    --List.map .string list
+    --|> String.join "-"
+    -- TODO do I need to hyphenate?
+    inlines
+        |> Inline.extractText
 
 
 gatherHeadings : List Block -> List ( Int, List Inline )
@@ -167,8 +171,8 @@ renderer =
             [ Element.spacing 15 ]
     , thematicBreak = Element.none
     , plain = Element.text
-    , bold = \content -> Element.row [ Font.bold ] [ Element.text content ]
-    , italic = \content -> Element.row [ Font.italic ] [ Element.text content ]
+    , bold = \content -> Element.row [ Font.bold ] content
+    , italic = \content -> Element.row [ Font.italic ] content
     , code = code
     , link =
         \{ title, destination } body ->
@@ -182,10 +186,17 @@ renderer =
                         body
                 }
                 |> Ok
+    , hardLineBreak = Html.br [] [] |> Element.html
     , image =
-        \image body ->
-            Element.image [ Element.width Element.fill ] { src = image.src, description = body }
-                |> Ok
+        \image ->
+            case image.title of
+                Just title ->
+                    Element.image [ Element.width Element.fill ] { src = image.src, description = image.alt }
+                        |> Ok
+
+                Nothing ->
+                    Element.image [ Element.width Element.fill ] { src = image.src, description = image.alt }
+                        |> Ok
     , blockQuote =
         \children ->
             Element.paragraph
