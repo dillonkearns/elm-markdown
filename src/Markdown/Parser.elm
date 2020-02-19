@@ -18,11 +18,11 @@ import Dict
 import Helpers
 import Html exposing (Html)
 import Html.Attributes as Attr
-import Markdown.Block as Block exposing (Block)
+import Markdown.Block as Block exposing (Block, Inline)
 import Markdown.CodeBlock
 import Markdown.Html
 import Markdown.HtmlRenderer
-import Markdown.Inline as Inline exposing (Inline)
+import Markdown.Inline as Inline
 import Markdown.InlineParser
 import Markdown.ListItem as ListItem
 import Markdown.OrderedList
@@ -279,14 +279,7 @@ renderSingleInline renderer inline =
         Inline.HardLineBreak ->
             renderer.hardLineBreak |> Ok
 
-        Inline.HtmlInline tag attributes inlines ->
-            --Err "TODO not handled yet"
-            let
-                children =
-                    inlines
-                        |> Block.Body
-                        |> List.singleton
-            in
+        Inline.HtmlInline tag attributes children ->
             renderHtmlNode renderer tag attributes children
 
 
@@ -489,15 +482,60 @@ type alias Parser a =
     Advanced.Parser String Parser.Problem a
 
 
+inlineParseHelper : UnparsedInlines -> List (Inline.Inline (List Block))
+inlineParseHelper (UnparsedInlines unparsedInlines) =
+    Markdown.InlineParser.parse Dict.empty unparsedInlines
+        |> List.map mapInline
+
+
+mapInline : Inline.Inline String -> Inline
+mapInline inline =
+    case inline of
+        Inline.Text string ->
+            Inline.Text string
+
+        Inline.HardLineBreak ->
+            Inline.HardLineBreak
+
+        Inline.CodeInline string ->
+            Inline.CodeInline string
+
+        Inline.Link string maybeString inlines ->
+            Inline.Link string maybeString (inlines |> List.map mapInline)
+
+        Inline.Image string maybeString inlines ->
+            Inline.Image string maybeString (inlines |> List.map mapInline)
+
+        Inline.HtmlInline string attributes htmlValue ->
+            let
+                inlines =
+                    case Advanced.run multiParser2 htmlValue of
+                        Ok children ->
+                            children
+
+                        Err error ->
+                            -- TODO pass up parsing error
+                            []
+            in
+            Inline.HtmlInline string attributes inlines
+
+        Inline.Emphasis int inlines ->
+            Inline.Emphasis int (inlines |> List.map mapInline)
+
+
 parseInlines : RawBlock -> Parser (Maybe Block)
 parseInlines rawBlock =
     case rawBlock of
-        Heading level (UnparsedInlines unparsedInlines) ->
-            Markdown.InlineParser.parse Dict.empty unparsedInlines
+        Heading level unparsedInlines ->
+            --Markdown.InlineParser.parse Dict.empty unparsedInlines
+            unparsedInlines
+                |> inlineParseHelper
                 |> (\styledLine -> just (Block.Heading level styledLine))
 
-        Body (UnparsedInlines unparsedInlines) ->
-            Markdown.InlineParser.parse Dict.empty unparsedInlines
+        Body unparsedInlines ->
+            --Markdown.InlineParser.parse Dict.empty unparsedInlines
+            unparsedInlines
+                |> inlineParseHelper
                 |> (\styledLine -> just (Block.Body styledLine))
 
         Html tagName attributes children ->
@@ -560,8 +598,10 @@ just value =
 
 
 parseRawInline : (List Inline -> a) -> UnparsedInlines -> Advanced.Parser c Parser.Problem a
-parseRawInline wrap (UnparsedInlines unparsedInlines) =
-    Markdown.InlineParser.parse Dict.empty unparsedInlines
+parseRawInline wrap unparsedInlines =
+    --Markdown.InlineParser.parse Dict.empty unparsedInlines
+    unparsedInlines
+        |> inlineParseHelper
         |> (\styledLine -> wrap styledLine)
         |> succeed
 

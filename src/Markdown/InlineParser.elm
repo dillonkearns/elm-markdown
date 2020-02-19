@@ -66,7 +66,7 @@ reverseTokens model =
 -- Parser
 
 
-parse : References -> String -> List Inline
+parse : References -> String -> List (Inline String)
 parse refs rawText =
     String.trim rawText
         |> initParser refs
@@ -1949,12 +1949,12 @@ lineBreakTTM ( tokens, model ) =
 -- Matches to Inline
 
 
-matchesToInlines : List Match -> List Inline
+matchesToInlines : List Match -> List (Inline String)
 matchesToInlines matches =
     List.map matchToInline matches
 
 
-matchToInline : Match -> Inline
+matchToInline : Match -> Inline String
 matchToInline (Match match) =
     case match.type_ of
         NormalType ->
@@ -1980,7 +1980,7 @@ matchToInline (Match match) =
                 (matchesToInlines match.matches)
 
         HtmlType model ->
-            HtmlInline model.tag model.attributes (matchesToInlines match.matches)
+            HtmlInline model.tag model.attributes match.text
 
         EmphasisType length ->
             Emphasis length
@@ -2030,7 +2030,7 @@ Example of converting all text in **headings** to **ALL CAPS**:
 **Note:** In this example, `Block.walkInlines` could be used instead.
 
 -}
-walk : (Inline -> Inline) -> Inline -> Inline
+walk : (Inline a -> Inline a) -> Inline a -> Inline a
 walk function inline =
     case inline of
         Link url maybeTitle inlines ->
@@ -2044,9 +2044,9 @@ walk function inline =
                 |> function
 
         HtmlInline tag attrs inlines ->
-            List.map (walk function) inlines
-                |> HtmlInline tag attrs
-                |> function
+            --List.map (walk function) inlines
+            --    |> HtmlInline tag attrs
+            function inline
 
         Emphasis length inlines ->
             List.map (walk function) inlines
@@ -2057,7 +2057,7 @@ walk function inline =
             function inline
 
 
-query : (Inline -> List a) -> Inline -> List a
+query : (Inline a -> List a) -> Inline a -> List a
 query function inline =
     case inline of
         Link url maybeTitle inlines ->
@@ -2071,9 +2071,10 @@ query function inline =
                 |> (++) (function (Image url maybeTitle inlines))
 
         HtmlInline tag attrs inlines ->
-            List.map (query function) inlines
-                |> List.concat
-                |> (++) (function (HtmlInline tag attrs inlines))
+            --List.map (query function) inlines
+            --    |> List.concat
+            --    |> (++) (function (HtmlInline tag attrs inlines))
+            function inline
 
         Emphasis length inlines ->
             List.map (query function) inlines

@@ -1,8 +1,8 @@
 module ParagraphTests exposing (suite)
 
 import Expect exposing (Expectation)
-import Markdown.Block as Block exposing (Block)
-import Markdown.Inline as Inline exposing (Inline)
+import Markdown.Block as Block exposing (Block, Inline)
+import Markdown.Inline as Inline
 import Markdown.Parser exposing (..)
 import Parser
 import Parser.Advanced as Advanced

@@ -1,4 +1,7 @@
-module Markdown.Block exposing (Block(..))
+module Markdown.Block exposing
+    ( Block(..)
+    , Inline
+    )
 
 {-|
 
@@ -7,7 +10,7 @@ module Markdown.Block exposing (Block(..))
 -}
 
 import Markdown.CodeBlock
-import Markdown.Inline exposing (Inline)
+import Markdown.Inline
 
 
 type alias Attribute =
@@ -68,6 +71,10 @@ type Block
     | CodeBlock Markdown.CodeBlock.CodeBlock
     | ThematicBreak
     | BlockQuote (List Block)
+
+
+type alias Inline =
+    Markdown.Inline.Inline (List Block)
 
 
 

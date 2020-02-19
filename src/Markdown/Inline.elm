@@ -33,15 +33,15 @@ module Markdown.Inline exposing
   - **Emphasis** | _Delimiter Length_ | _Inlines_
 
 -}
-type Inline
+type Inline htmlValue
     = Text String
     | HardLineBreak
     | CodeInline String
-    | Link String (Maybe String) (List Inline)
-    | Image String (Maybe String) (List Inline)
-    | HtmlInline String (List Attribute) (List Inline)
+    | Link String (Maybe String) (List (Inline htmlValue))
+    | Image String (Maybe String) (List (Inline htmlValue))
+    | HtmlInline String (List Attribute) htmlValue
       --| Html String (List Attribute) (List Block)
-    | Emphasis Int (List Inline)
+    | Emphasis Int (List (Inline htmlValue))
 
 
 type alias Attribute =
@@ -68,12 +68,12 @@ type alias Attribute =
     -- Original string: "Heading with *emphasis*"
 
 -}
-extractText : List Inline -> String
+extractText : List (Inline a) -> String
 extractText inlines =
     List.foldl extractTextHelp "" inlines
 
 
-extractTextHelp : Inline -> String -> String
+extractTextHelp : Inline a -> String -> String
 extractTextHelp inline text =
     case inline of
         Text str ->
@@ -92,7 +92,8 @@ extractTextHelp inline text =
             text ++ extractText inlines
 
         HtmlInline _ _ inlines ->
-            text ++ extractText inlines
+            --text ++ extractText inlines
+            text
 
         Emphasis _ inlines ->
             text ++ extractText inlines

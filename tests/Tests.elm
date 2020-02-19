@@ -1,8 +1,8 @@
 module Tests exposing (suite)
 
 import Expect exposing (Expectation)
-import Markdown.Block as Block exposing (Block)
-import Markdown.Inline as Inline exposing (Inline)
+import Markdown.Block as Block exposing (Block, Inline)
+import Markdown.Inline as Inline
 import Markdown.Parser as Markdown exposing (..)
 import Parser
 import Parser.Advanced as Advanced
@@ -416,6 +416,25 @@ I'm part of the block quote
                                 ]
                             , Block.BlockQuote
                                 [ Block.Body (unstyledText "not code")
+                                ]
+                            ]
+                        )
+        , test "inline HTML" <|
+            \() ->
+                """This is *italicized inline HTML <bio name="Dillon Kearns" photo="https://avatars2.githubusercontent.com/u/1384166" />*"""
+                    |> parse
+                    |> Expect.equal
+                        (Ok
+                            [ Block.Body
+                                [ Inline.Text "This is "
+                                , Inline.Emphasis 1
+                                    [ Inline.Text "italicized inline HTML "
+                                    , Inline.HtmlInline "bio"
+                                        [ { name = "name", value = "Dillon Kearns" }
+                                        , { name = "photo", value = "https://avatars2.githubusercontent.com/u/1384166" }
+                                        ]
+                                        []
+                                    ]
                                 ]
                             ]
                         )

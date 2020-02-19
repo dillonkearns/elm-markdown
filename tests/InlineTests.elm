@@ -122,17 +122,14 @@ suite =
                     "Hello <div></div> Goodbye"
                         |> expectInlines
                             [ Inlines.Text "Hello "
-                            , Inlines.HtmlInline "div" [] []
-                            , Inlines.Text "Goodbye"
+                            , Inlines.HtmlInline "div" [] ""
+                            , Inlines.Text " Goodbye"
                             ]
             , test "empty div with attributes tag" <|
                 \() ->
                     """<div class="foo"></div>"""
                         |> expectInlines
-                            [ Inlines.HtmlInline "div"
-                                [ { name = "class", value = "foo" }
-                                ]
-                                []
+                            [ Inlines.HtmlInline "div" [ { name = "class", value = "foo" } ] ""
                             ]
             ]
 
@@ -192,7 +189,7 @@ suite =
         ]
 
 
-expectInlines : List Inlines.Inline -> String -> Expectation
+expectInlines : List (Inlines.Inline String) -> String -> Expectation
 expectInlines expected input =
     input
         |> Markdown.InlineParser.parse Dict.empty
