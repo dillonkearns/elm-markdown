@@ -131,6 +131,14 @@ suite =
                         |> expectInlines
                             [ Inlines.HtmlInline "div" [ { name = "class", value = "foo" } ] ""
                             ]
+            , test "backslash hard line break" <|
+                \() ->
+                    "This is a hard line break\\\nThis comes after"
+                        |> expectInlines
+                            [ Inlines.Text "This is a hard line break"
+                            , Inlines.HardLineBreak
+                            , Inlines.Text "This comes after"
+                            ]
             ]
 
         --, only <|

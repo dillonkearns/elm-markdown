@@ -21,27 +21,6 @@ But instead was:
 ```html
 <p>foo baz</p>
 ```
-## [Example 631](https://spec.commonmark.org/0.29/#example-631)
-
-This markdown:
-
-```markdown
-foo\
-baz
-
-```
-
-Should give output:
-
-```html
-<p>foo<br>baz</p>
-```
-
-But instead was:
-
-```html
-<p>foo\ baz</p>
-```
 ## [Example 632](https://spec.commonmark.org/0.29/#example-632)
 
 This markdown:
@@ -125,27 +104,6 @@ But instead was:
 
 ```html
 <p><em>foo bar</em></p>
-```
-## [Example 636](https://spec.commonmark.org/0.29/#example-636)
-
-This markdown:
-
-```markdown
-*foo\
-bar*
-
-```
-
-Should give output:
-
-```html
-<p><em>foo<br>bar</em></p>
-```
-
-But instead was:
-
-```html
-<p><em>foo\ bar</em></p>
 ```
 ## [Example 639](https://spec.commonmark.org/0.29/#example-639)
 

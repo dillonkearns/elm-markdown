@@ -301,6 +301,26 @@ Gives this correct output:
 
 ```
 
+### [Example 302](https://spec.commonmark.org/0.29/#example-302)
+
+This markdown:
+
+
+```markdown
+foo\
+bar
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>foo<br />
+bar</p>
+
+```
+
 ### [Example 303](https://spec.commonmark.org/0.29/#example-303)
 
 This markdown:
@@ -3889,6 +3909,46 @@ Gives this correct output:
 ```
 
 ## Hard line breaks
+
+### [Example 631](https://spec.commonmark.org/0.29/#example-631)
+
+This markdown:
+
+
+```markdown
+foo\
+baz
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>foo<br />
+baz</p>
+
+```
+
+### [Example 636](https://spec.commonmark.org/0.29/#example-636)
+
+This markdown:
+
+
+```markdown
+*foo\
+bar*
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><em>foo<br />
+bar</em></p>
+
+```
 
 ### [Example 637](https://spec.commonmark.org/0.29/#example-637)
 

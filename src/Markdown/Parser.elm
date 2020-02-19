@@ -866,7 +866,7 @@ statementsHelp2 revStmts =
 
                             ( Body (UnparsedInlines body1), (Body (UnparsedInlines body2)) :: rest ) ->
                                 Loop
-                                    (Body (UnparsedInlines (joinRawStringsWith " " body2 body1))
+                                    (Body (UnparsedInlines (joinRawStringsWith "\n" body2 body1))
                                         :: rest
                                     )
 

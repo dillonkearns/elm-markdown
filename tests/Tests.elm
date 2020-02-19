@@ -211,7 +211,7 @@ Hello!
                     |> parse
                     |> Expect.equal
                         (Ok
-                            [ Block.Body (unstyledText """The number of windows in my house is 14.  The number of doors is 6.""")
+                            [ Block.Body (unstyledText "The number of windows in my house is\n14.  The number of doors is 6.")
                             ]
                         )
         , test "A paragraph with a numeral that IS 1 in the text" <|
@@ -464,7 +464,20 @@ I'm part of the block quote
                         (Ok
                             [ Block.BlockQuote
                                 [ Block.Heading 1 (unstyledText "Foo")
-                                , Block.Body (unstyledText "bar baz")
+                                , Block.Body (unstyledText "bar\nbaz")
+                                ]
+                            ]
+                        )
+        , test "backslash line break" <|
+            \() ->
+                "Before\\\nAfter"
+                    |> parse
+                    |> Expect.equal
+                        (Ok
+                            [ Block.Body
+                                [ Inline.Text "Before"
+                                , Inline.HardLineBreak
+                                , Inline.Text "After"
                                 ]
                             ]
                         )
