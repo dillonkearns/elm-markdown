@@ -8,9 +8,9 @@ import Element.Input
 import Element.Region
 import Html exposing (Attribute, Html)
 import Html.Attributes
-import Markdown.Block exposing (Block)
+import Markdown.Block exposing (Block, Inline)
 import Markdown.Html
-import Markdown.Inline as Inline exposing (Inline)
+import Markdown.Inline as Inline
 import Markdown.Parser exposing (ListItem(..), Task(..))
 
 
@@ -199,7 +199,7 @@ renderer =
                         |> Ok
     , blockQuote =
         \children ->
-            Element.paragraph
+            Element.column
                 [ Element.Border.widthEach { top = 0, right = 0, bottom = 0, left = 10 }
                 , Element.padding 10
                 , Element.Border.color (Element.rgb255 145 145 145)
