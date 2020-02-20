@@ -486,6 +486,14 @@ I'm part of the block quote
                                 ]
                             ]
                         )
+        , test "html comment" <|
+            \() ->
+                "<!-- hello! -->"
+                    |> parse
+                    |> Expect.equal
+                        (Ok
+                            [ Block.HtmlBlock (Block.HtmlComment " hello! ") ]
+                        )
         ]
 
 

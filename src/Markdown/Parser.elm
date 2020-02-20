@@ -649,7 +649,8 @@ parseInlines rawBlock =
                     Advanced.problem (Parser.Problem (deadEndsToString error))
 
         HtmlComment string ->
-            succeed Nothing
+            Block.HtmlBlock (Block.HtmlComment string)
+                |> just
 
 
 just value =
