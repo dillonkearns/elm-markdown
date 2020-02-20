@@ -73,14 +73,14 @@ renderMarkdown markdown =
 
                         Block.H6 ->
                             Html.h6 [] children
-            , raw = Html.p []
+            , paragraph = Html.p []
             , hardLineBreak = Html.br [] []
             , blockQuote = Html.blockquote []
-            , bold =
+            , strong =
                 \children -> Html.strong [] children
-            , italic =
+            , emphasis =
                 \children -> Html.em [] children
-            , code =
+            , codeSpan =
                 \content -> Html.code [] [ Html.text content ]
             , link =
                 \link content ->
@@ -115,7 +115,7 @@ renderMarkdown markdown =
                                 ]
                                 []
                                 |> Ok
-            , plain =
+            , text =
                 Html.text
             , unorderedList =
                 \items ->

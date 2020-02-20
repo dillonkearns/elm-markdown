@@ -41,21 +41,21 @@ testRenderer htmlRenderer =
     { heading =
         \{ level, children } ->
             Unexpected "heading"
-    , raw = \_ -> Unexpected "String"
+    , paragraph = \_ -> Unexpected "String"
     , blockQuote = \_ -> Unexpected "String"
-    , bold =
+    , strong =
         \content -> Unexpected "String"
-    , italic =
+    , emphasis =
         \content -> Unexpected "String"
     , hardLineBreak = Unexpected "String"
-    , code =
+    , codeSpan =
         \content -> Unexpected "String"
     , image = \link -> Unexpected "String" |> Ok
     , link =
         \link content ->
             Unexpected "String"
                 |> Ok
-    , plain =
+    , text =
         \_ ->
             Unexpected "String"
     , unorderedList =

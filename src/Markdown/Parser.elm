@@ -49,13 +49,13 @@ You could render to any type you want. Here are some useful things you might ren
 -}
 type alias Renderer view =
     { heading : { level : Block.HeadingLevel, rawText : String, children : List view } -> view
-    , raw : List view -> view
+    , paragraph : List view -> view
     , blockQuote : List view -> view
     , html : Markdown.Html.Renderer (List view -> view)
-    , plain : String -> view
-    , code : String -> view
-    , bold : List view -> view
-    , italic : List view -> view
+    , text : String -> view
+    , codeSpan : String -> view
+    , strong : List view -> view
+    , emphasis : List view -> view
     , hardLineBreak : view
     , link : { title : Maybe String, destination : String } -> List view -> Result String view
     , image : { alt : String, src : String, title : Maybe String } -> Result String view
@@ -105,14 +105,14 @@ defaultHtmlRenderer =
 
                 Block.H6 ->
                     Html.h6 [] children
-    , raw = Html.p []
+    , paragraph = Html.p []
     , hardLineBreak = Html.br [] []
     , blockQuote = Html.blockquote []
-    , bold =
+    , strong =
         \children -> Html.strong [] children
-    , italic =
+    , emphasis =
         \children -> Html.em [] children
-    , code =
+    , codeSpan =
         \content -> Html.code [] [ Html.text content ]
     , link =
         \link content ->
@@ -147,7 +147,7 @@ defaultHtmlRenderer =
                         ]
                         []
                         |> Ok
-    , plain =
+    , text =
         Html.text
     , unorderedList =
         \items ->
@@ -247,13 +247,13 @@ renderSingleInline renderer inline =
         Block.Strong innerInlines ->
             innerInlines
                 |> renderStyled renderer
-                |> Result.map renderer.bold
+                |> Result.map renderer.strong
                 |> Just
 
         Block.Emphasis innerInlines ->
             innerInlines
                 |> renderStyled renderer
-                |> Result.map renderer.italic
+                |> Result.map renderer.emphasis
                 |> Just
 
         Block.Image src title children ->
@@ -261,12 +261,12 @@ renderSingleInline renderer inline =
                 |> Just
 
         Block.Text string ->
-            renderer.plain string
+            renderer.text string
                 |> Ok
                 |> Just
 
         Block.CodeSpan string ->
-            renderer.code string
+            renderer.codeSpan string
                 |> Ok
                 |> Just
 
@@ -328,7 +328,7 @@ renderHelper renderer blocks =
 
                 Block.Paragraph content ->
                     renderStyled renderer content
-                        |> Result.map renderer.raw
+                        |> Result.map renderer.paragraph
                         |> Just
 
                 Block.HtmlBlock html ->

@@ -166,14 +166,14 @@ view markdown =
 renderer : Markdown.Parser.Renderer (Element msg)
 renderer =
     { heading = heading
-    , raw =
+    , paragraph =
         Element.paragraph
             [ Element.spacing 15 ]
     , thematicBreak = Element.none
-    , plain = Element.text
-    , bold = \content -> Element.row [ Font.bold ] content
-    , italic = \content -> Element.row [ Font.italic ] content
-    , code = code
+    , text = Element.text
+    , strong = \content -> Element.row [ Font.bold ] content
+    , emphasis = \content -> Element.row [ Font.italic ] content
+    , codeSpan = code
     , link =
         \{ title, destination } body ->
             Element.newTabLink
