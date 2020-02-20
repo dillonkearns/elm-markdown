@@ -42,13 +42,14 @@ suite =
                     |> expectInlines
                         [ Inlines.Emphasis 1 [ Inlines.Text "hello!" ]
                         ]
-        , test "multiple code spans" <|
+        , test "No stripping occurs if the code span contains only spaces (example 344)" <|
             \() ->
                 """` `
 `  `
 """
                     |> expectInlines
                         [ Inlines.CodeInline " "
+                        , Inlines.Text "\n"
                         , Inlines.CodeInline "  "
                         ]
         , test "simple link" <|

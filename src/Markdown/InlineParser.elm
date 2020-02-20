@@ -68,7 +68,8 @@ reverseTokens model =
 
 parse : References -> String -> List (Inline String)
 parse refs rawText =
-    String.trim rawText
+    rawText
+        |> String.trim
         |> initParser refs
         |> tokenize
         |> tokensToMatches

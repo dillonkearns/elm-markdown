@@ -44,9 +44,13 @@ prepareRefLabel =
 
 
 cleanWhitespaces : String -> String
-cleanWhitespaces =
-    String.trim
-        >> Regex.replace whitespacesRegex (\_ -> " ")
+cleanWhitespaces original =
+    original
+
+
+
+--|> String.trim
+--|> Regex.replace whitespacesRegex (\_ -> " ")
 
 
 whitespacesRegex : Regex
