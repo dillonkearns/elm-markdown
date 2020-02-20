@@ -1,12 +1,12 @@
 module Markdown.InlineParser exposing (parse, query, walk)
 
 import Dict exposing (Dict)
+import HtmlParser
 import Markdown.Helpers exposing (Attribute, References, cleanWhitespaces, formatStr, ifError, insideSquareBracketRegex, isEven, prepareRefLabel, returnFirstJust, titleRegex, whiteSpaceChars)
 import Markdown.Inline exposing (..)
 import Parser.Advanced as Advanced exposing ((|.), (|=))
 import Regex exposing (Regex)
 import Url
-import XmlParser
 
 
 
@@ -1132,13 +1132,13 @@ htmlFromRegex model match regexMatch =
         --Advanced.andThen
         --    (\xmlNode ->
         --        case xmlNode of
-        --            XmlParser.Text innerText ->
+        --            HtmlParser.Text innerText ->
         --                -- TODO is this right?
         --                Body
         --                    (UnparsedInlines innerText)
         --                    |> Advanced.succeed
         --
-        --            XmlParser.Element tag attributes children ->
+        --            HtmlParser.Element tag attributes children ->
         --                Advanced.andThen
         --                    (\parsedChildren ->
         --                        Advanced.succeed
@@ -1150,7 +1150,7 @@ htmlFromRegex model match regexMatch =
         --                    (nodesToBlocksParser children)
         --    )
         --    parser
-        --consumedCharacters : XmlParser.Parser XmlParser.Xml
+        --consumedCharacters : HtmlParser.Parser HtmlParser.Xml
         consumedCharacters =
             Advanced.succeed
                 (\startOffset htmlTag endOffset ->
@@ -1159,7 +1159,7 @@ htmlFromRegex model match regexMatch =
                     }
                 )
                 |= Advanced.getOffset
-                |= XmlParser.element
+                |= HtmlParser.element
                 |= Advanced.getOffset
 
         _ =
@@ -1170,7 +1170,7 @@ htmlFromRegex model match regexMatch =
                 |> log "rawText"
                 |> String.dropLeft match.start
                 |> log "dropped"
-                --|> XmlParser.parse
+                --|> HtmlParser.parse
                 |> Advanced.run consumedCharacters
 
         --_ =
@@ -1186,12 +1186,12 @@ htmlFromRegex model match regexMatch =
                 htmlToken =
                     HtmlToken False
                         (case htmlTag of
-                            XmlParser.Element tag attributes _ ->
+                            HtmlParser.Element tag attributes _ ->
                                 { tag = tag
                                 , attributes = attributes
                                 }
 
-                            XmlParser.Comment comment ->
+                            HtmlParser.Comment comment ->
                                 { tag = "TODO handle comment", attributes = [] }
 
                             _ ->

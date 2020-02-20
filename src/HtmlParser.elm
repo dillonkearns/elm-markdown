@@ -1,14 +1,14 @@
-module XmlParser exposing
+module HtmlParser exposing
     ( Node(..), Attribute
     , Parser, element
     )
 
-{-| The XML Parser.
+{-| Parses HTML, specifically for Markdown. Which may have some differences from parsing a full HTML document.
 
 
 # Types
 
-@docs Xml, ProcessingInstruction, DocType, DocTypeDefinition, Node, Attribute
+@docs Html, ProcessingInstruction, DocType, DocTypeDefinition, Node, Attribute
 
 
 # Parse
@@ -61,8 +61,8 @@ type Count
 
 `<?xml ... ?>` and `<!DOCTYPE ... >` is optional so you don't need to ensure them.
 
-    > import XmlParser
-    > XmlParser.parse """<a name="value">foo</a>"""
+    > import HtmlParser
+    > HtmlParser.parse """<a name="value">foo</a>"""
     Ok { processingInstructions = [], docType = Nothing, root = Element "a" ([{ name = "name", value = "value" }]) ([Text "foo"]) }
 
 -}

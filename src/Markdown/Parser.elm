@@ -18,6 +18,7 @@ import Dict
 import Helpers
 import Html exposing (Html)
 import Html.Attributes as Attr
+import HtmlParser exposing (Node(..))
 import Markdown.Block as Block exposing (Block, Inline)
 import Markdown.CodeBlock
 import Markdown.Html
@@ -31,7 +32,6 @@ import Markdown.UnorderedList
 import Parser
 import Parser.Advanced as Advanced exposing ((|.), (|=), Nestable(..), Step(..), andThen, chompIf, chompUntil, chompWhile, getChompedString, inContext, int, lazy, loop, map, multiComment, oneOf, problem, succeed, symbol, token)
 import Parser.Extra exposing (oneOrMore, zeroOrMore)
-import XmlParser exposing (Node(..))
 
 
 {-| A record with functions that define how to render all possible markdown blocks.
@@ -760,7 +760,7 @@ blankLine =
 
 htmlParser : Parser RawBlock
 htmlParser =
-    XmlParser.element
+    HtmlParser.element
         |> xmlNodeToHtmlNode
 
 
@@ -769,13 +769,13 @@ xmlNodeToHtmlNode parser =
     Advanced.andThen
         (\xmlNode ->
             case xmlNode of
-                XmlParser.Text innerText ->
+                HtmlParser.Text innerText ->
                     -- TODO is this right?
                     Body
                         (UnparsedInlines innerText)
                         |> Advanced.succeed
 
-                XmlParser.Element tag attributes children ->
+                HtmlParser.Element tag attributes children ->
                     Advanced.andThen
                         (\parsedChildren ->
                             Advanced.succeed
