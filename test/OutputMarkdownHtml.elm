@@ -2,6 +2,7 @@ port module OutputMarkdownHtml exposing (main)
 
 import Html.String as Html
 import Html.String.Attributes as Attr
+import Markdown.Block as Block
 import Markdown.Html
 import Markdown.Parser as Markdown
 
@@ -55,26 +56,23 @@ renderMarkdown markdown =
             { heading =
                 \{ level, children } ->
                     case level of
-                        1 ->
+                        Block.H1 ->
                             Html.h1 [] children
 
-                        2 ->
+                        Block.H2 ->
                             Html.h2 [] children
 
-                        3 ->
+                        Block.H3 ->
                             Html.h3 [] children
 
-                        4 ->
+                        Block.H4 ->
                             Html.h4 [] children
 
-                        5 ->
+                        Block.H5 ->
                             Html.h5 [] children
 
-                        6 ->
+                        Block.H6 ->
                             Html.h6 [] children
-
-                        _ ->
-                            Html.text "TODO maye use a type here to clean it up... this will never happen"
             , raw = Html.p []
             , hardLineBreak = Html.br [] []
             , blockQuote = Html.blockquote []

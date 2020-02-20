@@ -2,7 +2,6 @@ module Tests exposing (suite)
 
 import Expect exposing (Expectation)
 import Markdown.Block as Block exposing (Block, Inline)
-import Markdown.Inline as Inline
 import Markdown.Parser as Markdown exposing (..)
 import Parser
 import Parser.Advanced as Advanced
@@ -27,27 +26,27 @@ suite =
                 \() ->
                     "# Hello!"
                         |> parse
-                        |> Expect.equal (Ok [ Block.Heading 1 (unstyledText "Hello!") ])
+                        |> Expect.equal (Ok [ Block.Heading Block.H1 (unstyledText "Hello!") ])
             , test "heading can end with trailing #'s'" <|
                 \() ->
                     "# Hello! ###"
                         |> parse
-                        |> Expect.equal (Ok [ Block.Heading 1 (unstyledText "Hello!") ])
+                        |> Expect.equal (Ok [ Block.Heading Block.H1 (unstyledText "Hello!") ])
             , test "Heading 2" <|
                 \() ->
                     "## Hello!"
                         |> parse
-                        |> Expect.equal (Ok [ Block.Heading 2 (unstyledText "Hello!") ])
+                        |> Expect.equal (Ok [ Block.Heading Block.H2 (unstyledText "Hello!") ])
             , test "Emphasis line is not interpreted as a list" <|
                 \() ->
                     "*This is not a list, it's a paragraph with emphasis*\n"
                         |> parse
-                        |> Expect.equal (Ok [ Block.Body (emphasisText "This is not a list, it's a paragraph with emphasis") ])
+                        |> Expect.equal (Ok [ Block.Paragraph (emphasisText "This is not a list, it's a paragraph with emphasis") ])
             , test "Line starting with a decimal is not interpreted as a list" <|
                 \() ->
                     "3.5 is a number - is not a list\n"
                         |> parse
-                        |> Expect.equal (Ok [ Block.Body (unstyledText "3.5 is a number - is not a list") ])
+                        |> Expect.equal (Ok [ Block.Paragraph (unstyledText "3.5 is a number - is not a list") ])
             , test "Heading 7 is invalid" <|
                 \() ->
                     "####### Hello!"
@@ -57,7 +56,7 @@ suite =
             \() ->
                 "This is just some text"
                     |> parse
-                    |> Expect.equal (Ok [ Block.Body (unstyledText "This is just some text") ])
+                    |> Expect.equal (Ok [ Block.Paragraph (unstyledText "This is just some text") ])
         , test "parse heading then plain text" <|
             \() ->
                 """# Heading
@@ -66,8 +65,8 @@ This is just some text
                     |> parse
                     |> Expect.equal
                         (Ok
-                            [ Block.Heading 1 (unstyledText "Heading")
-                            , Block.Body (unstyledText "This is just some text")
+                            [ Block.Heading Block.H1 (unstyledText "Heading")
+                            , Block.Paragraph (unstyledText "This is just some text")
                             ]
                         )
         , test "doesn't need to end in newline" <|
@@ -77,8 +76,8 @@ This is just some text"""
                     |> parse
                     |> Expect.equal
                         (Ok
-                            [ Block.Heading 1 (unstyledText "Heading")
-                            , Block.Body (unstyledText "This is just some text")
+                            [ Block.Heading Block.H1 (unstyledText "Heading")
+                            , Block.Paragraph (unstyledText "This is just some text")
                             ]
                         )
         , test "long example" <|
@@ -94,10 +93,10 @@ Body of the subheading.
                     |> parse
                     |> Expect.equal
                         (Ok
-                            [ Block.Heading 1 (unstyledText "Heading")
-                            , Block.Body (unstyledText "This is just some text.")
-                            , Block.Heading 2 (unstyledText "Subheading")
-                            , Block.Body (unstyledText "Body of the subheading.")
+                            [ Block.Heading Block.H1 (unstyledText "Heading")
+                            , Block.Paragraph (unstyledText "This is just some text.")
+                            , Block.Heading Block.H2 (unstyledText "Subheading")
+                            , Block.Paragraph (unstyledText "Body of the subheading.")
                             ]
                         )
         , test "embedded HTML" <|
@@ -110,11 +109,13 @@ Hello!
                     |> parse
                     |> Expect.equal
                         (Ok
-                            [ Block.Heading 1 (unstyledText "Heading")
-                            , Block.Html "div"
-                                []
-                                [ Block.Body (unstyledText "Hello!")
-                                ]
+                            [ Block.Heading Block.H1 (unstyledText "Heading")
+                            , Block.HtmlBlock
+                                (Block.HtmlElement "div"
+                                    []
+                                    [ Block.Paragraph (unstyledText "Hello!")
+                                    ]
+                                )
                             ]
                         )
         , test "heading within HTML" <|
@@ -128,11 +129,13 @@ Hello!
                     |> parse
                     |> Expect.equal
                         (Ok
-                            [ Block.Heading 1 (unstyledText "Heading")
-                            , Block.Html "div"
-                                []
-                                [ Block.Heading 1 (unstyledText "Heading in a div!")
-                                ]
+                            [ Block.Heading Block.H1 (unstyledText "Heading")
+                            , Block.HtmlBlock
+                                (Block.HtmlElement "div"
+                                    []
+                                    [ Block.Heading Block.H1 (unstyledText "Heading in a div!")
+                                    ]
+                                )
                             ]
                         )
         , test "simple list" <|
@@ -211,7 +214,7 @@ Hello!
                     |> parse
                     |> Expect.equal
                         (Ok
-                            [ Block.Body (unstyledText "The number of windows in my house is\n14.  The number of doors is 6.")
+                            [ Block.Paragraph (unstyledText "The number of windows in my house is\n14.  The number of doors is 6.")
                             ]
                         )
         , test "A paragraph with a numeral that IS 1 in the text" <|
@@ -222,7 +225,7 @@ Hello!
                     |> parse
                     |> Expect.equal
                         (Ok
-                            [ Block.Body (unstyledText "The number of windows in my house is")
+                            [ Block.Paragraph (unstyledText "The number of windows in my house is")
                             , Block.OrderedListBlock 1
                                 [ unstyledText "The number of doors is 6."
                                 ]
@@ -264,12 +267,12 @@ Text after
                     |> parse
                     |> Expect.equal
                         (Ok
-                            [ Block.Heading 1 (unstyledText "Title")
+                            [ Block.Heading Block.H1 (unstyledText "Title")
                             , Block.UnorderedListBlock
                                 [ plainListItem "This is an item"
                                 , plainListItem "And so is this"
                                 ]
-                            , Block.Body (unstyledText "Text after")
+                            , Block.Paragraph (unstyledText "Text after")
 
                             -- TODO why is this extra block here? Fix
                             -- , ListBlock []
@@ -302,9 +305,9 @@ qwer
                                 { body = ".\n├── content/\n├── elm.json\n├── images/\n├── static/\n├── index.js\n├── package.json\n└── src/\n    └── Main.elm"
                                 , language = Just "shell"
                                 }
-                            , Block.Body (unstyledText "This is more stuff")
-                            , Block.Heading 2 (unstyledText "h2")
-                            , Block.Body (unstyledText "qwer")
+                            , Block.Paragraph (unstyledText "This is more stuff")
+                            , Block.Heading Block.H2 (unstyledText "h2")
+                            , Block.Paragraph (unstyledText "qwer")
                             ]
                         )
         , test "indented code block" <|
@@ -323,8 +326,8 @@ qwer
                     |> parse
                     |> Expect.equal
                         (Ok
-                            [ Block.Body
-                                [ Inline.Image "/my/image.jpg" Nothing [ Inline.Text "This is an image" ]
+                            [ Block.Paragraph
+                                [ Block.Image "/my/image.jpg" Nothing [ Block.Text "This is an image" ]
 
                                 --{ string = "This is an image"
                                 -- , style =
@@ -350,12 +353,12 @@ qwer
                 \() ->
                     ">This is a quote\n"
                         |> parse
-                        |> Expect.equal (Ok [ Block.BlockQuote [ Block.Body (unstyledText "This is a quote") ] ])
+                        |> Expect.equal (Ok [ Block.BlockQuote [ Block.Paragraph (unstyledText "This is a quote") ] ])
             , test "block quote with a space after" <|
                 \() ->
                     "> This is a quote\n"
                         |> parse
-                        |> Expect.equal (Ok [ Block.BlockQuote [ Block.Body (unstyledText "This is a quote") ] ])
+                        |> Expect.equal (Ok [ Block.BlockQuote [ Block.Paragraph (unstyledText "This is a quote") ] ])
             , test "consecutive block quote lines are combined" <|
                 \() ->
                     """> # Heading
@@ -365,8 +368,8 @@ qwer
                         |> Expect.equal
                             (Ok
                                 [ Block.BlockQuote
-                                    [ Block.Heading 1 (unstyledText "Heading")
-                                    , Block.Body (unstyledText "Body")
+                                    [ Block.Heading Block.H1 (unstyledText "Heading")
+                                    , Block.Paragraph (unstyledText "Body")
                                     ]
                                 ]
                             )
@@ -379,8 +382,8 @@ I'm part of the block quote
                         |> Expect.equal
                             (Ok
                                 [ Block.BlockQuote
-                                    [ Block.Heading 1 (unstyledText "Heading")
-                                    , Block.Body (unstyledText "I'm part of the block quote")
+                                    [ Block.Heading Block.H1 (unstyledText "Heading")
+                                    , Block.Paragraph (unstyledText "I'm part of the block quote")
                                     ]
                                 ]
                             )
@@ -415,7 +418,7 @@ I'm part of the block quote
                                     }
                                 ]
                             , Block.BlockQuote
-                                [ Block.Body (unstyledText "not code")
+                                [ Block.Paragraph (unstyledText "not code")
                                 ]
                             ]
                         )
@@ -425,15 +428,17 @@ I'm part of the block quote
                     |> parse
                     |> Expect.equal
                         (Ok
-                            [ Block.Body
-                                [ Inline.Text "This is "
-                                , Inline.Emphasis 1
-                                    [ Inline.Text "italicized inline HTML "
-                                    , Inline.HtmlInline "bio"
-                                        [ { name = "name", value = "Dillon Kearns" }
-                                        , { name = "photo", value = "https://avatars2.githubusercontent.com/u/1384166" }
-                                        ]
-                                        []
+                            [ Block.Paragraph
+                                [ Block.Text "This is "
+                                , Block.Emphasis
+                                    [ Block.Text "italicized inline HTML "
+                                    , Block.HtmlInline
+                                        (Block.HtmlElement "bio"
+                                            [ { name = "name", value = "Dillon Kearns" }
+                                            , { name = "photo", value = "https://avatars2.githubusercontent.com/u/1384166" }
+                                            ]
+                                            []
+                                        )
                                     ]
                                 ]
                             ]
@@ -448,8 +453,8 @@ I'm part of the block quote
                     |> Expect.equal
                         (Ok
                             [ Block.BlockQuote
-                                [ Block.Body (unstyledText "foo")
-                                , Block.Body (unstyledText "bar")
+                                [ Block.Paragraph (unstyledText "foo")
+                                , Block.Paragraph (unstyledText "bar")
                                 ]
                             ]
                         )
@@ -463,8 +468,8 @@ I'm part of the block quote
                     |> Expect.equal
                         (Ok
                             [ Block.BlockQuote
-                                [ Block.Heading 1 (unstyledText "Foo")
-                                , Block.Body (unstyledText "bar\nbaz")
+                                [ Block.Heading Block.H1 (unstyledText "Foo")
+                                , Block.Paragraph (unstyledText "bar\nbaz")
                                 ]
                             ]
                         )
@@ -474,10 +479,10 @@ I'm part of the block quote
                     |> parse
                     |> Expect.equal
                         (Ok
-                            [ Block.Body
-                                [ Inline.Text "Before"
-                                , Inline.HardLineBreak
-                                , Inline.Text "After"
+                            [ Block.Paragraph
+                                [ Block.Text "Before"
+                                , Block.HardLineBreak
+                                , Block.Text "After"
                                 ]
                             ]
                         )
@@ -486,20 +491,20 @@ I'm part of the block quote
 
 plainListItem : String -> { body : List Inline, task : Maybe Bool }
 plainListItem body =
-    { body = [ Inline.Text body ]
+    { body = [ Block.Text body ]
     , task = Nothing
     }
 
 
 unstyledText : String -> List Inline
 unstyledText body =
-    [ Inline.Text body ]
+    [ Block.Text body ]
 
 
 emphasisText : String -> List Inline
 emphasisText body =
-    [ Inline.Emphasis 1 <|
-        [ Inline.Text body ]
+    [ Block.Emphasis <|
+        [ Block.Text body ]
     ]
 
 

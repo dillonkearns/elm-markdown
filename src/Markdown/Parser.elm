@@ -48,7 +48,7 @@ You could render to any type you want. Here are some useful things you might ren
 
 -}
 type alias Renderer view =
-    { heading : { level : Int, rawText : String, children : List view } -> view
+    { heading : { level : Block.HeadingLevel, rawText : String, children : List view } -> view
     , raw : List view -> view
     , blockQuote : List view -> view
     , html : Markdown.Html.Renderer (List view -> view)
@@ -88,26 +88,23 @@ defaultHtmlRenderer =
     { heading =
         \{ level, children } ->
             case level of
-                1 ->
+                Block.H1 ->
                     Html.h1 [] children
 
-                2 ->
+                Block.H2 ->
                     Html.h2 [] children
 
-                3 ->
+                Block.H3 ->
                     Html.h3 [] children
 
-                4 ->
+                Block.H4 ->
                     Html.h4 [] children
 
-                5 ->
+                Block.H5 ->
                     Html.h5 [] children
 
-                6 ->
+                Block.H6 ->
                     Html.h6 [] children
-
-                _ ->
-                    Html.text "TODO maye use a type here to clean it up... this will never happen"
     , raw = Html.p []
     , hardLineBreak = Html.br [] []
     , blockQuote = Html.blockquote []
@@ -236,51 +233,64 @@ foldThing renderer topLevelInline soFar =
     --                        (error |> List.map deadEndToString |> List.map Err)
     --                            ++ soFar
     --Block.InlineContent inline ->
-    renderSingleInline renderer topLevelInline :: soFar
+    case renderSingleInline renderer topLevelInline of
+        Just inline ->
+            inline :: soFar
+
+        Nothing ->
+            soFar
 
 
-renderSingleInline : Renderer view -> Inline -> Result String view
+renderSingleInline : Renderer view -> Block.Inline -> Maybe (Result String view)
 renderSingleInline renderer inline =
     case inline of
-        Inline.Emphasis delimeterLength innerInlines ->
-            case delimeterLength of
-                1 ->
-                    --renderSingleInline renderer innerInlines
-                    innerInlines
-                        |> renderStyled renderer
-                        |> Result.map renderer.italic
+        Block.Strong innerInlines ->
+            innerInlines
+                |> renderStyled renderer
+                |> Result.map renderer.bold
+                |> Just
 
-                2 ->
-                    --renderSingleInline renderer innerInlines
-                    --    |> Result.map renderer.bold
-                    innerInlines
-                        |> renderStyled renderer
-                        |> Result.map renderer.bold
+        Block.Emphasis innerInlines ->
+            innerInlines
+                |> renderStyled renderer
+                |> Result.map renderer.italic
+                |> Just
 
-                _ ->
-                    Err "TODO not handled yet"
+        Block.Image src title children ->
+            renderer.image { alt = Block.extractText children, src = src, title = title }
+                |> Just
 
-        Inline.Image src title children ->
-            renderer.image { alt = Inline.extractText children, src = src, title = title }
+        Block.Text string ->
+            renderer.plain string
+                |> Ok
+                |> Just
 
-        Inline.Text string ->
-            renderer.plain string |> Ok
+        Block.CodeSpan string ->
+            renderer.code string
+                |> Ok
+                |> Just
 
-        Inline.CodeInline string ->
-            renderer.code string |> Ok
-
-        Inline.Link destination title inlines ->
+        Block.Link destination title inlines ->
             renderStyled renderer inlines
                 |> Result.andThen
                     (\children ->
                         renderer.link { title = title, destination = destination } children
                     )
+                |> Just
 
-        Inline.HardLineBreak ->
-            renderer.hardLineBreak |> Ok
+        Block.HardLineBreak ->
+            renderer.hardLineBreak
+                |> Ok
+                |> Just
 
-        Inline.HtmlInline tag attributes children ->
-            renderHtmlNode renderer tag attributes children
+        Block.HtmlInline html ->
+            case html of
+                Block.HtmlElement tag attributes children ->
+                    renderHtmlNode renderer tag attributes children
+                        |> Just
+
+                _ ->
+                    Nothing
 
 
 
@@ -301,7 +311,7 @@ renderHelper :
     -> List Block
     -> List (Result String view)
 renderHelper renderer blocks =
-    List.map
+    List.filterMap
         (\block ->
             case block of
                 Block.Heading level content ->
@@ -309,15 +319,26 @@ renderHelper renderer blocks =
                         |> Result.map
                             (\children ->
                                 renderer.heading
-                                    { level = level, rawText = Inline.extractText content, children = children }
+                                    { level = level
+                                    , rawText = Block.extractText content
+                                    , children = children
+                                    }
                             )
+                        |> Just
 
-                Block.Body content ->
+                Block.Paragraph content ->
                     renderStyled renderer content
                         |> Result.map renderer.raw
+                        |> Just
 
-                Block.Html tag attributes children ->
-                    renderHtmlNode renderer tag attributes children
+                Block.HtmlBlock html ->
+                    case html of
+                        Block.HtmlElement tag attributes children ->
+                            renderHtmlNode renderer tag attributes children
+                                |> Just
+
+                        _ ->
+                            Nothing
 
                 Block.UnorderedListBlock items ->
                     items
@@ -345,30 +366,30 @@ renderHelper renderer blocks =
                             )
                         |> combineResults
                         |> Result.map renderer.unorderedList
+                        |> Just
 
                 Block.OrderedListBlock startingIndex items ->
                     items
                         |> List.map (renderStyled renderer)
                         |> combineResults
                         |> Result.map (renderer.orderedList startingIndex)
+                        |> Just
 
                 Block.CodeBlock codeBlock ->
                     codeBlock
                         |> renderer.codeBlock
                         |> Ok
+                        |> Just
 
                 Block.ThematicBreak ->
                     Ok renderer.thematicBreak
+                        |> Just
 
                 Block.BlockQuote nestedBlocks ->
                     renderHelper renderer nestedBlocks
                         |> combineResults
                         |> Result.map renderer.blockQuote
-
-                Block.HtmlComment string ->
-                    -- TODO @@@@@@@@ this should be skipped...
-                    -- if you want to do something with HTML comments, you sould do so with the AST parsing.
-                    Ok renderer.thematicBreak
+                        |> Just
         )
         blocks
 
@@ -482,29 +503,29 @@ type alias Parser a =
     Advanced.Parser String Parser.Problem a
 
 
-inlineParseHelper : UnparsedInlines -> List (Inline.Inline (List Block))
+inlineParseHelper : UnparsedInlines -> List Block.Inline
 inlineParseHelper (UnparsedInlines unparsedInlines) =
     Markdown.InlineParser.parse Dict.empty unparsedInlines
         |> List.map mapInline
 
 
-mapInline : Inline.Inline String -> Inline
+mapInline : Inline.Inline String -> Block.Inline
 mapInline inline =
     case inline of
         Inline.Text string ->
-            Inline.Text string
+            Block.Text string
 
         Inline.HardLineBreak ->
-            Inline.HardLineBreak
+            Block.HardLineBreak
 
         Inline.CodeInline string ->
-            Inline.CodeInline string
+            Block.CodeSpan string
 
         Inline.Link string maybeString inlines ->
-            Inline.Link string maybeString (inlines |> List.map mapInline)
+            Block.Link string maybeString (inlines |> List.map mapInline)
 
         Inline.Image string maybeString inlines ->
-            Inline.Image string maybeString (inlines |> List.map mapInline)
+            Block.Image string maybeString (inlines |> List.map mapInline)
 
         Inline.HtmlInline string attributes htmlValue ->
             let
@@ -517,29 +538,67 @@ mapInline inline =
                             -- TODO pass up parsing error
                             []
             in
-            Inline.HtmlInline string attributes inlines
+            Block.HtmlInline (Block.HtmlElement string attributes inlines)
 
-        Inline.Emphasis int inlines ->
-            Inline.Emphasis int (inlines |> List.map mapInline)
+        Inline.Emphasis level inlines ->
+            case level of
+                1 ->
+                    Block.Emphasis (inlines |> List.map mapInline)
+
+                2 ->
+                    Block.Strong (inlines |> List.map mapInline)
+
+                _ ->
+                    -- TODO fix this
+                    Block.Strong (inlines |> List.map mapInline)
+
+
+levelParser : Int -> Parser Block.HeadingLevel
+levelParser level =
+    case level of
+        1 ->
+            succeed Block.H1
+
+        2 ->
+            succeed Block.H2
+
+        3 ->
+            succeed Block.H3
+
+        4 ->
+            succeed Block.H4
+
+        5 ->
+            succeed Block.H5
+
+        6 ->
+            succeed Block.H6
+
+        _ ->
+            problem ("A heading with 1 to 6 #'s, but found " ++ String.fromInt level |> Parser.Expecting)
 
 
 parseInlines : RawBlock -> Parser (Maybe Block)
 parseInlines rawBlock =
     case rawBlock of
         Heading level unparsedInlines ->
-            --Markdown.InlineParser.parse Dict.empty unparsedInlines
-            unparsedInlines
-                |> inlineParseHelper
-                |> (\styledLine -> just (Block.Heading level styledLine))
+            level
+                |> levelParser
+                |> andThen
+                    (\parsedLevel ->
+                        unparsedInlines
+                            |> inlineParseHelper
+                            |> (\styledLine -> just (Block.Heading parsedLevel styledLine))
+                    )
 
         Body unparsedInlines ->
             --Markdown.InlineParser.parse Dict.empty unparsedInlines
             unparsedInlines
                 |> inlineParseHelper
-                |> (\styledLine -> just (Block.Body styledLine))
+                |> (\styledLine -> just (Block.Paragraph styledLine))
 
         Html tagName attributes children ->
-            Block.Html tagName attributes children
+            Block.HtmlBlock (Block.HtmlElement tagName attributes children)
                 |> just
 
         UnorderedListBlock unparsedItems ->
@@ -762,7 +821,7 @@ childToParser node =
             nodesToBlocksParser children
                 |> Advanced.andThen
                     (\childrenAsBlocks ->
-                        Advanced.succeed [ Block.Html tag attributes childrenAsBlocks ]
+                        Advanced.succeed [ Block.HtmlElement tag attributes childrenAsBlocks |> Block.HtmlBlock ]
                     )
 
         Text innerText ->
@@ -780,7 +839,7 @@ childToParser node =
                         )
 
         Comment string ->
-            succeed [ Block.HtmlComment string ]
+            succeed [ Block.HtmlComment string |> Block.HtmlBlock ]
 
 
 multiParser2 : Parser (List Block)
@@ -793,7 +852,7 @@ multiParser2 =
             (List.filter
                 (\item ->
                     case item of
-                        Block.Body [] ->
+                        Block.Paragraph [] ->
                             False
 
                         _ ->

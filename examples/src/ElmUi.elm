@@ -8,7 +8,7 @@ import Element.Input
 import Element.Region
 import Html exposing (Attribute, Html)
 import Html.Attributes
-import Markdown.Block exposing (Block, Inline)
+import Markdown.Block as Block exposing (Block, Inline)
 import Markdown.Html
 import Markdown.Inline as Inline
 import Markdown.Parser exposing (ListItem(..), Task(..))
@@ -134,15 +134,15 @@ styledToString inlines =
     --|> String.join "-"
     -- TODO do I need to hyphenate?
     inlines
-        |> Inline.extractText
+        |> Block.extractText
 
 
-gatherHeadings : List Block -> List ( Int, List Inline )
+gatherHeadings : List Block -> List ( Block.HeadingLevel, List Inline )
 gatherHeadings blocks =
     List.filterMap
         (\block ->
             case block of
-                Markdown.Block.Heading level content ->
+                Block.Heading level content ->
                     Just ( level, content )
 
                 _ ->
@@ -254,15 +254,15 @@ rawTextToId rawText =
         |> String.replace " " ""
 
 
-heading : { level : Int, rawText : String, children : List (Element msg) } -> Element msg
+heading : { level : Block.HeadingLevel, rawText : String, children : List (Element msg) } -> Element msg
 heading { level, rawText, children } =
     Element.paragraph
         [ Font.size
             (case level of
-                1 ->
+                Block.H1 ->
                     36
 
-                2 ->
+                Block.H2 ->
                     24
 
                 _ ->
@@ -270,7 +270,7 @@ heading { level, rawText, children } =
             )
         , Font.bold
         , Font.family [ Font.typeface "Montserrat" ]
-        , Element.Region.heading level
+        , Element.Region.heading (Block.headingLevelToInt level)
         , Element.htmlAttribute
             (Html.Attributes.attribute "name" (rawTextToId rawText))
         , Element.htmlAttribute

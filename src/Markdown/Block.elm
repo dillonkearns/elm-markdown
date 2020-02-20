@@ -1,20 +1,40 @@
 module Markdown.Block exposing
     ( Block(..)
-    , Inline
+    , HeadingLevel(..)
+    , Html(..)
+    , Inline(..)
+    , HtmlAttribute
+    , extractText
+    , headingLevelToInt
     )
 
 {-|
 
 @docs Block
+@docs HeadingLevel
+
+
+## HTML
+
+See <Markdown.Html> for more.
+
+@docs Html
+
+
+## Inlines
+
+@docs Inline
+@docs HtmlAttribute
+@docs extractText
+
+
+## Convenience functions
+
+@docs headingLevelToInt
 
 -}
 
 import Markdown.CodeBlock
-import Markdown.Inline
-
-
-type alias Attribute =
-    { name : String, value : String }
 
 
 {-| This is the AST (abstract syntax tree) that represents your parsed markdown.
@@ -57,11 +77,12 @@ it and perform any special processing based on that. You could even add or remov
 
 -}
 type Block
-    = Heading Int (List Inline)
-    | Body (List Inline)
-    | Html String (List Attribute) (List Block)
-    | HtmlComment String
+    = Heading HeadingLevel (List Inline)
+    | Paragraph (List Inline)
+    | HtmlBlock Html
     | UnorderedListBlock
+        -- TODO use the same type as the Renderer here
+        -- in general, try to share types with Renderer as much as possible
         (List
             { task : Maybe Bool
             , body : List Inline
@@ -73,16 +94,127 @@ type Block
     | BlockQuote (List Block)
 
 
-type alias Inline =
-    Markdown.Inline.Inline (List Block)
+{-| TODO
+-}
+type HeadingLevel
+    = H1
+    | H2
+    | H3
+    | H4
+    | H5
+    | H6
+
+
+{-| TODO an inline
+-}
+type Inline
+    = Text String
+    | HardLineBreak
+    | CodeSpan String
+    | Link String (Maybe String) (List Inline)
+    | Image String (Maybe String) (List Inline)
+    | HtmlInline Html
+    | Emphasis (List Inline)
+    | Strong (List Inline)
+
+
+{-| TODO
+-}
+headingLevelToInt : HeadingLevel -> Int
+headingLevelToInt headingLevel =
+    case headingLevel of
+        H1 ->
+            1
+
+        H2 ->
+            2
+
+        H3 ->
+            3
+
+        H4 ->
+            4
+
+        H5 ->
+            5
+
+        H6 ->
+            6
 
 
 
---type Inline
---    = Link { href : String } (List Inline)
---    | Bold Inline
---    | Italic Inline
---    | Image { src : String, alt : String }
---    | Text String
---    | CodeSpan String
---    | HardLineBreak
+--{-| TODO
+---}
+--extractText : List Inline -> String
+--extractText inlines =
+--    "TODO"
+--
+
+
+{-| Extract the text from a list of inlines.
+
+    inlines : List (Inline)
+    inlines =
+        [ Text "Heading with "
+        , Emphasis 1
+            [ Text "emphasis" ]
+        ]
+
+    extractText inlines == "Heading with emphasis"
+
+    -- Original string: "Heading with *emphasis*"
+
+-}
+extractText : List Inline -> String
+extractText inlines =
+    List.foldl extractTextHelp "" inlines
+
+
+extractTextHelp : Inline -> String -> String
+extractTextHelp inline text =
+    case inline of
+        Text str ->
+            text ++ str
+
+        HardLineBreak ->
+            text ++ " "
+
+        CodeSpan str ->
+            text ++ str
+
+        Link _ _ inlines ->
+            text ++ extractText inlines
+
+        Image _ _ inlines ->
+            text ++ extractText inlines
+
+        HtmlInline html ->
+            case html of
+                HtmlElement _ _ inlines ->
+                    --text ++ extractText inlines
+                    text
+
+                _ ->
+                    ""
+
+        Strong inlines ->
+            text ++ extractText inlines
+
+        Emphasis inlines ->
+            text ++ extractText inlines
+
+
+{-| TODO
+-}
+type Html
+    = HtmlComment String
+    | HtmlElement String (List HtmlAttribute) (List Block)
+    | ProcessingInstruction String
+    | HtmlDeclaration String
+    | Cdata String
+
+
+{-| TODO
+-}
+type alias HtmlAttribute =
+    { name : String, value : String }
