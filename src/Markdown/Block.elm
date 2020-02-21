@@ -66,14 +66,18 @@ In the simplest case, you can pass this directly to a renderer:
 
 -}
 type Block
-    = Heading HeadingLevel (List Inline)
-    | Paragraph (List Inline)
-    | HtmlBlock Html
-    | UnorderedListBlock (List (ListItem Inline))
-    | OrderedListBlock Int (List (List Inline))
-    | CodeBlock Markdown.CodeBlock.CodeBlock
-    | ThematicBreak
+    = -- Container Blocks
+      HtmlBlock Html
+    | UnorderedList (List (ListItem Inline))
+    | OrderedList Int (List (List Inline))
     | BlockQuote (List Block)
+      -- Leaf Blocks With Inlines
+    | Heading HeadingLevel (List Inline)
+    | Paragraph (List Inline)
+      -- Table TODO  https://github.github.com/gfm/#tables-extension-
+      -- Leaf Blocks Without Inlines
+    | CodeBlock { body : String, language : Maybe String }
+    | ThematicBreak
 
 
 {-| The value for an unordered list item, which may contain a task.
@@ -104,14 +108,15 @@ type HeadingLevel
 {-| TODO an inline
 -}
 type Inline
-    = Text String
-    | HardLineBreak
-    | CodeSpan String
+    = HtmlInline Html
     | Link String (Maybe String) (List Inline)
     | Image String (Maybe String) (List Inline)
-    | HtmlInline Html
     | Emphasis (List Inline)
     | Strong (List Inline)
+      -- Strikethrough TODO  https://github.github.com/gfm/#strikethrough-extension-
+    | CodeSpan String
+    | Text String
+    | HardLineBreak
 
 
 {-| TODO

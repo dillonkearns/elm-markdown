@@ -147,7 +147,7 @@ Hello!
                     |> parse
                     |> Expect.equal
                         (Ok
-                            [ Block.UnorderedListBlock
+                            [ Block.UnorderedList
                                 [ plainListItem "One"
                                 , plainListItem "Two"
                                 , plainListItem "Three"
@@ -172,17 +172,17 @@ Hello!
                     |> parse
                     |> Expect.equal
                         (Ok
-                            [ Block.UnorderedListBlock
+                            [ Block.UnorderedList
                                 [ plainListItem "Item 1"
                                 , plainListItem "Item 2"
                                 , plainListItem "Item 3"
                                 ]
-                            , Block.UnorderedListBlock
+                            , Block.UnorderedList
                                 [ plainListItem "Item 4"
                                 , plainListItem "Item 5"
                                 , plainListItem "Item 6"
                                 ]
-                            , Block.UnorderedListBlock
+                            , Block.UnorderedList
                                 [ plainListItem "Item 7"
                                 , plainListItem "Item 8"
                                 , plainListItem "Item 9"
@@ -198,11 +198,11 @@ Hello!
                     |> parse
                     |> Expect.equal
                         (Ok
-                            [ Block.OrderedListBlock 1
+                            [ Block.OrderedList 1
                                 [ unstyledText "foo"
                                 , unstyledText "bar"
                                 ]
-                            , Block.OrderedListBlock 3
+                            , Block.OrderedList 3
                                 [ unstyledText "baz"
                                 ]
                             ]
@@ -226,7 +226,7 @@ Hello!
                     |> Expect.equal
                         (Ok
                             [ Block.Paragraph (unstyledText "The number of windows in my house is")
-                            , Block.OrderedListBlock 1
+                            , Block.OrderedList 1
                                 [ unstyledText "The number of doors is 6."
                                 ]
                             ]
@@ -268,7 +268,7 @@ Text after
                     |> Expect.equal
                         (Ok
                             [ Block.Heading Block.H1 (unstyledText "Title")
-                            , Block.UnorderedListBlock
+                            , Block.UnorderedList
                                 [ plainListItem "This is an item"
                                 , plainListItem "And so is this"
                                 ]

@@ -318,7 +318,7 @@ renderHelper renderer blocks =
                         _ ->
                             Nothing
 
-                Block.UnorderedListBlock items ->
+                Block.UnorderedList items ->
                     items
                         |> List.map
                             (\(Block.ListItem task children) ->
@@ -330,7 +330,7 @@ renderHelper renderer blocks =
                         |> Result.map renderer.unorderedList
                         |> Just
 
-                Block.OrderedListBlock startingIndex items ->
+                Block.OrderedList startingIndex items ->
                     items
                         |> List.map (renderStyled renderer)
                         |> combineResults
@@ -587,14 +587,14 @@ parseInlines rawBlock =
                                 )
                     )
                 |> combine
-                |> map Block.UnorderedListBlock
+                |> map Block.UnorderedList
                 |> map Just
 
         OrderedListBlock startingIndex unparsedInlines ->
             unparsedInlines
                 |> List.map (parseRawInline identity)
                 |> combine
-                |> map (Block.OrderedListBlock startingIndex)
+                |> map (Block.OrderedList startingIndex)
                 |> map Just
 
         CodeBlock codeBlock ->
