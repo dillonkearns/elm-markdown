@@ -67,7 +67,7 @@ In the simplest case, you can pass this directly to a renderer:
 -}
 type Block
     = -- Container Blocks
-      HtmlBlock Html
+      HtmlBlock (Html Block)
     | UnorderedList (List (ListItem Inline))
     | OrderedList Int (List (List Inline))
     | BlockQuote (List Block)
@@ -108,7 +108,7 @@ type HeadingLevel
 {-| TODO an inline
 -}
 type Inline
-    = HtmlInline Html
+    = HtmlInline (Html Block)
     | Link String (Maybe String) (List Inline)
     | Image String (Maybe String) (List Inline)
     | Emphasis (List Inline)
@@ -219,8 +219,8 @@ it and perform any special processing based on that. You could even add or remov
 `Block`s, for example, based on the presence of certain comment values.
 
 -}
-type Html
-    = HtmlElement String (List HtmlAttribute) (List Block)
+type Html children
+    = HtmlElement String (List HtmlAttribute) (List children)
     | HtmlComment String
     | ProcessingInstruction String
     | HtmlDeclaration String
