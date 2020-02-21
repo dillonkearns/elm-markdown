@@ -1,16 +1,8 @@
-module Markdown.Parser exposing
-    ( Renderer, defaultHtmlRenderer, deadEndToString, parse, render
-    , ListItem(..), Task(..)
-    )
+module Markdown.Parser exposing (Renderer, defaultHtmlRenderer, deadEndToString, parse, render)
 
 {-|
 
 @docs Renderer, defaultHtmlRenderer, deadEndToString, parse, render
-
-
-## List Item types
-
-@docs ListItem, Task
 
 -}
 
@@ -19,7 +11,7 @@ import Helpers
 import Html exposing (Html)
 import Html.Attributes as Attr
 import HtmlParser exposing (Node(..))
-import Markdown.Block as Block exposing (Block, Inline)
+import Markdown.Block as Block exposing (Block, Inline, ListItem, Task)
 import Markdown.CodeBlock
 import Markdown.Html
 import Markdown.HtmlRenderer
@@ -64,20 +56,6 @@ type alias Renderer view =
     , codeBlock : { body : String, language : Maybe String } -> view
     , thematicBreak : view
     }
-
-
-{-| The value for an unordered list item, which may contain a task.
--}
-type ListItem view
-    = ListItem Task (List view)
-
-
-{-| A task (or no task), which may be contained in a ListItem.
--}
-type Task
-    = NoTask
-    | IncompleteTask
-    | CompletedTask
 
 
 {-| This renders `Html` in an attempt to be as close as possible to
@@ -156,14 +134,14 @@ defaultHtmlRenderer =
                     |> List.map
                         (\item ->
                             case item of
-                                ListItem task children ->
+                                Block.ListItem task children ->
                                     let
                                         checkbox =
                                             case task of
-                                                NoTask ->
+                                                Block.NoTask ->
                                                     Html.text ""
 
-                                                IncompleteTask ->
+                                                Block.IncompleteTask ->
                                                     Html.input
                                                         [ Attr.disabled True
                                                         , Attr.checked False
@@ -171,7 +149,7 @@ defaultHtmlRenderer =
                                                         ]
                                                         []
 
-                                                CompletedTask ->
+                                                Block.CompletedTask ->
                                                     Html.input
                                                         [ Attr.disabled True
                                                         , Attr.checked True
@@ -343,26 +321,10 @@ renderHelper renderer blocks =
                 Block.UnorderedListBlock items ->
                     items
                         |> List.map
-                            (\item ->
-                                renderStyled renderer item.body
-                                    |> Result.map
-                                        (\renderedBody ->
-                                            let
-                                                task =
-                                                    case item.task of
-                                                        Just complete ->
-                                                            case complete of
-                                                                True ->
-                                                                    CompletedTask
-
-                                                                False ->
-                                                                    IncompleteTask
-
-                                                        Nothing ->
-                                                            NoTask
-                                            in
-                                            ListItem task renderedBody
-                                        )
+                            (\(Block.ListItem task children) ->
+                                children
+                                    |> renderStyled renderer
+                                    |> Result.map (\renderedBody -> Block.ListItem task renderedBody)
                             )
                         |> combineResults
                         |> Result.map renderer.unorderedList
@@ -609,9 +571,19 @@ parseInlines rawBlock =
                             |> parseRawInline identity
                             |> Advanced.map
                                 (\parsedInlines ->
-                                    { task = unparsedItem.task
-                                    , body = parsedInlines
-                                    }
+                                    let
+                                        task =
+                                            case unparsedItem.task of
+                                                Just False ->
+                                                    Block.IncompleteTask
+
+                                                Just True ->
+                                                    Block.CompletedTask
+
+                                                Nothing ->
+                                                    Block.NoTask
+                                    in
+                                    Block.ListItem task parsedInlines
                                 )
                     )
                 |> combine

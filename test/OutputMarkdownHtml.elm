@@ -124,14 +124,14 @@ renderMarkdown markdown =
                             |> List.map
                                 (\item ->
                                     case item of
-                                        Markdown.ListItem task children ->
+                                        Block.ListItem task children ->
                                             let
                                                 checkbox =
                                                     case task of
-                                                        Markdown.NoTask ->
+                                                        Block.NoTask ->
                                                             Html.text ""
 
-                                                        Markdown.IncompleteTask ->
+                                                        Block.IncompleteTask ->
                                                             Html.input
                                                                 [ Attr.disabled True
                                                                 , Attr.checked False
@@ -139,7 +139,7 @@ renderMarkdown markdown =
                                                                 ]
                                                                 []
 
-                                                        Markdown.CompletedTask ->
+                                                        Block.CompletedTask ->
                                                             Html.input
                                                                 [ Attr.disabled True
                                                                 , Attr.checked True

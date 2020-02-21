@@ -497,11 +497,9 @@ I'm part of the block quote
         ]
 
 
-plainListItem : String -> { body : List Inline, task : Maybe Bool }
+plainListItem : String -> Block.ListItem Block.Inline
 plainListItem body =
-    { body = [ Block.Text body ]
-    , task = Nothing
-    }
+    Block.ListItem Block.NoTask [ Block.Text body ]
 
 
 unstyledText : String -> List Inline

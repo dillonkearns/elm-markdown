@@ -8,10 +8,9 @@ import Element.Input
 import Element.Region
 import Html exposing (Attribute, Html)
 import Html.Attributes
-import Markdown.Block as Block exposing (Block, Inline)
+import Markdown.Block as Block exposing (Block, Inline, ListItem(..), Task(..))
 import Markdown.Html
-import Markdown.Inline as Inline
-import Markdown.Parser exposing (ListItem(..), Task(..))
+import Markdown.Parser
 
 
 main : Html msg

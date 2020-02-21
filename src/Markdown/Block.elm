@@ -1,24 +1,29 @@
 module Markdown.Block exposing
     ( Block(..)
-    , HeadingLevel(..)
+    , HeadingLevel(..), headingLevelToInt
+    , ListItem(..), Task(..)
     , Html(..)
     , Inline(..)
     , HtmlAttribute
     , extractText
-    , headingLevelToInt
     )
 
 {-|
 
 @docs Block
-@docs HeadingLevel
+@docs HeadingLevel, headingLevelToInt
+
+
+### List Items
+
+@docs ListItem, Task
 
 
 ## HTML
 
-See <Markdown.Html> for more.
-
 @docs Html
+
+See <Markdown.Html> for more.
 
 
 ## Inlines
@@ -26,11 +31,6 @@ See <Markdown.Html> for more.
 @docs Inline
 @docs HtmlAttribute
 @docs extractText
-
-
-## Convenience functions
-
-@docs headingLevelToInt
 
 -}
 
@@ -64,34 +64,30 @@ In the simplest case, you can pass this directly to a renderer:
             Err errors ->
                 Html.text "Encountered parsing errors."
 
-
-## `HtmlComment`s
-
-`HtmlComment`s contain the raw comment text, completely unprocessed. That means
-you'll need to trim it if you want to strip the leading or trailing whitespace.
-
-Renderer's do not process `HtmlComment`s. If you want to do any special processing
-based on HTML comments, you can inspect the `Markdown.Block.Block`s before rendering
-it and perform any special processing based on that. You could even add or remove
-`Block`s, for example, based on the presence of certain comment values.
-
 -}
 type Block
     = Heading HeadingLevel (List Inline)
     | Paragraph (List Inline)
     | HtmlBlock Html
-    | UnorderedListBlock
-        -- TODO use the same type as the Renderer here
-        -- in general, try to share types with Renderer as much as possible
-        (List
-            { task : Maybe Bool
-            , body : List Inline
-            }
-        )
+    | UnorderedListBlock (List (ListItem Inline))
     | OrderedListBlock Int (List (List Inline))
     | CodeBlock Markdown.CodeBlock.CodeBlock
     | ThematicBreak
     | BlockQuote (List Block)
+
+
+{-| The value for an unordered list item, which may contain a task.
+-}
+type ListItem children
+    = ListItem Task (List children)
+
+
+{-| A task (or no task), which may be contained in a ListItem.
+-}
+type Task
+    = NoTask
+    | IncompleteTask
+    | CompletedTask
 
 
 {-| TODO
@@ -204,11 +200,23 @@ extractTextHelp inline text =
             text ++ extractText inlines
 
 
-{-| TODO
+{-|
+
+
+## `HtmlComment`s
+
+`HtmlComment`s contain the raw comment text, completely unprocessed. That means
+you'll need to trim it if you want to strip the leading or trailing whitespace.
+
+Renderer's do not process `HtmlComment`s. If you want to do any special processing
+based on HTML comments, you can inspect the `Markdown.Block.Block`s before rendering
+it and perform any special processing based on that. You could even add or remove
+`Block`s, for example, based on the presence of certain comment values.
+
 -}
 type Html
-    = HtmlComment String
-    | HtmlElement String (List HtmlAttribute) (List Block)
+    = HtmlElement String (List HtmlAttribute) (List Block)
+    | HtmlComment String
     | ProcessingInstruction String
     | HtmlDeclaration String
     | Cdata String
