@@ -632,7 +632,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 3 Expecting symbol =
+<p>okay</p>
 ```
 ## [Example 150](https://spec.commonmark.org/0.29/#example-150)
 

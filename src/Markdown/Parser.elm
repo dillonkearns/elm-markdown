@@ -761,7 +761,13 @@ xmlNodeToHtmlNode parser =
                     Block.Cdata string
                         |> Markdown.RawBlock.Html
                         |> succeed
-        )
+
+
+                ProcessingInstruction string ->
+                    Block.ProcessingInstruction string
+                        |> Markdown.RawBlock.Html
+                        |> succeed
+                )
         parser
 
 
@@ -817,6 +823,10 @@ childToParser node =
 
         Cdata string ->
             succeed [ Block.Cdata string |> Block.HtmlBlock ]
+
+        ProcessingInstruction string ->
+            succeed [ Block.ProcessingInstruction string |> Block.HtmlBlock ]
+
 
 
 multiParser2 : Parser (List Block)

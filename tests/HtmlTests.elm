@@ -40,6 +40,14 @@ suite =
             \() ->
                 """<![CDATA[Whoops, I forgot the closing >.]]"""
                     |> expectError (HtmlParser.Cdata "<raw-html />")
+        , test "processing instruction" <|
+            \() ->
+                """<?php
+
+  echo '>';
+
+?>"""
+                    |> expectHtml (HtmlParser.ProcessingInstruction "php\n\n  echo '>';\n\n")
         , test "multi-line comment" <|
             \() ->
                 """<!--

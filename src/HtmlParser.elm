@@ -24,7 +24,6 @@ module HtmlParser exposing
 
 import Char
 import Dict exposing (Dict)
-import Helpers
 import Hex
 import Parser as Parser
 import Parser.Advanced as Advanced exposing ((|.), (|=), Nestable(..), Step(..), andThen, chompUntil, chompWhile, getChompedString, inContext, lazy, loop, map, oneOf, problem, succeed, token)
@@ -38,6 +37,7 @@ type Node
     | Text String
     | Comment String
     | Cdata String
+    | ProcessingInstruction String
 
 
 {-| Attribute such as `name="value"`
@@ -56,6 +56,14 @@ type alias DeadEnd =
 
 type Count
     = AtLeast Int
+
+
+processingInstruction : Parser Node
+processingInstruction =
+    inContext "processingInstruction" <|
+        succeed ProcessingInstruction
+            |. symbol "<?"
+            |= processingInstructionValue
 
 
 {-| Parse XML string.
@@ -151,6 +159,7 @@ element : Parser Node
 element =
     oneOf
         [ cdata |> map Cdata
+        , processingInstruction
         , comment
         , inContext "element" <|
             succeed identity
@@ -492,6 +501,13 @@ formatNode node =
                 [ "<![CDATA["
                 , string
                 , "]"
+                ]
+
+        ProcessingInstruction string ->
+            String.concat
+                [ "<?"
+                , string
+                , "?>"
                 ]
 
 
