@@ -284,20 +284,6 @@ textNodeString =
                 )
                 |= cdata
                 |= lazy (\_ -> textNodeString)
-            , succeed
-                (\maybeString ->
-                    let
-                        str =
-                            maybeString |> Maybe.withDefault ""
-                    in
-                    if not <| Helpers.isEmptyString str then
-                        Just str
-
-                    else
-                        Nothing
-                )
-                |. comment
-                |= lazy (\_ -> textNodeString)
             , succeed Nothing
             ]
 

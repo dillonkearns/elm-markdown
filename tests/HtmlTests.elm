@@ -35,6 +35,48 @@ hello!
 next line
 -->"""
                     |> expectHtml (HtmlParser.Comment "\nhello!\nnext line\n")
+        , test "nested HTML" <|
+            \() ->
+                """<Resources>
+
+<Book title="Crime and Punishment" />
+
+
+</Resources>
+                """
+                    |> expectHtml
+                        (HtmlParser.Element "resources"
+                            []
+                            [ HtmlParser.Text "\n\n"
+                            , HtmlParser.Element "book" [ { name = "title", value = "Crime and Punishment" } ] []
+                            , HtmlParser.Text "\n\n\n"
+                            ]
+                        )
+        , test "comments within nested HTML" <|
+            \() ->
+                """<Resources>
+
+<Book title="Crime and Punishment">
+  <!-- this is the book review -->
+  This is my review...
+</Book>
+
+
+</Resources>
+                """
+                    |> expectHtml
+                        (HtmlParser.Element "resources"
+                            []
+                            [ HtmlParser.Text "\n\n"
+                            , HtmlParser.Element "book"
+                                [ { name = "title", value = "Crime and Punishment" } ]
+                                [ HtmlParser.Text "\n  "
+                                , HtmlParser.Comment " this is the book review "
+                                , HtmlParser.Text "\n  This is my review...\n"
+                                ]
+                            , HtmlParser.Text "\n\n\n"
+                            ]
+                        )
         ]
 
 

@@ -1,7 +1,7 @@
 module Tests exposing (suite)
 
 import Expect exposing (Expectation)
-import Markdown.Block as Block exposing (Block, Inline)
+import Markdown.Block as Block exposing (..)
 import Markdown.Parser as Markdown exposing (..)
 import Parser
 import Parser.Advanced as Advanced
@@ -486,14 +486,45 @@ I'm part of the block quote
                                 ]
                             ]
                         )
-        , test "html comment" <|
-            \() ->
-                "<!-- hello! -->"
-                    |> parse
-                    |> Expect.equal
-                        (Ok
-                            [ Block.HtmlBlock (Block.HtmlComment " hello! ") ]
-                        )
+        , describe "html"
+            [ test "html comment" <|
+                \() ->
+                    "<!-- hello! -->"
+                        |> parse
+                        |> Expect.equal
+                            (Ok
+                                [ Block.HtmlBlock (Block.HtmlComment " hello! ") ]
+                            )
+            , test "nested html comment" <|
+                \() ->
+                    """<Resources>
+
+<Book title="Crime and Punishment">
+  <!-- this is the book review -->
+  This is my review...
+</Book>
+
+
+</Resources>
+"""
+                        |> parse
+                        |> Expect.equal
+                            (Ok
+                                [ HtmlBlock
+                                    (HtmlElement "resources"
+                                        []
+                                        [ HtmlBlock
+                                            (HtmlElement "book"
+                                                [ { name = "title", value = "Crime and Punishment" } ]
+                                                [ HtmlBlock (HtmlComment " this is the book review ")
+                                                , Paragraph [ Text "This is my review..." ]
+                                                ]
+                                            )
+                                        ]
+                                    )
+                                ]
+                            )
+            ]
         ]
 
 
