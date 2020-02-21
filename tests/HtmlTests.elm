@@ -28,6 +28,18 @@ suite =
             \() ->
                 """<!-- hello! -->"""
                     |> expectHtml (HtmlParser.Comment " hello! ")
+        , test "CDATA" <|
+            \() ->
+                """<![CDATA[This is CDATA! :-)]]>"""
+                    |> expectHtml (HtmlParser.Cdata "This is CDATA! :-)")
+        , test "CDATA with nested HTML" <|
+            \() ->
+                """<![CDATA[<raw-html />]]>"""
+                    |> expectHtml (HtmlParser.Cdata "<raw-html />")
+        , test "unclosed cdata" <|
+            \() ->
+                """<![CDATA[Whoops, I forgot the closing >.]]"""
+                    |> expectError (HtmlParser.Cdata "<raw-html />")
         , test "multi-line comment" <|
             \() ->
                 """<!--
@@ -85,3 +97,13 @@ expectHtml expected input =
     input
         |> Advanced.run HtmlParser.element
         |> Expect.equal (Ok expected)
+
+
+expectError : HtmlParser.Node -> String -> Expectation
+expectError expected input =
+    case input |> Advanced.run HtmlParser.element of
+        Ok _ ->
+            Expect.fail "Expecting an error."
+
+        Err error ->
+            Expect.pass

@@ -654,38 +654,6 @@ But instead was:
 ```html
 ERROR Problem at row 1 Expecting symbol =
 ```
-## [Example 151](https://spec.commonmark.org/0.29/#example-151)
-
-This markdown:
-
-```markdown
-<![CDATA[
-function matchwo(a,b)
-{
-  if (a < b && a < 0) then {
-    return 1;
-
-  } else {
-
-    return 0;
-  }
-}
-]]>
-okay
-
-```
-
-Should give output:
-
-```html
-<p>okay</p>
-```
-
-But instead was:
-
-```html
-ERROR Problem at row 2 Expecting symbol =
-```
 ## [Example 152](https://spec.commonmark.org/0.29/#example-152)
 
 This markdown:

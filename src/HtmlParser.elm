@@ -37,6 +37,7 @@ type Node
     = Element String (List Attribute) (List Node)
     | Text String
     | Comment String
+    | Cdata String
 
 
 {-| Attribute such as `name="value"`
@@ -139,15 +140,18 @@ cdataContent =
                             |> map (\tail -> "]" ++ tail)
                     )
             , succeed (++)
-                |= keep zeroOrMore notClosingBracket
+                |= keep oneOrMore notClosingBracket
                 |= lazy (\_ -> cdataContent)
+            , Advanced.problem (Parser.Problem "I found an opening `<![CDATA[` tag, but I couldn't find the closing sequence `]]>` after that.")
+                |. end
             ]
 
 
 element : Parser Node
 element =
     oneOf
-        [ comment
+        [ cdata |> map Cdata
+        , comment
         , inContext "element" <|
             succeed identity
                 |. symbol "<"
@@ -269,20 +273,6 @@ textNodeString =
                     Just (String.cons c (maybeString |> Maybe.withDefault ""))
                 )
                 |= escapedChar '<'
-                |= lazy (\_ -> textNodeString)
-            , succeed
-                (\s maybeString ->
-                    let
-                        str =
-                            s ++ (maybeString |> Maybe.withDefault "")
-                    in
-                    if not <| Helpers.isEmptyString str then
-                        Just str
-
-                    else
-                        Nothing
-                )
-                |= cdata
                 |= lazy (\_ -> textNodeString)
             , succeed Nothing
             ]
@@ -495,6 +485,13 @@ formatNode node =
                 [ "<!-- "
                 , commentContents
                 , " -->"
+                ]
+
+        Cdata string ->
+            String.concat
+                [ "<![CDATA["
+                , string
+                , "]"
                 ]
 
 

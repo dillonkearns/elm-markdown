@@ -559,8 +559,8 @@ parseInlines rawBlock =
                 |> inlineParseHelper
                 |> (\styledLine -> just (Block.Paragraph styledLine))
 
-        Html tagName attributes children ->
-            Block.HtmlBlock (Block.HtmlElement tagName attributes children)
+        Html html ->
+            Block.HtmlBlock html
                 |> just
 
         UnorderedListBlock unparsedItems ->
@@ -619,10 +619,6 @@ parseInlines rawBlock =
 
                 Err error ->
                     Advanced.problem (Parser.Problem (deadEndsToString error))
-
-        HtmlComment string ->
-            Block.HtmlBlock (Block.HtmlComment string)
-                |> just
 
 
 just value =
@@ -750,16 +746,21 @@ xmlNodeToHtmlNode parser =
                 HtmlParser.Element tag attributes children ->
                     Advanced.andThen
                         (\parsedChildren ->
-                            Advanced.succeed
-                                (Html tag
-                                    attributes
-                                    parsedChildren
-                                )
+                            Block.HtmlElement tag attributes parsedChildren
+                                |> Markdown.RawBlock.Html
+                                |> Advanced.succeed
                         )
                         (nodesToBlocksParser children)
 
                 Comment string ->
-                    succeed <| HtmlComment string
+                    Block.HtmlComment string
+                        |> Markdown.RawBlock.Html
+                        |> succeed
+
+                Cdata string ->
+                    Block.Cdata string
+                        |> Markdown.RawBlock.Html
+                        |> succeed
         )
         parser
 
@@ -813,6 +814,9 @@ childToParser node =
 
         Comment string ->
             succeed [ Block.HtmlComment string |> Block.HtmlBlock ]
+
+        Cdata string ->
+            succeed [ Block.Cdata string |> Block.HtmlBlock ]
 
 
 multiParser2 : Parser (List Block)

@@ -3884,6 +3884,48 @@ bar
 
 ```
 
+### [Example 151](https://spec.commonmark.org/0.29/#example-151)
+
+This markdown:
+
+
+```markdown
+<![CDATA[
+function matchwo(a,b)
+{
+  if (a < b && a < 0) then {
+    return 1;
+
+  } else {
+
+    return 0;
+  }
+}
+]]>
+okay
+
+```
+
+Gives this correct output:
+
+
+```html
+<![CDATA[
+function matchwo(a,b)
+{
+  if (a < b && a < 0) then {
+    return 1;
+
+  } else {
+
+    return 0;
+  }
+}
+]]>
+<p>okay</p>
+
+```
+
 ### [Example 157](https://spec.commonmark.org/0.29/#example-157)
 
 This markdown:

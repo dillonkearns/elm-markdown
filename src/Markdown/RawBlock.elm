@@ -15,8 +15,7 @@ type UnparsedInlines
 type RawBlock
     = Heading Int UnparsedInlines
     | Body UnparsedInlines
-    | Html String (List Attribute) (List Block)
-    | HtmlComment String
+    | Html (Markdown.Block.Html Block)
     | UnorderedListBlock
         (List
             { task : Maybe Bool
