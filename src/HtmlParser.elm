@@ -63,34 +63,8 @@ processingInstruction =
     inContext "processingInstruction" <|
         succeed ProcessingInstruction
             |. symbol "<?"
-            |= processingInstructionValue
-
-
-{-| Parse XML string.
-
-`<?xml ... ?>` and `<!DOCTYPE ... >` is optional so you don't need to ensure them.
-
-    > import HtmlParser
-    > HtmlParser.parse """<a name="value">foo</a>"""
-    Ok { processingInstructions = [], docType = Nothing, root = Element "a" ([{ name = "name", value = "value" }]) ([Text "foo"]) }
-
--}
-processingInstructionValue : Parser String
-processingInstructionValue =
-    inContext "processingInstructionValue" <|
-        succeed identity
             |= getChompedString (Advanced.chompUntilEndOr "?>")
             |. symbol "?>"
-
-
-notQuestionmark : Char -> Bool
-notQuestionmark c =
-    case c of
-        '?' ->
-            False
-
-        _ ->
-            True
 
 
 notClosingBracket c =
@@ -116,33 +90,8 @@ cdata =
     inContext "cdata" <|
         succeed identity
             |. symbol "<![CDATA["
-            |= cdataContent
-
-
-cdataContent : Parser String
-cdataContent =
-    inContext "cdataContent" <|
-        oneOf
-            [ succeed ""
-                |. symbol "]]>"
-            , symbol "]]"
-                |> andThen
-                    (\_ ->
-                        cdataContent
-                            |> map (\tail -> "]]" ++ tail)
-                    )
-            , symbol "]"
-                |> andThen
-                    (\_ ->
-                        cdataContent
-                            |> map (\tail -> "]" ++ tail)
-                    )
-            , succeed (++)
-                |= keep oneOrMore notClosingBracket
-                |= lazy (\_ -> cdataContent)
-            , Advanced.problem (Parser.Problem "I found an opening `<![CDATA[` tag, but I couldn't find the closing sequence `]]>` after that.")
-                |. end
-            ]
+            |= getChompedString (Advanced.chompUntilEndOr "]]>")
+            |. symbol "]]>"
 
 
 element : Parser Node
@@ -449,7 +398,7 @@ comment : Parser Node
 comment =
     succeed Comment
         |. token (toToken "<!--")
-        |= getChompedString (chompUntil (toToken "-->"))
+        |= getChompedString (Advanced.chompUntilEndOr "-->")
         |. token (toToken "-->")
 
 
