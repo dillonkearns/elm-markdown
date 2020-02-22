@@ -8,7 +8,8 @@ import Element.Input
 import ElmUi
 import Html exposing (Attribute, Html)
 import Markdown.Html
-import Markdown.Parser exposing (ListItem(..), Task(..))
+import Markdown.Parser
+import Markdown.Renderer
 
 
 view : Model -> { title : String, body : List (Html Msg) }
@@ -47,14 +48,14 @@ markdownView markdown =
     markdown
         |> Markdown.Parser.parse
         |> Result.mapError (\error -> error |> List.map Markdown.Parser.deadEndToString |> String.join "\n")
-        |> Result.andThen (Markdown.Parser.render renderer)
+        |> Result.andThen (Markdown.Renderer.render renderer)
 
 
 elmUiRenderer =
     ElmUi.renderer
 
 
-renderer : Markdown.Parser.Renderer (Element Msg)
+renderer : Markdown.Renderer.Renderer (Element Msg)
 renderer =
     { elmUiRenderer
         | html =

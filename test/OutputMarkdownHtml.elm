@@ -5,6 +5,7 @@ import Html.String.Attributes as Attr
 import Markdown.Block as Block
 import Markdown.Html
 import Markdown.Parser as Markdown
+import Markdown.Renderer
 
 
 port requestHtml : (String -> msg) -> Sub msg
@@ -40,7 +41,7 @@ render renderer markdown =
     markdown
         |> Markdown.parse
         |> Result.mapError deadEndsToString
-        |> Result.andThen (\ast -> Markdown.render renderer ast)
+        |> Result.andThen (\ast -> Markdown.Renderer.render renderer ast)
 
 
 deadEndsToString deadEnds =

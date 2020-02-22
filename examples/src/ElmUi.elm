@@ -11,6 +11,7 @@ import Html.Attributes
 import Markdown.Block as Block exposing (Block, Inline, ListItem(..), Task(..))
 import Markdown.Html
 import Markdown.Parser
+import Markdown.Renderer
 
 
 main : Html msg
@@ -159,10 +160,10 @@ view markdown =
     markdown
         |> Markdown.Parser.parse
         |> Result.mapError (\error -> error |> List.map Markdown.Parser.deadEndToString |> String.join "\n")
-        |> Result.andThen (Markdown.Parser.render renderer)
+        |> Result.andThen (Markdown.Renderer.render renderer)
 
 
-renderer : Markdown.Parser.Renderer (Element msg)
+renderer : Markdown.Renderer.Renderer (Element msg)
 renderer =
     { heading = heading
     , paragraph =

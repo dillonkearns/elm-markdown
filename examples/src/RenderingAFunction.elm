@@ -9,8 +9,10 @@ import Element.Input
 import Element.Region
 import Html exposing (Attribute, Html)
 import Html.Attributes
+import Markdown.Block as Block exposing (ListItem(..), Task(..))
 import Markdown.Html
-import Markdown.Parser exposing (ListItem(..), Task(..))
+import Markdown.Parser
+import Markdown.Renderer
 
 
 view : Model -> { title : String, body : List (Html Msg) }
@@ -49,23 +51,24 @@ markdownView markdown =
     markdown
         |> Markdown.Parser.parse
         |> Result.mapError (\error -> error |> List.map Markdown.Parser.deadEndToString |> String.join "\n")
-        |> Result.andThen (Markdown.Parser.render renderer)
+        |> Result.andThen (Markdown.Renderer.render renderer)
         |> Result.map (\renderFunctions -> List.map (\fn -> fn 123) renderFunctions)
 
 
-renderer : Markdown.Parser.Renderer (Int -> Element Msg)
+renderer : Markdown.Renderer.Renderer (Int -> Element Msg)
 renderer =
     { heading = heading
-    , raw =
+    , paragraph =
         \body number ->
             Element.paragraph
                 [ Element.spacing 15 ]
                 (body |> List.map (\fn -> fn number))
     , thematicBreak = \number -> Element.none
-    , plain = \value number -> Element.text value
-    , bold = \content number -> Element.row [ Font.bold ] [ Element.text content ]
-    , italic = \content number -> Element.row [ Font.italic ] [ Element.text content ]
-    , code = code
+    , text = \value number -> Element.text value
+    , strong = \content number -> Element.row [ Font.bold ] [ Element.text content ]
+    , emphasis = \content number -> Element.row [ Font.italic ] [ Element.text content ]
+    , hardLineBreak = \number -> Element.row [ Element.height (Element.px 15) ] []
+    , codeSpan = code
     , link = link
     , image =
         \image body ->
@@ -224,7 +227,7 @@ rawTextToId rawText =
         |> String.replace " " ""
 
 
-heading : { level : Int, rawText : String, children : List (Int -> Element msg) } -> Int -> Element msg
+heading : { level : Block.HeadingLevel, rawText : String, children : List (Int -> Element msg) } -> Int -> Element msg
 heading { level, rawText, children } number =
     Element.paragraph
         [ Font.size
@@ -240,7 +243,7 @@ heading { level, rawText, children } number =
             )
         , Font.bold
         , Font.family [ Font.typeface "Montserrat" ]
-        , Element.Region.heading level
+        , Element.Region.heading (Block.headingLevelToInt level)
         , Element.htmlAttribute
             (Html.Attributes.attribute "name" (rawTextToId rawText))
         , Font.center

@@ -4,6 +4,7 @@ import Expect exposing (Expectation)
 import Markdown.Block as Block exposing (Block)
 import Markdown.Html
 import Markdown.Parser as Markdown exposing (..)
+import Markdown.Renderer
 import Parser
 import Parser.Advanced as Advanced
 import Test exposing (..)
@@ -22,7 +23,7 @@ render renderer markdown =
     markdown
         |> Markdown.parse
         |> Result.mapError deadEndsToString
-        |> Result.andThen (\ast -> Markdown.render renderer ast)
+        |> Result.andThen (\ast -> Markdown.Renderer.render renderer ast)
 
 
 deadEndsToString deadEnds =
@@ -36,7 +37,7 @@ type Rendered tag
     | Html tag
 
 
-testRenderer : List (Markdown.Html.Renderer (List (Rendered a) -> Rendered a)) -> Markdown.Renderer (Rendered a)
+testRenderer : List (Markdown.Html.Renderer (List (Rendered a) -> Rendered a)) -> Markdown.Renderer.Renderer (Rendered a)
 testRenderer htmlRenderer =
     { heading =
         \{ level, children } ->
