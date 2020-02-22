@@ -38,6 +38,7 @@ type Node
     | Comment String
     | Cdata String
     | ProcessingInstruction String
+    | Declaration String String
 
 
 {-| Attribute such as `name="value"`
@@ -94,12 +95,63 @@ cdata =
             |. symbol "]]>"
 
 
+docType : Parser Node
+docType =
+    {-
+       <!
+       a name consisting of one or more uppercase ASCII letters
+       whitespace
+       a string of characters not including the character >
+       and the character >
+    -}
+    inContext "declaration" <|
+        succeed Declaration
+            |. symbol "<!"
+            |= allUppercase
+            |. oneOrMoreWhiteSpace
+            |= getChompedString (Advanced.chompUntilEndOr ">")
+            |. symbol ">"
+
+
+allUppercase : Parser String
+allUppercase =
+    keep oneOrMore (\c -> Char.isUpper c)
+
+
+publicIdentifier : Parser String
+publicIdentifier =
+    inContext "publicIdentifier" <|
+        succeed identity
+            |. symbol "\""
+            |= keep zeroOrMore (\c -> c /= '"')
+            |. symbol "\""
+
+
+docTypeExternalSubset : Parser String
+docTypeExternalSubset =
+    inContext "docTypeExternalSubset" <|
+        succeed identity
+            |. symbol "\""
+            |= keep zeroOrMore (\c -> c /= '"')
+            |. symbol "\""
+
+
+docTypeInternalSubset : Parser String
+docTypeInternalSubset =
+    inContext "docTypeInternalSubset" <|
+        succeed identity
+            |. symbol "["
+            |= keep zeroOrMore (\c -> c /= ']')
+            |. symbol "]"
+
+
 element : Parser Node
 element =
     oneOf
         [ cdata |> map Cdata
         , processingInstruction
         , comment
+        , docType
         , inContext "element" <|
             succeed identity
                 |. symbol "<"
@@ -370,6 +422,11 @@ attributeValue =
             ]
 
 
+oneOrMoreWhiteSpace : Parser ()
+oneOrMoreWhiteSpace =
+    ignore oneOrMore isWhitespace
+
+
 whiteSpace : Parser ()
 whiteSpace =
     ignore zeroOrMore isWhitespace
@@ -447,6 +504,15 @@ formatNode node =
                 [ "<?"
                 , string
                 , "?>"
+                ]
+
+        Declaration declarationType content ->
+            String.concat
+                [ "<!"
+                , declarationType
+                , " "
+                , content
+                , ">"
                 ]
 
 

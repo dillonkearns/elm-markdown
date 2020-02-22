@@ -223,7 +223,7 @@ type Html children
     = HtmlElement String (List HtmlAttribute) (List children)
     | HtmlComment String
     | ProcessingInstruction String
-    | HtmlDeclaration String
+    | HtmlDeclaration String String
     | Cdata String
 
 

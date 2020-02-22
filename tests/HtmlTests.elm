@@ -36,6 +36,12 @@ suite =
             \() ->
                 """<![CDATA[<raw-html />]]>"""
                     |> expectHtml (HtmlParser.Cdata "<raw-html />")
+        , test "doctype declaration" <|
+            \() ->
+                """<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">"""
+                    |> expectHtml (HtmlParser.Declaration "DOCTYPE" """HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd\"""")
         , test "processing instruction" <|
             \() ->
                 """<?php

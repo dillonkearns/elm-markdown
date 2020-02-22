@@ -525,6 +525,14 @@ I'm part of the block quote
                                 ]
                             )
             ]
+        , test "HTML declaration" <|
+            \() ->
+                """<!DOCTYPE html>"""
+                    |> parse
+                    |> Expect.equal
+                        (Ok
+                            [ HtmlBlock (HtmlDeclaration "DOCTYPE" "html") ]
+                        )
         ]
 
 
