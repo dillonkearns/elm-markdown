@@ -6,6 +6,7 @@
     "version": "3.0.0",
     "exposed-modules": [
         "Markdown.Parser",
+        "Markdown.Renderer",
         "Markdown.Block",
         "Markdown.Inline",
         "Markdown.Html"
