@@ -168,17 +168,7 @@ renderMarkdown markdown =
                                 )
                         )
             , html =
-                Markdown.Html.oneOf
-                    ([ "table"
-                     , "tr"
-                     , "td"
-                     , "pre"
-                     , "th"
-                     , "div"
-                     , "a"
-                     ]
-                        |> List.map passThroughNode
-                    )
+                htmlRenderer2
             , codeBlock =
                 \{ body, language } ->
                     Html.pre []
@@ -190,6 +180,47 @@ renderMarkdown markdown =
             }
         |> Result.map (List.map (Html.toString 0))
         |> Result.map (String.join "")
+
+
+htmlRenderer : Markdown.Html.Renderer (List (Html.Html msg) -> Html.Html msg)
+htmlRenderer =
+    Markdown.Html.oneOf
+        ([ "table"
+         , "tr"
+         , "td"
+         , "pre"
+         , "th"
+         , "div"
+         , "a"
+         ]
+            |> List.map passThroughNode
+        )
+
+
+htmlRenderer2 : Markdown.Html.Renderer (List (Html.Html msg) -> Html.Html msg)
+htmlRenderer2 =
+    Markdown.Html.passthrough
+        (\tag attributes children ->
+            --Html.text ""
+            --    |> Ok
+            let
+                htmlAttributes : List (Html.Attribute msg)
+                htmlAttributes =
+                    attributes
+                        |> List.map
+                            (\{ name, value } ->
+                                Attr.attribute name value
+                            )
+
+                result : Result String (List (Html.Html msg) -> Html.Html msg)
+                result =
+                    (\foo ->
+                        Html.node tag htmlAttributes foo
+                    )
+                        |> Ok
+            in
+            result
+        )
 
 
 passThroughNode nodeName =

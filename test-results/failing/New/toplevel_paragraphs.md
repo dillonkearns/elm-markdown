@@ -48,5 +48,5 @@ Should give output:
 But instead was:
 
 ```html
-ERROR oneOf failed parsing this value:<span>Parsing failed in the following 2 ways: (1) Expected a but was span (2) Expected div but was span (3) Expected th but was span (4) Expected pre but was span (5) Expected td but was span (6) Expected tr but was span (7) Expected table but was span
+<p>hello world</p><pre><code>text after spaces text after spaces</code></pre><p>paragraph before code</p><pre><code>text inside block code</code></pre><p>paragraph before hr</p><ul><li>* *</li></ul><p>paragraph before blockquote</p><blockquote><p>text for blockquote</p></blockquote><p>paragraph before list</p><ul><li>text inside list</li></ul><p>paragraph before div</p><div><p>text inside div</p></div><p>paragraph with span</p><span><p>text inside span</p></span><p>hello [world][how]</p><p>[how]: /are/you</p><div><p>hello</p></div><span><p>hello</p></span>
 ```

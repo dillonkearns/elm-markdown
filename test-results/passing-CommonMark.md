@@ -3858,6 +3858,30 @@ Gives this correct output:
 
 ```
 
+### [Example 137](https://spec.commonmark.org/0.29/#example-137)
+
+This markdown:
+
+
+```markdown
+<del>
+
+*foo*
+
+</del>
+
+```
+
+Gives this correct output:
+
+
+```html
+<del>
+<p><em>foo</em></p>
+</del>
+
+```
+
 ### [Example 148](https://spec.commonmark.org/0.29/#example-148)
 
 This markdown:

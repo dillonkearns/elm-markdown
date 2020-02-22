@@ -290,7 +290,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR oneOf failed parsing this value:<warning>Parsing failed in the following 2 ways: (1) Expected a but was warning (2) Expected div but was warning (3) Expected th but was warning (4) Expected pre but was warning (5) Expected td but was warning (6) Expected tr but was warning (7) Expected table but was warning
+<warning><p><em>bar</em></p></warning>
 ```
 ## [Example 134](https://spec.commonmark.org/0.29/#example-134)
 
@@ -312,7 +312,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR oneOf failed parsing this value:<i class="foo">Parsing failed in the following 2 ways: (1) Expected a but was i (2) Expected div but was i (3) Expected th but was i (4) Expected pre but was i (5) Expected td but was i (6) Expected tr but was i (7) Expected table but was i
+<i class="foo"><p><em>bar</em></p></i>
 ```
 ## [Example 135](https://spec.commonmark.org/0.29/#example-135)
 
@@ -355,31 +355,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR oneOf failed parsing this value:<del>Parsing failed in the following 2 ways: (1) Expected a but was del (2) Expected div but was del (3) Expected th but was del (4) Expected pre but was del (5) Expected td but was del (6) Expected tr but was del (7) Expected table but was del
-```
-## [Example 137](https://spec.commonmark.org/0.29/#example-137)
-
-This markdown:
-
-```markdown
-<del>
-
-*foo*
-
-</del>
-
-```
-
-Should give output:
-
-```html
 <del><p><em>foo</em></p></del>
-```
-
-But instead was:
-
-```html
-ERROR oneOf failed parsing this value:<del>Parsing failed in the following 2 ways: (1) Expected a but was del (2) Expected div but was del (3) Expected th but was del (4) Expected pre but was del (5) Expected td but was del (6) Expected tr but was del (7) Expected table but was del
 ```
 ## [Example 138](https://spec.commonmark.org/0.29/#example-138)
 
@@ -399,7 +375,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR oneOf failed parsing this value:<del>Parsing failed in the following 2 ways: (1) Expected a but was del (2) Expected div but was del (3) Expected th but was del (4) Expected pre but was del (5) Expected td but was del (6) Expected tr but was del (7) Expected table but was del
+<del><p><em>foo</em></p></del>
 ```
 ## [Example 139](https://spec.commonmark.org/0.29/#example-139)
 
@@ -425,7 +401,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR oneOf failed parsing this value:<code>Parsing failed in the following 2 ways: (1) Expected a but was code (2) Expected div but was code (3) Expected th but was code (4) Expected pre but was code (5) Expected td but was code (6) Expected tr but was code (7) Expected table but was code
+<pre language="haskell"><code><p>import Text.HTML.TagSoup</p><p>main :: IO () main = print $ parseTags tags</p></code></pre><p>okay</p>
 ```
 ## [Example 140](https://spec.commonmark.org/0.29/#example-140)
 
@@ -450,7 +426,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR oneOf failed parsing this value:<script type="text/javascript">Parsing failed in the following 2 ways: (1) Expected a but was script (2) Expected div but was script (3) Expected th but was script (4) Expected pre but was script (5) Expected td but was script (6) Expected tr but was script (7) Expected table but was script
+<script type="text/javascript">&lt;p&gt;// JavaScript example&lt;/p&gt;&lt;p&gt;document.getElementById(&quot;demo&quot;).innerHTML = &quot;Hello JavaScript!&quot;;&lt;/p&gt;</script><p>okay</p>
 ```
 ## [Example 141](https://spec.commonmark.org/0.29/#example-141)
 
@@ -476,7 +452,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR oneOf failed parsing this value:<style type="text/css">Parsing failed in the following 2 ways: (1) Expected a but was style (2) Expected div but was style (3) Expected th but was style (4) Expected pre but was style (5) Expected td but was style (6) Expected tr but was style (7) Expected table but was style
+<style type="text/css">&lt;p&gt;h1 {color:red;}&lt;/p&gt;&lt;p&gt;p {color:blue;}&lt;/p&gt;</style><p>okay</p>
 ```
 ## [Example 142](https://spec.commonmark.org/0.29/#example-142)
 
@@ -564,7 +540,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR oneOf failed parsing this value:<style>Parsing failed in the following 2 ways: (1) Expected a but was style (2) Expected div but was style (3) Expected th but was style (4) Expected pre but was style (5) Expected td but was style (6) Expected tr but was style (7) Expected table but was style
+<style>&lt;p&gt;p{color:red;}&lt;/p&gt;</style><p><em>foo</em></p>
 ```
 ## [Example 146](https://spec.commonmark.org/0.29/#example-146)
 
@@ -607,7 +583,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR oneOf failed parsing this value:<script>Parsing failed in the following 2 ways: (1) Expected a but was script (2) Expected div but was script (3) Expected th but was script (4) Expected pre but was script (5) Expected td but was script (6) Expected tr but was script (7) Expected table but was script
+<script>&lt;p&gt;foo&lt;/p&gt;</script><ol><li><em>bar</em></li></ol>
 ```
 ## [Example 149](https://spec.commonmark.org/0.29/#example-149)
 

@@ -275,7 +275,9 @@ Should give output:
 But instead was:
 
 ```html
-<p>`Foo</p><hr><p>`</p><a></a>
+<p>`Foo</p><hr><p>`</p><a title="a lot
+---
+of dashes"></a>
 ```
 ## [Example 65](https://spec.commonmark.org/0.29/#example-65)
 

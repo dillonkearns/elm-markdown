@@ -2,6 +2,7 @@ module Markdown.Html exposing
     ( Renderer
     , tag, withAttribute, withOptionalAttribute
     , map, oneOf
+    , passthrough
     )
 
 {-|
@@ -16,6 +17,7 @@ module Markdown.Html exposing
 
 -}
 
+import Html
 import List.Extra
 import Markdown.Block exposing (Block)
 import Markdown.HtmlRenderer
@@ -184,6 +186,11 @@ tag expectedTag a =
             else
                 Err ("Expected " ++ expectedTag ++ " but was " ++ tagName)
         )
+
+
+passthrough : (String -> List Markdown.HtmlRenderer.Attribute -> List Block -> Result String view) -> Markdown.HtmlRenderer.HtmlRenderer view
+passthrough renderFn =
+    Markdown.HtmlRenderer.HtmlRenderer renderFn
 
 
 {-| Expects an attribute. The `Renderer` will fail if that attribute doesn't

@@ -338,7 +338,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR oneOf failed parsing this value:<img src="foo" title="*">Parsing failed in the following 2 ways: (1) Expected a but was img (2) Expected div but was img (3) Expected th but was img (4) Expected pre but was img (5) Expected td but was img (6) Expected tr but was img (7) Expected table but was img
+<p>*<img src="foo" title="*"></img></p>
 ```
 ## [Example 475](https://spec.commonmark.org/0.29/#example-475)
 

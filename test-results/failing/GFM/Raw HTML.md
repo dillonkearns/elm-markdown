@@ -38,7 +38,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR oneOf failed parsing this value:<b2>Parsing failed in the following 2 ways: (1) Expected a but was b2 (2) Expected div but was b2 (3) Expected th but was b2 (4) Expected pre but was b2 (5) Expected td but was b2 (6) Expected tr but was b2 (7) Expected table but was b2
+<a></a><b2></b2>
 ```
 ## [Example 611](https://spec.commonmark.org/0.29/#example-611)
 
@@ -100,7 +100,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR oneOf failed parsing this value:<responsive-image src="foo.jpg">Parsing failed in the following 2 ways: (1) Expected a but was responsive-image (2) Expected div but was responsive-image (3) Expected th but was responsive-image (4) Expected pre but was responsive-image (5) Expected td but was responsive-image (6) Expected tr but was responsive-image (7) Expected table but was responsive-image
+<p>Foo<responsive-image src="foo.jpg"></responsive-image></p>
 ```
 ## [Example 614](https://spec.commonmark.org/0.29/#example-614)
 
