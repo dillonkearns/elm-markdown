@@ -17,9 +17,8 @@ module Markdown.Inline exposing
 
 -}
 
-----------------------------------------------------------------------
--------------------------------- Model -------------------------------
-----------------------------------------------------------------------
+import HtmlParser
+import Markdown.Block as Block
 
 
 {-| The inline type.
@@ -39,7 +38,7 @@ type Inline htmlValue
     | CodeInline String
     | Link String (Maybe String) (List (Inline htmlValue))
     | Image String (Maybe String) (List (Inline htmlValue))
-    | HtmlInline String (List Attribute) htmlValue
+    | HtmlInline HtmlParser.Node
       --| Html String (List Attribute) (List Block)
     | Emphasis Int (List (Inline htmlValue))
 
@@ -91,7 +90,7 @@ extractTextHelp inline text =
         Image _ _ inlines ->
             text ++ extractText inlines
 
-        HtmlInline _ _ inlines ->
+        HtmlInline html ->
             --text ++ extractText inlines
             text
 

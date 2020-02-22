@@ -2,6 +2,7 @@ module InlineTests exposing (suite)
 
 import Dict
 import Expect exposing (Expectation)
+import HtmlParser
 import Markdown.Inline as Inlines
 import Markdown.InlineParser
 import Parser
@@ -123,14 +124,15 @@ suite =
                     "Hello <div></div> Goodbye"
                         |> expectInlines
                             [ Inlines.Text "Hello "
-                            , Inlines.HtmlInline "div" [] ""
+                            , Inlines.HtmlInline (HtmlParser.Element "div" [] [])
                             , Inlines.Text " Goodbye"
                             ]
             , test "empty div with attributes tag" <|
                 \() ->
                     """<div class="foo"></div>"""
                         |> expectInlines
-                            [ Inlines.HtmlInline "div" [ { name = "class", value = "foo" } ] ""
+                            [ Inlines.HtmlInline
+                                (HtmlParser.Element "div" [ { name = "class", value = "foo" } ] [])
                             ]
             , test "backslash hard line break" <|
                 \() ->

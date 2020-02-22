@@ -533,6 +533,60 @@ I'm part of the block quote
                         (Ok
                             [ HtmlBlock (HtmlDeclaration "DOCTYPE" "html") ]
                         )
+        , describe "inline html"
+            [ test "cdata sections" <|
+                \() ->
+                    "foo <![CDATA[>&<]]>"
+                        |> parse
+                        |> Expect.equal
+                            (Ok
+                                [ Paragraph
+                                    [ Text "foo "
+                                    , HtmlInline (Cdata ">&<")
+                                    ]
+                                ]
+                            )
+            , test "nested HTML" <|
+                \() ->
+                    """foo <Resources><Resource type="book" title="Notes From Underground" /></Resources>"""
+                        |> parse
+                        |> Expect.equal
+                            (Ok
+                                [ Paragraph
+                                    [ Text "foo "
+                                    , HtmlInline
+                                        (HtmlElement "resources"
+                                            []
+                                            [ HtmlBlock
+                                                (HtmlElement "resource"
+                                                    [ { name = "type", value = "book" }
+                                                    , { name = "title", value = "Notes From Underground" }
+                                                    ]
+                                                    []
+                                                )
+                                            ]
+                                        )
+                                    ]
+                                ]
+                            )
+            , test "nested markdown within nested HTML" <|
+                \() ->
+                    """foo <Resources><Resource type="book" title="Notes From Underground" />9/10 interesting read!</Resources>"""
+                        |> parse
+                        |> Expect.equal
+                            (Ok
+                                [ Paragraph
+                                    [ Text "foo "
+                                    , HtmlInline
+                                        (HtmlElement "resources"
+                                            []
+                                            [ Paragraph [ Text "9/10 interesting read!" ]
+                                            ]
+                                        )
+                                    ]
+                                ]
+                            )
+            ]
         ]
 
 

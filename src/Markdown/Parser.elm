@@ -136,19 +136,33 @@ mapInline inline =
         Inline.Image string maybeString inlines ->
             Block.Image string maybeString (inlines |> List.map mapInline)
 
-        Inline.HtmlInline string attributes htmlValue ->
-            let
-                inlines =
-                    case Advanced.run multiParser2 htmlValue of
-                        Ok children ->
-                            children
+        --Inline.HtmlInline string attributes htmlValue ->
+        Inline.HtmlInline node ->
+            --let
+            --    --inlineHtml =
+            --    --    --case Advanced.run multiParser2 htmlValue of
+            --    --    parseInlineHtmlNode node
+            --
+            --    --andThen parseAllInlines
+            --in
+            --Block.HtmlInline (Block.HtmlElement string attributes inlines)
+            --Block.HtmlInline inlineHtml
+            --case inlineHtml of
+            --    Ok (Just html) ->
+            --        html
+            --            |> Block.HtmlInline
+            --
+            --    Ok Nothing ->
+            --        Block.HtmlInline (Block.HtmlComment "TODO")
+            --
+            --    Err _ ->
+            --        Block.HtmlInline (Block.HtmlComment "TODO")
+            --|> parseAllInlines [ nodeToRawBlock node ]
+            node
+                |> nodeToRawBlock
+                |> Block.HtmlInline
 
-                        Err error ->
-                            -- TODO pass up parsing error
-                            []
-            in
-            Block.HtmlInline (Block.HtmlElement string attributes inlines)
-
+        --|> Block.HtmlInline
         Inline.Emphasis level inlines ->
             case level of
                 1 ->
@@ -160,6 +174,19 @@ mapInline inline =
                 _ ->
                     -- TODO fix this
                     Block.Strong (inlines |> List.map mapInline)
+
+
+
+--parseInlineHtmlNode : HtmlParser.Node -> Result a (Maybe (Block.Html Block))
+--parseInlineHtmlNode node =
+--    nodeToRawBlock node
+--|> andThen parseInlines
+--Debug.todo ""
+--Advanced.run
+--                             (nodeToRawBlock node
+--                                 |> andThen parseInlines
+--                             )
+--                             ""
 
 
 levelParser : Int -> Parser Block.HeadingLevel
@@ -420,6 +447,72 @@ xmlNodeToHtmlNode parser =
                         |> succeed
         )
         parser
+
+
+nodeToRawBlock : Node -> Block.Html Block
+nodeToRawBlock node =
+    case node of
+        HtmlParser.Text innerText ->
+            -- TODO is this right?
+            --Body
+            --Debug.todo ""
+            let
+                thing1 : Result (List (Advanced.DeadEnd String Parser.Problem)) (List Block)
+                thing1 =
+                    Advanced.run multiParser2 innerText
+            in
+            case thing1 of
+                Ok value ->
+                    --value
+                    Debug.todo ""
+
+                --|> Block.Paragraph
+                --value
+                --succeed value
+                Err error ->
+                    Debug.todo ""
+
+        --Advanced.problem
+        --    (Parser.Expecting
+        --        (error
+        --            |> List.map deadEndToString
+        --            |> String.join "\n"
+        --        )
+        --    )
+        --UnparsedInlines innerText
+        HtmlParser.Element tag attributes children ->
+            --Block.HtmlElement tag attributes (List.map nodeToRawBlock children)
+            let
+                parsedChildren : List Block
+                parsedChildren =
+                    children
+                        |> List.map nodeToRawBlock
+                        |> List.map Block.HtmlBlock
+            in
+            Block.HtmlElement tag
+                attributes
+                parsedChildren
+
+        --|> HtmlThing
+        --|> Markdown.RawBlock.Html
+        Comment string ->
+            Block.HtmlComment string
+
+        --|> Markdown.RawBlock.Html
+        Cdata string ->
+            Block.Cdata string
+
+        --|> Markdown.RawBlock.Html
+        ProcessingInstruction string ->
+            Block.ProcessingInstruction string
+
+        --|> Markdown.RawBlock.Html
+        Declaration declarationType content ->
+            Block.HtmlDeclaration declarationType content
+
+
+
+--|> Markdown.RawBlock.Html
 
 
 nodesToBlocksParser : List Node -> Parser (List Block)

@@ -1099,9 +1099,13 @@ emailRegex =
 
 
 type alias HtmlModel =
-    { tag : String
-    , attributes : List Attribute
-    }
+    HtmlParser.Node
+
+
+
+--{ tag : String
+--, attributes : List Attribute
+--}
 
 
 softAsHardLineBreak =
@@ -1115,10 +1119,10 @@ htmlToToken model (Match match) =
     --        Nothing
     --
     --    _ ->
-    Regex.findAtMost 1 htmlRegex match.text
-        |> List.head
-        |> Maybe.andThen
-            (htmlFromRegex model match)
+    --Regex.findAtMost 1 htmlRegex match.text
+    --    |> List.head
+    --    |> Maybe.andThen (\_ -> htmlFromRegex model match)
+    htmlFromRegex model match
 
 
 htmlRegex : Regex
@@ -1127,8 +1131,8 @@ htmlRegex =
         |> Maybe.withDefault Regex.never
 
 
-htmlFromRegex : Parser -> MatchModel -> Regex.Match -> Maybe Parser
-htmlFromRegex model match regexMatch =
+htmlFromRegex : Parser -> MatchModel -> Maybe Parser
+htmlFromRegex model match =
     let
         --Advanced.andThen
         --    (\xmlNode ->
@@ -1185,19 +1189,20 @@ htmlFromRegex model match regexMatch =
         Ok { htmlTag, length } ->
             let
                 htmlToken =
-                    HtmlToken False
-                        (case htmlTag of
-                            HtmlParser.Element tag attributes _ ->
-                                { tag = tag
-                                , attributes = attributes
-                                }
+                    HtmlToken False htmlTag
 
-                            HtmlParser.Comment comment ->
-                                { tag = "TODO handle comment", attributes = [] }
-
-                            _ ->
-                                { tag = "TODO", attributes = [] }
-                        )
+                --(case htmlTag of
+                --    HtmlParser.Element tag attributes _ ->
+                --        { tag = tag
+                --        , attributes = attributes
+                --        }
+                --
+                --    HtmlParser.Comment comment ->
+                --        { tag = "TODO handle comment", attributes = [] }
+                --
+                --    _ ->
+                --        { tag = "TODO", attributes = [] }
+                --)
             in
             { index = match.start
             , length = length
@@ -1228,7 +1233,7 @@ htmlFromRegex model match regexMatch =
 
 
 log label value =
-    value
+    Debug.log label value
 
 
 
@@ -1366,7 +1371,12 @@ htmlElementTTM ( tokens, model ) =
 
 isVoidTag : HtmlModel -> Bool
 isVoidTag htmlModel =
-    List.member htmlModel.tag voidHtmlTags
+    -- TODO should I use this later?
+    False
+
+
+
+--List.member htmlModel.tag voidHtmlTags
 
 
 voidHtmlTags : List String
@@ -1391,12 +1401,12 @@ voidHtmlTags =
 
 isCloseToken : HtmlModel -> Token -> Bool
 isCloseToken htmlModel token =
-    case token.meaning of
-        HtmlToken False htmlModel_ ->
-            htmlModel.tag == htmlModel_.tag
-
-        _ ->
-            False
+    --case token.meaning of
+    --    HtmlToken False htmlModel_ ->
+    --        htmlModel.tag == htmlModel_.tag
+    --
+    --    _ ->
+    False
 
 
 htmlElementToMatch : Token -> Parser -> HtmlModel -> ( Token, List Token, List Token ) -> ( List Token, Parser )
@@ -1981,7 +1991,7 @@ matchToInline (Match match) =
                 (matchesToInlines match.matches)
 
         HtmlType model ->
-            HtmlInline model.tag model.attributes match.text
+            HtmlInline model
 
         EmphasisType length ->
             Emphasis length
@@ -2044,7 +2054,7 @@ walk function inline =
                 |> Image url maybeTitle
                 |> function
 
-        HtmlInline tag attrs inlines ->
+        HtmlInline html ->
             --List.map (walk function) inlines
             --    |> HtmlInline tag attrs
             function inline
@@ -2071,7 +2081,7 @@ query function inline =
                 |> List.concat
                 |> (++) (function (Image url maybeTitle inlines))
 
-        HtmlInline tag attrs inlines ->
+        HtmlInline html ->
             --List.map (query function) inlines
             --    |> List.concat
             --    |> (++) (function (HtmlInline tag attrs inlines))
