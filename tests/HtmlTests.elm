@@ -36,10 +36,6 @@ suite =
             \() ->
                 """<![CDATA[<raw-html />]]>"""
                     |> expectHtml (HtmlParser.Cdata "<raw-html />")
-        , test "unclosed cdata" <|
-            \() ->
-                """<![CDATA[Whoops, I forgot the closing >.]]"""
-                    |> expectError (HtmlParser.Cdata "<raw-html />")
         , test "processing instruction" <|
             \() ->
                 """<?php
@@ -97,6 +93,20 @@ next line
                             , HtmlParser.Text "\n\n\n"
                             ]
                         )
+        , describe "unclosed tags do not cause infinite loops"
+            [ test "cdata" <|
+                \() ->
+                    """<![CDATA[Whoops, I forgot the closing >.]]"""
+                        |> expectError
+            , test "HTML element" <|
+                \() ->
+                    """<div> Whoops, I forgot the closing tag<"""
+                        |> expectError
+            , test "processing instruction" <|
+                \() ->
+                    """<? Whoops, I forgot the closing tag ?"""
+                        |> expectError
+            ]
         ]
 
 
@@ -107,8 +117,8 @@ expectHtml expected input =
         |> Expect.equal (Ok expected)
 
 
-expectError : HtmlParser.Node -> String -> Expectation
-expectError expected input =
+expectError : String -> Expectation
+expectError input =
     case input |> Advanced.run HtmlParser.element of
         Ok _ ->
             Expect.fail "Expecting an error."

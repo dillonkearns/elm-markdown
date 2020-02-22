@@ -78,19 +78,9 @@ processingInstruction =
 processingInstructionValue : Parser String
 processingInstructionValue =
     inContext "processingInstructionValue" <|
-        oneOf
-            [ succeed ""
-                |. symbol "?>"
-            , symbol "?"
-                |> andThen
-                    (\_ ->
-                        processingInstructionValue
-                            |> map (\tail -> "?" ++ tail)
-                    )
-            , succeed (++)
-                |= keep zeroOrMore notQuestionmark
-                |= lazy (\_ -> processingInstructionValue)
-            ]
+        succeed identity
+            |= getChompedString (Advanced.chompUntilEndOr "?>")
+            |. symbol "?>"
 
 
 notQuestionmark : Char -> Bool
