@@ -65,16 +65,18 @@ renderer =
                 (body |> List.map (\fn -> fn number))
     , thematicBreak = \number -> Element.none
     , text = \value number -> Element.text value
-    , strong = \content number -> Element.row [ Font.bold ] [ Element.text content ]
-    , emphasis = \content number -> Element.row [ Font.italic ] [ Element.text content ]
+    , strong = \content number -> Element.row [ Font.bold ] (content |> List.map (\value -> value number))
+    , emphasis = \content number -> Element.row [ Font.italic ] (content |> List.map (\value -> value number))
     , hardLineBreak = \number -> Element.row [ Element.height (Element.px 15) ] []
     , codeSpan = code
     , link = link
     , image =
-        \image body ->
+        \image ->
             Ok <|
                 \number ->
-                    Element.image [ Element.width Element.fill ] { src = image.src, description = body }
+                    Element.image
+                        [ Element.width Element.fill ]
+                        { src = image.src, description = image.alt }
     , blockQuote =
         \children number ->
             Element.paragraph
@@ -232,10 +234,10 @@ heading { level, rawText, children } number =
     Element.paragraph
         [ Font.size
             (case level of
-                1 ->
+                Block.H1 ->
                     36
 
-                2 ->
+                Block.H2 ->
                     24
 
                 _ ->
