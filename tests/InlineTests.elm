@@ -89,6 +89,11 @@ suite =
                 "*`italic codespan`*"
                     |> expectInlines
                         [ Inlines.Emphasis 1 [ Inlines.CodeInline "italic codespan" ] ]
+        , test "autolink" <|
+            \() ->
+                "<http://foo.bar.baz>\n"
+                    |> expectInlines
+                        [ Inlines.Link "http://foo.bar.baz" Nothing [ Inlines.Text "http://foo.bar.baz" ] ]
 
         --, skip <|
         --    test "unlike GFM and commonmark, elm-markdown parses image alt as raw text" <|

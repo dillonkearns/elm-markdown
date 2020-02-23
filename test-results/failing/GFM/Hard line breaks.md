@@ -125,7 +125,7 @@ bar"></p>
 But instead was:
 
 ```html
-ERROR Problem at row 3 Expecting symbol
+<p>&lt;a href=&quot;foo bar&quot;&gt;</p>
 ```
 ## [Example 640](https://spec.commonmark.org/0.29/#example-640)
 
@@ -147,5 +147,5 @@ bar"></p>
 But instead was:
 
 ```html
-ERROR Problem at row 3 Expecting symbol
+<p>&lt;a href=&quot;foo<br>bar&quot;&gt;</p>
 ```

@@ -27,5 +27,5 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 3 Expecting Problem at row 1 Expecting end Problem at row 1 Expecting newline
+<pre><p>&amp;</p></pre><code><p>--foo</p></code><p><kbd></kbd></p><script>&lt;p&gt;--foo&lt;/p&gt;</script><p>Ensure that text such as custom tags that happen to begin with the same letters as the above tags don&#39;t match and thus benefit from Smartypants-ing.</p><script-custom><p>--foo</p></script-custom><p><code>--foo</code>&lt;codebar --foo codebar&gt;</p>
 ```

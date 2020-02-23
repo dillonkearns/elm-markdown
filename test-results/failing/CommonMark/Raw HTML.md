@@ -18,7 +18,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 2 Expecting symbol
+<p>&lt;a&gt;&lt;bab&gt;&lt;c2c&gt;</p>
 ```
 ## [Example 610](https://spec.commonmark.org/0.29/#example-610)
 
@@ -59,7 +59,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 3 Expecting symbol
+<a></a><p>&lt;b2 data=&quot;foo&quot; &gt;</p>
 ```
 ## [Example 612](https://spec.commonmark.org/0.29/#example-612)
 
@@ -80,7 +80,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 2 Expecting symbol =
+<p>&lt;a foo=&quot;bar&quot; bam = &#39;baz<em><p>&quot;</p></em>&#39; _boolean zoop:33=zoop:33 /&gt;</p>
 ```
 ## [Example 613](https://spec.commonmark.org/0.29/#example-613)
 
@@ -102,109 +102,6 @@ But instead was:
 ```html
 <p>Foo<responsive-image src="foo.jpg"></responsive-image></p>
 ```
-## [Example 614](https://spec.commonmark.org/0.29/#example-614)
-
-This markdown:
-
-```markdown
-<33> <__>
-
-```
-
-Should give output:
-
-```html
-<p>&lt;33&gt; &lt;__&gt;</p>
-```
-
-But instead was:
-
-```html
-ERROR Problem at row 2 Expecting symbol
-```
-## [Example 615](https://spec.commonmark.org/0.29/#example-615)
-
-This markdown:
-
-```markdown
-<a h*#ref="hi">
-
-```
-
-Should give output:
-
-```html
-<p>&lt;a h*#ref=&quot;hi&quot;&gt;</p>
-```
-
-But instead was:
-
-```html
-ERROR Problem at row 2 Expecting symbol
-```
-## [Example 616](https://spec.commonmark.org/0.29/#example-616)
-
-This markdown:
-
-```markdown
-<a href="hi'> <a href=hi'>
-
-```
-
-Should give output:
-
-```html
-<p>&lt;a href=&quot;hi&#39;&gt; &lt;a href=hi&#39;&gt;</p>
-```
-
-But instead was:
-
-```html
-ERROR Problem at row 2 Expecting symbol &quot;
-```
-## [Example 617](https://spec.commonmark.org/0.29/#example-617)
-
-This markdown:
-
-```markdown
-< a><
-foo><bar/ >
-<foo bar=baz
-bim!bop />
-
-```
-
-Should give output:
-
-```html
-<p>&lt; a&gt;&lt; foo&gt;&lt;bar/ &gt; &lt;foo bar=baz bim!bop /&gt;</p>
-```
-
-But instead was:
-
-```html
-ERROR Problem at row 1 Bad repeat
-```
-## [Example 618](https://spec.commonmark.org/0.29/#example-618)
-
-This markdown:
-
-```markdown
-<a href='bar'title=title>
-
-```
-
-Should give output:
-
-```html
-<p>&lt;a href=&#39;bar&#39;title=title&gt;</p>
-```
-
-But instead was:
-
-```html
-ERROR Problem at row 1 Expecting symbol &quot; Problem at row 1 Expecting symbol &#39;
-```
 ## [Example 619](https://spec.commonmark.org/0.29/#example-619)
 
 This markdown:
@@ -223,27 +120,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 1 Bad repeat
-```
-## [Example 620](https://spec.commonmark.org/0.29/#example-620)
-
-This markdown:
-
-```markdown
-</a href="foo">
-
-```
-
-Should give output:
-
-```html
-<p>&lt;/a href=&quot;foo&quot;&gt;</p>
-```
-
-But instead was:
-
-```html
-ERROR Problem at row 1 Bad repeat
+<p>&lt;/a&gt;&lt;/foo &gt;</p>
 ```
 ## [Example 622](https://spec.commonmark.org/0.29/#example-622)
 
@@ -346,24 +223,4 @@ But instead was:
 
 ```html
 <p>foo &lt;a href=&quot;*&quot;&gt;</p>
-```
-## [Example 629](https://spec.commonmark.org/0.29/#example-629)
-
-This markdown:
-
-```markdown
-<a href="\"">
-
-```
-
-Should give output:
-
-```html
-<p>&lt;a href=&quot;&quot;&quot;&gt;</p>
-```
-
-But instead was:
-
-```html
-ERROR Problem at row 1 Expecting symbol /&gt; Problem at row 1 Expecting symbol &gt;
 ```

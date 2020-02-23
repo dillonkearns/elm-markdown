@@ -21,5 +21,5 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 5 tag name mismatch: xmp and blockquote
+<p>&lt;strong&gt; &lt;title&gt; &lt;style&gt; &lt;em&gt;</p><p>&lt;blockquote&gt; &lt;xmp&gt; is disallowed. &lt;XMP&gt; is also disallowed. &lt;/blockquote&gt;</p>
 ```

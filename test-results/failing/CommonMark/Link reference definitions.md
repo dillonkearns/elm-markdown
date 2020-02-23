@@ -90,7 +90,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 3 Expecting symbol =
+<p>[Foo bar]: &lt;my url&gt; &#39;title&#39;</p><p>[Foo bar]</p>
 ```
 ## [Example 165](https://spec.commonmark.org/0.29/#example-165)
 

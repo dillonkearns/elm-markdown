@@ -17,5 +17,5 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 1 Expecting symbol
+<p>&lt;img src=&#39;sdfg&#39;&gt;</p>
 ```

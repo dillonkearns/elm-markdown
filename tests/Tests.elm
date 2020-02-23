@@ -341,6 +341,16 @@ qwer
                                 ]
                             ]
                         )
+        , test "autolink" <|
+            \() ->
+                "<http://foo.bar.baz>\n"
+                    |> parse
+                    |> Expect.equal
+                        (Ok
+                            [ Block.Paragraph
+                                [ Block.Link "http://foo.bar.baz" Nothing [ Block.Text "http://foo.bar.baz" ] ]
+                            ]
+                        )
         , describe "blank line"
             [ test "even though paragraphs can start with blank lines, it is not a paragraph if there are only blanks" <|
                 \() ->

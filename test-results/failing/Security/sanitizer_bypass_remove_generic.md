@@ -18,5 +18,5 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 1 tag name mismatch: a2t and a
+<p>&lt;a&gt;a2&lt;a2t&gt;a2&lt;/a&gt; b<c><p>c</p></c>d</p><h1><img alt="text" src="URL"></h1>
 ```

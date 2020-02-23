@@ -32,6 +32,29 @@ Gives this correct output:
 
 ```
 
+## autolink_lines
+
+### Example undefined
+
+This markdown:
+
+
+```markdown
+hello world
+<http://example.com>
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>hello world
+<a href="http://example.com">http://example.com</a>
+</p>
+
+```
+
 ## code_spans
 
 ### Example undefined
@@ -241,6 +264,30 @@ Gives this correct output:
 <p>(<a href="http://example.com/1">one</a>) (<a href="http://example.com/2">two</a>)</p>
 
 <p>(<a href="http://example.com/1" title="a">one</a>) (<a href="http://example.com/2" title="b">two</a>)</p>
+
+```
+
+## mangle_xss
+
+### Example undefined
+
+This markdown:
+
+
+```markdown
+<<svg/onload="alert(1)"//@x>
+
+<bar"onclick="alert('XSS')"@foo>
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>&lt;&lt;svg/onload=&quot;alert(1)&quot;//@x&gt;</p>
+
+<p>&lt;bar&quot;onclick=&quot;alert(&#39;XSS&#39;)&quot;@foo&gt;</p>
 
 ```
 
