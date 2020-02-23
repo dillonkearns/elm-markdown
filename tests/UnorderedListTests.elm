@@ -126,13 +126,3 @@ suite =
 plainItem : String -> ListItem
 plainItem body =
     ListItem.PlainItem body
-
-
-parserError : String -> Expect.Expectation
-parserError markdown =
-    case Markdown.Parser.parse markdown of
-        Ok _ ->
-            Expect.fail "Expected a parser failure!"
-
-        Err _ ->
-            Expect.pass

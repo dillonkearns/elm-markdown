@@ -136,33 +136,11 @@ mapInline inline =
         Inline.Image string maybeString inlines ->
             Block.Image string maybeString (inlines |> List.map mapInline)
 
-        --Inline.HtmlInline string attributes htmlValue ->
         Inline.HtmlInline node ->
-            --let
-            --    --inlineHtml =
-            --    --    --case Advanced.run multiParser2 htmlValue of
-            --    --    parseInlineHtmlNode node
-            --
-            --    --andThen parseAllInlines
-            --in
-            --Block.HtmlInline (Block.HtmlElement string attributes inlines)
-            --Block.HtmlInline inlineHtml
-            --case inlineHtml of
-            --    Ok (Just html) ->
-            --        html
-            --            |> Block.HtmlInline
-            --
-            --    Ok Nothing ->
-            --        Block.HtmlInline (Block.HtmlComment "TODO")
-            --
-            --    Err _ ->
-            --        Block.HtmlInline (Block.HtmlComment "TODO")
-            --|> parseAllInlines [ nodeToRawBlock node ]
             node
                 |> nodeToRawBlock
                 |> Block.HtmlInline
 
-        --|> Block.HtmlInline
         Inline.Emphasis level inlines ->
             case level of
                 1 ->
@@ -174,19 +152,6 @@ mapInline inline =
                 _ ->
                     -- TODO fix this
                     Block.Strong (inlines |> List.map mapInline)
-
-
-
---parseInlineHtmlNode : HtmlParser.Node -> Result a (Maybe (Block.Html Block))
---parseInlineHtmlNode node =
---    nodeToRawBlock node
---|> andThen parseInlines
---Debug.todo ""
---Advanced.run
---                             (nodeToRawBlock node
---                                 |> andThen parseInlines
---                             )
---                             ""
 
 
 levelParser : Int -> Parser Block.HeadingLevel
@@ -228,7 +193,6 @@ parseInlines rawBlock =
                     )
 
         Body unparsedInlines ->
-            --Markdown.InlineParser.parse Dict.empty unparsedInlines
             unparsedInlines
                 |> inlineParseHelper
                 |> (\styledLine -> just (Block.Paragraph styledLine))
@@ -301,7 +265,6 @@ just value =
 
 parseRawInline : (List Inline -> a) -> UnparsedInlines -> Advanced.Parser c Parser.Problem a
 parseRawInline wrap unparsedInlines =
-    --Markdown.InlineParser.parse Dict.empty unparsedInlines
     unparsedInlines
         |> inlineParseHelper
         |> (\styledLine -> wrap styledLine)
@@ -412,7 +375,6 @@ xmlNodeToHtmlNode parser =
         (\xmlNode ->
             case xmlNode of
                 HtmlParser.Text innerText ->
-                    -- TODO is this right?
                     Body
                         (UnparsedInlines innerText)
                         |> Advanced.succeed
@@ -662,19 +624,10 @@ statementsHelp2 revStmts =
 
 
 joinStringsPreserveAll string1 string2 =
-    let
-        string1Trimmed =
-            --String.trimRight
-            string1
-
-        string2Trimmed =
-            --String.trimRight
-            string2
-    in
     String.concat
-        [ string1Trimmed
+        [ string1
         , "\n"
-        , string2Trimmed
+        , string2
         ]
 
 

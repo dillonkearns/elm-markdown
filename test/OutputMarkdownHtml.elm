@@ -168,7 +168,7 @@ renderMarkdown markdown =
                                 )
                         )
             , html =
-                htmlRenderer2
+                htmlRenderer
             , codeBlock =
                 \{ body, language } ->
                     Html.pre []
@@ -184,25 +184,8 @@ renderMarkdown markdown =
 
 htmlRenderer : Markdown.Html.Renderer (List (Html.Html msg) -> Html.Html msg)
 htmlRenderer =
-    Markdown.Html.oneOf
-        ([ "table"
-         , "tr"
-         , "td"
-         , "pre"
-         , "th"
-         , "div"
-         , "a"
-         ]
-            |> List.map passThroughNode
-        )
-
-
-htmlRenderer2 : Markdown.Html.Renderer (List (Html.Html msg) -> Html.Html msg)
-htmlRenderer2 =
     Markdown.Html.passthrough
         (\tag attributes children ->
-            --Html.text ""
-            --    |> Ok
             let
                 htmlAttributes : List (Html.Attribute msg)
                 htmlAttributes =

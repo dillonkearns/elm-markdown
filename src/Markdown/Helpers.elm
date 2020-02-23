@@ -59,15 +59,6 @@ whitespacesRegex =
         |> Maybe.withDefault Regex.never
 
 
-indentLength : String -> Int
-indentLength =
-    Regex.replace tabRegex (\_ -> "    ")
-        >> Regex.findAtMost 1 initSpacesRegex
-        >> List.head
-        >> Maybe.map (.match >> String.length)
-        >> Maybe.withDefault 0
-
-
 tabRegex : Regex
 tabRegex =
     Regex.fromString "\\t"
@@ -78,16 +69,6 @@ initSpacesRegex : Regex
 initSpacesRegex =
     Regex.fromString "^ +"
         |> Maybe.withDefault Regex.never
-
-
-indentLine : Int -> String -> String
-indentLine indentLength_ =
-    Regex.replace tabRegex (\_ -> "    ")
-        >> Regex.replaceAtMost 1
-            (Regex.fromString ("^ {0," ++ String.fromInt indentLength_ ++ "}")
-                |> Maybe.withDefault Regex.never
-            )
-            (\_ -> "")
 
 
 escapableRegex : Regex

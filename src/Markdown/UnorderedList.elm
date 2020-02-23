@@ -71,12 +71,10 @@ statementsHelp : String -> ListItem -> List ListItem -> Parser (Step (List ListI
 statementsHelp listMarker firstItem revStmts =
     oneOf
         [ succeed
-            (\offsetBefore stmt offsetAfter ->
+            (\stmt ->
                 Loop (stmt :: revStmts)
             )
-            |= Advanced.getOffset
             |= singleItemParser listMarker
-            |= Advanced.getOffset
 
         -- TODO this is causing files to require newlines
         -- at the end... how do I avoid this?

@@ -45,13 +45,3 @@ $ echo hello world
                             }
                         )
         ]
-
-
-parserError : String -> Expect.Expectation
-parserError markdown =
-    case parse markdown of
-        Ok _ ->
-            Expect.fail "Expected a parser failure!"
-
-        Err _ ->
-            Expect.pass

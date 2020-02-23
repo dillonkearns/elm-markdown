@@ -129,5 +129,5 @@ expectError input =
         Ok _ ->
             Expect.fail "Expecting an error."
 
-        Err error ->
+        Err _ ->
             Expect.pass

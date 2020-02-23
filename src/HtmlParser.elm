@@ -118,33 +118,6 @@ allUppercase =
     keep oneOrMore (\c -> Char.isUpper c)
 
 
-publicIdentifier : Parser String
-publicIdentifier =
-    inContext "publicIdentifier" <|
-        succeed identity
-            |. symbol "\""
-            |= keep zeroOrMore (\c -> c /= '"')
-            |. symbol "\""
-
-
-docTypeExternalSubset : Parser String
-docTypeExternalSubset =
-    inContext "docTypeExternalSubset" <|
-        succeed identity
-            |. symbol "\""
-            |= keep zeroOrMore (\c -> c /= '"')
-            |. symbol "\""
-
-
-docTypeInternalSubset : Parser String
-docTypeInternalSubset =
-    inContext "docTypeInternalSubset" <|
-        succeed identity
-            |. symbol "["
-            |= keep zeroOrMore (\c -> c /= ']')
-            |. symbol "]"
-
-
 element : Parser Node
 element =
     oneOf
