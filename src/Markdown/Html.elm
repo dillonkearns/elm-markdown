@@ -15,6 +15,11 @@ module Markdown.Html exposing
 @docs tag, withAttribute, withOptionalAttribute
 @docs map, oneOf
 
+
+## Escape Hatches
+
+@docs passthrough
+
 -}
 
 import Html
@@ -188,6 +193,8 @@ tag expectedTag a =
         )
 
 
+{-| TODO
+-}
 passthrough : (String -> List Markdown.HtmlRenderer.Attribute -> List Block -> Result String view) -> Markdown.HtmlRenderer.HtmlRenderer view
 passthrough renderFn =
     Markdown.HtmlRenderer.HtmlRenderer renderFn
