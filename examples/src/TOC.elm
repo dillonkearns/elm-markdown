@@ -123,7 +123,7 @@ buildToc blocks =
         |> List.map Tuple.second
         |> List.map
             (\styledList ->
-                { anchorId = styledToString styledList |> rawTextToId
+                { anchorId = styledList |> Markdown.Block.extractText |> rawTextToId
                 , name = styledToString styledList
                 , level = 1
                 }
@@ -134,8 +134,6 @@ styledToString : List Inline -> String
 styledToString list =
     list
         |> Markdown.Block.extractText
-        |> String.split " "
-        |> String.join "-"
 
 
 gatherHeadings : List Block -> List ( HeadingLevel, List Inline )
@@ -179,7 +177,9 @@ renderer =
     ElmUi.renderer
 
 
+rawTextToId : String -> String
 rawTextToId rawText =
     rawText
+        |> String.split " "
+        |> String.join "-"
         |> String.toLower
-        |> String.replace " " ""

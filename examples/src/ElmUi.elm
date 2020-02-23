@@ -121,7 +121,7 @@ buildToc blocks =
         |> List.map Tuple.second
         |> List.map
             (\styledList ->
-                { anchorId = styledToString styledList |> rawTextToId
+                { anchorId = styledList |> inlinesToId
                 , name = styledToString styledList
                 , level = 1
                 }
@@ -135,6 +135,17 @@ styledToString inlines =
     -- TODO do I need to hyphenate?
     inlines
         |> Block.extractText
+
+
+inlinesToId : List Inline -> String
+inlinesToId list =
+    list
+        |> Block.extractText
+        |> Debug.log "extracted"
+        |> String.split " "
+        |> Debug.log "split"
+        |> String.join "-"
+        |> Debug.log "joined"
 
 
 gatherHeadings : List Block -> List ( Block.HeadingLevel, List Inline )
@@ -250,8 +261,15 @@ renderer =
 
 rawTextToId rawText =
     rawText
+        |> String.split " "
+        |> Debug.log "split"
+        |> String.join "-"
+        |> Debug.log "joined"
         |> String.toLower
-        |> String.replace " " ""
+
+
+
+--|> String.replace " " ""
 
 
 heading : { level : Block.HeadingLevel, rawText : String, children : List (Element msg) } -> Element msg
