@@ -460,35 +460,9 @@ nodeToRawBlock : Node -> Block.Html Block
 nodeToRawBlock node =
     case node of
         HtmlParser.Text innerText ->
-            -- TODO is this right?
-            --Body
-            --Debug.todo ""
-            let
-                thing1 : Result (List (Advanced.DeadEnd String Parser.Problem)) (List Block)
-                thing1 =
-                    Advanced.run multiParser2 innerText
-            in
-            case thing1 of
-                Ok value ->
-                    --value
-                    Debug.todo ""
+            Block.HtmlComment "TODO this never happens, but use types to drop this case."
 
-                --|> Block.Paragraph
-                --value
-                --succeed value
-                Err error ->
-                    Debug.todo ""
-
-        --Advanced.problem
-        --    (Parser.Expecting
-        --        (error
-        --            |> List.map deadEndToString
-        --            |> String.join "\n"
-        --        )
-        --    )
-        --UnparsedInlines innerText
         HtmlParser.Element tag attributes children ->
-            --Block.HtmlElement tag attributes (List.map nodeToRawBlock children)
             let
                 parsedChildren : List Block
                 parsedChildren =
@@ -497,41 +471,28 @@ nodeToRawBlock node =
                             (\child ->
                                 case child of
                                     HtmlParser.Text text ->
-                                        --textNodeToBlocks
-                                        --[ nodeToRawBlock child |> Block.HtmlBlock ]
                                         textNodeToBlocks text
 
                                     _ ->
                                         [ nodeToRawBlock child |> Block.HtmlBlock ]
                             )
                         |> List.concat
-
-                --|> List.map Block.HtmlBlock
             in
             Block.HtmlElement tag
                 attributes
                 parsedChildren
 
-        --|> HtmlThing
-        --|> Markdown.RawBlock.Html
         Comment string ->
             Block.HtmlComment string
 
-        --|> Markdown.RawBlock.Html
         Cdata string ->
             Block.Cdata string
 
-        --|> Markdown.RawBlock.Html
         ProcessingInstruction string ->
             Block.ProcessingInstruction string
 
-        --|> Markdown.RawBlock.Html
         Declaration declarationType content ->
             Block.HtmlDeclaration declarationType content
-
-
-
---|> Markdown.RawBlock.Html
 
 
 nodesToBlocksParser : List Node -> Parser (List Block)
