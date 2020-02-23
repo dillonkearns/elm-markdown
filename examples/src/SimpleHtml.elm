@@ -5,6 +5,7 @@ import Html exposing (Attribute, Html, div, text)
 import Html.Attributes as Attr
 import Html.Events
 import Markdown.Parser as Markdown
+import Markdown.Renderer
 
 
 view : String -> Html Msg
@@ -15,7 +16,7 @@ view markdownInput =
             markdownInput
                 |> Markdown.parse
                 |> Result.mapError deadEndsToString
-                |> Result.andThen (\ast -> Markdown.render Markdown.defaultHtmlRenderer ast)
+                |> Result.andThen (\ast -> Markdown.Renderer.render Markdown.Renderer.defaultHtmlRenderer ast)
           of
             Ok rendered ->
                 div [] rendered
