@@ -185,8 +185,15 @@ renderMarkdown markdown =
 htmlRenderer : Markdown.Html.Renderer (List (Html.Html msg) -> Html.Html msg)
 htmlRenderer =
     Markdown.Html.passthrough
-        (\tag attributes children ->
+        (\tag attributes blocks ->
             let
+                result : Result String (List (Html.Html msg) -> Html.Html msg)
+                result =
+                    (\children ->
+                        Html.node tag htmlAttributes children
+                    )
+                        |> Ok
+
                 htmlAttributes : List (Html.Attribute msg)
                 htmlAttributes =
                     attributes
@@ -194,13 +201,6 @@ htmlRenderer =
                             (\{ name, value } ->
                                 Attr.attribute name value
                             )
-
-                result : Result String (List (Html.Html msg) -> Html.Html msg)
-                result =
-                    (\foo ->
-                        Html.node tag htmlAttributes foo
-                    )
-                        |> Ok
             in
             result
         )
