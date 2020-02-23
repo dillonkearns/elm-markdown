@@ -1233,7 +1233,8 @@ htmlFromRegex model match =
 
 
 log label value =
-    Debug.log label value
+    --Debug.log label value
+    value
 
 
 

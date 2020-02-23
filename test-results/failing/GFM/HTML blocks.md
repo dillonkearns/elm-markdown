@@ -650,7 +650,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>&lt;!-- foo --&gt;</p><pre><code>&lt;!-- foo --&gt;</code></pre>
+<p></p><pre><code>&lt;!-- foo --&gt;</code></pre>
 ```
 ## [Example 153](https://spec.commonmark.org/0.29/#example-153)
 

@@ -5966,13 +5966,14 @@ Gives this correct output:
 
 ## Raw HTML
 
-### [Example 622](https://spec.commonmark.org/0.29/#example-622)
+### [Example 621](https://spec.commonmark.org/0.29/#example-621)
 
 This markdown:
 
 
 ```markdown
-foo <!-- not a comment -- two hyphens -->
+foo <!-- this is a
+comment - with hyphen -->
 
 ```
 
@@ -5980,19 +5981,18 @@ Gives this correct output:
 
 
 ```html
-<p>foo &lt;!-- not a comment -- two hyphens --&gt;</p>
+<p>foo <!-- this is a
+comment - with hyphen --></p>
 
 ```
 
-### [Example 623](https://spec.commonmark.org/0.29/#example-623)
+### [Example 624](https://spec.commonmark.org/0.29/#example-624)
 
 This markdown:
 
 
 ```markdown
-foo <!--> foo -->
-
-foo <!-- foo--->
+foo <?php echo $a; ?>
 
 ```
 
@@ -6000,8 +6000,25 @@ Gives this correct output:
 
 
 ```html
-<p>foo &lt;!--&gt; foo --&gt;</p>
-<p>foo &lt;!-- foo---&gt;</p>
+<p>foo <?php echo $a; ?></p>
+
+```
+
+### [Example 625](https://spec.commonmark.org/0.29/#example-625)
+
+This markdown:
+
+
+```markdown
+foo <!ELEMENT br EMPTY>
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>foo <!ELEMENT br EMPTY></p>
 
 ```
 

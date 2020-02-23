@@ -245,66 +245,47 @@ But instead was:
 ```html
 ERROR Problem at row 1 Bad repeat
 ```
-## [Example 621](https://spec.commonmark.org/0.29/#example-621)
+## [Example 622](https://spec.commonmark.org/0.29/#example-622)
 
 This markdown:
 
 ```markdown
-foo <!-- this is a
-comment - with hyphen -->
+foo <!-- not a comment -- two hyphens -->
 
 ```
 
 Should give output:
 
 ```html
-<p>foo</p>
+<p>foo &lt;!-- not a comment -- two hyphens --&gt;</p>
 ```
 
 But instead was:
 
 ```html
-<p>foo &lt;!-- this is a comment - with hyphen --&gt;</p>
+<p>foo</p>
 ```
-## [Example 624](https://spec.commonmark.org/0.29/#example-624)
+## [Example 623](https://spec.commonmark.org/0.29/#example-623)
 
 This markdown:
 
 ```markdown
-foo <?php echo $a; ?>
+foo <!--> foo -->
+
+foo <!-- foo--->
 
 ```
 
 Should give output:
 
 ```html
-<p>foo</p>
+<p>foo &lt;!--&gt; foo --&gt;</p><p>foo &lt;!-- foo---&gt;</p>
 ```
 
 But instead was:
 
 ```html
-<p>foo &lt;?php echo $a; ?&gt;</p>
-```
-## [Example 625](https://spec.commonmark.org/0.29/#example-625)
-
-This markdown:
-
-```markdown
-foo <!ELEMENT br EMPTY>
-
-```
-
-Should give output:
-
-```html
-<p>foo</p>
-```
-
-But instead was:
-
-```html
-<p>foo &lt;!ELEMENT br EMPTY&gt;</p>
+<p>foo</p><p>foo</p>
 ```
 ## [Example 626](https://spec.commonmark.org/0.29/#example-626)
 
@@ -324,7 +305,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>foo &lt;![CDATA[&gt;&amp;&lt;]]&gt;</p>
+<p>foo</p>
 ```
 ## [Example 627](https://spec.commonmark.org/0.29/#example-627)
 

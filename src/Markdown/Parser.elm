@@ -449,6 +449,13 @@ xmlNodeToHtmlNode parser =
         parser
 
 
+textNodeToBlocks : String -> List Block
+textNodeToBlocks textNodeValue =
+    textNodeValue
+        |> Advanced.run multiParser2
+        |> Result.withDefault []
+
+
 nodeToRawBlock : Node -> Block.Html Block
 nodeToRawBlock node =
     case node of
@@ -486,8 +493,20 @@ nodeToRawBlock node =
                 parsedChildren : List Block
                 parsedChildren =
                     children
-                        |> List.map nodeToRawBlock
-                        |> List.map Block.HtmlBlock
+                        |> List.map
+                            (\child ->
+                                case child of
+                                    HtmlParser.Text text ->
+                                        --textNodeToBlocks
+                                        --[ nodeToRawBlock child |> Block.HtmlBlock ]
+                                        textNodeToBlocks text
+
+                                    _ ->
+                                        [ nodeToRawBlock child |> Block.HtmlBlock ]
+                            )
+                        |> List.concat
+
+                --|> List.map Block.HtmlBlock
             in
             Block.HtmlElement tag
                 attributes

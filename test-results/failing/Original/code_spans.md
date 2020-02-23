@@ -23,5 +23,5 @@ Should give output:
 But instead was:
 
 ```html
-<p><code>&lt;test a=&quot;</code>content of attribute<code>&quot;&gt;</code></p><p>Fix for backticks within HTML tag:<span attr="`ticks`"></span></p><p>Here&#39;s how you put<code>`backticks`</code>in a code span.</p>
+<p><code>&lt;test a=&quot;</code>content of attribute<code>&quot;&gt;</code></p><p>Fix for backticks within HTML tag:<span attr="`ticks`"><p>like this</p></span></p><p>Here&#39;s how you put<code>`backticks`</code>in a code span.</p>
 ```

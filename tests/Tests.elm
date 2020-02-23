@@ -580,7 +580,14 @@ I'm part of the block quote
                                     , HtmlInline
                                         (HtmlElement "resources"
                                             []
-                                            [ Paragraph [ Text "9/10 interesting read!" ]
+                                            [ HtmlBlock
+                                                (HtmlElement "resource"
+                                                    [ { name = "type", value = "book" }
+                                                    , { name = "title", value = "Notes From Underground" }
+                                                    ]
+                                                    []
+                                                )
+                                            , Paragraph [ Text "9/10 interesting read!" ]
                                             ]
                                         )
                                     ]
