@@ -38,5 +38,5 @@ Should give output:
 But instead was:
 
 ```html
-<blockquote><p>hello [1]: hello</p></blockquote><ul><li>* *</li></ul><blockquote><p>hello [2]: hello</p></blockquote><ul><li>hello</li><li>[3]: hello</li></ul><ul><li>hello</li></ul><p>[4]: hello</p><blockquote><p>foo bar [5]: foo bar</p></blockquote>
+<blockquote><p>hello</p></blockquote><ul><li>* *</li></ul><blockquote><p>hello</p></blockquote><ul><li>hello</li><li>[3]: hello</li></ul><ul><li>hello</li></ul><blockquote><p>foo bar bar</p></blockquote>
 ```

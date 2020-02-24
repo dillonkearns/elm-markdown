@@ -37,5 +37,5 @@ Should give output:
 But instead was:
 
 ```html
-<p>This is the [simple case].</p><p>[simple case]: /simple</p><p>This one has a [line break].</p><p>This one has a [line break] with a line-ending space.</p><p>[line break]: /foo</p><p>[this] [that] and the [other]</p><p>[this]: /this [that]: /that [other]: /other</p>
+<p>This is the<a href="/simple">simple case</a>.</p><p>This one has a [line break].</p><p>This one has a [line break] with a line-ending space.</p><p><a href="/this">this</a><a href="/that">that</a>and the<a href="/other">other</a></p>
 ```

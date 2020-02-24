@@ -96,13 +96,12 @@ But instead was:
 
 with blank line">foo</a></p>
 ```
-## [Example 167](https://spec.commonmark.org/0.29/#example-167)
+## [Example 168](https://spec.commonmark.org/0.29/#example-168)
 
 This markdown:
 
 ```markdown
 [foo]:
-/url
 
 [foo]
 
@@ -111,35 +110,13 @@ This markdown:
 Should give output:
 
 ```html
-<p><a href="/url">foo</a></p>
+<p>[foo]:</p><p>[foo]</p>
 ```
 
 But instead was:
 
 ```html
-<p>[foo]: /url</p><p>[foo]</p>
-```
-## [Example 169](https://spec.commonmark.org/0.29/#example-169)
 
-This markdown:
-
-```markdown
-[foo]: <>
-
-[foo]
-
-```
-
-Should give output:
-
-```html
-<p><a href="">foo</a></p>
-```
-
-But instead was:
-
-```html
-<p>[foo]: &lt;&gt;</p><p>[foo]</p>
 ```
 ## [Example 170](https://spec.commonmark.org/0.29/#example-170)
 
@@ -161,7 +138,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>[foo]: &lt;bar&gt;(baz)</p><p>[foo]</p>
+<p>(baz)</p><p><a href="bar">foo</a></p>
 ```
 ## [Example 171](https://spec.commonmark.org/0.29/#example-171)
 
@@ -185,28 +162,6 @@ But instead was:
 ```html
 <p>bar\baz&quot;</p><p><a href="/url%5Cbar*baz" title="foo\">foo</a></p>
 ```
-## [Example 172](https://spec.commonmark.org/0.29/#example-172)
-
-This markdown:
-
-```markdown
-[foo]
-
-[foo]: url
-
-```
-
-Should give output:
-
-```html
-<p><a href="url">foo</a></p>
-```
-
-But instead was:
-
-```html
-<p>[foo]</p><p>[foo]: url</p>
-```
 ## [Example 173](https://spec.commonmark.org/0.29/#example-173)
 
 This markdown:
@@ -228,7 +183,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>[foo]</p><p>[foo]: first [foo]: second</p>
+<p><a href="second">foo</a></p>
 ```
 ## [Example 174](https://spec.commonmark.org/0.29/#example-174)
 
@@ -250,7 +205,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>[FOO]: /url</p><p>[Foo]</p>
+<p>[Foo]</p>
 ```
 ## [Example 175](https://spec.commonmark.org/0.29/#example-175)
 
@@ -272,50 +227,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>[ΑΓΩ]: /φου</p><p>[αγω]</p>
-```
-## [Example 176](https://spec.commonmark.org/0.29/#example-176)
-
-This markdown:
-
-```markdown
-[foo]: /url
-
-```
-
-Should give output:
-
-```html
-
-```
-
-But instead was:
-
-```html
-<p>[foo]: /url</p>
-```
-## [Example 177](https://spec.commonmark.org/0.29/#example-177)
-
-This markdown:
-
-```markdown
-[
-foo
-]: /url
-bar
-
-```
-
-Should give output:
-
-```html
-<p>bar</p>
-```
-
-But instead was:
-
-```html
-<p>[ foo ]: /url bar</p>
+<p>[αγω]</p>
 ```
 ## [Example 178](https://spec.commonmark.org/0.29/#example-178)
 
@@ -358,27 +270,28 @@ But instead was:
 ```html
 <p>ok</p>
 ```
-## [Example 183](https://spec.commonmark.org/0.29/#example-183)
+## [Example 182](https://spec.commonmark.org/0.29/#example-182)
 
 This markdown:
 
 ```markdown
-# [Foo]
-[foo]: /url
-> bar
+Foo
+[bar]: /baz
+
+[bar]
 
 ```
 
 Should give output:
 
 ```html
-<h1><a href="/url">Foo</a></h1><blockquote><p>bar</p></blockquote>
+<p>Foo [bar]: /baz</p><p>[bar]</p>
 ```
 
 But instead was:
 
 ```html
-<h1>[Foo]</h1><p>[foo]: /url</p><blockquote><p>bar</p></blockquote>
+<p>Foo<a href="/baz">bar</a></p>
 ```
 ## [Example 184](https://spec.commonmark.org/0.29/#example-184)
 
@@ -401,56 +314,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>[foo]: /url bar === [foo]</p>
-```
-## [Example 185](https://spec.commonmark.org/0.29/#example-185)
-
-This markdown:
-
-```markdown
-[foo]: /url
-===
-[foo]
-
-```
-
-Should give output:
-
-```html
-<p>===<a href="/url">foo</a></p>
-```
-
-But instead was:
-
-```html
-<p>[foo]: /url === [foo]</p>
-```
-## [Example 186](https://spec.commonmark.org/0.29/#example-186)
-
-This markdown:
-
-```markdown
-[foo]: /foo-url "foo"
-[bar]: /bar-url
-  "bar"
-[baz]: /baz-url
-
-[foo],
-[bar],
-[baz]
-
-```
-
-Should give output:
-
-```html
-<p><a href="/foo-url" title="foo">foo</a>,<a href="/bar-url" title="bar">bar</a>,<a href="/baz-url">baz</a></p>
-```
-
-But instead was:
-
-```html
-<p>[baz]: /baz-url</p><p><a href="/foo-url" title="foo">foo</a>,<a href="/bar-url" title="bar">bar</a>, [baz]</p>
+<p>bar ===<a href="/url">foo</a></p>
 ```
 ## [Example 187](https://spec.commonmark.org/0.29/#example-187)
 
@@ -472,25 +336,5 @@ Should give output:
 But instead was:
 
 ```html
-<p>[foo]</p><blockquote><p>[foo]: /url</p></blockquote>
-```
-## [Example 188](https://spec.commonmark.org/0.29/#example-188)
-
-This markdown:
-
-```markdown
-[foo]: /url
-
-```
-
-Should give output:
-
-```html
-
-```
-
-But instead was:
-
-```html
-<p>[foo]: /url</p>
+<p>[foo]</p><blockquote></blockquote>
 ```

@@ -23,6 +23,16 @@ suite =
 """
                     |> expectParseTo
                         ( "Foo bar", { destination = "my%20url", title = Just "title" } )
+        , test "title is optional" <|
+            \() ->
+                "[foo]: /url"
+                    |> expectParseTo
+                        ( "foo", { destination = "/url", title = Nothing } )
+        , test "title is optional ending with whitespace" <|
+            \() ->
+                "[foo]: /url\n"
+                    |> expectParseTo
+                        ( "foo", { destination = "/url", title = Nothing } )
         ]
 
 

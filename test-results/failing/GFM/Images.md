@@ -22,28 +22,6 @@ But instead was:
 ```html
 <p>![foo<em>bar</em>][foobar]</p>
 ```
-## [Example 578](https://spec.commonmark.org/0.29/#example-578)
-
-This markdown:
-
-```markdown
-![foo][bar]
-
-[bar]: /url
-
-```
-
-Should give output:
-
-```html
-<p><img alt="foo" src="/url"></p>
-```
-
-But instead was:
-
-```html
-<p>![foo][bar]</p><p>[bar]: /url</p>
-```
 ## [Example 579](https://spec.commonmark.org/0.29/#example-579)
 
 This markdown:
@@ -64,5 +42,5 @@ Should give output:
 But instead was:
 
 ```html
-<p>![foo][bar]</p><p>[BAR]: /url</p>
+<p>![foo][bar]</p>
 ```

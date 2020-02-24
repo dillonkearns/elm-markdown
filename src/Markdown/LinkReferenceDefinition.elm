@@ -26,7 +26,6 @@ parser =
             -- TODO up to 1 line ending
             |. Helpers.optionalWhitespace
             |= destinationParser
-            |. Helpers.requiredWhitespace
             |= titleParser
 
 
@@ -47,14 +46,20 @@ titleParser : Parser (Maybe String)
 titleParser =
     inContext "title" <|
         oneOf
-            [ succeed Just
-                |. token (toToken "\"")
-                |= getChompedString (chompUntilEndOr "\"")
-                |. token (toToken "\"")
-            , succeed Just
-                |. token (toToken "'")
-                |= getChompedString (chompUntilEndOr "'")
-                |. token (toToken "'")
+            [ succeed identity
+                |. Helpers.requiredWhitespace
+                |= oneOf
+                    [ succeed Just
+                        |. token (toToken "\"")
+                        |= getChompedString (chompUntilEndOr "\"")
+                        |. token (toToken "\"")
+                    , succeed Just
+                        |. token (toToken "'")
+                        |= getChompedString (chompUntilEndOr "'")
+                        |. token (toToken "'")
+                    , succeed Nothing
+                    ]
+            , succeed Nothing
             ]
 
 

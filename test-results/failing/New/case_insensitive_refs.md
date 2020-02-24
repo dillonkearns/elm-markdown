@@ -20,5 +20,5 @@ Should give output:
 But instead was:
 
 ```html
-<p>[hi]</p><p>[HI]: /url</p>
+<p>[hi]</p>
 ```
