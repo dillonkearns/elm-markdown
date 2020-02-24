@@ -4878,6 +4878,27 @@ Gives this correct output:
 
 ```
 
+### [Example 173](https://spec.commonmark.org/0.29/#example-173)
+
+This markdown:
+
+
+```markdown
+[foo]
+
+[foo]: first
+[foo]: second
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><a href="first">foo</a></p>
+
+```
+
 ### [Example 174](https://spec.commonmark.org/0.29/#example-174)
 
 This markdown:
@@ -6016,6 +6037,28 @@ Gives this correct output:
 ```html
 <p>[foo]
 <a href="/url" title="title">bar</a></p>
+
+```
+
+### [Example 540](https://spec.commonmark.org/0.29/#example-540)
+
+This markdown:
+
+
+```markdown
+[foo]: /url1
+
+[foo]: /url2
+
+[bar][foo]
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><a href="/url1">bar</a></p>
 
 ```
 

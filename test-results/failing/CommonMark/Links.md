@@ -208,30 +208,6 @@ But instead was:
 ```html
 <p>[Baz][Foo bar]</p>
 ```
-## [Example 540](https://spec.commonmark.org/0.29/#example-540)
-
-This markdown:
-
-```markdown
-[foo]: /url1
-
-[foo]: /url2
-
-[bar][foo]
-
-```
-
-Should give output:
-
-```html
-<p><a href="/url1">bar</a></p>
-```
-
-But instead was:
-
-```html
-<p><a href="/url2">bar</a></p>
-```
 ## [Example 542](https://spec.commonmark.org/0.29/#example-542)
 
 This markdown:

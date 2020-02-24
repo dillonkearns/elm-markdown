@@ -118,10 +118,8 @@ inlineParseHelper referencesDict (UnparsedInlines unparsedInlines) =
     let
         referencesDict2 =
             referencesDict
-                |> Dict.map
-                    (\key { destination, title } ->
-                        ( destination, title )
-                    )
+                |> List.map (Tuple.mapSecond (\{ destination, title } -> ( destination, title )))
+                |> Dict.fromList
 
         --
         --myReferences =
@@ -552,7 +550,7 @@ multiParser2 =
 
 
 type alias LinkReferenceDefinitions =
-    Dict String { destination : String, title : Maybe String }
+    List ( String, { destination : String, title : Maybe String } )
 
 
 type alias State =
@@ -567,14 +565,14 @@ updateRawBlocks state updatedRawBlocks =
 
 
 addReference : State -> LinkReferenceDefinition -> State
-addReference state ( label, value ) =
-    { state | linkReferenceDefinitions = Dict.insert label value state.linkReferenceDefinitions }
+addReference state linkRef =
+    { state | linkReferenceDefinitions = linkRef :: state.linkReferenceDefinitions }
 
 
 rawBlockParser : Parser State
 rawBlockParser =
     loop
-        { linkReferenceDefinitions = Dict.empty
+        { linkReferenceDefinitions = []
         , rawBlocks = []
         }
         statementsHelp2

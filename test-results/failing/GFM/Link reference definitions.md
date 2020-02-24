@@ -116,29 +116,6 @@ But instead was:
 ```html
 <p>bar\baz&quot;</p><p><a href="/url%5Cbar*baz" title="foo\">foo</a></p>
 ```
-## [Example 173](https://spec.commonmark.org/0.29/#example-173)
-
-This markdown:
-
-```markdown
-[foo]
-
-[foo]: first
-[foo]: second
-
-```
-
-Should give output:
-
-```html
-<p><a href="first">foo</a></p>
-```
-
-But instead was:
-
-```html
-<p><a href="second">foo</a></p>
-```
 ## [Example 178](https://spec.commonmark.org/0.29/#example-178)
 
 This markdown:
