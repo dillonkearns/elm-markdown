@@ -1,5 +1,25 @@
 module Helpers exposing (..)
 
+import Parser
+import Parser.Advanced as Advanced exposing (..)
+
+
+type alias Parser a =
+    Advanced.Parser String Parser.Problem a
+
+
+optionalWhitespace : Parser ()
+optionalWhitespace =
+    succeed ()
+        |. chompWhile isGfmWhitespace
+
+
+requiredWhitespace : Parser ()
+requiredWhitespace =
+    succeed ()
+        |. chompIf isGfmWhitespace (Parser.Expecting "whitespace")
+        |. chompWhile isGfmWhitespace
+
 
 isEmptyString : String -> Bool
 isEmptyString string =
