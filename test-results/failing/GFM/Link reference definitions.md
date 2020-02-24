@@ -96,28 +96,6 @@ But instead was:
 
 with blank line">foo</a></p>
 ```
-## [Example 168](https://spec.commonmark.org/0.29/#example-168)
-
-This markdown:
-
-```markdown
-[foo]:
-
-[foo]
-
-```
-
-Should give output:
-
-```html
-<p>[foo]:</p><p>[foo]</p>
-```
-
-But instead was:
-
-```html
-
-```
 ## [Example 170](https://spec.commonmark.org/0.29/#example-170)
 
 This markdown:

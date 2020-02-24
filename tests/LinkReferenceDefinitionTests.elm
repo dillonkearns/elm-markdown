@@ -1,6 +1,6 @@
 module LinkReferenceDefinitionTests exposing (suite)
 
-import Expect
+import Expect exposing (Expectation)
 import Markdown.LinkReferenceDefinition as LinkReferenceDefinition
 import Parser.Advanced as Advanced
 import Test exposing (..)
@@ -33,6 +33,10 @@ suite =
                 "[foo]: /url\n"
                     |> expectParseTo
                         ( "foo", { destination = "/url", title = Nothing } )
+        , test "does not succeed with missing destination" <|
+            \() ->
+                "[foo]:\n"
+                    |> expectError
         ]
 
 
@@ -44,3 +48,13 @@ expectParseTo expected input =
     input
         |> Advanced.run LinkReferenceDefinition.parser
         |> Expect.equal (Ok expected)
+
+
+expectError : String -> Expectation
+expectError input =
+    case input |> Advanced.run LinkReferenceDefinition.parser of
+        Ok value ->
+            Expect.fail <| "Expecting an error. Got:\n\n" ++ Debug.toString value
+
+        Err _ ->
+            Expect.pass

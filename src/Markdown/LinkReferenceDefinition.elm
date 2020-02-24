@@ -1,6 +1,7 @@
 module Markdown.LinkReferenceDefinition exposing (..)
 
 import Helpers
+import LineEnding
 import Parser
 import Parser.Advanced as Advanced exposing (..)
 import Url
@@ -24,7 +25,7 @@ parser =
             |= getChompedString (chompUntilEndOr "]")
             |. token (toToken "]:")
             -- TODO up to 1 line ending
-            |. Helpers.optionalWhitespace
+            |. LineEnding.optionalWhitespaceUpToOneLineEnding
             |= destinationParser
             |= titleParser
 
@@ -37,7 +38,8 @@ destinationParser =
                 |. token (toToken "<")
                 |= getChompedString (chompUntilEndOr ">")
                 |. token (toToken ">")
-            , succeed identity
+            , succeed (\first second -> first ++ second)
+                |= getChompedString (chompIf (\c -> not <| Helpers.isGfmWhitespace c) (Parser.Expecting "non-whitespace character"))
                 |= getChompedString (chompWhile (\c -> not <| Helpers.isGfmWhitespace c))
             ]
 

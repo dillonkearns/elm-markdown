@@ -4755,6 +4755,27 @@ Gives this correct output:
 
 ```
 
+### [Example 168](https://spec.commonmark.org/0.29/#example-168)
+
+This markdown:
+
+
+```markdown
+[foo]:
+
+[foo]
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>[foo]:</p>
+<p>[foo]</p>
+
+```
+
 ### [Example 169](https://spec.commonmark.org/0.29/#example-169)
 
 This markdown:

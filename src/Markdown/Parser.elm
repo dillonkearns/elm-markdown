@@ -610,9 +610,9 @@ statementsHelp2 revStmts =
         keepLooping parser =
             parser
                 |> map
-                    (\stmts ->
+                    (\newRawBlock ->
                         case
-                            ( stmts
+                            ( newRawBlock
                             , revStmts.rawBlocks
                             )
                         of
@@ -648,14 +648,15 @@ statementsHelp2 revStmts =
                                     |> Loop
 
                             _ ->
-                                (stmts :: revStmts.rawBlocks)
+                                (newRawBlock :: revStmts.rawBlocks)
                                     |> updateRawBlocks revStmts
                                     |> Loop
                     )
     in
     oneOf
         [ Advanced.end (Parser.Expecting "End") |> map (\() -> Done revStmts)
-        , Advanced.backtrackable LinkReferenceDefinition.parser
+        , LinkReferenceDefinition.parser
+            |> Advanced.backtrackable
             |> map
                 (\linkReference ->
                     linkReference

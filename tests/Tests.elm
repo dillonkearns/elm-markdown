@@ -616,6 +616,19 @@ I'm part of the block quote
                         |> parse
                         |> Expect.equal
                             (Ok [ Paragraph [ Link "/url" (Just "title") [ Text "foo" ] ] ])
+            , test "invalid reference uses fallback paragraph parsing" <|
+                \() ->
+                    """[foo]:
+
+[foo]
+"""
+                        |> parse
+                        |> Expect.equal
+                            (Ok
+                                [ Paragraph [ Text "[foo]:" ]
+                                , Paragraph [ Text "[foo]" ]
+                                ]
+                            )
             ]
         ]
 
