@@ -4686,15 +4686,17 @@ Gives this correct output:
 
 ```
 
-### [Example 166](https://spec.commonmark.org/0.29/#example-166)
+### [Example 165](https://spec.commonmark.org/0.29/#example-165)
 
 This markdown:
 
 
 ```markdown
-[foo]: /url 'title
-
-with blank line'
+[foo]: /url '
+title
+line1
+line2
+'
 
 [foo]
 
@@ -4704,9 +4706,11 @@ Gives this correct output:
 
 
 ```html
-<p>[foo]: /url 'title</p>
-<p>with blank line'</p>
-<p>[foo]</p>
+<p><a href="/url" title="
+title
+line1
+line2
+">foo</a></p>
 
 ```
 

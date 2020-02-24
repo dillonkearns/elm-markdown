@@ -15,6 +15,14 @@ suite =
 """
                     |> expectParseTo
                         ( "foo", { destination = "/url", title = Just "title" } )
+        , test "single-quoted title with link in angle brackets" <|
+            \() ->
+                """[Foo bar]:
+<my url>
+'title'
+"""
+                    |> expectParseTo
+                        ( "Foo bar", { destination = "my%20url", title = Just "title" } )
         ]
 
 

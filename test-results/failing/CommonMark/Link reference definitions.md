@@ -68,18 +68,16 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 3 Expecting symbol =
+<p>[Foo bar]</p>
 ```
-## [Example 165](https://spec.commonmark.org/0.29/#example-165)
+## [Example 166](https://spec.commonmark.org/0.29/#example-166)
 
 This markdown:
 
 ```markdown
-[foo]: /url '
-title
-line1
-line2
-'
+[foo]: /url 'title
+
+with blank line'
 
 [foo]
 
@@ -88,17 +86,15 @@ line2
 Should give output:
 
 ```html
-<p><a href="/url" title="
-title
-line1
-line2
-">foo</a></p>
+<p>[foo]: /url &#39;title</p><p>with blank line&#39;</p><p>[foo]</p>
 ```
 
 But instead was:
 
 ```html
-<p>[foo]: /url &#39; title line1 line2 &#39;</p><p>[foo]</p>
+<p><a href="/url" title="title
+
+with blank line">foo</a></p>
 ```
 ## [Example 167](https://spec.commonmark.org/0.29/#example-167)
 
