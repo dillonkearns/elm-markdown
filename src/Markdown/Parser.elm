@@ -6,13 +6,14 @@ module Markdown.Parser exposing (parse, deadEndToString)
 
 -}
 
-import Dict
+import Dict exposing (Dict)
 import Helpers
 import HtmlParser exposing (Node(..))
 import Markdown.Block as Block exposing (Block, Inline, ListItem, Task)
 import Markdown.CodeBlock
 import Markdown.Inline as Inline
 import Markdown.InlineParser
+import Markdown.LinkReferenceDefinition exposing (LinkReferenceDefinition)
 import Markdown.ListItem as ListItem
 import Markdown.OrderedList
 import Markdown.RawBlock exposing (Attribute, RawBlock(..), UnparsedInlines(..))
@@ -536,14 +537,33 @@ multiParser2 =
             )
 
 
-rawBlockParser : Parser (List RawBlock)
+type alias LinkReferenceDefinitions =
+    Dict String LinkReferenceDefinition
+
+
+type alias State =
+    { linkReferenceDefinitions : LinkReferenceDefinitions
+    , rawBlocks : List RawBlock
+    }
+
+
+updateRawBlocks : State -> List RawBlock -> State
+updateRawBlocks state updatedRawBlocks =
+    { state | rawBlocks = updatedRawBlocks }
+
+
+rawBlockParser : Parser State
 rawBlockParser =
-    loop [] statementsHelp2
+    loop
+        { linkReferenceDefinitions = Dict.empty
+        , rawBlocks = []
+        }
+        statementsHelp2
 
 
-parseAllInlines : List RawBlock -> Parser (List Block)
-parseAllInlines rawBlocks =
-    List.foldl combineBlocks (succeed []) rawBlocks
+parseAllInlines : State -> Parser (List Block)
+parseAllInlines state =
+    List.foldl combineBlocks (succeed []) state.rawBlocks
 
 
 combineBlocks : RawBlock -> Parser (List Block) -> Parser (List Block)
@@ -565,7 +585,7 @@ combineBlocks rawBlock soFar =
             )
 
 
-statementsHelp2 : List RawBlock -> Parser (Step (List RawBlock) (List RawBlock))
+statementsHelp2 : State -> Parser (Step State State)
 statementsHelp2 revStmts =
     let
         keepLooping parser =
@@ -574,7 +594,7 @@ statementsHelp2 revStmts =
                     (\stmts ->
                         case
                             ( stmts
-                            , revStmts
+                            , revStmts.rawBlocks
                             )
                         of
                             ( CodeBlock block1, (CodeBlock block2) :: rest ) ->
@@ -584,28 +604,34 @@ statementsHelp2 revStmts =
                                     }
                                     :: rest
                                 )
+                                    |> updateRawBlocks revStmts
                                     |> Loop
 
                             ( Body (UnparsedInlines body1), (BlockQuote body2) :: rest ) ->
                                 (BlockQuote (joinRawStringsWith "\n" body2 body1)
                                     :: rest
                                 )
+                                    |> updateRawBlocks revStmts
                                     |> Loop
 
                             ( BlockQuote body1, (BlockQuote body2) :: rest ) ->
                                 (BlockQuote (joinStringsPreserveAll body2 body1)
                                     :: rest
                                 )
+                                    |> updateRawBlocks revStmts
                                     |> Loop
 
                             ( Body (UnparsedInlines body1), (Body (UnparsedInlines body2)) :: rest ) ->
-                                Loop
-                                    (Body (UnparsedInlines (joinRawStringsWith "\n" body2 body1))
-                                        :: rest
-                                    )
+                                (Body (UnparsedInlines (joinRawStringsWith "\n" body2 body1))
+                                    :: rest
+                                )
+                                    |> updateRawBlocks revStmts
+                                    |> Loop
 
                             _ ->
-                                Loop (stmts :: revStmts)
+                                (stmts :: revStmts.rawBlocks)
+                                    |> updateRawBlocks revStmts
+                                    |> Loop
                     )
     in
     oneOf
@@ -615,7 +641,7 @@ statementsHelp2 revStmts =
         , Markdown.CodeBlock.parser |> map CodeBlock |> keepLooping
         , thematicBreak |> keepLooping
         , unorderedListBlock |> keepLooping
-        , orderedListBlock (List.head revStmts) |> keepLooping
+        , orderedListBlock (List.head revStmts.rawBlocks) |> keepLooping
         , heading |> keepLooping
         , htmlParser |> keepLooping
         , plainLine |> keepLooping
