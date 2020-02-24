@@ -22,7 +22,7 @@ suite =
 'title'
 """
                     |> expectParseTo
-                        ( "Foo bar", { destination = "my%20url", title = Just "title" } )
+                        ( "foo bar", { destination = "my%20url", title = Just "title" } )
         , test "title is optional" <|
             \() ->
                 "[foo]: /url"
@@ -37,6 +37,11 @@ suite =
             \() ->
                 "[foo]:\n"
                     |> expectError
+        , test "labels are stored in all lowercase in order to do case-insensitive matches" <|
+            \() ->
+                """[Foo bar]: <my url> 'title'"""
+                    |> expectParseTo
+                        ( "foo bar", { destination = "my%20url", title = Just "title" } )
         ]
 
 

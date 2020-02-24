@@ -46,30 +46,6 @@ But instead was:
 ```html
 <p>[Foo*bar]]:my_(url) &#39;title (with parens)&#39;</p><p>[Foo*bar]]</p>
 ```
-## [Example 164](https://spec.commonmark.org/0.29/#example-164)
-
-This markdown:
-
-```markdown
-[Foo bar]:
-<my url>
-'title'
-
-[Foo bar]
-
-```
-
-Should give output:
-
-```html
-<p><a href="my%20url" title="title">Foo bar</a></p>
-```
-
-But instead was:
-
-```html
-<p>[Foo bar]</p>
-```
 ## [Example 166](https://spec.commonmark.org/0.29/#example-166)
 
 This markdown:
@@ -162,50 +138,6 @@ But instead was:
 
 ```html
 <p><a href="second">foo</a></p>
-```
-## [Example 174](https://spec.commonmark.org/0.29/#example-174)
-
-This markdown:
-
-```markdown
-[FOO]: /url
-
-[Foo]
-
-```
-
-Should give output:
-
-```html
-<p><a href="/url">Foo</a></p>
-```
-
-But instead was:
-
-```html
-<p>[Foo]</p>
-```
-## [Example 175](https://spec.commonmark.org/0.29/#example-175)
-
-This markdown:
-
-```markdown
-[ΑΓΩ]: /φου
-
-[αγω]
-
-```
-
-Should give output:
-
-```html
-<p><a href="/%CF%86%CE%BF%CF%85">αγω</a></p>
-```
-
-But instead was:
-
-```html
-<p>[αγω]</p>
 ```
 ## [Example 178](https://spec.commonmark.org/0.29/#example-178)
 

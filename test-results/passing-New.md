@@ -32,6 +32,28 @@ Gives this correct output:
 
 ```
 
+## case_insensitive_refs
+
+### Example undefined
+
+This markdown:
+
+
+```markdown
+[hi]
+
+[HI]: /url
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><a href="/url">hi</a></p>
+
+```
+
 ## code_spans
 
 ### Example undefined

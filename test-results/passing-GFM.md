@@ -4262,6 +4262,26 @@ Gives this correct output:
 
 ```
 
+### [Example 573](https://spec.commonmark.org/0.29/#example-573)
+
+This markdown:
+
+
+```markdown
+![foo *bar*][foobar]
+
+[FOOBAR]: train.jpg "train & tracks"
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><img src="train.jpg" alt="foo bar" title="train &amp; tracks" /></p>
+
+```
+
 ### [Example 574](https://spec.commonmark.org/0.29/#example-574)
 
 This markdown:
@@ -4343,6 +4363,26 @@ This markdown:
 ![foo][bar]
 
 [bar]: /url
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><img src="/url" alt="foo" /></p>
+
+```
+
+### [Example 579](https://spec.commonmark.org/0.29/#example-579)
+
+This markdown:
+
+
+```markdown
+![foo][bar]
+
+[BAR]: /url
 
 ```
 
@@ -4706,6 +4746,28 @@ Gives this correct output:
 
 ```
 
+### [Example 164](https://spec.commonmark.org/0.29/#example-164)
+
+This markdown:
+
+
+```markdown
+[Foo bar]:
+<my url>
+'title'
+
+[Foo bar]
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><a href="my%20url" title="title">Foo bar</a></p>
+
+```
+
 ### [Example 165](https://spec.commonmark.org/0.29/#example-165)
 
 This markdown:
@@ -4813,6 +4875,46 @@ Gives this correct output:
 
 ```html
 <p><a href="url">foo</a></p>
+
+```
+
+### [Example 174](https://spec.commonmark.org/0.29/#example-174)
+
+This markdown:
+
+
+```markdown
+[FOO]: /url
+
+[Foo]
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><a href="/url">Foo</a></p>
+
+```
+
+### [Example 175](https://spec.commonmark.org/0.29/#example-175)
+
+This markdown:
+
+
+```markdown
+[ΑΓΩ]: /φου
+
+[αγω]
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><a href="/%CF%86%CE%BF%CF%85">αγω</a></p>
 
 ```
 
@@ -5852,6 +5954,26 @@ Gives this correct output:
 
 ```html
 <p><a href="/url" title="title">foo</a></p>
+
+```
+
+### [Example 536](https://spec.commonmark.org/0.29/#example-536)
+
+This markdown:
+
+
+```markdown
+[Толпой][Толпой] is a Russian word.
+
+[ТОЛПОЙ]: /url
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><a href="/url">Толпой</a> is a Russian word.</p>
 
 ```
 

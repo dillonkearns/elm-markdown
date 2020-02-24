@@ -2,6 +2,7 @@ module Markdown.LinkReferenceDefinition exposing (..)
 
 import Helpers
 import LineEnding
+import Markdown.Helpers
 import Parser
 import Parser.Advanced as Advanced exposing (..)
 import Url
@@ -16,7 +17,7 @@ parser =
     inContext "link reference definition" <|
         succeed
             (\label destination title ->
-                ( label
+                ( Markdown.Helpers.prepareRefLabel label
                 , { destination = destination, title = title }
                 )
             )

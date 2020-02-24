@@ -185,28 +185,6 @@ But instead was:
 ```html
 <p><a href="/uri">foo &lt;bar attr=&quot;</a>&quot;&gt;</p>
 ```
-## [Example 536](https://spec.commonmark.org/0.29/#example-536)
-
-This markdown:
-
-```markdown
-[Толпой][Толпой] is a Russian word.
-
-[ТОЛПОЙ]: /url
-
-```
-
-Should give output:
-
-```html
-<p><a href="/url">Толпой</a>is a Russian word.</p>
-```
-
-But instead was:
-
-```html
-<p>[Толпой][Толпой] is a Russian word.</p>
-```
 ## [Example 537](https://spec.commonmark.org/0.29/#example-537)
 
 This markdown:
