@@ -397,6 +397,26 @@ Gives this correct output:
 
 ```
 
+### [Example 309](https://spec.commonmark.org/0.29/#example-309)
+
+This markdown:
+
+
+```markdown
+[foo]
+
+[foo]: /bar\* "ti\*tle"
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><a href="/bar*" title="ti*tle">foo</a></p>
+
+```
+
 ## Blank lines
 
 ### [Example 197](https://spec.commonmark.org/0.29/#example-197)
@@ -3446,6 +3466,26 @@ Gives this correct output:
 
 ```
 
+### [Example 319](https://spec.commonmark.org/0.29/#example-319)
+
+This markdown:
+
+
+```markdown
+[foo]
+
+[foo]: /f&ouml;&ouml; "f&ouml;&ouml;"
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><a href="/f%C3%B6%C3%B6" title="föö">foo</a></p>
+
+```
+
 ### [Example 321](https://spec.commonmark.org/0.29/#example-321)
 
 This markdown:
@@ -4146,6 +4186,26 @@ Gives this correct output:
 
 ```
 
+### [Example 569](https://spec.commonmark.org/0.29/#example-569)
+
+This markdown:
+
+
+```markdown
+![foo *bar*]
+
+[foo *bar*]: train.jpg "train & tracks"
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><img src="train.jpg" alt="foo bar" title="train &amp; tracks" /></p>
+
+```
+
 ### [Example 570](https://spec.commonmark.org/0.29/#example-570)
 
 This markdown:
@@ -4179,6 +4239,26 @@ Gives this correct output:
 
 ```html
 <p><img src="/url2" alt="foo bar" /></p>
+
+```
+
+### [Example 572](https://spec.commonmark.org/0.29/#example-572)
+
+This markdown:
+
+
+```markdown
+![foo *bar*][]
+
+[foo *bar*]: train.jpg "train & tracks"
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><img src="train.jpg" alt="foo bar" title="train &amp; tracks" /></p>
 
 ```
 
@@ -4254,6 +4334,128 @@ Gives this correct output:
 
 ```
 
+### [Example 580](https://spec.commonmark.org/0.29/#example-580)
+
+This markdown:
+
+
+```markdown
+![foo][]
+
+[foo]: /url "title"
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><img src="/url" alt="foo" title="title" /></p>
+
+```
+
+### [Example 581](https://spec.commonmark.org/0.29/#example-581)
+
+This markdown:
+
+
+```markdown
+![*foo* bar][]
+
+[*foo* bar]: /url "title"
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><img src="/url" alt="foo bar" title="title" /></p>
+
+```
+
+### [Example 582](https://spec.commonmark.org/0.29/#example-582)
+
+This markdown:
+
+
+```markdown
+![Foo][]
+
+[foo]: /url "title"
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><img src="/url" alt="Foo" title="title" /></p>
+
+```
+
+### [Example 583](https://spec.commonmark.org/0.29/#example-583)
+
+This markdown:
+
+
+```markdown
+![foo] 
+[]
+
+[foo]: /url "title"
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><img src="/url" alt="foo" title="title" />
+[]</p>
+
+```
+
+### [Example 584](https://spec.commonmark.org/0.29/#example-584)
+
+This markdown:
+
+
+```markdown
+![foo]
+
+[foo]: /url "title"
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><img src="/url" alt="foo" title="title" /></p>
+
+```
+
+### [Example 585](https://spec.commonmark.org/0.29/#example-585)
+
+This markdown:
+
+
+```markdown
+![*foo* bar]
+
+[*foo* bar]: /url "title"
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><img src="/url" alt="foo bar" title="title" /></p>
+
+```
+
 ### [Example 586](https://spec.commonmark.org/0.29/#example-586)
 
 This markdown:
@@ -4272,6 +4474,66 @@ Gives this correct output:
 ```html
 <p>![[foo]]</p>
 <p>[[foo]]: /url &quot;title&quot;</p>
+
+```
+
+### [Example 587](https://spec.commonmark.org/0.29/#example-587)
+
+This markdown:
+
+
+```markdown
+![Foo]
+
+[foo]: /url "title"
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><img src="/url" alt="Foo" title="title" /></p>
+
+```
+
+### [Example 588](https://spec.commonmark.org/0.29/#example-588)
+
+This markdown:
+
+
+```markdown
+!\[foo]
+
+[foo]: /url "title"
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>![foo]</p>
+
+```
+
+### [Example 589](https://spec.commonmark.org/0.29/#example-589)
+
+This markdown:
+
+
+```markdown
+\![foo]
+
+[foo]: /url "title"
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>!<a href="/url" title="title">foo</a></p>
 
 ```
 
@@ -4404,6 +4666,26 @@ Gives this correct output:
 
 ## Link reference definitions
 
+### [Example 161](https://spec.commonmark.org/0.29/#example-161)
+
+This markdown:
+
+
+```markdown
+[foo]: /url "title"
+
+[foo]
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><a href="/url" title="title">foo</a></p>
+
+```
+
 ### [Example 166](https://spec.commonmark.org/0.29/#example-166)
 
 This markdown:
@@ -4446,24 +4728,6 @@ Gives this correct output:
 ```html
 <p>[foo]:</p>
 <p>[foo]</p>
-
-```
-
-### [Example 178](https://spec.commonmark.org/0.29/#example-178)
-
-This markdown:
-
-
-```markdown
-[foo]: /url "title" ok
-
-```
-
-Gives this correct output:
-
-
-```html
-<p>[foo]: /url &quot;title&quot; ok</p>
 
 ```
 
@@ -5163,6 +5427,88 @@ Gives this correct output:
 
 ```
 
+### [Example 523](https://spec.commonmark.org/0.29/#example-523)
+
+This markdown:
+
+
+```markdown
+[foo][bar]
+
+[bar]: /url "title"
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><a href="/url" title="title">foo</a></p>
+
+```
+
+### [Example 535](https://spec.commonmark.org/0.29/#example-535)
+
+This markdown:
+
+
+```markdown
+[foo][BaR]
+
+[bar]: /url "title"
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><a href="/url" title="title">foo</a></p>
+
+```
+
+### [Example 538](https://spec.commonmark.org/0.29/#example-538)
+
+This markdown:
+
+
+```markdown
+[foo] [bar]
+
+[bar]: /url "title"
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>[foo] <a href="/url" title="title">bar</a></p>
+
+```
+
+### [Example 539](https://spec.commonmark.org/0.29/#example-539)
+
+This markdown:
+
+
+```markdown
+[foo]
+[bar]
+
+[bar]: /url "title"
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>[foo]
+<a href="/url" title="title">bar</a></p>
+
+```
+
 ### [Example 542](https://spec.commonmark.org/0.29/#example-542)
 
 This markdown:
@@ -5269,6 +5615,188 @@ Gives this correct output:
 ]</p>
 <p>[
 ]: /uri</p>
+
+```
+
+### [Example 549](https://spec.commonmark.org/0.29/#example-549)
+
+This markdown:
+
+
+```markdown
+[foo][]
+
+[foo]: /url "title"
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><a href="/url" title="title">foo</a></p>
+
+```
+
+### [Example 550](https://spec.commonmark.org/0.29/#example-550)
+
+This markdown:
+
+
+```markdown
+[*foo* bar][]
+
+[*foo* bar]: /url "title"
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><a href="/url" title="title"><em>foo</em> bar</a></p>
+
+```
+
+### [Example 551](https://spec.commonmark.org/0.29/#example-551)
+
+This markdown:
+
+
+```markdown
+[Foo][]
+
+[foo]: /url "title"
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><a href="/url" title="title">Foo</a></p>
+
+```
+
+### [Example 552](https://spec.commonmark.org/0.29/#example-552)
+
+This markdown:
+
+
+```markdown
+[foo] 
+[]
+
+[foo]: /url "title"
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><a href="/url" title="title">foo</a>
+[]</p>
+
+```
+
+### [Example 553](https://spec.commonmark.org/0.29/#example-553)
+
+This markdown:
+
+
+```markdown
+[foo]
+
+[foo]: /url "title"
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><a href="/url" title="title">foo</a></p>
+
+```
+
+### [Example 554](https://spec.commonmark.org/0.29/#example-554)
+
+This markdown:
+
+
+```markdown
+[*foo* bar]
+
+[*foo* bar]: /url "title"
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><a href="/url" title="title"><em>foo</em> bar</a></p>
+
+```
+
+### [Example 555](https://spec.commonmark.org/0.29/#example-555)
+
+This markdown:
+
+
+```markdown
+[[*foo* bar]]
+
+[*foo* bar]: /url "title"
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>[<a href="/url" title="title"><em>foo</em> bar</a>]</p>
+
+```
+
+### [Example 557](https://spec.commonmark.org/0.29/#example-557)
+
+This markdown:
+
+
+```markdown
+[Foo]
+
+[foo]: /url "title"
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><a href="/url" title="title">Foo</a></p>
+
+```
+
+### [Example 559](https://spec.commonmark.org/0.29/#example-559)
+
+This markdown:
+
+
+```markdown
+\[foo]
+
+[foo]: /url "title"
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>[foo]</p>
 
 ```
 

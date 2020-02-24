@@ -42,28 +42,6 @@ But instead was:
 ```html
 ERROR Problem at row 1 No entity named &quot;ö&quot; found.
 ```
-## [Example 319](https://spec.commonmark.org/0.29/#example-319)
-
-This markdown:
-
-```markdown
-[foo]
-
-[foo]: /f&ouml;&ouml; "f&ouml;&ouml;"
-
-```
-
-Should give output:
-
-```html
-<p><a href="/f%C3%B6%C3%B6" title="föö">foo</a></p>
-```
-
-But instead was:
-
-```html
-<p>[foo]</p><p>[foo]: /föö &quot;föö&quot;</p>
-```
 ## [Example 320](https://spec.commonmark.org/0.29/#example-320)
 
 This markdown:

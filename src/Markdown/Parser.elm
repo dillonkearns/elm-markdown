@@ -13,7 +13,7 @@ import Markdown.Block as Block exposing (Block, Inline, ListItem, Task)
 import Markdown.CodeBlock
 import Markdown.Inline as Inline
 import Markdown.InlineParser
-import Markdown.LinkReferenceDefinition exposing (LinkReferenceDefinition)
+import Markdown.LinkReferenceDefinition as LinkReferenceDefinition exposing (LinkReferenceDefinition)
 import Markdown.ListItem as ListItem
 import Markdown.OrderedList
 import Markdown.RawBlock exposing (Attribute, RawBlock(..), UnparsedInlines(..))
@@ -113,9 +113,23 @@ type alias Parser a =
     Advanced.Parser String Parser.Problem a
 
 
-inlineParseHelper : UnparsedInlines -> List Block.Inline
-inlineParseHelper (UnparsedInlines unparsedInlines) =
-    Markdown.InlineParser.parse Dict.empty unparsedInlines
+inlineParseHelper : LinkReferenceDefinitions -> UnparsedInlines -> List Block.Inline
+inlineParseHelper referencesDict (UnparsedInlines unparsedInlines) =
+    let
+        referencesDict2 =
+            referencesDict
+                |> Dict.map
+                    (\key { destination, title } ->
+                        ( destination, title )
+                    )
+
+        --
+        --myReferences =
+        --    Dict.fromList
+        --        [ ( "foo", { destination = "/url", title = Just "title" } )
+        --        ]
+    in
+    Markdown.InlineParser.parse referencesDict2 unparsedInlines
         |> List.map mapInline
 
 
@@ -180,8 +194,8 @@ levelParser level =
             problem ("A heading with 1 to 6 #'s, but found " ++ String.fromInt level |> Parser.Expecting)
 
 
-parseInlines : RawBlock -> Parser (Maybe Block)
-parseInlines rawBlock =
+parseInlines : LinkReferenceDefinitions -> RawBlock -> Parser (Maybe Block)
+parseInlines linkReferences rawBlock =
     case rawBlock of
         Heading level unparsedInlines ->
             level
@@ -189,13 +203,13 @@ parseInlines rawBlock =
                 |> andThen
                     (\parsedLevel ->
                         unparsedInlines
-                            |> inlineParseHelper
+                            |> inlineParseHelper linkReferences
                             |> (\styledLine -> just (Block.Heading parsedLevel styledLine))
                     )
 
         Body unparsedInlines ->
             unparsedInlines
-                |> inlineParseHelper
+                |> inlineParseHelper linkReferences
                 |> (\styledLine -> just (Block.Paragraph styledLine))
 
         Html html ->
@@ -207,7 +221,7 @@ parseInlines rawBlock =
                 |> List.map
                     (\unparsedItem ->
                         unparsedItem.body
-                            |> parseRawInline identity
+                            |> parseRawInline linkReferences identity
                             |> Advanced.map
                                 (\parsedInlines ->
                                     let
@@ -231,7 +245,7 @@ parseInlines rawBlock =
 
         OrderedListBlock startingIndex unparsedInlines ->
             unparsedInlines
-                |> List.map (parseRawInline identity)
+                |> List.map (parseRawInline linkReferences identity)
                 |> combine
                 |> map (Block.OrderedList startingIndex)
                 |> map Just
@@ -264,10 +278,10 @@ just value =
     succeed (Just value)
 
 
-parseRawInline : (List Inline -> a) -> UnparsedInlines -> Advanced.Parser c Parser.Problem a
-parseRawInline wrap unparsedInlines =
+parseRawInline : LinkReferenceDefinitions -> (List Inline -> a) -> UnparsedInlines -> Advanced.Parser c Parser.Problem a
+parseRawInline linkReferences wrap unparsedInlines =
     unparsedInlines
-        |> inlineParseHelper
+        |> inlineParseHelper linkReferences
         |> (\styledLine -> wrap styledLine)
         |> succeed
 
@@ -538,7 +552,7 @@ multiParser2 =
 
 
 type alias LinkReferenceDefinitions =
-    Dict String LinkReferenceDefinition
+    Dict String { destination : String, title : Maybe String }
 
 
 type alias State =
@@ -552,6 +566,11 @@ updateRawBlocks state updatedRawBlocks =
     { state | rawBlocks = updatedRawBlocks }
 
 
+addReference : State -> LinkReferenceDefinition -> State
+addReference state ( label, value ) =
+    { state | linkReferenceDefinitions = Dict.insert label value state.linkReferenceDefinitions }
+
+
 rawBlockParser : Parser State
 rawBlockParser =
     loop
@@ -563,16 +582,16 @@ rawBlockParser =
 
 parseAllInlines : State -> Parser (List Block)
 parseAllInlines state =
-    List.foldl combineBlocks (succeed []) state.rawBlocks
+    List.foldl (combineBlocks state.linkReferenceDefinitions) (succeed []) state.rawBlocks
 
 
-combineBlocks : RawBlock -> Parser (List Block) -> Parser (List Block)
-combineBlocks rawBlock soFar =
+combineBlocks : LinkReferenceDefinitions -> RawBlock -> Parser (List Block) -> Parser (List Block)
+combineBlocks linkReferences rawBlock soFar =
     soFar
         |> andThen
             (\parsedBlocks ->
                 rawBlock
-                    |> parseInlines
+                    |> parseInlines linkReferences
                     |> map
                         (\maybeNewParsedBlock ->
                             case maybeNewParsedBlock of
@@ -636,6 +655,13 @@ statementsHelp2 revStmts =
     in
     oneOf
         [ Advanced.end (Parser.Expecting "End") |> map (\() -> Done revStmts)
+        , Advanced.backtrackable LinkReferenceDefinition.parser
+            |> map
+                (\linkReference ->
+                    linkReference
+                        |> addReference revStmts
+                        |> Loop
+                )
         , blankLine |> keepLooping
         , blockQuote |> keepLooping
         , Markdown.CodeBlock.parser |> map CodeBlock |> keepLooping

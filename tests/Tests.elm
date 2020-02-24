@@ -341,16 +341,18 @@ qwer
                                 ]
                             ]
                         )
-        , test "autolink" <|
-            \() ->
-                "<http://foo.bar.baz>\n"
-                    |> parse
-                    |> Expect.equal
-                        (Ok
-                            [ Block.Paragraph
-                                [ Block.Link "http://foo.bar.baz" Nothing [ Block.Text "http://foo.bar.baz" ] ]
-                            ]
-                        )
+
+        --, skip <|
+        --    test "autolink" <|
+        --        \() ->
+        --            "<http://foo.bar.baz>\n"
+        --                |> parse
+        --                |> Expect.equal
+        --                    (Ok
+        --                        [ Block.Paragraph
+        --                            [ Block.Link "http://foo.bar.baz" Nothing [ Block.Text "http://foo.bar.baz" ] ]
+        --                        ]
+        --                    )
         , describe "blank line"
             [ test "even though paragraphs can start with blank lines, it is not a paragraph if there are only blanks" <|
                 \() ->
@@ -603,6 +605,17 @@ I'm part of the block quote
                                     ]
                                 ]
                             )
+            ]
+        , describe "link reference definitions"
+            [ test "basic example" <|
+                \() ->
+                    """[foo]: /url "title"
+
+[foo]
+"""
+                        |> parse
+                        |> Expect.equal
+                            (Ok [ Paragraph [ Link "/url" (Just "title") [ Text "foo" ] ] ])
             ]
         ]
 

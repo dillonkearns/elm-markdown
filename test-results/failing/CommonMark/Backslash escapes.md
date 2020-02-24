@@ -68,28 +68,6 @@ But instead was:
 ```html
 ERROR Problem at row 2 Expecting symbol
 ```
-## [Example 309](https://spec.commonmark.org/0.29/#example-309)
-
-This markdown:
-
-```markdown
-[foo]
-
-[foo]: /bar\* "ti\*tle"
-
-```
-
-Should give output:
-
-```html
-<p><a href="/bar*" title="ti*tle">foo</a></p>
-```
-
-But instead was:
-
-```html
-<p>[foo]</p><p>[foo]: /bar* &quot;ti*tle&quot;</p>
-```
 ## [Example 310](https://spec.commonmark.org/0.29/#example-310)
 
 This markdown:

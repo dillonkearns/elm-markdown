@@ -1,27 +1,5 @@
 # GFM - Link reference definitions
 
-## [Example 161](https://spec.commonmark.org/0.29/#example-161)
-
-This markdown:
-
-```markdown
-[foo]: /url "title"
-
-[foo]
-
-```
-
-Should give output:
-
-```html
-<p><a href="/url" title="title">foo</a></p>
-```
-
-But instead was:
-
-```html
-<p>[foo]: /url &quot;title&quot;</p><p>[foo]</p>
-```
 ## [Example 162](https://spec.commonmark.org/0.29/#example-162)
 
 This markdown:
@@ -209,7 +187,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>[foo]: /url\bar*baz &quot;foo&quot;bar\baz&quot;</p><p>[foo]</p>
+<p>bar\baz&quot;</p><p><a href="/url%5Cbar*baz" title="foo\">foo</a></p>
 ```
 ## [Example 172](https://spec.commonmark.org/0.29/#example-172)
 
@@ -343,6 +321,26 @@ But instead was:
 ```html
 <p>[ foo ]: /url bar</p>
 ```
+## [Example 178](https://spec.commonmark.org/0.29/#example-178)
+
+This markdown:
+
+```markdown
+[foo]: /url "title" ok
+
+```
+
+Should give output:
+
+```html
+<p>[foo]: /url &quot;title&quot; ok</p>
+```
+
+But instead was:
+
+```html
+<p>ok</p>
+```
 ## [Example 179](https://spec.commonmark.org/0.29/#example-179)
 
 This markdown:
@@ -362,7 +360,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>[foo]: /url &quot;title&quot; ok</p>
+<p>ok</p>
 ```
 ## [Example 183](https://spec.commonmark.org/0.29/#example-183)
 
@@ -456,7 +454,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>[foo]: /foo-url &quot;foo&quot; [bar]: /bar-url &quot;bar&quot; [baz]: /baz-url</p><p>[foo], [bar], [baz]</p>
+<p>[baz]: /baz-url</p><p><a href="/foo-url" title="foo">foo</a>,<a href="/bar-url" title="bar">bar</a>, [baz]</p>
 ```
 ## [Example 187](https://spec.commonmark.org/0.29/#example-187)
 
