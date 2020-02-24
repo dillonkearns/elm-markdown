@@ -28,6 +28,26 @@ But instead was:
 ```html
 <p>*not emphasized* &lt;br/&gt; not a tag [not a link](/foo) `not code` 1. not a list * not a list # not a heading [foo]: /url &quot;not a reference&quot; ö not a character entity</p>
 ```
+## [Example 306](https://spec.commonmark.org/0.29/#example-306)
+
+This markdown:
+
+```markdown
+<http://example.com?find=\*>
+
+```
+
+Should give output:
+
+```html
+<p><a href="http://example.com?find=%5C*">http://example.com?find=\*</a></p>
+```
+
+But instead was:
+
+```html
+ERROR Problem at row 1 Expecting symbol /&gt; Problem at row 1 Expecting symbol &gt;
+```
 ## [Example 307](https://spec.commonmark.org/0.29/#example-307)
 
 This markdown:
@@ -46,7 +66,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>&lt;a href=&quot;/bar/)&quot;&gt;</p>
+ERROR Problem at row 2 Expecting symbol
 ```
 ## [Example 309](https://spec.commonmark.org/0.29/#example-309)
 

@@ -617,7 +617,7 @@ statementsHelp2 revStmts =
         , unorderedListBlock |> keepLooping
         , orderedListBlock (List.head revStmts) |> keepLooping
         , heading |> keepLooping
-        , htmlParser |> Advanced.backtrackable |> keepLooping
+        , htmlParser |> keepLooping
         , plainLine |> keepLooping
         , succeed (Done revStmts)
         ]

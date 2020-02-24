@@ -95,7 +95,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>&lt;/div&gt;<em>foo</em></p>
+ERROR Problem at row 1 Bad repeat
 ```
 ## [Example 125](https://spec.commonmark.org/0.29/#example-125)
 
@@ -118,7 +118,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>&lt;div&gt;<em>foo</em></p><p><em>bar</em></p>
+ERROR Problem at row 5 Expecting symbol
 ```
 ## [Example 126](https://spec.commonmark.org/0.29/#example-126)
 
@@ -139,7 +139,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>&lt;div id=&quot;foo&quot;<em>hi</em></p>
+ERROR Problem at row 3 Expecting symbol =
 ```
 ## [Example 127](https://spec.commonmark.org/0.29/#example-127)
 
@@ -160,7 +160,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>&lt;div class foo</p>
+ERROR Problem at row 2 Expecting symbol =
 ```
 ## [Example 128](https://spec.commonmark.org/0.29/#example-128)
 
@@ -181,7 +181,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>&lt;div *???-&amp;&amp;&amp;-&lt;---<em>foo</em></p>
+ERROR Problem at row 1 Expecting symbol =
 ```
 ## [Example 129](https://spec.commonmark.org/0.29/#example-129)
 
@@ -333,7 +333,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>&lt;/ins&gt;<em>bar</em></p>
+ERROR Problem at row 1 Bad repeat
 ```
 ## [Example 136](https://spec.commonmark.org/0.29/#example-136)
 
@@ -475,7 +475,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>&lt;style type=&quot;text/css&quot;&gt;</p><p>foo</p>
+ERROR Problem at row 5 Expecting symbol
 ```
 ## [Example 143](https://spec.commonmark.org/0.29/#example-143)
 
@@ -498,7 +498,7 @@ Should give output:
 But instead was:
 
 ```html
-<blockquote><p>&lt;div&gt; foo</p></blockquote><p>bar</p>
+ERROR Problem at row 8 Problem at row 2 Expecting symbol
 ```
 ## [Example 144](https://spec.commonmark.org/0.29/#example-144)
 
@@ -740,7 +740,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>Foo &lt;a href=&quot;bar&quot;&gt; baz</p>
+ERROR Problem at row 5 Expecting symbol
 ```
 ## [Example 158](https://spec.commonmark.org/0.29/#example-158)
 

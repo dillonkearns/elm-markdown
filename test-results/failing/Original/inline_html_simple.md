@@ -86,5 +86,5 @@ Should give output:
 But instead was:
 
 ```html
-<p>Here&#39;s a simple block:</p><div><pre><code>foo</code></pre></div><p>This should be a code block, though:</p><pre><code>&lt;div&gt; foo &lt;/div&gt;</code></pre><p>As should this:</p><pre><code>&lt;div&gt;foo&lt;/div&gt;</code></pre><p>Now, nested:</p><div><pre><code></code></pre><div><pre><code></code></pre><div><pre><code>foo</code></pre></div><pre><code></code></pre></div></div><p>This should just be an HTML comment:</p><p>Multiline:</p><p>Code block:</p><pre><code>&lt;!-- Comment --&gt;</code></pre><p>Just plain comment, with trailing spaces on the line:</p><p>Code:</p><pre><code>&lt;hr /&gt;</code></pre><p>Hr&#39;s:</p><p>&lt;hr&gt;</p><hr></hr><hr></hr><p>&lt;hr&gt;</p><hr></hr><hr></hr><hr class="foo" id="bar"></hr><hr class="foo" id="bar"></hr><p>&lt;hr class=&quot;foo&quot; id=&quot;bar&quot; &gt;</p>
+ERROR Problem at row 86 Expecting symbol
 ```

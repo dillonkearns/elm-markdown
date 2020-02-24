@@ -40,7 +40,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>&lt;a href=&quot;öö.html&quot;&gt;</p>
+ERROR Problem at row 1 No entity named &quot;ö&quot; found.
 ```
 ## [Example 319](https://spec.commonmark.org/0.29/#example-319)
 
