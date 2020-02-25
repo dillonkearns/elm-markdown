@@ -653,52 +653,37 @@ statementsHelp2 revStmts =
                                     |> updateRawBlocks revStmts
                                     |> Loop
                     )
-    in
-    case revStmts.rawBlocks of
-        (Body _) :: _ ->
-            oneOf
-                [ Advanced.end (Parser.Expecting "End") |> map (\() -> Done revStmts)
-                , LinkReferenceDefinition.parser
-                    |> Advanced.backtrackable
-                    |> map
-                        (\linkReference ->
-                            linkReference
-                                |> addReference revStmts
-                                |> Loop
-                        )
-                , blankLine |> keepLooping
-                , blockQuote |> keepLooping
-                , Markdown.CodeBlock.parser |> map CodeBlock |> keepLooping
-                , thematicBreak |> keepLooping
-                , unorderedListBlock |> keepLooping
-                , orderedListBlock (List.head revStmts.rawBlocks) |> keepLooping
-                , heading |> keepLooping
-                , htmlParser |> keepLooping
-                , plainLine |> keepLooping
-                ]
 
-        _ ->
-            oneOf
-                [ Advanced.end (Parser.Expecting "End") |> map (\() -> Done revStmts)
-                , LinkReferenceDefinition.parser
-                    |> Advanced.backtrackable
-                    |> map
-                        (\linkReference ->
-                            linkReference
-                                |> addReference revStmts
-                                |> Loop
-                        )
-                , blankLine |> keepLooping
-                , blockQuote |> keepLooping
-                , Markdown.CodeBlock.parser |> map CodeBlock |> keepLooping
-                , indentedCodeBlock |> keepLooping
-                , thematicBreak |> keepLooping
-                , unorderedListBlock |> keepLooping
-                , orderedListBlock (List.head revStmts.rawBlocks) |> keepLooping
-                , heading |> keepLooping
-                , htmlParser |> keepLooping
-                , plainLine |> keepLooping
-                ]
+        indentedCodeParser =
+            case revStmts.rawBlocks of
+                (Body _) :: _ ->
+                    oneOf []
+
+                _ ->
+                    indentedCodeBlock
+                        |> keepLooping
+    in
+    oneOf
+        [ Advanced.end (Parser.Expecting "End") |> map (\() -> Done revStmts)
+        , LinkReferenceDefinition.parser
+            |> Advanced.backtrackable
+            |> map
+                (\linkReference ->
+                    linkReference
+                        |> addReference revStmts
+                        |> Loop
+                )
+        , blankLine |> keepLooping
+        , blockQuote |> keepLooping
+        , Markdown.CodeBlock.parser |> map CodeBlock |> keepLooping
+        , indentedCodeParser
+        , thematicBreak |> keepLooping
+        , unorderedListBlock |> keepLooping
+        , orderedListBlock (List.head revStmts.rawBlocks) |> keepLooping
+        , heading |> keepLooping
+        , htmlParser |> keepLooping
+        , plainLine |> keepLooping
+        ]
 
 
 joinStringsPreserveAll string1 string2 =
