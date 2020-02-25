@@ -20,7 +20,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 7 Expecting symbol ```
+<blockquote><pre><code>foo</code></pre></blockquote>
 ```
 ## [Example 208](https://spec.commonmark.org/0.29/#example-208)
 

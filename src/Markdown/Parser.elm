@@ -675,7 +675,7 @@ statementsHelp2 revStmts =
                 )
         , blankLine |> keepLooping
         , blockQuote |> keepLooping
-        , Markdown.CodeBlock.parser |> map CodeBlock |> keepLooping
+        , Markdown.CodeBlock.parser |> Advanced.backtrackable |> map CodeBlock |> keepLooping
         , indentedCodeParser
         , thematicBreak |> keepLooping
         , unorderedListBlock |> keepLooping

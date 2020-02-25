@@ -40,23 +40,3 @@ But instead was:
 ```html
 ERROR Problem at row 1 Expecting symbol /&gt; Problem at row 1 Expecting symbol &gt;
 ```
-## [Example 347](https://spec.commonmark.org/0.29/#example-347)
-
-This markdown:
-
-```markdown
-```foo``
-
-```
-
-Should give output:
-
-```html
-<p>```foo``</p>
-```
-
-But instead was:
-
-```html
-ERROR Problem at row 3 Expecting symbol ```
-```

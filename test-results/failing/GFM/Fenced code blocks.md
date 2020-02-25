@@ -21,7 +21,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 8 Expecting symbol ```
+<pre><code>aaa</code></pre><p>``````</p>
 ```
 ## [Example 95](https://spec.commonmark.org/0.29/#example-95)
 
@@ -44,7 +44,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 8 Expecting symbol ~~~
+<pre><code>aaa</code></pre><p>~~~~</p>
 ```
 ## [Example 96](https://spec.commonmark.org/0.29/#example-96)
 
@@ -64,7 +64,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 3 Expecting symbol ```
+<p>```</p>
 ```
 ## [Example 97](https://spec.commonmark.org/0.29/#example-97)
 
@@ -110,7 +110,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 8 Problem at row 3 Expecting symbol ```
+<blockquote><p>``` aaa</p></blockquote><p>bbb</p>
 ```
 ## [Example 100](https://spec.commonmark.org/0.29/#example-100)
 
@@ -131,7 +131,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 4 Expecting symbol ```
+<p><code></code></p>
 ```
 ## [Example 101](https://spec.commonmark.org/0.29/#example-101)
 
@@ -154,7 +154,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 9 Expecting symbol ```
+<p><code>aaa aaa</code></p>
 ```
 ## [Example 102](https://spec.commonmark.org/0.29/#example-102)
 
@@ -224,7 +224,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 5 Expecting symbol ```
+<p><code>aaa</code></p>
 ```
 ## [Example 106](https://spec.commonmark.org/0.29/#example-106)
 
@@ -268,28 +268,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 5 Expecting symbol ```
-```
-## [Example 108](https://spec.commonmark.org/0.29/#example-108)
-
-This markdown:
-
-```markdown
-``` ```
-aaa
-
-```
-
-Should give output:
-
-```html
-<p><code></code>aaa</p>
-```
-
-But instead was:
-
-```html
-ERROR Problem at row 4 Expecting symbol ```
+<p><code>aaa</code></p>
 ```
 ## [Example 109](https://spec.commonmark.org/0.29/#example-109)
 
@@ -384,7 +363,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 9 Expecting symbol ~~~
+<pre><code>def foo(x) return 3 end</code></pre><p>~~~~</p>
 ```
 ## [Example 114](https://spec.commonmark.org/0.29/#example-114)
 
@@ -405,28 +384,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 4 Expecting symbol ```
-```
-## [Example 115](https://spec.commonmark.org/0.29/#example-115)
-
-This markdown:
-
-```markdown
-``` aa ```
-foo
-
-```
-
-Should give output:
-
-```html
-<p><code>aa</code>foo</p>
-```
-
-But instead was:
-
-```html
-ERROR Problem at row 4 Expecting symbol ```
+<p><code>;</code></p>
 ```
 ## [Example 116](https://spec.commonmark.org/0.29/#example-116)
 

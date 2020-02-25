@@ -1304,6 +1304,24 @@ Gives this correct output:
 
 ```
 
+### [Example 347](https://spec.commonmark.org/0.29/#example-347)
+
+This markdown:
+
+
+```markdown
+```foo``
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>```foo``</p>
+
+```
+
 ### [Example 348](https://spec.commonmark.org/0.29/#example-348)
 
 This markdown:
@@ -3802,6 +3820,26 @@ aaa
 
 ```
 
+### [Example 108](https://spec.commonmark.org/0.29/#example-108)
+
+This markdown:
+
+
+```markdown
+``` ```
+aaa
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><code> </code>
+aaa</p>
+
+```
+
 ### [Example 110](https://spec.commonmark.org/0.29/#example-110)
 
 This markdown:
@@ -3824,6 +3862,26 @@ Gives this correct output:
 <pre><code>bar
 </code></pre>
 <p>baz</p>
+
+```
+
+### [Example 115](https://spec.commonmark.org/0.29/#example-115)
+
+This markdown:
+
+
+```markdown
+``` aa ```
+foo
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><code>aa</code>
+foo</p>
 
 ```
 
