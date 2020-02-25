@@ -74,7 +74,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>&lt;div&gt;<em>hello</em></p><pre><code>&lt;foo&gt;&lt;a&gt;</code></pre>
+<p>&lt;div&gt;<em>hello</em>&lt;foo&gt;&lt;a&gt;</p>
 ```
 ## [Example 121](https://spec.commonmark.org/0.29/#example-121)
 

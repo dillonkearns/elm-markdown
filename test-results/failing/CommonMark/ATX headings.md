@@ -64,27 +64,6 @@ But instead was:
 ```html
 <p>### foo ## foo # foo</p>
 ```
-## [Example 40](https://spec.commonmark.org/0.29/#example-40)
-
-This markdown:
-
-```markdown
-foo
-    # bar
-
-```
-
-Should give output:
-
-```html
-<p>foo # bar</p>
-```
-
-But instead was:
-
-```html
-<p>foo</p><pre><code># bar</code></pre>
-```
 ## [Example 41](https://spec.commonmark.org/0.29/#example-41)
 
 This markdown:

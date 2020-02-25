@@ -22,7 +22,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>[foo]:</p><pre><code>/url &#39;the title&#39;</code></pre><p>[foo]</p>
+<p>[foo]: /url<br>&#39;the title&#39;</p><p>[foo]</p>
 ```
 ## [Example 163](https://spec.commonmark.org/0.29/#example-163)
 

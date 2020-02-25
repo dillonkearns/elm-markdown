@@ -328,7 +328,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>- foo -<code>bar</code>-</p><pre><code>baz</code></pre>
+<p>- foo -<code>bar</code>- baz</p>
 ```
 ## [Example 249](https://spec.commonmark.org/0.29/#example-249)
 
@@ -416,7 +416,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>1. A paragraph</p><pre><code>with two lines.</code></pre><pre><code>indented code</code></pre><pre><code>&gt; A block quote.</code></pre>
+<p>1. A paragraph with two lines.</p><pre><code>indented code</code></pre><pre><code>&gt; A block quote.</code></pre>
 ```
 ## [Example 257](https://spec.commonmark.org/0.29/#example-257)
 
@@ -441,7 +441,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>1. A paragraph</p><pre><code>with two lines.</code></pre><pre><code>indented code</code></pre><pre><code>&gt; A block quote.</code></pre>
+<p>1. A paragraph with two lines.</p><pre><code>indented code</code></pre><pre><code>&gt; A block quote.</code></pre>
 ```
 ## [Example 258](https://spec.commonmark.org/0.29/#example-258)
 
@@ -466,7 +466,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>1. A paragraph</p><pre><code>with two lines.</code></pre><pre><code>indented code</code></pre><pre><code>&gt; A block quote.</code></pre>
+<p>1. A paragraph with two lines.</p><pre><code>indented code</code></pre><pre><code>&gt; A block quote.</code></pre>
 ```
 ## [Example 259](https://spec.commonmark.org/0.29/#example-259)
 
@@ -537,7 +537,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>1. A paragraph</p><pre><code>with two lines.</code></pre>
+<p>1. A paragraph with two lines.</p>
 ```
 ## [Example 262](https://spec.commonmark.org/0.29/#example-262)
 
@@ -602,7 +602,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li>foo</li></ul><p>- bar</p><pre><code>- baz - boo</code></pre>
+<ul><li>foo</li></ul><p>- bar - baz - boo</p>
 ```
 ## [Example 265](https://spec.commonmark.org/0.29/#example-265)
 

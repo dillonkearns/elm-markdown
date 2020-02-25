@@ -1,47 +1,5 @@
 # CommonMark - Hard line breaks
 
-## [Example 633](https://spec.commonmark.org/0.29/#example-633)
-
-This markdown:
-
-```markdown
-foo  
-     bar
-
-```
-
-Should give output:
-
-```html
-<p>foo<br>bar</p>
-```
-
-But instead was:
-
-```html
-<p>foo</p><pre><code>bar</code></pre>
-```
-## [Example 634](https://spec.commonmark.org/0.29/#example-634)
-
-This markdown:
-
-```markdown
-foo\
-     bar
-
-```
-
-Should give output:
-
-```html
-<p>foo<br>bar</p>
-```
-
-But instead was:
-
-```html
-<p>foo\</p><pre><code>bar</code></pre>
-```
 ## [Example 639](https://spec.commonmark.org/0.29/#example-639)
 
 This markdown:

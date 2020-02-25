@@ -103,6 +103,26 @@ Gives this correct output:
 
 ```
 
+### [Example 40](https://spec.commonmark.org/0.29/#example-40)
+
+This markdown:
+
+
+```markdown
+foo
+    # bar
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>foo
+# bar</p>
+
+```
+
 ### [Example 42](https://spec.commonmark.org/0.29/#example-42)
 
 This markdown:
@@ -4076,6 +4096,46 @@ baz</p>
 
 ```
 
+### [Example 633](https://spec.commonmark.org/0.29/#example-633)
+
+This markdown:
+
+
+```markdown
+foo  
+     bar
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>foo<br />
+bar</p>
+
+```
+
+### [Example 634](https://spec.commonmark.org/0.29/#example-634)
+
+This markdown:
+
+
+```markdown
+foo\
+     bar
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>foo<br />
+bar</p>
+
+```
+
 ### [Example 635](https://spec.commonmark.org/0.29/#example-635)
 
 This markdown:
@@ -4677,6 +4737,27 @@ Gives this correct output:
 <pre><code>a simple
   indented code block
 </code></pre>
+
+```
+
+### [Example 83](https://spec.commonmark.org/0.29/#example-83)
+
+This markdown:
+
+
+```markdown
+Foo
+    bar
+
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>Foo
+bar</p>
 
 ```
 
@@ -7236,6 +7317,28 @@ bbb</p>
 
 ```
 
+### [Example 193](https://spec.commonmark.org/0.29/#example-193)
+
+This markdown:
+
+
+```markdown
+aaa
+             bbb
+                                       ccc
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>aaa
+bbb
+ccc</p>
+
+```
+
 ### [Example 194](https://spec.commonmark.org/0.29/#example-194)
 
 This markdown:
@@ -7380,6 +7483,26 @@ Gives this correct output:
 ```
 
 ## Setext headings
+
+### [Example 57](https://spec.commonmark.org/0.29/#example-57)
+
+This markdown:
+
+
+```markdown
+Foo
+    ---
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>Foo
+---</p>
+
+```
 
 ### [Example 62](https://spec.commonmark.org/0.29/#example-62)
 
@@ -7923,6 +8046,26 @@ Gives this correct output:
 ```html
 <pre><code>***
 </code></pre>
+
+```
+
+### [Example 19](https://spec.commonmark.org/0.29/#example-19)
+
+This markdown:
+
+
+```markdown
+Foo
+    ***
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>Foo
+***</p>
 
 ```
 

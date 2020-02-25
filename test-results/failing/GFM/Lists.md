@@ -48,7 +48,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li>foo</li></ul><p>- bar</p><pre><code>- baz</code></pre><pre><code>bim</code></pre>
+<ul><li>foo</li></ul><p>- bar - baz</p><pre><code>bim</code></pre>
 ```
 ## [Example 279](https://spec.commonmark.org/0.29/#example-279)
 
@@ -150,7 +150,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li>a</li></ul><p>- b - c - d</p><pre><code>- e</code></pre>
+<ul><li>a</li></ul><p>- b - c - d - e</p>
 ```
 ## [Example 283](https://spec.commonmark.org/0.29/#example-283)
 
@@ -366,7 +366,7 @@ Should give output:
 But instead was:
 
 ```html
-<ul><li>a</li></ul><blockquote><p>b</p><pre><code>c</code></pre></blockquote><ul><li>d</li></ul>
+<ul><li>a</li></ul><blockquote><p>b<code>c</code></p></blockquote><ul><li>d</li></ul>
 ```
 ## [Example 293](https://spec.commonmark.org/0.29/#example-293)
 

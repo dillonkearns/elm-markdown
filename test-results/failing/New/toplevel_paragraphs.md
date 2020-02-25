@@ -48,5 +48,5 @@ Should give output:
 But instead was:
 
 ```html
-<p>hello world</p><pre><code>text after spaces text after spaces</code></pre><p>paragraph before code</p><pre><code>text inside block code</code></pre><p>paragraph before hr</p><ul><li>* *</li></ul><p>paragraph before blockquote</p><blockquote><p>text for blockquote</p></blockquote><p>paragraph before list</p><ul><li>text inside list</li></ul><p>paragraph before div</p><div><p>text inside div</p></div><p>paragraph with span</p><span><p>text inside span</p></span><p>hello<a href="/are/you">world</a></p><div><p>hello</p></div><span><p>hello</p></span>
+<p>hello world text after spaces text after spaces</p><p>paragraph before code</p><pre><code>text inside block code</code></pre><p>paragraph before hr</p><ul><li>* *</li></ul><p>paragraph before blockquote</p><blockquote><p>text for blockquote</p></blockquote><p>paragraph before list</p><ul><li>text inside list</li></ul><p>paragraph before div</p><div><p>text inside div</p></div><p>paragraph with span</p><span><p>text inside span</p></span><p>hello<a href="/are/you">world</a></p><div><p>hello</p></div><span><p>hello</p></span>
 ```

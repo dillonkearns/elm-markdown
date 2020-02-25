@@ -115,28 +115,6 @@ But instead was:
 ```html
 <pre><code>chunk1</code></pre><pre><code>chunk2</code></pre>
 ```
-## [Example 83](https://spec.commonmark.org/0.29/#example-83)
-
-This markdown:
-
-```markdown
-Foo
-    bar
-
-
-```
-
-Should give output:
-
-```html
-<p>Foo bar</p>
-```
-
-But instead was:
-
-```html
-<p>Foo</p><pre><code>bar</code></pre>
-```
 ## [Example 85](https://spec.commonmark.org/0.29/#example-85)
 
 This markdown:

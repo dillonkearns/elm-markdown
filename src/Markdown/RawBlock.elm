@@ -24,6 +24,7 @@ type RawBlock
         )
     | OrderedListBlock Int (List UnparsedInlines)
     | CodeBlock CodeBlock
+    | IndentedCodeBlock String
     | ThematicBreak
     | BlankLine
     | BlockQuote String

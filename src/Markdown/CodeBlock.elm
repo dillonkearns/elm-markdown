@@ -14,27 +14,7 @@ parser =
     oneOf
         [ parserHelp "```"
         , parserHelp "~~~"
-        , indentedBlock
         ]
-
-
-indentedBlock : Parser CodeBlock
-indentedBlock =
-    succeed
-        (\body ->
-            { body = body
-            , language = Nothing
-            }
-        )
-        |. oneOf
-            [ Advanced.symbol (Advanced.Token "    " (Parser.ExpectingSymbol "Indentation"))
-            , Advanced.symbol (Advanced.Token "\t" (Parser.ExpectingSymbol "Indentation"))
-            ]
-        |= getChompedString (Advanced.chompUntilEndOr "\n")
-        |. oneOf
-            [ Advanced.symbol (Advanced.Token "\n" (Parser.ExpectingSymbol "\\n"))
-            , Advanced.end (Parser.Expecting "End of input")
-            ]
 
 
 parserHelp : String -> Parser CodeBlock
@@ -55,11 +35,6 @@ parserHelp delimeter =
         |. Advanced.symbol (Advanced.Token "\n" (Parser.ExpectingSymbol "\n"))
         |= getChompedString (Advanced.chompUntilEndOr ("\n" ++ delimeter))
         |. Advanced.symbol (Advanced.Token ("\n" ++ delimeter) (Parser.ExpectingSymbol delimeter))
-
-
-
--- |. Advanced.symbol (Advanced.Token "\n" (Parser.ExpectingSymbol "\n"))
--- |. Advanced.symbol (Advanced.Token delimeter (Parser.ExpectingSymbol delimeter))
 
 
 type alias CodeBlock =

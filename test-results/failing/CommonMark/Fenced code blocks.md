@@ -202,7 +202,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>``` aaa</p><pre><code>aaa</code></pre><p>aaa ```</p>
+<p><code>aaa aaa aaa</code></p>
 ```
 ## [Example 105](https://spec.commonmark.org/0.29/#example-105)
 

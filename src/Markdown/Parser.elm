@@ -271,6 +271,10 @@ parseInlines linkReferences rawBlock =
                 Err error ->
                     Advanced.problem (Parser.Problem (deadEndsToString error))
 
+        IndentedCodeBlock codeBlockBody ->
+            Block.CodeBlock { body = codeBlockBody, language = Nothing }
+                |> just
+
 
 just value =
     succeed (Just value)
@@ -292,14 +296,6 @@ plainLine =
                 |> UnparsedInlines
                 |> Body
         )
-        |. Advanced.backtrackable
-            (oneOf
-                [ token (Advanced.Token "   " (Parser.Expecting "   "))
-                , token (Advanced.Token "  " (Parser.Expecting "  "))
-                , token (Advanced.Token " " (Parser.Expecting " "))
-                , succeed ()
-                ]
-            )
         |= innerParagraphParser
         |. oneOf
             [ Advanced.chompIf Helpers.isNewline (Parser.Expecting "A single non-newline char.")
@@ -310,7 +306,7 @@ plainLine =
 innerParagraphParser =
     getChompedString <|
         succeed ()
-            |. Advanced.chompIf (\c -> not <| Helpers.isSpaceOrTab c && (not <| Helpers.isNewline c)) (Parser.Expecting "Not a space or tab.")
+            |. Advanced.chompIf (\c -> not <| Helpers.isNewline c) (Parser.Expecting "Not newline.")
             |. Advanced.chompUntilEndOr "\n"
 
 
@@ -624,6 +620,13 @@ statementsHelp2 revStmts =
                                     |> updateRawBlocks revStmts
                                     |> Loop
 
+                            ( IndentedCodeBlock block1, (IndentedCodeBlock block2) :: rest ) ->
+                                (IndentedCodeBlock (joinStringsPreserveIndentation block2 block1)
+                                    :: rest
+                                )
+                                    |> updateRawBlocks revStmts
+                                    |> Loop
+
                             ( Body (UnparsedInlines body1), (BlockQuote body2) :: rest ) ->
                                 (BlockQuote (joinRawStringsWith "\n" body2 body1)
                                     :: rest
@@ -651,27 +654,51 @@ statementsHelp2 revStmts =
                                     |> Loop
                     )
     in
-    oneOf
-        [ Advanced.end (Parser.Expecting "End") |> map (\() -> Done revStmts)
-        , LinkReferenceDefinition.parser
-            |> Advanced.backtrackable
-            |> map
-                (\linkReference ->
-                    linkReference
-                        |> addReference revStmts
-                        |> Loop
-                )
-        , blankLine |> keepLooping
-        , blockQuote |> keepLooping
-        , Markdown.CodeBlock.parser |> map CodeBlock |> keepLooping
-        , thematicBreak |> keepLooping
-        , unorderedListBlock |> keepLooping
-        , orderedListBlock (List.head revStmts.rawBlocks) |> keepLooping
-        , heading |> keepLooping
-        , htmlParser |> keepLooping
-        , plainLine |> keepLooping
-        , succeed (Done revStmts)
-        ]
+    case revStmts.rawBlocks of
+        (Body _) :: _ ->
+            oneOf
+                [ Advanced.end (Parser.Expecting "End") |> map (\() -> Done revStmts)
+                , LinkReferenceDefinition.parser
+                    |> Advanced.backtrackable
+                    |> map
+                        (\linkReference ->
+                            linkReference
+                                |> addReference revStmts
+                                |> Loop
+                        )
+                , blankLine |> keepLooping
+                , blockQuote |> keepLooping
+                , Markdown.CodeBlock.parser |> map CodeBlock |> keepLooping
+                , thematicBreak |> keepLooping
+                , unorderedListBlock |> keepLooping
+                , orderedListBlock (List.head revStmts.rawBlocks) |> keepLooping
+                , heading |> keepLooping
+                , htmlParser |> keepLooping
+                , plainLine |> keepLooping
+                ]
+
+        _ ->
+            oneOf
+                [ Advanced.end (Parser.Expecting "End") |> map (\() -> Done revStmts)
+                , LinkReferenceDefinition.parser
+                    |> Advanced.backtrackable
+                    |> map
+                        (\linkReference ->
+                            linkReference
+                                |> addReference revStmts
+                                |> Loop
+                        )
+                , blankLine |> keepLooping
+                , blockQuote |> keepLooping
+                , Markdown.CodeBlock.parser |> map CodeBlock |> keepLooping
+                , indentedCodeBlock |> keepLooping
+                , thematicBreak |> keepLooping
+                , unorderedListBlock |> keepLooping
+                , orderedListBlock (List.head revStmts.rawBlocks) |> keepLooping
+                , heading |> keepLooping
+                , htmlParser |> keepLooping
+                , plainLine |> keepLooping
+                ]
 
 
 joinStringsPreserveAll string1 string2 =
@@ -716,6 +743,23 @@ joinRawStringsWith joinWith string1 string2 =
                 , joinWith
                 , string2
                 ]
+
+
+indentedCodeBlock : Parser RawBlock
+indentedCodeBlock =
+    succeed IndentedCodeBlock
+        |. oneOf
+            [ Advanced.symbol (Advanced.Token "    " (Parser.ExpectingSymbol "Indentation"))
+
+            --tabs behave as if they were replaced by 4 spaces in places where spaces define structure
+            -- see https://spec.commonmark.org/0.29/#tabs
+            , Advanced.symbol (Advanced.Token "\t" (Parser.ExpectingSymbol "Indentation"))
+            ]
+        |= getChompedString (Advanced.chompUntilEndOr "\n")
+        |. oneOf
+            [ Advanced.symbol (Advanced.Token "\n" (Parser.ExpectingSymbol "\\n"))
+            , Advanced.end (Parser.Expecting "End of input")
+            ]
 
 
 thematicBreak : Parser RawBlock

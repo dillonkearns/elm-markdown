@@ -18,7 +18,7 @@ Should give output:
 But instead was:
 
 ```html
-
+<p>foo baz bim</p>
 ```
 ## [Example 4](https://spec.commonmark.org/0.29/#example-4)
 
@@ -104,7 +104,7 @@ Should give output:
 But instead was:
 
 ```html
-<p>- foo - bar</p><pre><code>- baz</code></pre>
+<p>- foo - bar - baz</p>
 ```
 ## [Example 11](https://spec.commonmark.org/0.29/#example-11)
 

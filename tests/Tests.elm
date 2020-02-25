@@ -483,6 +483,22 @@ I'm part of the block quote
                                 ]
                             ]
                         )
+        , test "indented code blocks cannot interrupt paragraphs" <|
+            \() ->
+                """aaa
+                        bbb
+                                                  ccc"""
+                    |> parse
+                    |> Expect.equal
+                        (Ok
+                            [ Paragraph
+                                [ Text
+                                    """aaa
+                        bbb
+                                                  ccc"""
+                                ]
+                            ]
+                        )
         , test "keeps items grouped in a paragraph within block quotes when there are no blank lines separating them" <|
             \() ->
                 """> # Foo

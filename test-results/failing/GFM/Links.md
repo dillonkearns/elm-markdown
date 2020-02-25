@@ -274,5 +274,5 @@ Should give output:
 But instead was:
 
 ```html
-<p>[ ]</p>
+<p><a href="/uri"></a></p>
 ```
