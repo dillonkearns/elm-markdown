@@ -32,6 +32,11 @@ titleRegex =
         ++ "\\(([^\\)\\\\]*(?:\\\\.[^\\)\\\\]*)*)\\)))?"
 
 
+lineEndChars : String
+lineEndChars =
+    "\\f\\v\\r\\n"
+
+
 whiteSpaceChars : String
 whiteSpaceChars =
     " \\t\\f\\v\\r\\n"

@@ -5402,6 +5402,24 @@ Gives this correct output:
 
 ```
 
+### [Example 486](https://spec.commonmark.org/0.29/#example-486)
+
+This markdown:
+
+
+```markdown
+[link](</my uri>)
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><a href="/my%20uri">link</a></p>
+
+```
+
 ### [Example 487](https://spec.commonmark.org/0.29/#example-487)
 
 This markdown:

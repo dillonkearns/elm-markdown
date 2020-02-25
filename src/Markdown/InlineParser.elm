@@ -2,7 +2,7 @@ module Markdown.InlineParser exposing (parse, query, walk)
 
 import Dict exposing (Dict)
 import HtmlParser
-import Markdown.Helpers exposing (Attribute, References, cleanWhitespaces, formatStr, ifError, insideSquareBracketRegex, isEven, prepareRefLabel, returnFirstJust, titleRegex, whiteSpaceChars)
+import Markdown.Helpers exposing (Attribute, References, cleanWhitespaces, formatStr, ifError, insideSquareBracketRegex, isEven, lineEndChars, prepareRefLabel, returnFirstJust, titleRegex, whiteSpaceChars)
 import Markdown.Inline exposing (..)
 import Parser.Advanced as Advanced exposing ((|.), (|=))
 import Regex exposing (Regex)
@@ -1619,7 +1619,7 @@ inlineLinkTypeOrImageTypeRegex =
 hrefRegex : String
 hrefRegex =
     "(?:<([^<>"
-        ++ whiteSpaceChars
+        ++ lineEndChars
         ++ "]*)>|([^"
         ++ whiteSpaceChars
         ++ "\\(\\)\\\\]*(?:\\\\.[^"

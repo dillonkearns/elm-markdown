@@ -1,25 +1,5 @@
 # CommonMark - Links
 
-## [Example 486](https://spec.commonmark.org/0.29/#example-486)
-
-This markdown:
-
-```markdown
-[link](</my uri>)
-
-```
-
-Should give output:
-
-```html
-<p><a href="/my%20uri">link</a></p>
-```
-
-But instead was:
-
-```html
-<p>[link](&lt;/my uri&gt;)</p>
-```
 ## [Example 488](https://spec.commonmark.org/0.29/#example-488)
 
 This markdown:
