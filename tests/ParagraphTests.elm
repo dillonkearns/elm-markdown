@@ -1,7 +1,7 @@
 module ParagraphTests exposing (suite)
 
 import Expect exposing (Expectation)
-import Markdown.Block as Block exposing (Block, Inline)
+import Markdown.Block as Block exposing (..)
 import Markdown.Parser exposing (..)
 import Parser
 import Parser.Advanced as Advanced
@@ -33,7 +33,15 @@ Line 4
             \() ->
                 "Line 1\t\nLine 2   \nLine 3\nLine 4\n"
                     |> parse
-                    |> Expect.equal (Ok [ Block.Paragraph (unstyledText "Line 1\nLine 2\nLine 3\nLine 4") ])
+                    |> Expect.equal
+                        (Ok
+                            [ Paragraph
+                                [ Text "Line 1\t\nLine 2"
+                                , HardLineBreak
+                                , Text "Line 3\nLine 4"
+                                ]
+                            ]
+                        )
         , test "new paragraphs are created by blank lines in between" <|
             \() ->
                 """Line 1

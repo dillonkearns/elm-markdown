@@ -470,6 +470,19 @@ I'm part of the block quote
                                 ]
                             ]
                         )
+        , test "hard line break with two spaces" <|
+            \() ->
+                "foo  \nbaz"
+                    |> parse
+                    |> Expect.equal
+                        (Ok
+                            [ Paragraph
+                                [ Text "foo"
+                                , HardLineBreak
+                                , Text "baz"
+                                ]
+                            ]
+                        )
         , test "keeps items grouped in a paragraph within block quotes when there are no blank lines separating them" <|
             \() ->
                 """> # Foo

@@ -683,52 +683,38 @@ joinStringsPreserveAll string1 string2 =
 
 
 joinStringsPreserveIndentation string1 string2 =
-    let
-        string1Trimmed =
-            String.trimRight string1
-
-        string2Trimmed =
-            String.trimRight string2
-    in
     String.concat
-        [ string1Trimmed
+        [ string1
         , "\n"
-        , string2Trimmed
+        , string2
         ]
 
 
 joinRawStringsWith joinWith string1 string2 =
-    let
-        string1Trimmed =
-            String.trim string1
-
-        string2Trimmed =
-            String.trim string2
-    in
-    case ( string1Trimmed, string2Trimmed ) of
+    case ( string1, string2 ) of
         ( "", "" ) ->
             String.concat
-                [ string1Trimmed
-                , string2Trimmed
+                [ string1
+                , string2
                 ]
 
         ( "", _ ) ->
             String.concat
-                [ string1Trimmed
-                , string2Trimmed
+                [ string1
+                , string2
                 ]
 
         ( _, "" ) ->
             String.concat
-                [ string1Trimmed
-                , string2Trimmed
+                [ string1
+                , string2
                 ]
 
         _ ->
             String.concat
-                [ string1Trimmed
+                [ string1
                 , joinWith
-                , string2Trimmed
+                , string2
                 ]
 
 

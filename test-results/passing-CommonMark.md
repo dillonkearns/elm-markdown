@@ -4016,6 +4016,26 @@ Gives this correct output:
 
 ## Hard line breaks
 
+### [Example 630](https://spec.commonmark.org/0.29/#example-630)
+
+This markdown:
+
+
+```markdown
+foo  
+baz
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>foo<br />
+baz</p>
+
+```
+
 ### [Example 631](https://spec.commonmark.org/0.29/#example-631)
 
 This markdown:
@@ -4033,6 +4053,46 @@ Gives this correct output:
 ```html
 <p>foo<br />
 baz</p>
+
+```
+
+### [Example 632](https://spec.commonmark.org/0.29/#example-632)
+
+This markdown:
+
+
+```markdown
+foo       
+baz
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>foo<br />
+baz</p>
+
+```
+
+### [Example 635](https://spec.commonmark.org/0.29/#example-635)
+
+This markdown:
+
+
+```markdown
+*foo  
+bar*
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><em>foo<br />
+bar</em></p>
 
 ```
 
@@ -7214,6 +7274,26 @@ Gives this correct output:
 <pre><code>aaa
 </code></pre>
 <p>bbb</p>
+
+```
+
+### [Example 196](https://spec.commonmark.org/0.29/#example-196)
+
+This markdown:
+
+
+```markdown
+aaa     
+bbb     
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>aaa<br />
+bbb</p>
 
 ```
 

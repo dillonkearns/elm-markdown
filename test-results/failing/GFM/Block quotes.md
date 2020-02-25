@@ -63,5 +63,5 @@ Should give output:
 But instead was:
 
 ```html
-<blockquote><p>bar baz</p></blockquote>
+<blockquote><p>bar</p><p>baz</p></blockquote>
 ```
