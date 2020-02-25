@@ -612,7 +612,7 @@ statementsHelp2 revStmts =
                         of
                             ( CodeBlock block1, (CodeBlock block2) :: rest ) ->
                                 (CodeBlock
-                                    { body = joinStringsPreserveIndentation block2.body block1.body
+                                    { body = joinStringsPreserveAll block2.body block1.body
                                     , language = Nothing
                                     }
                                     :: rest
@@ -621,7 +621,7 @@ statementsHelp2 revStmts =
                                     |> Loop
 
                             ( IndentedCodeBlock block1, (IndentedCodeBlock block2) :: rest ) ->
-                                (IndentedCodeBlock (joinStringsPreserveIndentation block2 block1)
+                                (IndentedCodeBlock (joinStringsPreserveAll block2 block1)
                                     :: rest
                                 )
                                     |> updateRawBlocks revStmts
@@ -687,14 +687,6 @@ statementsHelp2 revStmts =
 
 
 joinStringsPreserveAll string1 string2 =
-    String.concat
-        [ string1
-        , "\n"
-        , string2
-        ]
-
-
-joinStringsPreserveIndentation string1 string2 =
     String.concat
         [ string1
         , "\n"
