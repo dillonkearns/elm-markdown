@@ -9,6 +9,27 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Changed
+- Block data type has been changed to better reflect the naming in the markdown spec.
+- The Renderer code is now in a separate module, `Markdown.Renderer`.
+- Heading levels are now given as a custom type to make it explicit that the values can't be greater than level 6. There's a helper function in the Block module to convert it to an Int.
+
+### Fixed
+
+This release includes [a lot of new passing specs](https://github.com/dillonkearns/elm-markdown/pull/35/files#diff-3a49125c58477a39487c1c1ef69be134)! Big thanks to Pablo Hirafuji for
+his fantastic work on inling parsing in his markdown library, and for giving me
+permission to use it here 🙏
+
+- Several parsing cases now fall back to inline parsing rather than giving an error.
+- Inline parsing is totally revamped. Including
+  - Autolinks (no GFM autolinks yet)
+  - Backslash escaping support
+  - Hard line breaks
+  - Link references now work! (although link reference definitions that are defined in container blocks, like block quotes, are ignored. For now they must be defined at the top level, but they can be referenced anywhere.)
+  - Fallbacks work correctly for inline parsing (inlines will never cause the entire parser to fail now. In the future, it may include warnings, but you'll be able to render the fallback.)
+  - Some basic inline HTML parsing (doesn't yet support multi-line inline HTML, only multi-line HTML blocks, i.e. the HTML tag must be the first thing on the line).
+- HTML comments, CDATA, processing instructions, and declarations are now parsed. They are not rendered, but they are available in the Block structure of your parsed AST. If you wanted to render them, you could transform your AST to change them to a rendering block.
+
 ## [3.0.0] - 2020-02-13
 
 ### Fixed
