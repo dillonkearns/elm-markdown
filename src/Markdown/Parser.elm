@@ -665,7 +665,7 @@ statementsHelp2 revStmts =
     in
     oneOf
         [ Advanced.end (Parser.Expecting "End") |> map (\() -> Done revStmts)
-        , startsWithAutolink |> keepLooping
+        , parseAsParagraphInsteadOfHtmlBlock |> keepLooping
         , LinkReferenceDefinition.parser
             |> Advanced.backtrackable
             |> map
@@ -687,8 +687,13 @@ statementsHelp2 revStmts =
         ]
 
 
-startsWithAutolink : Parser RawBlock
-startsWithAutolink =
+{-| HTML parsing is intentionally strict in `dillonkearns/elm-markdown`. Paragraphs are supposed to be forgiving.
+This function checks to see if something might be an autolink that could be confused with an HTML block because
+the line starts with `<`. But it's slightly more lenient, so that things like `<>` that aren't actually parsed as
+autolinks are still parsed as paragraphs.
+-}
+parseAsParagraphInsteadOfHtmlBlock : Parser RawBlock
+parseAsParagraphInsteadOfHtmlBlock =
     -- ^<[A-Za-z][A-Za-z0-9.+-]{1,31}:[^<>\x00-\x20]*>
     Advanced.succeed ()
         |. token (Advanced.Token "<" (Parser.Expecting "<"))
