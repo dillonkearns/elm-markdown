@@ -373,6 +373,24 @@ Gives this correct output:
 
 ```
 
+### [Example 598](https://spec.commonmark.org/0.29/#example-598)
+
+This markdown:
+
+
+```markdown
+<http://foo.bar/baz bim>
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>&lt;http://foo.bar/baz bim&gt;</p>
+
+```
+
 ### [Example 599](https://spec.commonmark.org/0.29/#example-599)
 
 This markdown:
@@ -388,6 +406,42 @@ Gives this correct output:
 
 ```html
 <p><a href="http://example.com/%5C%5B%5C">http://example.com/\[\</a></p>
+
+```
+
+### [Example 603](https://spec.commonmark.org/0.29/#example-603)
+
+This markdown:
+
+
+```markdown
+<>
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>&lt;&gt;</p>
+
+```
+
+### [Example 604](https://spec.commonmark.org/0.29/#example-604)
+
+This markdown:
+
+
+```markdown
+< http://foo.bar >
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>&lt; http://foo.bar &gt;</p>
 
 ```
 

@@ -644,6 +644,14 @@ I'm part of the block quote
                                 [ Link "https://elm-lang.org" Nothing [ Text "https://elm-lang.org" ]
                                 ]
                             ]
+            , test "email autolink" <|
+                \() ->
+                    "<https://elm-lang.org>\n"
+                        |> expectOk
+                            [ Paragraph
+                                [ Link "https://elm-lang.org" Nothing [ Text "https://elm-lang.org" ]
+                                ]
+                            ]
             ]
         , describe "link reference definitions"
             [ test "basic example" <|

@@ -692,12 +692,17 @@ startsWithAutolink =
     -- ^<[A-Za-z][A-Za-z0-9.+-]{1,31}:[^<>\x00-\x20]*>
     Advanced.succeed ()
         |. token (Advanced.Token "<" (Parser.Expecting "<"))
-        |. chompIf Char.isAlpha (Parser.Expecting "Alpha")
-        |. chompWhile (\c -> Char.isAlphaNum c || c == '.' || c == '+' || c == '-')
-        |. token (Advanced.Token ":" (Parser.Expecting ":"))
-        |. chompWhile
-            (\c -> Char.toCode c > 0x20 && c /= '<' && c /= '>')
-        |. token (Advanced.Token ">" (Parser.Expecting ">"))
+        |. chompWhile (\c -> c == ' ')
+        |. oneOf
+            [ token (Advanced.Token ">" (Parser.Expecting ">"))
+            , chompIf Char.isAlpha (Parser.Expecting "Alpha")
+                |. chompWhile (\c -> Char.isAlphaNum c || c == '.' || c == '+' || c == '-')
+                |. token (Advanced.Token ":" (Parser.Expecting ":"))
+
+            --|. chompWhile
+            --    (\c -> Char.toCode c > 0x20 && c /= '<' && c /= '>')
+            --|. token (Advanced.Token ">" (Parser.Expecting ">"))
+            ]
         |. Advanced.chompUntilEndOr "\n"
         |. oneOf
             [ Advanced.symbol (Advanced.Token "\n" (Parser.ExpectingSymbol "\\n"))
