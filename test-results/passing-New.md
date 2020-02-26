@@ -32,6 +32,29 @@ Gives this correct output:
 
 ```
 
+## autolink_lines
+
+### Example undefined
+
+This markdown:
+
+
+```markdown
+hello world
+<http://example.com>
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>hello world
+<a href="http://example.com">http://example.com</a>
+</p>
+
+```
+
 ## case_insensitive_refs
 
 ### Example undefined

@@ -229,6 +229,186 @@ Gives this correct output:
 
 ## Autolinks
 
+### [Example 590](https://spec.commonmark.org/0.29/#example-590)
+
+This markdown:
+
+
+```markdown
+<http://foo.bar.baz>
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><a href="http://foo.bar.baz">http://foo.bar.baz</a></p>
+
+```
+
+### [Example 591](https://spec.commonmark.org/0.29/#example-591)
+
+This markdown:
+
+
+```markdown
+<http://foo.bar.baz/test?q=hello&id=22&boolean>
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><a href="http://foo.bar.baz/test?q=hello&amp;id=22&amp;boolean">http://foo.bar.baz/test?q=hello&amp;id=22&amp;boolean</a></p>
+
+```
+
+### [Example 592](https://spec.commonmark.org/0.29/#example-592)
+
+This markdown:
+
+
+```markdown
+<irc://foo.bar:2233/baz>
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><a href="irc://foo.bar:2233/baz">irc://foo.bar:2233/baz</a></p>
+
+```
+
+### [Example 593](https://spec.commonmark.org/0.29/#example-593)
+
+This markdown:
+
+
+```markdown
+<MAILTO:FOO@BAR.BAZ>
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><a href="MAILTO:FOO@BAR.BAZ">MAILTO:FOO@BAR.BAZ</a></p>
+
+```
+
+### [Example 594](https://spec.commonmark.org/0.29/#example-594)
+
+This markdown:
+
+
+```markdown
+<a+b+c:d>
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><a href="a+b+c:d">a+b+c:d</a></p>
+
+```
+
+### [Example 595](https://spec.commonmark.org/0.29/#example-595)
+
+This markdown:
+
+
+```markdown
+<made-up-scheme://foo,bar>
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><a href="made-up-scheme://foo,bar">made-up-scheme://foo,bar</a></p>
+
+```
+
+### [Example 596](https://spec.commonmark.org/0.29/#example-596)
+
+This markdown:
+
+
+```markdown
+<http://../>
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><a href="http://../">http://../</a></p>
+
+```
+
+### [Example 597](https://spec.commonmark.org/0.29/#example-597)
+
+This markdown:
+
+
+```markdown
+<localhost:5001/foo>
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><a href="localhost:5001/foo">localhost:5001/foo</a></p>
+
+```
+
+### [Example 599](https://spec.commonmark.org/0.29/#example-599)
+
+This markdown:
+
+
+```markdown
+<http://example.com/\[\>
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><a href="http://example.com/%5C%5B%5C">http://example.com/\[\</a></p>
+
+```
+
+### [Example 605](https://spec.commonmark.org/0.29/#example-605)
+
+This markdown:
+
+
+```markdown
+<m:abc>
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>&lt;m:abc&gt;</p>
+
+```
+
 ### [Example 607](https://spec.commonmark.org/0.29/#example-607)
 
 This markdown:
@@ -396,6 +576,24 @@ Gives this correct output:
 ```html
 <pre><code>\[\]
 </code></pre>
+
+```
+
+### [Example 306](https://spec.commonmark.org/0.29/#example-306)
+
+This markdown:
+
+
+```markdown
+<http://example.com?find=\*>
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><a href="http://example.com?find=%5C*">http://example.com?find=\*</a></p>
 
 ```
 
@@ -1301,6 +1499,24 @@ Gives this correct output:
 
 ```html
 <p><code>&lt;http://foo.bar.</code>baz&gt;`</p>
+
+```
+
+### [Example 346](https://spec.commonmark.org/0.29/#example-346)
+
+This markdown:
+
+
+```markdown
+<http://foo.bar.`baz>`
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><a href="http://foo.bar.%60baz">http://foo.bar.`baz</a>`</p>
 
 ```
 

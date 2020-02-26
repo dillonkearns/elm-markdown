@@ -4,7 +4,7 @@ import Expect exposing (Expectation)
 import Markdown.Block as Block exposing (..)
 import Markdown.Parser as Markdown exposing (..)
 import Parser
-import Parser.Advanced as Advanced
+import Parser.Advanced as Advanced exposing ((|.), (|=))
 import Test exposing (..)
 
 
@@ -635,6 +635,16 @@ I'm part of the block quote
                                 ]
                             )
             ]
+        , describe "beginning with autolink"
+            [ test "simple autolink" <|
+                \() ->
+                    "<https://elm-lang.org>\n"
+                        |> expectOk
+                            [ Paragraph
+                                [ Link "https://elm-lang.org" Nothing [ Text "https://elm-lang.org" ]
+                                ]
+                            ]
+            ]
         , describe "link reference definitions"
             [ test "basic example" <|
                 \() ->
@@ -660,6 +670,17 @@ I'm part of the block quote
                             )
             ]
         ]
+
+
+expectOk : List Block -> String -> Expectation
+expectOk expected input =
+    case input |> parse of
+        Ok actual ->
+            actual
+                |> Expect.equal expected
+
+        Err error ->
+            Expect.fail (Debug.toString error)
 
 
 plainListItem : String -> Block.ListItem Block.Inline
