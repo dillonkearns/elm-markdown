@@ -183,7 +183,7 @@ Should give output:
 But instead was:
 
 ```html
-ERROR Problem at row 1 Bad repeat
+ERROR Problem at row 5 Expecting symbol &quot; Problem at row 5 Expecting symbol &#39;
 ```
 ## [Example 618](https://spec.commonmark.org/0.29/#example-618)
 

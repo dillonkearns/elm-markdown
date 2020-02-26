@@ -646,10 +646,10 @@ I'm part of the block quote
                             ]
             , test "email autolink" <|
                 \() ->
-                    "<https://elm-lang.org>\n"
+                    "<foo@bar.example.com>\n"
                         |> expectOk
                             [ Paragraph
-                                [ Link "https://elm-lang.org" Nothing [ Text "https://elm-lang.org" ]
+                                [ Link "mailto:foo@bar.example.com" Nothing [ Text "foo@bar.example.com" ]
                                 ]
                             ]
             ]

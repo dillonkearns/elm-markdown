@@ -409,6 +409,60 @@ Gives this correct output:
 
 ```
 
+### [Example 600](https://spec.commonmark.org/0.29/#example-600)
+
+This markdown:
+
+
+```markdown
+<foo@bar.example.com>
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><a href="mailto:foo@bar.example.com">foo@bar.example.com</a></p>
+
+```
+
+### [Example 601](https://spec.commonmark.org/0.29/#example-601)
+
+This markdown:
+
+
+```markdown
+<foo+special@Bar.baz-bar0.com>
+
+```
+
+Gives this correct output:
+
+
+```html
+<p><a href="mailto:foo+special@Bar.baz-bar0.com">foo+special@Bar.baz-bar0.com</a></p>
+
+```
+
+### [Example 602](https://spec.commonmark.org/0.29/#example-602)
+
+This markdown:
+
+
+```markdown
+<foo\+@bar.example.com>
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>&lt;foo+@bar.example.com&gt;</p>
+
+```
+
 ### [Example 603](https://spec.commonmark.org/0.29/#example-603)
 
 This markdown:
@@ -460,6 +514,24 @@ Gives this correct output:
 
 ```html
 <p>&lt;m:abc&gt;</p>
+
+```
+
+### [Example 606](https://spec.commonmark.org/0.29/#example-606)
+
+This markdown:
+
+
+```markdown
+<foo.bar.baz>
+
+```
+
+Gives this correct output:
+
+
+```html
+<p>&lt;foo.bar.baz&gt;</p>
 
 ```
 
