@@ -1,6 +1,6 @@
 module HtmlParser exposing
     ( Node(..), Attribute
-    , Parser, element
+    , Parser, html
     )
 
 {-| Parses HTML, specifically for Markdown. Which may have some differences from parsing a full HTML document.
@@ -118,33 +118,40 @@ allUppercase =
     keep oneOrMore (\c -> Char.isUpper c)
 
 
-element : Parser Node
-element =
+html : Parser Node
+html =
     oneOf
         [ cdata |> map Cdata
         , processingInstruction
         , comment
         , docType
-        , inContext "element" <|
-            succeed identity
-                |. symbol "<"
-                |= (tagName
-                        |> andThen
-                            (\startTagName ->
-                                succeed (Element startTagName)
-                                    |. whiteSpace
-                                    |= attributes Set.empty
-                                    |. whiteSpace
-                                    |= oneOf
-                                        [ succeed []
-                                            |. symbol "/>"
-                                        , succeed identity
-                                            |. symbol ">"
-                                            |= lazy (\_ -> children startTagName)
-                                        ]
-                            )
-                   )
+        , element
         ]
+
+
+element : Advanced.Parser String Parser.Problem Node
+element =
+    inContext
+        "element"
+    <|
+        succeed identity
+            |. symbol "<"
+            |= (tagName
+                    |> andThen
+                        (\startTagName ->
+                            succeed (Element startTagName)
+                                |. whiteSpace
+                                |= attributes Set.empty
+                                |. whiteSpace
+                                |= oneOf
+                                    [ succeed []
+                                        |. symbol "/>"
+                                    , succeed identity
+                                        |. symbol ">"
+                                        |= lazy (\_ -> children startTagName)
+                                    ]
+                        )
+               )
 
 
 tagName : Parser String
@@ -175,7 +182,7 @@ children startTagName =
             , lazy
                 (\_ ->
                     succeed (::)
-                        |= element
+                        |= html
                         |= children startTagName
                 )
             ]

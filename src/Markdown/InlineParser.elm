@@ -1164,7 +1164,7 @@ htmlFromRegex model match =
                     }
                 )
                 |= Advanced.getOffset
-                |= HtmlParser.element
+                |= HtmlParser.html
                 |= Advanced.getOffset
 
         _ =

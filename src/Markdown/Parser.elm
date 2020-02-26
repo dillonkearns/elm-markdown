@@ -374,7 +374,7 @@ blankLine =
 
 htmlParser : Parser RawBlock
 htmlParser =
-    HtmlParser.element
+    HtmlParser.html
         |> xmlNodeToHtmlNode
 
 

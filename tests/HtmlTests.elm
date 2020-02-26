@@ -119,13 +119,13 @@ next line
 expectHtml : HtmlParser.Node -> String -> Expectation
 expectHtml expected input =
     input
-        |> Advanced.run HtmlParser.element
+        |> Advanced.run HtmlParser.html
         |> Expect.equal (Ok expected)
 
 
 expectError : String -> Expectation
 expectError input =
-    case input |> Advanced.run HtmlParser.element of
+    case input |> Advanced.run HtmlParser.html of
         Ok _ ->
             Expect.fail "Expecting an error."
 
