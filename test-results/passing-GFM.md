@@ -30,6 +30,24 @@ Gives this correct output:
 
 ````````````
 
+### [Example 33](https://spec.commonmark.org/0.29/#example-33)
+
+This markdown:
+
+
+````````````markdown
+####### foo
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p>####### foo</p>
+
+````````````
+
 ### [Example 35](https://spec.commonmark.org/0.29/#example-35)
 
 This markdown:

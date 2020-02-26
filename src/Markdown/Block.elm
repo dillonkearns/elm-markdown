@@ -99,7 +99,11 @@ type Task
     | CompletedTask
 
 
-{-| TODO
+{-| Markdown limits headings to level 6 or less. HTML does this, too (`<h7>` is not supported by most browsers).
+This type represents the possible heading levels that a Markdown heading block may have.
+
+If you do a heading level above 6, the `#` characters will be treated as literal `#`'s.
+
 -}
 type HeadingLevel
     = H1

@@ -681,7 +681,7 @@ statementsHelp2 revStmts =
         , thematicBreak |> keepLooping
         , unorderedListBlock |> keepLooping
         , orderedListBlock (List.head revStmts.rawBlocks) |> keepLooping
-        , heading |> keepLooping
+        , heading |> Advanced.backtrackable |> keepLooping
         , htmlParser |> keepLooping
         , plainLine |> keepLooping
         ]

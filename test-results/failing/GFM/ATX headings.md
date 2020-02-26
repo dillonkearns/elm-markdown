@@ -1,25 +1,5 @@
 # GFM - ATX headings
 
-## [Example 33](https://spec.commonmark.org/0.29/#example-33)
-
-This markdown:
-
-````````````markdown
-####### foo
-
-````````````
-
-Should give output:
-
-````````````html
-<p>####### foo</p>
-````````````
-
-But instead was:
-
-````````````html
-ERROR Problem at row 1 Expecting heading with &lt; 7 #&#39;s
-````````````
 ## [Example 34](https://spec.commonmark.org/0.29/#example-34)
 
 This markdown:

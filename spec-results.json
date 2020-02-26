@@ -2,6 +2,7 @@
   "CommonMark": {
     "ATX headings": [
       32,
+      33,
       35,
       36,
       37,
@@ -486,6 +487,7 @@
   "GFM": {
     "ATX headings": [
       32,
+      33,
       35,
       36,
       37,
