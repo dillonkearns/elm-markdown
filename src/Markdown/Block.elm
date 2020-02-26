@@ -45,6 +45,7 @@ In the simplest case, you can pass this directly to a renderer:
 
     import Markdown.Block exposing (Block)
     import Markdown.Parser
+    import Markdown.Renderer
 
     markdown : String
     markdown =
@@ -57,12 +58,16 @@ In the simplest case, you can pass this directly to a renderer:
 
     main : Html msg
     main =
-        case astResult of
-            Ok ast ->
-                Markdown.Parser.renderDefaultHtml ast
+        case
+            astResult
+                |> Result.mapError deadEndsToString
+                |> Result.andThen (\ast -> Markdown.Renderer.render Markdown.Renderer.defaultHtmlRenderer ast)
+        of
+            Ok rendered ->
+                div [] rendered
 
             Err errors ->
-                Html.text "Encountered parsing errors."
+                text errors
 
 -}
 type Block
