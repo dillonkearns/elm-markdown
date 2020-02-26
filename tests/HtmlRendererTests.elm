@@ -51,11 +51,10 @@ testRenderer htmlRenderer =
     , hardLineBreak = Unexpected "String"
     , codeSpan =
         \content -> Unexpected "String"
-    , image = \link -> Unexpected "String" |> Ok
+    , image = \link -> Unexpected "String"
     , link =
         \link content ->
             Unexpected "String"
-                |> Ok
     , text =
         \_ ->
             Unexpected "String"
