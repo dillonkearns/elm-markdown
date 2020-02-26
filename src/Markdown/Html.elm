@@ -2,6 +2,7 @@ module Markdown.Html exposing
     ( Renderer
     , tag, withAttribute, withOptionalAttribute
     , map, oneOf
+    , disallowAll
     )
 
 {-|
@@ -13,6 +14,7 @@ module Markdown.Html exposing
 
 @docs tag, withAttribute, withOptionalAttribute
 @docs map, oneOf
+@docs disallowAll
 
 -}
 
@@ -127,6 +129,18 @@ Parsing failed in the following 2 ways:
                 )
                     |> Markdown.HtmlRenderer.HtmlRenderer
            )
+
+
+{-| Use this in case you ever need a `Markdown.Html.Renderer` value, but you actually
+don't want to use inline Html in your markdown files.
+
+Using this in `Markdown.Renderer.render` will trigger an error when it encounters any
+html.
+
+-}
+disallowAll : Renderer (List view -> view)
+disallowAll =
+    oneOf []
 
 
 resultOr : Result e a -> Result (List e) a -> Result (List e) a
