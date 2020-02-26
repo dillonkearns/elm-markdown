@@ -47,10 +47,10 @@ suite =
                     "3.5 is a number - is not a list\n"
                         |> parse
                         |> Expect.equal (Ok [ Block.Paragraph (unstyledText "3.5 is a number - is not a list") ])
-            , test "Heading 7 is invalid" <|
+            , test "Heading 7 is parsed using fallback parsing" <|
                 \() ->
                     "####### Hello!"
-                        |> parserError
+                        |> expectOk [ Block.Paragraph [ Text "####### Hello!" ] ]
             ]
         , test "plain text" <|
             \() ->
