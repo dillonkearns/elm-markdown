@@ -231,7 +231,7 @@ renderHelper renderer blocks =
                             (\children ->
                                 renderer.heading
                                     { level = level
-                                    , rawText = Block.extractText content
+                                    , rawText = Block.extractInlineText content
                                     , children = children
                                     }
                             )
@@ -335,7 +335,7 @@ renderSingleInline renderer inline =
                 |> Just
 
         Block.Image src title children ->
-            renderer.image { alt = Block.extractText children, src = src, title = title }
+            renderer.image { alt = Block.extractInlineText children, src = src, title = title }
                 |> Just
 
         Block.Text string ->

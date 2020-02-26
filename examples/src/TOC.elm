@@ -123,7 +123,7 @@ buildToc blocks =
         |> List.map Tuple.second
         |> List.map
             (\styledList ->
-                { anchorId = styledList |> Markdown.Block.extractText |> rawTextToId
+                { anchorId = styledList |> Markdown.Block.extractInlineText |> rawTextToId
                 , name = styledToString styledList
                 , level = 1
                 }
@@ -133,7 +133,7 @@ buildToc blocks =
 styledToString : List Inline -> String
 styledToString list =
     list
-        |> Markdown.Block.extractText
+        |> Markdown.Block.extractInlineText
 
 
 gatherHeadings : List Block -> List ( HeadingLevel, List Inline )

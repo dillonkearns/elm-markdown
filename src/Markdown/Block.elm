@@ -5,7 +5,7 @@ module Markdown.Block exposing
     , Html(..)
     , Inline(..)
     , HtmlAttribute
-    , extractText
+    , extractInlineText
     )
 
 {-|
@@ -30,7 +30,7 @@ See <Markdown.Html> for more.
 
 @docs Inline
 @docs HtmlAttribute
-@docs extractText
+@docs extractInlineText
 
 -}
 
@@ -143,15 +143,6 @@ headingLevelToInt headingLevel =
             6
 
 
-
---{-| TODO
----}
---extractText : List Inline -> String
---extractText inlines =
---    "TODO"
---
-
-
 {-| Extract the text from a list of inlines.
 
     inlines : List (Inline)
@@ -166,8 +157,8 @@ headingLevelToInt headingLevel =
     -- Original string: "Heading with *emphasis*"
 
 -}
-extractText : List Inline -> String
-extractText inlines =
+extractInlineText : List Inline -> String
+extractInlineText inlines =
     List.foldl extractTextHelp "" inlines
 
 
@@ -184,10 +175,10 @@ extractTextHelp inline text =
             text ++ str
 
         Link _ _ inlines ->
-            text ++ extractText inlines
+            text ++ extractInlineText inlines
 
         Image _ _ inlines ->
-            text ++ extractText inlines
+            text ++ extractInlineText inlines
 
         HtmlInline html ->
             case html of
@@ -199,10 +190,10 @@ extractTextHelp inline text =
                     ""
 
         Strong inlines ->
-            text ++ extractText inlines
+            text ++ extractInlineText inlines
 
         Emphasis inlines ->
-            text ++ extractText inlines
+            text ++ extractInlineText inlines
 
 
 {-|

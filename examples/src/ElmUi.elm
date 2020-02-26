@@ -134,13 +134,13 @@ styledToString inlines =
     --|> String.join "-"
     -- TODO do I need to hyphenate?
     inlines
-        |> Block.extractText
+        |> Block.extractInlineText
 
 
 inlinesToId : List Inline -> String
 inlinesToId list =
     list
-        |> Block.extractText
+        |> Block.extractInlineText
         |> Debug.log "extracted"
         |> String.split " "
         |> Debug.log "split"
