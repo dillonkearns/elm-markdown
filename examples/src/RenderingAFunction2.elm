@@ -115,13 +115,22 @@ renderer zoomFactor =
     , emphasis = \content -> Element.row [ Font.italic ] content
     , hardLineBreak = Element.row [ Element.height (Element.px 15) ] []
     , codeSpan = code
-    , link = link
+    , link =
+        \{ title, destination } body ->
+            Element.newTabLink
+                [ Element.htmlAttribute (Html.Attributes.style "display" "inline-flex") ]
+                { url = destination
+                , label =
+                    Element.paragraph
+                        [ Font.color (Element.rgb255 0 0 255)
+                        ]
+                        body
+                }
     , image =
         \image ->
-            Ok <|
-                Element.image
-                    [ Element.width Element.fill ]
-                    { src = image.src, description = image.alt }
+            Element.image
+                [ Element.width Element.fill ]
+                { src = image.src, description = image.alt }
     , blockQuote =
         \children ->
             Element.paragraph
@@ -184,20 +193,6 @@ renderer zoomFactor =
                 |> Markdown.Html.withOptionalAttribute "dribbble"
             ]
     }
-
-
-link : { title : Maybe String, destination : String } -> List (Element Msg) -> Result String (Element Msg)
-link { title, destination } body =
-    Ok <|
-        Element.newTabLink
-            [ Element.htmlAttribute (Html.Attributes.style "display" "inline-flex") ]
-            { url = destination
-            , label =
-                Element.paragraph
-                    [ Font.color (Element.rgb255 0 0 255)
-                    ]
-                    body
-            }
 
 
 bioView renderedChildren name photoUrl twitter github dribbble =

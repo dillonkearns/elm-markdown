@@ -69,14 +69,22 @@ renderer =
     , emphasis = \content number -> Element.row [ Font.italic ] (content |> List.map (\value -> value number))
     , hardLineBreak = \number -> Element.row [ Element.height (Element.px 15) ] []
     , codeSpan = code
-    , link = link
+    , link =
+        \{ title, destination } body number ->
+            Element.newTabLink
+                [ Element.htmlAttribute (Html.Attributes.style "display" "inline-flex") ]
+                { url = destination
+                , label =
+                    Element.paragraph
+                        [ Font.color (Element.rgb255 0 0 255)
+                        ]
+                        (body |> List.map (\fn -> fn number))
+                }
     , image =
-        \image ->
-            Ok <|
-                \number ->
-                    Element.image
-                        [ Element.width Element.fill ]
-                        { src = image.src, description = image.alt }
+        \image number ->
+            Element.image
+                [ Element.width Element.fill ]
+                { src = image.src, description = image.alt }
     , blockQuote =
         \children number ->
             Element.paragraph
@@ -139,21 +147,6 @@ renderer =
                 |> Markdown.Html.withOptionalAttribute "dribbble"
             ]
     }
-
-
-link : { title : Maybe String, destination : String } -> List (Int -> Element Msg) -> Result String (Int -> Element Msg)
-link { title, destination } body =
-    Ok <|
-        \number ->
-            Element.newTabLink
-                [ Element.htmlAttribute (Html.Attributes.style "display" "inline-flex") ]
-                { url = destination
-                , label =
-                    Element.paragraph
-                        [ Font.color (Element.rgb255 0 0 255)
-                        ]
-                        (body |> List.map (\fn -> fn number))
-                }
 
 
 bioView renderedChildren name photoUrl twitter github dribbble =
