@@ -2,8 +2,9 @@ port module OutputMarkdownHtml exposing (main)
 
 import Html.String as Html
 import Html.String.Attributes as Attr
-import Markdown.Block as Block
+import Markdown.Block as Block exposing (Block)
 import Markdown.Html
+import Markdown.HtmlRenderer
 import Markdown.Parser as Markdown
 import Markdown.Renderer
 
@@ -184,7 +185,7 @@ renderMarkdown markdown =
 
 htmlRenderer : Markdown.Html.Renderer (List (Html.Html msg) -> Html.Html msg)
 htmlRenderer =
-    Markdown.Html.passthrough
+    passthrough
         (\tag attributes blocks ->
             let
                 result : Result String (List (Html.Html msg) -> Html.Html msg)
@@ -221,6 +222,13 @@ passThroughNode nodeName =
         |> Markdown.Html.withOptionalAttribute "id"
         |> Markdown.Html.withOptionalAttribute "class"
         |> Markdown.Html.withOptionalAttribute "href"
+
+
+{-| TODO come up with an API to provide a solution to do this sort of thing publicly
+-}
+passthrough : (String -> List Markdown.HtmlRenderer.Attribute -> List Block -> Result String view) -> Markdown.HtmlRenderer.HtmlRenderer view
+passthrough renderFn =
+    Markdown.HtmlRenderer.HtmlRenderer renderFn
 
 
 type Msg
