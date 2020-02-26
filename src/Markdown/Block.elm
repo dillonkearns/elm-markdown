@@ -181,13 +181,11 @@ extractTextHelp inline text =
             text ++ extractInlineText inlines
 
         HtmlInline html ->
-            case html of
-                HtmlElement _ _ inlines ->
-                    --text ++ extractText inlines
-                    text
-
-                _ ->
-                    ""
+            --case html of
+            --    HtmlElement _ _ inlines ->
+            --text ++ extractText inlines
+            --_ ->
+            text
 
         Strong inlines ->
             text ++ extractInlineText inlines
