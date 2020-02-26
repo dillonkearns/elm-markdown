@@ -66,7 +66,7 @@ reverseTokens model =
 -- Parser
 
 
-parse : References -> String -> List (Inline String)
+parse : References -> String -> List Inline
 parse refs rawText =
     rawText
         |> String.trim
@@ -1961,12 +1961,12 @@ lineBreakTTM ( tokens, model ) =
 -- Matches to Inline
 
 
-matchesToInlines : List Match -> List (Inline String)
+matchesToInlines : List Match -> List Inline
 matchesToInlines matches =
     List.map matchToInline matches
 
 
-matchToInline : Match -> Inline String
+matchToInline : Match -> Inline
 matchToInline (Match match) =
     case match.type_ of
         NormalType ->
@@ -2042,7 +2042,7 @@ Example of converting all text in **headings** to **ALL CAPS**:
 **Note:** In this example, `Block.walkInlines` could be used instead.
 
 -}
-walk : (Inline a -> Inline a) -> Inline a -> Inline a
+walk : (Inline -> Inline) -> Inline -> Inline
 walk function inline =
     case inline of
         Link url maybeTitle inlines ->
@@ -2069,7 +2069,7 @@ walk function inline =
             function inline
 
 
-query : (Inline a -> List a) -> Inline a -> List a
+query : (Inline -> List a) -> Inline -> List a
 query function inline =
     case inline of
         Link url maybeTitle inlines ->

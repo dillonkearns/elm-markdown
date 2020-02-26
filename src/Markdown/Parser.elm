@@ -131,7 +131,7 @@ inlineParseHelper referencesDict (UnparsedInlines unparsedInlines) =
         |> List.map mapInline
 
 
-mapInline : Inline.Inline String -> Block.Inline
+mapInline : Inline.Inline -> Block.Inline
 mapInline inline =
     case inline of
         Inline.Text string ->

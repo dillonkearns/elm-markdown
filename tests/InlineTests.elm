@@ -205,7 +205,7 @@ suite =
         ]
 
 
-expectInlines : List (Inlines.Inline String) -> String -> Expectation
+expectInlines : List Inlines.Inline -> String -> Expectation
 expectInlines expected input =
     input
         |> Markdown.InlineParser.parse Dict.empty

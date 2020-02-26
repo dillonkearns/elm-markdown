@@ -32,15 +32,14 @@ import Markdown.Block as Block
   - **Emphasis** | _Delimiter Length_ | _Inlines_
 
 -}
-type Inline htmlValue
+type Inline
     = Text String
     | HardLineBreak
     | CodeInline String
-    | Link String (Maybe String) (List (Inline htmlValue))
-    | Image String (Maybe String) (List (Inline htmlValue))
+    | Link String (Maybe String) (List Inline)
+    | Image String (Maybe String) (List Inline)
     | HtmlInline HtmlParser.Node
-      --| Html String (List Attribute) (List Block)
-    | Emphasis Int (List (Inline htmlValue))
+    | Emphasis Int (List Inline)
 
 
 type alias Attribute =
@@ -67,12 +66,12 @@ type alias Attribute =
     -- Original string: "Heading with *emphasis*"
 
 -}
-extractText : List (Inline a) -> String
+extractText : List Inline -> String
 extractText inlines =
     List.foldl extractTextHelp "" inlines
 
 
-extractTextHelp : Inline a -> String -> String
+extractTextHelp : Inline -> String -> String
 extractTextHelp inline text =
     case inline of
         Text str ->
