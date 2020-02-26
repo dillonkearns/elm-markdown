@@ -150,6 +150,8 @@ This library gives an error message here, and aims to do so in similar situation
 
 ## Contributors
 
+A **huge** thanks to [Pablo Hirafuji](https://github.com/pablohirafuji/), who was kind enough to allow me to use his InlineParser in this project. It turns out that Markdown inline parsing is a very specialized algorithm, and the `elm/parser` library isn't suited to solve that particular problem.
+
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
