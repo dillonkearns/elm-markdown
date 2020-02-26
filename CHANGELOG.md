@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 This release includes [a lot of new passing specs](https://github.com/dillonkearns/elm-markdown/pull/35/files#diff-3a49125c58477a39487c1c1ef69be134)! Big thanks to Pablo Hirafuji for
-his fantastic work on inling parsing in his markdown library, and for giving me
+his fantastic work on inline parsing in his markdown library, and for giving me
 permission to use it here 🙏
 
 - Several parsing cases now fall back to inline parsing rather than giving an error.
