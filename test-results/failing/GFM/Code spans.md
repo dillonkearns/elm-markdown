@@ -4,19 +4,19 @@
 
 This markdown:
 
-```markdown
+````````````markdown
 <a href="`">`
 
-```
+````````````
 
 Should give output:
 
-```html
+````````````html
 <p><a href="`">`</p>
-```
+````````````
 
 But instead was:
 
-```html
+````````````html
 ERROR Problem at row 2 Expecting symbol
-```
+````````````

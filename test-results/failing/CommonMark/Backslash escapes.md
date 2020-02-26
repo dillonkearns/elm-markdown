@@ -4,7 +4,7 @@
 
 This markdown:
 
-```markdown
+````````````markdown
 \*not emphasized*
 \<br/> not a tag
 \[not a link](/foo)
@@ -15,58 +15,58 @@ This markdown:
 \[foo]: /url "not a reference"
 \&ouml; not a character entity
 
-```
+````````````
 
 Should give output:
 
-```html
+````````````html
 <p>*not emphasized* &lt;br/&gt; not a tag [not a link](/foo) `not code` 1. not a list * not a list # not a heading [foo]: /url &quot;not a reference&quot; &amp;ouml; not a character entity</p>
-```
+````````````
 
 But instead was:
 
-```html
+````````````html
 <p>*not emphasized* &lt;br/&gt; not a tag [not a link](/foo) `not code` 1. not a list * not a list # not a heading [foo]: /url &quot;not a reference&quot; ö not a character entity</p>
-```
+````````````
 ## [Example 307](https://spec.commonmark.org/0.29/#example-307)
 
 This markdown:
 
-```markdown
+````````````markdown
 <a href="/bar\/)">
 
-```
+````````````
 
 Should give output:
 
-```html
+````````````html
 <a href="/bar\/)">
-```
+````````````
 
 But instead was:
 
-```html
+````````````html
 ERROR Problem at row 2 Expecting symbol
-```
+````````````
 ## [Example 310](https://spec.commonmark.org/0.29/#example-310)
 
 This markdown:
 
-```markdown
+````````````markdown
 ``` foo\+bar
 foo
 ```
 
-```
+````````````
 
 Should give output:
 
-```html
+````````````html
 <pre><code class="language-foo+bar">foo</code></pre>
-```
+````````````
 
 But instead was:
 
-```html
+````````````html
 <pre><code>foo</code></pre>
-```
+````````````

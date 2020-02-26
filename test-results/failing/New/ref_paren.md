@@ -4,21 +4,21 @@
 
 This markdown:
 
-```markdown
+````````````markdown
 [hi]
 
 [hi]: /url (there)
 
-```
+````````````
 
 Should give output:
 
-```html
+````````````html
 <p><a href="/url" title="there">hi</a></p>
-```
+````````````
 
 But instead was:
 
-```html
+````````````html
 <p><a href="/url">hi</a></p><p>(there)</p>
-```
+````````````

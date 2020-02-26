@@ -4,7 +4,7 @@
 
 This markdown:
 
-```markdown
+````````````markdown
 ### Heading with a [link](http://github.com/)
 
 ### Heading with some _italic text_
@@ -19,16 +19,16 @@ This markdown:
 ## And a ref [link][destination]
 
 [destination]: /some/url "link to nowhere"
-```
+````````````
 
 Should give output:
 
-```html
+````````````html
 <h3 id="heading-with-a-link">Heading with a<a href="http://github.com/">link</a></h3><h3 id="heading-with-some-italic-text">Heading with some<em>italic text</em></h3><h3 id="or-some-strong">Or some<strong>strong</strong></h3><p>(which doesn&#39;t really make any difference, here)</p><h3 id="or-even-code">Or even<code>code</code></h3><h3 id="what-about-strikethrough">What about<del>strikethrough</del></h3><h2 id="and-a-ref-link">And a ref<a href="/some/url" title="link to nowhere">link</a></h2>
-```
+````````````
 
 But instead was:
 
-```html
+````````````html
 <h3>Heading with a<a href="http://github.com/">link</a></h3><h3>Heading with some<em>italic text</em></h3><h3>Or some<strong>strong</strong></h3><p>(which doesn&#39;t really make any difference, here)</p><h3>Or even<code>code</code></h3><h3>What about ~~strikethrough~~</h3><h2>And a ref<a href="/some/url" title="link to nowhere">link</a></h2>
-```
+````````````

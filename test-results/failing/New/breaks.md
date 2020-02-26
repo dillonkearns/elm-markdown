@@ -4,20 +4,20 @@
 
 This markdown:
 
-```markdown
+````````````markdown
 A
 B
 
-```
+````````````
 
 Should give output:
 
-```html
+````````````html
 <p>A<br>B</p>
-```
+````````````
 
 But instead was:
 
-```html
+````````````html
 <p>A B</p>
-```
+````````````

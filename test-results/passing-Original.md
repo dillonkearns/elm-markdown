@@ -7,7 +7,7 @@
 This markdown:
 
 
-```markdown
+````````````markdown
 Link: <http://example.com/>.
 
 With an ampersand: <http://example.com/?foo=1&bar=2>
@@ -22,12 +22,12 @@ Auto-links should not occur here: `<http://example.com/>`
 
 	or here: <http://example.com/>
 
-```
+````````````
 
 Gives this correct output:
 
 
-```html
+````````````html
 <p>Link: <a href="http://example.com/">http://example.com/</a>.</p>
 
 <p>With an ampersand: <a href="http://example.com/?foo=1&amp;bar=2">http://example.com/?foo=1&amp;bar=2</a></p>
@@ -47,7 +47,7 @@ Gives this correct output:
 <pre><code>or here: &lt;http://example.com/&gt;
 </code></pre>
 
-```
+````````````
 
 ## blockquotes_with_code_blocks
 
@@ -56,7 +56,7 @@ Gives this correct output:
 This markdown:
 
 
-```markdown
+````````````markdown
 > Example:
 > 
 >     sub status {
@@ -69,12 +69,12 @@ This markdown:
 >         return "working";
 >     }
 
-```
+````````````
 
 Gives this correct output:
 
 
-```html
+````````````html
 <blockquote>
   <p>Example:</p>
 
@@ -91,7 +91,7 @@ Gives this correct output:
 </code></pre>
 </blockquote>
 
-```
+````````````
 
 ## code_blocks
 
@@ -100,7 +100,7 @@ Gives this correct output:
 This markdown:
 
 
-```markdown
+````````````markdown
 	code block on the first line
 	
 Regular text.
@@ -116,12 +116,12 @@ Regular Text.
 
 	code block on the last line
 
-```
+````````````
 
 Gives this correct output:
 
 
-```html
+````````````html
 <pre><code>code block on the first line
 </code></pre>
 
@@ -141,7 +141,7 @@ all contain trailing spaces
 <pre><code>code block on the last line
 </code></pre>
 
-```
+````````````
 
 ## inline_html_comments
 
@@ -150,7 +150,7 @@ all contain trailing spaces
 This markdown:
 
 
-```markdown
+````````````markdown
 Paragraph one.
 
 <!-- This is a simple comment -->
@@ -165,12 +165,12 @@ Paragraph two.
 
 The end.
 
-```
+````````````
 
 Gives this correct output:
 
 
-```html
+````````````html
 <p>Paragraph one.</p>
 
 <!-- This is a simple comment -->
@@ -185,7 +185,7 @@ Gives this correct output:
 
 <p>The end.</p>
 
-```
+````````````
 
 ## nested_blockquotes
 
@@ -194,19 +194,19 @@ Gives this correct output:
 This markdown:
 
 
-```markdown
+````````````markdown
 > foo
 >
 > > bar
 >
 > foo
 
-```
+````````````
 
 Gives this correct output:
 
 
-```html
+````````````html
 <blockquote>
   <p>foo</p>
   
@@ -217,5 +217,5 @@ Gives this correct output:
   <p>foo</p>
 </blockquote>
 
-```
+````````````
 

@@ -7,19 +7,19 @@
 This markdown:
 
 
-```markdown
+````````````markdown
 * This should be
 * An unordered list
 
 1. This should be
 2. An unordered list
 
-```
+````````````
 
 Gives this correct output:
 
 
-```html
+````````````html
 <ul>
 <li>This should be</li>
 <li>An unordered list</li>
@@ -30,7 +30,7 @@ Gives this correct output:
 <li>An unordered list</li>
 </ol>
 
-```
+````````````
 
 ## autolink_lines
 
@@ -39,21 +39,21 @@ Gives this correct output:
 This markdown:
 
 
-```markdown
+````````````markdown
 hello world
 <http://example.com>
 
-```
+````````````
 
 Gives this correct output:
 
 
-```html
+````````````html
 <p>hello world
 <a href="http://example.com">http://example.com</a>
 </p>
 
-```
+````````````
 
 ## case_insensitive_refs
 
@@ -62,20 +62,20 @@ Gives this correct output:
 This markdown:
 
 
-```markdown
+````````````markdown
 [hi]
 
 [HI]: /url
 
-```
+````````````
 
 Gives this correct output:
 
 
-```html
+````````````html
 <p><a href="/url">hi</a></p>
 
-```
+````````````
 
 ## code_spans
 
@@ -84,20 +84,20 @@ Gives this correct output:
 This markdown:
 
 
-```markdown
+````````````markdown
 `someone@example.com`
 
 ``*test`*
-```
+````````````
 
 Gives this correct output:
 
 
-```html
+````````````html
 <p><code>someone@example.com</code></p>
 
 <p>``<em>test`</em></p>
-```
+````````````
 
 ## emphasis_extra tests
 
@@ -106,16 +106,16 @@ Gives this correct output:
 This markdown:
 
 
-```markdown
+````````````markdown
 _test_. _test_: _test_! _test_? _test_-
-```
+````````````
 
 Gives this correct output:
 
 
-```html
+````````````html
 <p><em>test</em>. <em>test</em>: <em>test</em>! <em>test</em>? <em>test</em>-</p>
-```
+````````````
 
 ## escaped_angles
 
@@ -124,18 +124,18 @@ Gives this correct output:
 This markdown:
 
 
-```markdown
+````````````markdown
 \>
 
-```
+````````````
 
 Gives this correct output:
 
 
-```html
+````````````html
 <p>&gt;</p>
 
-```
+````````````
 
 ## lazy_blockquotes
 
@@ -144,22 +144,22 @@ Gives this correct output:
 This markdown:
 
 
-```markdown
+````````````markdown
 > hi there
 bud
 
-```
+````````````
 
 Gives this correct output:
 
 
-```html
+````````````html
 <blockquote>
   <p>hi there
 bud</p>
 </blockquote>
 
-```
+````````````
 
 ## link_lt
 
@@ -168,18 +168,18 @@ bud</p>
 This markdown:
 
 
-```markdown
+````````````markdown
 [URL](<test)
 
-```
+````````````
 
 Gives this correct output:
 
 
-```html
+````````````html
 <p><a href="%3Ctest">URL</a></p>
 
-```
+````````````
 
 ## link_tick_redos
 
@@ -188,7 +188,7 @@ Gives this correct output:
 This markdown:
 
 
-```markdown
+````````````markdown
   dash_capstyle: ['butt' | 'round' | 'projecting']
   dash_joinstyle: ['miter' | 'round' | 'bevel']
   dashes: sequence of on/off ink in points
@@ -221,12 +221,12 @@ This markdown:
   ydata: 1D array
   zorder: float
 
-```
+````````````
 
 Gives this correct output:
 
 
-```html
+````````````html
 <p>dash_capstyle: [&#39;butt&#39; | &#39;round&#39; | &#39;projecting&#39;]
 dash_joinstyle: [&#39;miter&#39; | &#39;round&#39; | &#39;bevel&#39;]
 dashes: sequence of on/off ink in points
@@ -259,7 +259,7 @@ xdata: 1D array
 ydata: 1D array
 zorder: float</p>
 
-```
+````````````
 
 ## links
 
@@ -268,24 +268,24 @@ zorder: float</p>
 This markdown:
 
 
-```markdown
+````````````markdown
 Link: [constructor][].
 
 [One](https://example.com/1) ([Two](https://example.com/2)) [Three](https://example.com/3)
 
 [constructor]: https://example.org/
 
-```
+````````````
 
 Gives this correct output:
 
 
-```html
+````````````html
 <p>Link: <a href="https://example.org/">constructor</a>.</p>
 
 <p><a href="https://example.com/1">One</a> (<a href="https://example.com/2">Two</a>) <a href="https://example.com/3">Three</a></p>
 
-```
+````````````
 
 ## links_paren
 
@@ -294,26 +294,26 @@ Gives this correct output:
 This markdown:
 
 
-```markdown
+````````````markdown
 ([one](http://example.com/1)) ([two](http://example.com/2))
 
 ([one](http://example.com/1))  ([two](http://example.com/2))
 
 ([one](http://example.com/1 "a")) ([two](http://example.com/2 "b"))
 
-```
+````````````
 
 Gives this correct output:
 
 
-```html
+````````````html
 <p>(<a href="http://example.com/1">one</a>) (<a href="http://example.com/2">two</a>)</p>
 
 <p>(<a href="http://example.com/1">one</a>) (<a href="http://example.com/2">two</a>)</p>
 
 <p>(<a href="http://example.com/1" title="a">one</a>) (<a href="http://example.com/2" title="b">two</a>)</p>
 
-```
+````````````
 
 ## nested_code
 
@@ -322,7 +322,7 @@ Gives this correct output:
 This markdown:
 
 
-```markdown
+````````````markdown
 ````` hi ther `` ok ``` `````
 
 `` ` ``
@@ -332,12 +332,12 @@ This markdown:
 A backtick-delimited string in a code span: `` `foo` ``
 
 Please don't use any `<blink>` tags.
-```
+````````````
 
 Gives this correct output:
 
 
-```html
+````````````html
 <p><code>hi ther `` ok ```</code></p>
 
 <p><code>`</code></p>
@@ -347,7 +347,7 @@ Gives this correct output:
 <p>A backtick-delimited string in a code span: <code>`foo`</code></p>
 
 <p>Please don&#39;t use any <code>&lt;blink&gt;</code> tags.</p>
-```
+````````````
 
 ## nested_em
 
@@ -356,22 +356,22 @@ Gives this correct output:
 This markdown:
 
 
-```markdown
+````````````markdown
 *test **test** test*
 
 _test __test__ test_
 
-```
+````````````
 
 Gives this correct output:
 
 
-```html
+````````````html
 <p><em>test <strong>test</strong> test</em></p>
 
 <p><em>test <strong>test</strong> test</em></p>
 
-```
+````````````
 
 ## nested_square_link
 
@@ -380,22 +380,22 @@ Gives this correct output:
 This markdown:
 
 
-```markdown
+````````````markdown
 [the `]` character](/url)
 
 [the \` character](/url)
 
-```
+````````````
 
 Gives this correct output:
 
 
-```html
+````````````html
 <p><a href="/url">the <code>]</code> character</a></p>
 
 <p><a href="/url">the ` character</a></p>
 
-```
+````````````
 
 ## not_a_link
 
@@ -404,18 +404,18 @@ Gives this correct output:
 This markdown:
 
 
-```markdown
+````````````markdown
 \[test](not a link)
 
-```
+````````````
 
 Gives this correct output:
 
 
-```html
+````````````html
 <p>[test](not a link)</p>
 
-```
+````````````
 
 ## substitutions
 
@@ -424,22 +424,22 @@ Gives this correct output:
 This markdown:
 
 
-```markdown
+````````````markdown
 foo␤␤bar
 
 * a *
 
-```
+````````````
 
 Gives this correct output:
 
 
-```html
+````````````html
 <p>foo␤␤bar</p>
 
 <p>* a *</p>
 
-```
+````````````
 
 ## tricky_list
 
@@ -448,7 +448,7 @@ Gives this correct output:
 This markdown:
 
 
-```markdown
+````````````markdown
 **hello** _world_
 
 * hello world
@@ -465,12 +465,12 @@ This markdown:
 
 * hello world
 
-```
+````````````
 
 Gives this correct output:
 
 
-```html
+````````````html
 <p><strong>hello</strong> <em>world</em></p>
 
 <ul>
@@ -495,5 +495,5 @@ Gives this correct output:
 <li>hello world</li>
 </ul>
 
-```
+````````````
 

@@ -4,22 +4,22 @@
 
 This markdown:
 
-```markdown
+````````````markdown
 This fails in markdown.pl and upskirt:
 
 * hello
   > world
 
-```
+````````````
 
 Should give output:
 
-```html
+````````````html
 <p>This fails in markdown.pl and upskirt:</p><ul><li>hello<blockquote><p>world</p></blockquote></li></ul>
-```
+````````````
 
 But instead was:
 
-```html
+````````````html
 <p>This fails in markdown.pl and upskirt:</p><ul><li>hello</li></ul><blockquote><p>world</p></blockquote>
-```
+````````````

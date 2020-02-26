@@ -4,64 +4,64 @@
 
 This markdown:
 
-```markdown
+````````````markdown
 > ```
 foo
 ```
 
-```
+````````````
 
 Should give output:
 
-```html
+````````````html
 <blockquote><pre><code></code></pre></blockquote><p>foo</p><pre><code></code></pre>
-```
+````````````
 
 But instead was:
 
-```html
+````````````html
 <blockquote><pre><code>foo</code></pre></blockquote>
-```
+````````````
 ## [Example 208](https://spec.commonmark.org/0.29/#example-208)
 
 This markdown:
 
-```markdown
+````````````markdown
 > foo
     - bar
 
-```
+````````````
 
 Should give output:
 
-```html
+````````````html
 <blockquote><p>foo - bar</p></blockquote>
-```
+````````````
 
 But instead was:
 
-```html
+````````````html
 <blockquote><p>foo</p></blockquote><pre><code>- bar</code></pre>
-```
+````````````
 ## [Example 219](https://spec.commonmark.org/0.29/#example-219)
 
 This markdown:
 
-```markdown
+````````````markdown
 > bar
 >
 baz
 
-```
+````````````
 
 Should give output:
 
-```html
+````````````html
 <blockquote><p>bar</p></blockquote><p>baz</p>
-```
+````````````
 
 But instead was:
 
-```html
+````````````html
 <blockquote><p>bar</p><p>baz</p></blockquote>
-```
+````````````

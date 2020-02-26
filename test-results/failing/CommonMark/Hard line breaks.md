@@ -4,43 +4,43 @@
 
 This markdown:
 
-```markdown
+````````````markdown
 <a href="foo  
 bar">
 
-```
+````````````
 
 Should give output:
 
-```html
+````````````html
 <p><a href="foo  
 bar"></p>
-```
+````````````
 
 But instead was:
 
-```html
+````````````html
 ERROR Problem at row 3 Expecting symbol
-```
+````````````
 ## [Example 640](https://spec.commonmark.org/0.29/#example-640)
 
 This markdown:
 
-```markdown
+````````````markdown
 <a href="foo\
 bar">
 
-```
+````````````
 
 Should give output:
 
-```html
+````````````html
 <p><a href="foo\
 bar"></p>
-```
+````````````
 
 But instead was:
 
-```html
+````````````html
 ERROR Problem at row 3 Expecting symbol
-```
+````````````

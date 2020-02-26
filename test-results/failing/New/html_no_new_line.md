@@ -4,18 +4,18 @@
 
 This markdown:
 
-```markdown
+````````````markdown
 <img src='sdfg'>
-```
+````````````
 
 Should give output:
 
-```html
+````````````html
 <img src="sdfg">
-```
+````````````
 
 But instead was:
 
-```html
+````````````html
 ERROR Problem at row 1 Expecting symbol
-```
+````````````

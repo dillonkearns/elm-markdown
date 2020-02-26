@@ -147,21 +147,21 @@ function writeFailuresMarkdown(/** @type {string} */ suiteTitle) {
 
 This markdown:
 
-\`\`\`markdown
+\`\`\`\`\`\`\`\`\`\`\`\`markdown
 ${spec.markdown}
-\`\`\`
+\`\`\`\`\`\`\`\`\`\`\`\`
 
 Should give output:
 
-\`\`\`html
+\`\`\`\`\`\`\`\`\`\`\`\`html
 ${spec.diff.expected}
-\`\`\`
+\`\`\`\`\`\`\`\`\`\`\`\`
 
 But instead was:
 
-\`\`\`html
+\`\`\`\`\`\`\`\`\`\`\`\`html
 ${spec.diff.actual}
-\`\`\`
+\`\`\`\`\`\`\`\`\`\`\`\`
 `;
     });
     fs.mkdirSync(`./test-results/failing/${suiteTitle}`, {
@@ -220,16 +220,16 @@ function writePassingMarkdown(/** @type {string} */ suiteTitle) {
 This markdown:
 
 
-\`\`\`markdown
+\`\`\`\`\`\`\`\`\`\`\`\`markdown
 ${spec.markdown}
-\`\`\`
+\`\`\`\`\`\`\`\`\`\`\`\`
 
 Gives this correct output:
 
 
-\`\`\`html
+\`\`\`\`\`\`\`\`\`\`\`\`html
 ${spec.html}
-\`\`\`
+\`\`\`\`\`\`\`\`\`\`\`\`
 
 `;
     });

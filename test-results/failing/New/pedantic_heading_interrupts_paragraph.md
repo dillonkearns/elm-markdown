@@ -4,7 +4,7 @@
 
 This markdown:
 
-```markdown
+````````````markdown
 paragraph before head with hash
 #how are you
 
@@ -12,16 +12,16 @@ paragraph before head with equals
 how are you again
 ===========
 
-```
+````````````
 
 Should give output:
 
-```html
+````````````html
 <p>paragraph before head with hash</p><h1 id="how-are-you">how are you</h1><p>paragraph before head with equals</p><h1 id="how-are-you-again">how are you again</h1>
-```
+````````````
 
 But instead was:
 
-```html
+````````````html
 <p>paragraph before head with hash</p><h1>how are you</h1><p>paragraph before head with equals how are you again ===========</p>
-```
+````````````
