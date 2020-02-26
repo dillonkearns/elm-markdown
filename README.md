@@ -56,48 +56,75 @@ Here's a snippet from the default HTML renderer that comes built in to give you 
 ```elm
 import Html
 import Html.Attributes as Attr
-
+import Markdown.Renderer exposing (Renderer)
+import Markdown.Block as Block
 
 defaultHtmlRenderer : Renderer (Html msg)
 defaultHtmlRenderer =
     { heading =
         \{ level, children } ->
             case level of
-                1 ->
+                Block.H1 ->
                     Html.h1 [] children
 
-                2 ->
+                Block.H2 ->
                     Html.h2 [] children
 
-                3 ->
+                Block.H3 ->
                     Html.h3 [] children
 
-                4 ->
+                Block.H4 ->
                     Html.h4 [] children
 
-                5 ->
+                Block.H5 ->
                     Html.h5 [] children
 
-                6 ->
+                Block.H6 ->
                     Html.h6 [] children
-
-                _ ->
-                    Html.text ""
-    , raw = Html.p []
-    , bold =
-        \content -> Html.strong [] [ Html.text content ]
-    , italic =
-        \content -> Html.em [] [ Html.text content ]
-    , code =
+    , paragraph = Html.p []
+    , hardLineBreak = Html.br [] []
+    , blockQuote = Html.blockquote []
+    , strong =
+        \children -> Html.strong [] children
+    , emphasis =
+        \children -> Html.em [] children
+    , codeSpan =
         \content -> Html.code [] [ Html.text content ]
     , link =
         \link content ->
-            Html.a [ Attr.href link.destination ] content
-                |> Ok
+            case link.title of
+                Just title ->
+                    Html.a
+                        [ Attr.href link.destination
+                        , Attr.title title
+                        ]
+                        content
+                        |> Ok
+
+                Nothing ->
+                    Html.a [ Attr.href link.destination ] content
+                        |> Ok
     , image =
-        \image content ->
-            Html.img [ Attr.src image.src ] [ Html.text content ]
-                |> Ok
+        \imageInfo ->
+            case imageInfo.title of
+                Just title ->
+                    Html.img
+                        [ Attr.src imageInfo.src
+                        , Attr.alt imageInfo.alt
+                        , Attr.title title
+                        ]
+                        []
+                        |> Ok
+
+                Nothing ->
+                    Html.img
+                        [ Attr.src imageInfo.src
+                        , Attr.alt imageInfo.alt
+                        ]
+                        []
+                        |> Ok
+    , text =
+        Html.text
     , -- ...
     }
 ```
