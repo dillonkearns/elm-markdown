@@ -166,7 +166,7 @@ defaultHtmlRenderer =
                                 itemBlocks
                         )
                 )
-    , html = Markdown.Html.oneOf []
+    , html = Markdown.Html.disallowAll
     , codeBlock =
         \{ body, language } ->
             Html.pre []
