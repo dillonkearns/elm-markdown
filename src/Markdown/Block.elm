@@ -114,7 +114,7 @@ type HeadingLevel
     | H6
 
 
-{-| TODO an inline
+{-| An Inline block. Note that `HtmlInline`s can contain Blocks, not just nested `Inline`s.
 -}
 type Inline
     = HtmlInline (Html Block)
@@ -203,10 +203,13 @@ extractTextHelp inline text =
             text ++ extractInlineText inlines
 
 
-{-|
+{-| The way HTML is handled is one of the core ideas of this library.
+
+You get the full HTML structure that you can use to process the Blocks before rendering them. Once you render them,
+all of the raw text within your HTML is parsed as Markdown.
 
 
-## `HtmlComment`s
+## `HtmlComment`s and metadata
 
 `HtmlComment`s contain the raw comment text, completely unprocessed. That means
 you'll need to trim it if you want to strip the leading or trailing whitespace.
@@ -225,7 +228,7 @@ type Html children
     | Cdata String
 
 
-{-| TODO
+{-| An Html attribute. In <div class="foo">, you would have `{ name = "class", value = "foo" }`.
 -}
 type alias HtmlAttribute =
     { name : String, value : String }
