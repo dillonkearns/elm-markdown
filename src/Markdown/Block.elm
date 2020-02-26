@@ -128,7 +128,7 @@ type Inline
     | HardLineBreak
 
 
-{-| TODO
+{-| A convenience function so that you don't have to write a big case statement if you need a heading level as an Int.
 -}
 headingLevelToInt : HeadingLevel -> Int
 headingLevelToInt headingLevel =
