@@ -1,5 +1,6 @@
 module BlockTransformTests exposing (suite)
 
+import Dict
 import Expect
 import Markdown.Block as Block exposing (..)
 import Test exposing (..)
@@ -78,7 +79,89 @@ suite =
                     ]
                         |> validateMapInlines resolveLinkInInline
                         |> Expect.equal (Err [ "Couldn't find key angular" ])
+            , test "add slugs" <|
+                \() ->
+                    let
+                        gatherHeadingOccurences : List Block -> ( Dict.Dict String Int, List (BlockWithMeta (Maybe String)) )
+                        gatherHeadingOccurences =
+                            mapAccuml
+                                (\soFar block ->
+                                    case block of
+                                        Heading level inlines ->
+                                            let
+                                                inlineText : String
+                                                inlineText =
+                                                    Block.extractInlineText inlines
+
+                                                occurenceModifier : String
+                                                occurenceModifier =
+                                                    soFar
+                                                        |> Dict.get inlineText
+                                                        |> Maybe.map String.fromInt
+                                                        |> Maybe.withDefault ""
+                                            in
+                                            ( soFar |> trackOccurence inlineText
+                                            , BlockWithMeta (Heading level inlines) (Just (inlineText ++ occurenceModifier))
+                                            )
+
+                                        _ ->
+                                            ( soFar
+                                            , BlockWithMeta block Nothing
+                                            )
+                                )
+                                Dict.empty
+
+                        trackOccurence : String -> Dict.Dict String Int -> Dict.Dict String Int
+                        trackOccurence value occurences =
+                            occurences
+                                |> Dict.update value
+                                    (\maybeOccurence ->
+                                        case maybeOccurence of
+                                            Just count ->
+                                                Just <| count + 1
+
+                                            Nothing ->
+                                                Just 1
+                                    )
+                    in
+                    [ Heading H1 [ Text "foo" ]
+                    , Heading H1 [ Text "bar" ]
+                    , Heading H1 [ Text "foo" ]
+                    ]
+                        |> gatherHeadingOccurences
+                        |> Expect.equal
+                            ( Dict.fromList
+                                [ ( "bar", 1 )
+                                , ( "foo", 2 )
+                                ]
+                            , [ BlockWithMeta (Heading H1 [ Text "foo" ]) (Just "foo")
+                              , BlockWithMeta (Heading H1 [ Text "bar" ]) (Just "bar")
+                              , BlockWithMeta (Heading H1 [ Text "foo" ]) (Just "foo1")
+                              ]
+                            )
             ]
+
+
+mapAccuml : (soFar -> Block -> ( soFar, mappedValue )) -> soFar -> List Block -> ( soFar, List mappedValue )
+mapAccuml function initialValue blocks =
+    let
+        ( accFinal, generatedList ) =
+            List.foldl
+                (\x ( acc1, ys ) ->
+                    let
+                        ( acc2, y ) =
+                            function acc1 x
+                    in
+                    ( acc2, y :: ys )
+                )
+                ( initialValue, [] )
+                blocks
+    in
+    ( accFinal, List.reverse generatedList )
+
+
+type BlockWithMeta meta
+    = BlockWithMeta Block meta
 
 
 validateMapInlines : (Inline -> Result error Inline) -> List Block -> Result (List error) (List Block)
