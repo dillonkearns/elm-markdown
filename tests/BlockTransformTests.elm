@@ -5,6 +5,28 @@ import Markdown.Block as Block exposing (..)
 import Test exposing (..)
 
 
+resolveLinkInInline : Inline -> Result String Inline
+resolveLinkInInline inline =
+    case inline of
+        Link destination title inlines ->
+            destination
+                |> lookupLink
+                |> Result.map (\resolvedLink -> Link resolvedLink title inlines)
+
+        _ ->
+            Ok inline
+
+
+lookupLink : String -> Result String String
+lookupLink key =
+    case key of
+        "elm-lang" ->
+            Ok "https://elm-lang.org"
+
+        _ ->
+            Err <| "Couldn't find key " ++ key
+
+
 suite : Test
 suite =
     only <|
@@ -17,7 +39,7 @@ suite =
                             String.replace "http://" "https://"
                     in
                     [ Paragraph
-                        [ Link "http://elm-lang.org" Nothing [ Text "elm-lang search results" ]
+                        [ Link "http://elm-lang.org" Nothing [ Text "elm-lang homepage" ]
                         ]
                     ]
                         |> mapInlines
@@ -31,10 +53,51 @@ suite =
                             )
                         |> Expect.equal
                             [ Paragraph
-                                [ Link "https://elm-lang.org" Nothing [ Text "elm-lang search results" ]
+                                [ Link "https://elm-lang.org" Nothing [ Text "elm-lang homepage" ]
                                 ]
                             ]
+            , test "validate links - valid" <|
+                \() ->
+                    [ Paragraph
+                        [ Link "elm-lang" Nothing [ Text "elm-lang homepage" ]
+                        ]
+                    ]
+                        |> validateMapInlines resolveLinkInInline
+                        |> Expect.equal
+                            (Ok
+                                [ Paragraph
+                                    [ Link "https://elm-lang.org" Nothing [ Text "elm-lang homepage" ]
+                                    ]
+                                ]
+                            )
+            , test "validate links - invalid" <|
+                \() ->
+                    [ Paragraph
+                        [ Link "angular" Nothing [ Text "elm-lang homepage" ]
+                        ]
+                    ]
+                        |> validateMapInlines resolveLinkInInline
+                        |> Expect.equal (Err [ "Couldn't find key angular" ])
             ]
+
+
+validateMapInlines : (Inline -> Result error Inline) -> List Block -> Result (List error) (List Block)
+validateMapInlines function blocks =
+    let
+        newThing : Block -> Result (List error) Block
+        newThing block =
+            case block of
+                Paragraph inlines ->
+                    inlines
+                        |> List.map (inlineParserValidateWalk function)
+                        |> combine
+                        |> Result.map Paragraph
+
+                _ ->
+                    Debug.todo ""
+    in
+    blocks
+        |> validateMap newThing
 
 
 map : (Block -> value) -> List Block -> List value
@@ -99,32 +162,35 @@ inlineParserWalk function inline =
             function inline
 
 
+inlineParserValidateWalk : (Inline -> Result error Inline) -> Inline -> Result (List error) Inline
+inlineParserValidateWalk function inline =
+    case inline of
+        Link url maybeTitle inlines ->
+            List.map (inlineParserValidateWalk function) inlines
+                |> combine
+                |> Result.andThen
+                    (\nestedInlines ->
+                        Link url maybeTitle nestedInlines
+                            |> function
+                            |> Result.mapError List.singleton
+                    )
 
---walk : (Inline -> Inline) -> Inline -> Inline
---walk function inline =
---    case inline of
---        Link url maybeTitle inlines ->
---            List.map (walk function) inlines
---                |> Link url maybeTitle
---                |> function
---
---        Image url maybeTitle inlines ->
---            List.map (walk function) inlines
---                |> Image url maybeTitle
---                |> function
---
---        HtmlInline html ->
---            --List.map (walk function) inlines
---            --    |> HtmlInline tag attrs
---            function inline
---
---        Emphasis inlines ->
---            List.map (walk function) inlines
---                |> Emphasis
---                |> function
---
---        _ ->
---            function inline
+        --Image url maybeTitle inlines ->
+        --    List.map (inlineParserWalk function) inlines
+        --        |> Image url maybeTitle
+        --        |> function
+        --
+        --Emphasis inlines ->
+        --    List.map (inlineParserWalk function) inlines
+        --        |> Emphasis
+        --        |> function
+        --HtmlInline tag attrs inlines ->
+        --    List.map (inlineParserWalk function) inlines
+        --        |> HtmlInline tag attrs
+        --        |> function
+        _ ->
+            function inline
+                |> Result.mapError List.singleton
 
 
 walk : (Block -> Block) -> Block -> Block
