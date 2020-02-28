@@ -44,6 +44,7 @@ your HTML renderer, so you get all of your rendered lists, code blocks, links, e
 - [Custom HTML Block Rendering (with `elm-ui`)](https://ellie-app.com/85S8tYds6ZHa1)
 - [Extracting a table of contents from the parsed Markdown](https://ellie-app.com/7LDzS6r48n8a1)
 - [Running the built-in, standard markdown HTML renderer](https://ellie-app.com/7LDBR7NL4xja1)
+- [Live Lisp evaluation, with values propogating through multiple Markdown HTML blocks](https://bburdette.github.io/cellme/mdcelldemo.html) - check out the source code at [github.com/bburdette/cellme/blob/master/examples/src/MdMain.elm](https://github.com/bburdette/cellme/blob/master/examples/src/MdMain.elm)
 
 ## Core features
 
