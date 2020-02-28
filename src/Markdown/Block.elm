@@ -6,6 +6,7 @@ module Markdown.Block exposing
     , Inline(..)
     , HtmlAttribute
     , extractInlineText
+    , map, mapInlines, validateMapInlines, mapAccuml
     )
 
 {-|
@@ -31,6 +32,11 @@ See <Markdown.Html> for more.
 @docs Inline
 @docs HtmlAttribute
 @docs extractInlineText
+
+
+## Transformations
+
+@docs map, mapInlines, validateMapInlines, mapAccuml
 
 -}
 
@@ -232,3 +238,170 @@ type Html children
 -}
 type alias HtmlAttribute =
     { name : String, value : String }
+
+
+{-| TODO
+-}
+validateMapInlines : (Inline -> Result error Inline) -> List Block -> Result (List error) (List Block)
+validateMapInlines function blocks =
+    let
+        newThing : Block -> Result (List error) Block
+        newThing block =
+            case block of
+                Paragraph inlines ->
+                    inlines
+                        |> List.map (inlineParserValidateWalk function)
+                        |> combine
+                        |> Result.map Paragraph
+
+                _ ->
+                    Debug.todo ""
+    in
+    blocks
+        |> validateMap newThing
+
+
+{-| TODO recursively apply maps to container blocks
+-}
+map : (Block -> value) -> List Block -> List value
+map mapFn blocks =
+    blocks
+        |> List.map mapFn
+
+
+{-| TODO
+-}
+mapInlines : (Inline -> Inline) -> List Block -> List Block
+mapInlines mapFn blocks =
+    blocks
+        |> List.map (walkInlines mapFn)
+
+
+walkInlines : (Inline -> Inline) -> Block -> Block
+walkInlines function block =
+    walk (walkInlinesHelp function) block
+
+
+walkInlinesHelp : (Inline -> Inline) -> Block -> Block
+walkInlinesHelp function block =
+    case block of
+        Paragraph inlines ->
+            List.map (inlineParserWalk function) inlines
+                |> Paragraph
+
+        --Heading rawText level inlines ->
+        --    List.map (Inline.walk function) inlines
+        --        |> Heading rawText level
+        --
+        --PlainInlines inlines ->
+        --    List.map (Inline.walk function) inlines
+        --        |> PlainInlines
+        --
+        _ ->
+            block
+
+
+inlineParserWalk : (Inline -> Inline) -> Inline -> Inline
+inlineParserWalk function inline =
+    case inline of
+        Link url maybeTitle inlines ->
+            List.map (inlineParserWalk function) inlines
+                |> Link url maybeTitle
+                |> function
+
+        Image url maybeTitle inlines ->
+            List.map (inlineParserWalk function) inlines
+                |> Image url maybeTitle
+                |> function
+
+        Emphasis inlines ->
+            List.map (inlineParserWalk function) inlines
+                |> Emphasis
+                |> function
+
+        --HtmlInline tag attrs inlines ->
+        --    List.map (inlineParserWalk function) inlines
+        --        |> HtmlInline tag attrs
+        --        |> function
+        _ ->
+            function inline
+
+
+inlineParserValidateWalk : (Inline -> Result error Inline) -> Inline -> Result (List error) Inline
+inlineParserValidateWalk function inline =
+    case inline of
+        Link url maybeTitle inlines ->
+            List.map (inlineParserValidateWalk function) inlines
+                |> combine
+                |> Result.andThen
+                    (\nestedInlines ->
+                        Link url maybeTitle nestedInlines
+                            |> function
+                            |> Result.mapError List.singleton
+                    )
+
+        --Image url maybeTitle inlines ->
+        --    List.map (inlineParserWalk function) inlines
+        --        |> Image url maybeTitle
+        --        |> function
+        --
+        --Emphasis inlines ->
+        --    List.map (inlineParserWalk function) inlines
+        --        |> Emphasis
+        --        |> function
+        --HtmlInline tag attrs inlines ->
+        --    List.map (inlineParserWalk function) inlines
+        --        |> HtmlInline tag attrs
+        --        |> function
+        _ ->
+            function inline
+                |> Result.mapError List.singleton
+
+
+walk : (Block -> Block) -> Block -> Block
+walk function block =
+    case block of
+        BlockQuote blocks ->
+            List.map (walk function) blocks
+                |> BlockQuote
+                |> function
+
+        --Block.OrderedList startingIndex items ->
+        --    List.map (List.map (walk function)) items
+        --        |> Block.OrderedList startingIndex
+        --        |> function
+        _ ->
+            function block
+
+
+validateMap : (Block -> Result error value) -> List Block -> Result error (List value)
+validateMap mapFn blocks =
+    blocks
+        |> List.map mapFn
+        |> combine
+
+
+{-| Combine a list of results into a single result (holding a list).
+-}
+combine : List (Result x a) -> Result x (List a)
+combine =
+    List.foldr (Result.map2 (::)) (Ok [])
+
+
+{-| -}
+mapAccuml : (soFar -> Block -> ( soFar, mappedValue )) -> soFar -> List Block -> ( soFar, List mappedValue )
+mapAccuml function initialValue blocks =
+    let
+        ( accFinal, generatedList ) =
+            List.foldl
+                (\x ( acc1, ys ) ->
+                    let
+                        ( acc2, y ) =
+                            function acc1 x
+                    in
+                    ( acc2, y :: ys )
+                )
+                ( initialValue, [] )
+                blocks
+    in
+    ( accFinal, List.reverse generatedList )
