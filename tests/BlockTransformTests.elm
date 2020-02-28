@@ -79,6 +79,34 @@ suite =
                     ]
                         |> Block.validateMapInlines resolveLinkInInline
                         |> Expect.equal (Err [ "Couldn't find key angular" ])
+            , test "maximum heading level" <|
+                \() ->
+                    let
+                        maximumHeadingLevel : List Block -> Maybe HeadingLevel
+                        maximumHeadingLevel blocks =
+                            blocks
+                                |> Block.foldl
+                                    (\block maxSoFar ->
+                                        case block of
+                                            Heading level _ ->
+                                                if Block.headingLevelToInt level > (maxSoFar |> Maybe.map Block.headingLevelToInt |> Maybe.withDefault 0) then
+                                                    Just level
+
+                                                else
+                                                    maxSoFar
+
+                                            _ ->
+                                                maxSoFar
+                                    )
+                                    Nothing
+                    in
+                    [ Heading H1 [ Text "Document" ]
+                    , Heading H2 [ Text "Section A" ]
+                    , Heading H3 [ Text "Subsection" ]
+                    , Heading H2 [ Text "Section B" ]
+                    ]
+                        |> maximumHeadingLevel
+                        |> Expect.equal (Just H3)
             , test "add slugs" <|
                 \() ->
                     let
