@@ -6,7 +6,7 @@ module Markdown.Block exposing
     , Inline(..)
     , HtmlAttribute
     , extractInlineText
-    , map, mapInlines, validateMapInlines, mapAccuml
+    , map, mapInlines, validateMapInlines, mapAccuml, foldl
     )
 
 {-|
@@ -36,7 +36,7 @@ See <Markdown.Html> for more.
 
 ## Transformations
 
-@docs map, mapInlines, validateMapInlines, mapAccuml
+@docs map, mapInlines, validateMapInlines, mapAccuml, foldl
 
 -}
 
@@ -393,7 +393,7 @@ mapAccuml : (soFar -> Block -> ( soFar, mappedValue )) -> soFar -> List Block ->
 mapAccuml function initialValue blocks =
     let
         ( accFinal, generatedList ) =
-            List.foldl
+            foldl
                 (\x ( acc1, ys ) ->
                     let
                         ( acc2, y ) =
@@ -405,3 +405,29 @@ mapAccuml function initialValue blocks =
                 blocks
     in
     ( accFinal, List.reverse generatedList )
+
+
+{-| TODO
+-}
+foldl : (a -> b -> b) -> b -> List a -> b
+foldl function acc list =
+    case list of
+        [] ->
+            acc
+
+        x :: xs ->
+            foldl function (function x acc) xs
+
+
+filter : (Block -> Bool) -> List Block -> List Block
+filter isGood list =
+    foldl
+        (\x xs ->
+            if isGood x then
+                (::) x xs
+
+            else
+                xs
+        )
+        []
+        list
