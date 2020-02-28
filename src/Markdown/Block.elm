@@ -409,7 +409,7 @@ mapAccuml function initialValue blocks =
 
 {-| TODO
 -}
-foldl : (a -> b -> b) -> b -> List a -> b
+foldl : (Block -> acc -> acc) -> acc -> List Block -> acc
 foldl function acc list =
     case list of
         [] ->
