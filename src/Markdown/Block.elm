@@ -418,7 +418,12 @@ foldl function acc list =
         block :: remainingBlocks ->
             case block of
                 HtmlBlock html ->
-                    foldl function (function block acc) remainingBlocks
+                    case html of
+                        HtmlElement _ _ children ->
+                            foldl function (function block acc) (children ++ remainingBlocks)
+
+                        _ ->
+                            foldl function (function block acc) remainingBlocks
 
                 UnorderedList listItems ->
                     foldl function (function block acc) remainingBlocks

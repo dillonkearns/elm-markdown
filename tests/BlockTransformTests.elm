@@ -162,6 +162,12 @@ suite =
                         , BlockQuote
                             [ Heading H2 [ Text "3Ai" ]
                             , Heading H2 [ Text "3Aii" ]
+                            , HtmlBlock <|
+                                HtmlElement "my-element"
+                                    []
+                                    [ Heading H2 [ Text "3Aiii" ]
+                                    , Heading H2 [ Text "3Aiv" ]
+                                    ]
                             ]
                         , Heading H2 [ Text "3B" ]
                         ]
@@ -169,7 +175,7 @@ suite =
                     ]
                         |> gatherHeadingText
                         |> Expect.equal
-                            [ "1", "2", "3A", "3Ai", "3Aii", "3B", "4" ]
+                            [ "1", "2", "3A", "3Ai", "3Aii", "3Aiii", "3Aiv", "3B", "4" ]
             , test "add slugs" <|
                 \() ->
                     let
