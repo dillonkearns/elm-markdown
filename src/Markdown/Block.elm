@@ -415,8 +415,22 @@ foldl function acc list =
         [] ->
             acc
 
-        x :: xs ->
-            foldl function (function x acc) xs
+        block :: remainingBlocks ->
+            case block of
+                HtmlBlock html ->
+                    foldl function (function block acc) remainingBlocks
+
+                UnorderedList listItems ->
+                    foldl function (function block acc) remainingBlocks
+
+                OrderedList int lists ->
+                    foldl function (function block acc) remainingBlocks
+
+                BlockQuote blocks ->
+                    foldl function (function block acc) (blocks ++ remainingBlocks)
+
+                _ ->
+                    foldl function (function block acc) remainingBlocks
 
 
 filter : (Block -> Bool) -> List Block -> List Block

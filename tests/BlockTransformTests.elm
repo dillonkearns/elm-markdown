@@ -107,6 +107,36 @@ suite =
                     ]
                         |> maximumHeadingLevel
                         |> Expect.equal (Just H3)
+            , test "maximum heading level with container block" <|
+                \() ->
+                    let
+                        maximumHeadingLevel : List Block -> Maybe HeadingLevel
+                        maximumHeadingLevel blocks =
+                            blocks
+                                |> Block.foldl
+                                    (\block maxSoFar ->
+                                        case block of
+                                            Heading level _ ->
+                                                if Block.headingLevelToInt level > (maxSoFar |> Maybe.map Block.headingLevelToInt |> Maybe.withDefault 0) then
+                                                    Just level
+
+                                                else
+                                                    maxSoFar
+
+                                            _ ->
+                                                maxSoFar
+                                    )
+                                    Nothing
+                    in
+                    [ Heading H1 [ Text "Document" ]
+                    , Heading H2 [ Text "Section A" ]
+                    , Heading H3 [ Text "Subsection" ]
+                    , BlockQuote
+                        [ Heading H4 [ Text "Heading in container block" ] ]
+                    , Heading H2 [ Text "Section B" ]
+                    ]
+                        |> maximumHeadingLevel
+                        |> Expect.equal (Just H4)
             , test "add slugs" <|
                 \() ->
                     let
