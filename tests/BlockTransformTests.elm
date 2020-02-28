@@ -137,11 +137,44 @@ suite =
                     ]
                         |> maximumHeadingLevel
                         |> Expect.equal (Just H4)
+            , test "traversal order is depth-first" <|
+                \() ->
+                    let
+                        gatherHeadingText : List Block -> List String
+                        gatherHeadingText blocks =
+                            blocks
+                                |> Block.foldl
+                                    (\block maxSoFar ->
+                                        case block of
+                                            Heading _ [ Text text ] ->
+                                                text :: maxSoFar
+
+                                            _ ->
+                                                maxSoFar
+                                    )
+                                    []
+                                |> List.reverse
+                    in
+                    [ Heading H2 [ Text "1" ]
+                    , Heading H2 [ Text "2" ]
+                    , BlockQuote
+                        [ Heading H2 [ Text "3A" ]
+                        , BlockQuote
+                            [ Heading H2 [ Text "3Ai" ]
+                            , Heading H2 [ Text "3Aii" ]
+                            ]
+                        , Heading H2 [ Text "3B" ]
+                        ]
+                    , Heading H2 [ Text "4" ]
+                    ]
+                        |> gatherHeadingText
+                        |> Expect.equal
+                            [ "1", "2", "3A", "3Ai", "3Aii", "3B", "4" ]
             , test "add slugs" <|
                 \() ->
                     let
-                        gatherHeadingOccurences : List Block -> ( Dict.Dict String Int, List (BlockWithMeta (Maybe String)) )
-                        gatherHeadingOccurences =
+                        gatherHeadingOccurrences : List Block -> ( Dict.Dict String Int, List (BlockWithMeta (Maybe String)) )
+                        gatherHeadingOccurrences =
                             Block.mapAccuml
                                 (\soFar block ->
                                     case block of
@@ -186,7 +219,7 @@ suite =
                     , Heading H1 [ Text "bar" ]
                     , Heading H1 [ Text "foo" ]
                     ]
-                        |> gatherHeadingOccurences
+                        |> gatherHeadingOccurrences
                         |> Expect.equal
                             ( Dict.fromList
                                 [ ( "bar", 1 )
