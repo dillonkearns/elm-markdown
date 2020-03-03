@@ -161,7 +161,7 @@ headingLevelToInt headingLevel =
             [ Text "emphasis" ]
         ]
 
-    extractText inlines == "Heading with emphasis"
+    extractInlineText inlines == "Heading with emphasis"
 
     -- Original string: "Heading with *emphasis*"
 
