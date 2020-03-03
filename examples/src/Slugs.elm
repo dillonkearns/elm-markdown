@@ -6,7 +6,7 @@ import Html exposing (Attribute, Html, div, text)
 import Html.Attributes as Attr
 import Html.Events
 import Markdown.Block as Block exposing (Block)
-import Markdown.Parser as Markdown
+import Markdown.Parser
 import Markdown.Renderer exposing (defaultHtmlRenderer)
 import Parser exposing (Problem)
 import Parser.Advanced exposing (DeadEnd)
@@ -19,9 +19,8 @@ view markdownInput =
         [ markdownInputView markdownInput
         , case
             markdownInput
-                |> Markdown.parse
+                |> Markdown.Parser.parse
                 |> Result.map gatherHeadingOccurrences
-                |> Result.map Tuple.second
                 |> Result.mapError deadEndsToString
                 |> Result.andThen
                     (\ast ->
@@ -84,33 +83,35 @@ toSlug string =
 deadEndsToString : List (DeadEnd String Problem) -> String
 deadEndsToString deadEnds =
     deadEnds
-        |> List.map Markdown.deadEndToString
+        |> List.map Markdown.Parser.deadEndToString
         |> String.join "\n"
 
 
-gatherHeadingOccurrences : List Block -> ( Dict.Dict String Int, List ( Block, Maybe String ) )
-gatherHeadingOccurrences =
-    Block.mapAccuml
-        (\soFar block ->
-            case block of
-                Block.Heading level inlines ->
-                    let
-                        rawSlug : String
-                        rawSlug =
-                            Block.extractInlineText inlines
-                                |> toSlug
+gatherHeadingOccurrences : List Block -> List ( Block, Maybe String )
+gatherHeadingOccurrences blocks =
+    blocks
+        |> Block.mapAccuml
+            (\soFar block ->
+                case block of
+                    Block.Heading level inlines ->
+                        let
+                            rawSlug : String
+                            rawSlug =
+                                Block.extractInlineText inlines
+                                    |> toSlug
 
-                        ( finalSlug, updatedOccurences ) =
-                            trackOccurence rawSlug soFar
-                    in
-                    ( updatedOccurences
-                    , ( Block.Heading level inlines, Just finalSlug )
-                    )
+                            ( finalSlug, updatedOccurences ) =
+                                trackOccurence rawSlug soFar
+                        in
+                        ( updatedOccurences
+                        , ( Block.Heading level inlines, Just finalSlug )
+                        )
 
-                _ ->
-                    ( soFar, ( block, Nothing ) )
-        )
-        Dict.empty
+                    _ ->
+                        ( soFar, ( block, Nothing ) )
+            )
+            Dict.empty
+        |> Tuple.second
 
 
 {-| Credit for this algorithm goes to

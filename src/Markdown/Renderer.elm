@@ -196,6 +196,33 @@ render renderer ast =
         |> combineResults
 
 
+{-| Render Tuples of Blocks with arbitrary metadata. See `examples/src/Slugs.elm` for a full example that shows how to
+add metadata to blocks.
+
+    import Markdown.Parser
+    import Markdown.Renderer exposing (defaultHtmlRenderer)
+
+    markdownInput
+        |> Markdown.Parser.parse
+        |> Result.map gatherHeadingOccurrences
+        |> Result.mapError deadEndsToString
+        |> Result.andThen
+            (\ast ->
+                Markdown.Renderer.renderWithMeta
+                    (\maybeSlug ->
+                        { defaultHtmlRenderer
+                            | heading =
+                                \{ level, children } ->
+                                    Html.h1
+                                        [ Attr.id (maybeSlug |> Maybe.withDefault "")
+                                        ]
+                                        children
+                        }
+                    )
+                    ast
+            )
+
+-}
 renderWithMeta : (meta -> Renderer view) -> List ( Block, meta ) -> Result String (List view)
 renderWithMeta renderWithMetaFn blocksWithMeta =
     blocksWithMeta
