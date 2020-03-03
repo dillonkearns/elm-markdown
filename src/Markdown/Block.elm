@@ -443,6 +443,7 @@ filter isGood list =
     foldl
         (\x xs ->
             if isGood x then
+                -- TODO need to handle nesting here
                 (::) x xs
 
             else
