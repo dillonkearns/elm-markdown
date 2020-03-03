@@ -1,6 +1,7 @@
 module Markdown.Renderer exposing
     ( Renderer, render
     , defaultHtmlRenderer
+    , renderWithMeta
     )
 
 {-|
@@ -8,6 +9,11 @@ module Markdown.Renderer exposing
 @docs Renderer, render
 
 @docs defaultHtmlRenderer
+
+
+## Attaching Metadata to Blocks
+
+@docs renderWithMeta
 
 -}
 
@@ -187,6 +193,13 @@ render :
 render renderer ast =
     ast
         |> renderHelper renderer
+        |> combineResults
+
+
+renderWithMeta : (meta -> Renderer view) -> List ( Block, meta ) -> Result String (List view)
+renderWithMeta renderWithMetaFn blocksWithMeta =
+    blocksWithMeta
+        |> List.filterMap (\( block, meta ) -> renderHelperSingle (renderWithMetaFn meta) block)
         |> combineResults
 
 
