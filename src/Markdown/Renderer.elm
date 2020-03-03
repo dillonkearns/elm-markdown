@@ -42,8 +42,8 @@ type alias Renderer view =
     , strong : List view -> view
     , emphasis : List view -> view
     , hardLineBreak : view
-    , link : { title : Maybe String, destination : String } -> List view -> Result String view
-    , image : { alt : String, src : String, title : Maybe String } -> Result String view
+    , link : { title : Maybe String, destination : String } -> List view -> view
+    , image : { alt : String, src : String, title : Maybe String } -> view
     , unorderedList : List (ListItem view) -> view
     , orderedList : Int -> List (List view) -> view
     , codeBlock : { body : String, language : Maybe String } -> view
@@ -94,11 +94,9 @@ defaultHtmlRenderer =
                         , Attr.title title
                         ]
                         content
-                        |> Ok
 
                 Nothing ->
                     Html.a [ Attr.href link.destination ] content
-                        |> Ok
     , image =
         \imageInfo ->
             case imageInfo.title of
@@ -109,7 +107,6 @@ defaultHtmlRenderer =
                         , Attr.title title
                         ]
                         []
-                        |> Ok
 
                 Nothing ->
                     Html.img
@@ -117,7 +114,6 @@ defaultHtmlRenderer =
                         , Attr.alt imageInfo.alt
                         ]
                         []
-                        |> Ok
     , text =
         Html.text
     , unorderedList =
@@ -336,6 +332,7 @@ renderSingleInline renderer inline =
 
         Block.Image src title children ->
             renderer.image { alt = Block.extractInlineText children, src = src, title = title }
+                |> Ok
                 |> Just
 
         Block.Text string ->
@@ -353,6 +350,7 @@ renderSingleInline renderer inline =
                 |> Result.andThen
                     (\children ->
                         renderer.link { title = title, destination = destination } children
+                            |> Ok
                     )
                 |> Just
 
