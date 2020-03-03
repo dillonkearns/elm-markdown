@@ -218,71 +218,73 @@ renderHelper :
     -> List Block
     -> List (Result String view)
 renderHelper renderer blocks =
-    List.filterMap
-        (\block ->
-            case block of
-                Block.Heading level content ->
-                    renderStyled renderer content
-                        |> Result.map
-                            (\children ->
-                                renderer.heading
-                                    { level = level
-                                    , rawText = Block.extractInlineText content
-                                    , children = children
-                                    }
-                            )
-                        |> Just
+    List.filterMap (renderHelperSingle renderer) blocks
 
-                Block.Paragraph content ->
-                    renderStyled renderer content
-                        |> Result.map renderer.paragraph
-                        |> Just
 
-                Block.HtmlBlock html ->
-                    case html of
-                        Block.HtmlElement tag attributes children ->
-                            renderHtmlNode renderer tag attributes children
-                                |> Just
+renderHelperSingle : Renderer view -> Block -> Maybe (Result String view)
+renderHelperSingle renderer =
+    \block ->
+        case block of
+            Block.Heading level content ->
+                renderStyled renderer content
+                    |> Result.map
+                        (\children ->
+                            renderer.heading
+                                { level = level
+                                , rawText = Block.extractInlineText content
+                                , children = children
+                                }
+                        )
+                    |> Just
 
-                        _ ->
-                            Nothing
+            Block.Paragraph content ->
+                renderStyled renderer content
+                    |> Result.map renderer.paragraph
+                    |> Just
 
-                Block.UnorderedList items ->
-                    items
-                        |> List.map
-                            (\(Block.ListItem task children) ->
-                                children
-                                    |> renderStyled renderer
-                                    |> Result.map (\renderedBody -> Block.ListItem task renderedBody)
-                            )
-                        |> combineResults
-                        |> Result.map renderer.unorderedList
-                        |> Just
+            Block.HtmlBlock html ->
+                case html of
+                    Block.HtmlElement tag attributes children ->
+                        renderHtmlNode renderer tag attributes children
+                            |> Just
 
-                Block.OrderedList startingIndex items ->
-                    items
-                        |> List.map (renderStyled renderer)
-                        |> combineResults
-                        |> Result.map (renderer.orderedList startingIndex)
-                        |> Just
+                    _ ->
+                        Nothing
 
-                Block.CodeBlock codeBlock ->
-                    codeBlock
-                        |> renderer.codeBlock
-                        |> Ok
-                        |> Just
+            Block.UnorderedList items ->
+                items
+                    |> List.map
+                        (\(Block.ListItem task children) ->
+                            children
+                                |> renderStyled renderer
+                                |> Result.map (\renderedBody -> Block.ListItem task renderedBody)
+                        )
+                    |> combineResults
+                    |> Result.map renderer.unorderedList
+                    |> Just
 
-                Block.ThematicBreak ->
-                    Ok renderer.thematicBreak
-                        |> Just
+            Block.OrderedList startingIndex items ->
+                items
+                    |> List.map (renderStyled renderer)
+                    |> combineResults
+                    |> Result.map (renderer.orderedList startingIndex)
+                    |> Just
 
-                Block.BlockQuote nestedBlocks ->
-                    renderHelper renderer nestedBlocks
-                        |> combineResults
-                        |> Result.map renderer.blockQuote
-                        |> Just
-        )
-        blocks
+            Block.CodeBlock codeBlock ->
+                codeBlock
+                    |> renderer.codeBlock
+                    |> Ok
+                    |> Just
+
+            Block.ThematicBreak ->
+                Ok renderer.thematicBreak
+                    |> Just
+
+            Block.BlockQuote nestedBlocks ->
+                renderHelper renderer nestedBlocks
+                    |> combineResults
+                    |> Result.map renderer.blockQuote
+                    |> Just
 
 
 renderStyled : Renderer view -> List Inline -> Result String (List view)
