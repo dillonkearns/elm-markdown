@@ -23,9 +23,6 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run:
-      using: 'node12'
-      main: 'elm/index.js'
     - uses: dillonkearns/elm-check-action@master
       with:
         milliseconds: 1000
