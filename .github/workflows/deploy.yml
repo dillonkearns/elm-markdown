@@ -22,6 +22,6 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - uses: dillonkearns/elm-check-action@master
+    - uses: dillonkearns/elm-actions@master
       with:
         milliseconds: 1000
