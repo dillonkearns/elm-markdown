@@ -24,4 +24,4 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - uses: dillonkearns/elm-actions@master
       with:
-        milliseconds: 1000
+        github-token: ${{ secrets.GITHUB_TOKEN }}
