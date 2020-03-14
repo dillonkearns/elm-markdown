@@ -1,9 +1,11 @@
 module Markdown.Block exposing
-    ( Inline, InlineLink(..), InlineStyle
-    , Block(..)
+    ( Block(..)
+    , Inline, InlineLink(..), InlineStyle
     )
 
 {-|
+
+@docs Block
 
 
 ## Inlines
