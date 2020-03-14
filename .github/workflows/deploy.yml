@@ -26,9 +26,9 @@ jobs:
     - run:
       using: 'node12'
       main: 'elm/index.js'
-    - uses: actions/elm
+    - uses: dillonkearns/elm-check-action@master
       with:
-        github-token: ${{ secrets.github-token }}
+        milliseconds: 1000
 
     - run: npm ci
     - run: npm run build --if-present
