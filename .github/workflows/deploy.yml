@@ -26,4 +26,4 @@ jobs:
       run: npx --no-install elm-format --validate
     - name: Build elm docs
       run: npx --no-install elm make --docs docs.json
-    # - uses: dillonkearns/elm-actions@master
+    - uses: dillonkearns/elm-actions@master
