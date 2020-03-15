@@ -10,7 +10,7 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
 
     steps:
@@ -22,8 +22,33 @@ jobs:
     - run: npm install
     - name: elm-test
       run: npx --no-install elm-test
+
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js 13
+      uses: actions/setup-node@v1
+      with:
+        node-version: 13
+    - run: npm install
     - name: elm-format
       run: npx --no-install elm-format --validate
+    - name: Build elm docs
+      run: ./node_modules/.bin/elm make --docs docs.json
+    - uses: dillonkearns/elm-actions@master
+
+  validate-package:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js 13
+      uses: actions/setup-node@v1
+      with:
+        node-version: 13
+    - run: npm install
     - name: Build elm docs
       run: ./node_modules/.bin/elm make --docs docs.json
     - uses: dillonkearns/elm-actions@master
