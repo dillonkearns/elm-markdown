@@ -37,7 +37,6 @@ jobs:
       run: npx --no-install elm-format --validate
     - name: Build elm docs
       run: ./node_modules/.bin/elm make --docs docs.json
-    - uses: dillonkearns/elm-actions@master
 
   validate-package:
     runs-on: ubuntu-latest
@@ -51,4 +50,16 @@ jobs:
     - run: npm install
     - name: Build elm docs
       run: ./node_modules/.bin/elm make --docs docs.json
+
+  publish-elm-package:
+    needs: [test, lint, validate-package]
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js 13
+      uses: actions/setup-node@v1
+      with:
+        node-version: 13
+    - run: npm install
     - uses: dillonkearns/elm-actions@master
