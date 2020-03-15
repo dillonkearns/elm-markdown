@@ -64,4 +64,4 @@ jobs:
     - run: npm install
     - uses: dillonkearns/elm-actions@master
       with:
-        github-token: ${{ process.env.GITHUB_TOKEN }}
+        github-token: ${{ secrets.GITHUB_TOKEN }}
