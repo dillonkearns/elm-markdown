@@ -19,4 +19,10 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 13
-    - uses: dillonkearns/elm-actions@master
+    - name: elm-test
+      run: npx --no-install elm-test
+    - name: elm-format
+      run: npx --no-install elm-format --validate
+    - name: Build elm docs
+      run: npx --no-install elm --docs docs.json
+    # - uses: dillonkearns/elm-actions@master
