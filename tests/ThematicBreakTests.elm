@@ -18,7 +18,11 @@ type ThematicBreak
 
 parser : Parser ThematicBreak
 parser =
-    Advanced.loop NoMatchYet statementsHelp
+    succeed identity
+        |. oneOf [ chompIf (\c -> c == ' ') (Parser.Expecting "Space"), succeed () ]
+        |. oneOf [ chompIf (\c -> c == ' ') (Parser.Expecting "Space"), succeed () ]
+        |. oneOf [ chompIf (\c -> c == ' ') (Parser.Expecting "Space"), succeed () ]
+        |= Advanced.loop NoMatchYet statementsHelp
 
 
 type State
@@ -104,8 +108,7 @@ suite =
             \() ->
                 "***"
                     |> Advanced.run parser
-                    |> Expect.equal
-                        (Ok ThematicBreak)
+                    |> Expect.equal (Ok ThematicBreak)
         , test "not enough characters" <|
             \() ->
                 "**"
@@ -114,6 +117,16 @@ suite =
             \() ->
                 "hello!"
                     |> expectFail
+        , test "can start with a space" <|
+            \() ->
+                " ***"
+                    |> Advanced.run parser
+                    |> Expect.equal (Ok ThematicBreak)
+        , test "can start with up to 3 spaces" <|
+            \() ->
+                "   ***"
+                    |> Advanced.run parser
+                    |> Expect.equal (Ok ThematicBreak)
 
         --, test "mixed is not a thematic break" <|
         --    \() ->
