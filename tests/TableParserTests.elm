@@ -40,13 +40,13 @@ rowParser =
             (Advanced.chompUntilEndOr "\n")
 
 
-type DelimeterRow
-    = DelimeterRow Int
+type DelimiterRow
+    = DelimiterRow Int
 
 
-delimiterRowParser : Parser DelimeterRow
+delimiterRowParser : Parser DelimiterRow
 delimiterRowParser =
-    succeed (DelimeterRow 1)
+    succeed (DelimiterRow 1)
 
 
 dropTrailingPipe : String -> String
@@ -101,13 +101,13 @@ suite =
                     "|---|"
                         |> Advanced.run delimiterRowParser
                         |> Expect.equal
-                            (Ok (DelimeterRow 1))
+                            (Ok (DelimiterRow 1))
             , test "single without pipes" <|
                 \() ->
                     "|--|"
                         |> Advanced.run delimiterRowParser
                         |> Expect.equal
-                            (Ok (DelimeterRow 1))
+                            (Ok (DelimiterRow 1))
             ]
         , describe "row parser"
             [ test "parse row" <|
