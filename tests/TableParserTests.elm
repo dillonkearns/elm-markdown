@@ -147,6 +147,13 @@ suite =
                         |> Advanced.run delimiterRowParser
                         |> Expect.equal
                             (Ok (DelimiterRow 2))
+            , test "delimiter row with no trailing or leading pipes" <|
+                \() ->
+                    -- TODO should this be an error?
+                    "--"
+                        |> Advanced.run delimiterRowParser
+                        |> Expect.equal
+                            (Ok (DelimiterRow 1))
             ]
         , describe "row parser"
             [ test "parse row" <|
@@ -187,6 +194,15 @@ suite =
               | **Cell 1** | Cell 2 | Extra col |
         -}
         ]
+
+
+expectParserFail input someParser =
+    case Advanced.run someParser input of
+        Ok _ ->
+            Expect.fail "Expected a parser error."
+
+        Err _ ->
+            Expect.pass
 
 
 expectFail input =
