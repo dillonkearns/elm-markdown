@@ -35,6 +35,7 @@ type ThematicToken
     = Star
     | Dash
     | Finished
+    | Whitespace
 
 
 statementsHelp : State -> Parser (Advanced.Step State ThematicBreak)
@@ -44,6 +45,7 @@ statementsHelp state =
         , tokenHelp "*" |> map (\_ -> Star)
         , end (Parser.Expecting "end") |> map (\_ -> Finished)
         , tokenHelp "\n" |> map (\_ -> Finished)
+        , chompIf (\c -> c == ' ') (Parser.Expecting "Space") |> map (\_ -> Whitespace)
         ]
         |> andThen
             (\thematicToken ->
@@ -71,6 +73,10 @@ statementsHelp state =
 
                     ( Dash, NoMatchYet ) ->
                         Advanced.Loop (Hyphen 1)
+                            |> succeed
+
+                    ( Whitespace, _ ) ->
+                        Advanced.Loop state
                             |> succeed
 
                     _ ->
@@ -125,6 +131,11 @@ suite =
         , test "can start with up to 3 spaces" <|
             \() ->
                 "   ***"
+                    |> Advanced.run parser
+                    |> Expect.equal (Ok ThematicBreak)
+        , test "any number of spaces can occur between and after thematic break tokens" <|
+            \() ->
+                "- - - -    "
                     |> Advanced.run parser
                     |> Expect.equal (Ok ThematicBreak)
         , test "mixed is not a thematic break" <|
