@@ -11,6 +11,10 @@ type alias Parser a =
     Advanced.Parser String Parser.Problem a
 
 
+type alias MyParser a =
+    Advanced.Parser String Parser.Problem a
+
+
 type alias Row =
     List String
 
@@ -24,8 +28,10 @@ parser =
                 []
         )
         |= rowParser
+        |. (delimiterRowParser |> map (Debug.log "delimiter"))
 
 
+rowParser : MyParser (List String)
 rowParser =
     succeed
         (\rowString ->
@@ -39,6 +45,10 @@ rowParser =
             ]
         |= Advanced.getChompedString
             (Advanced.chompUntilEndOr "\n")
+        |. oneOf
+            [ Advanced.end (Parser.Expecting "end")
+            , chompIf (\c -> c == '\n') (Parser.Expecting "\\n")
+            ]
 
 
 type DelimiterRow
@@ -107,8 +117,7 @@ suite =
         [ test "simple case" <|
             \() ->
                 """| abc | def |
-| --- | --- |
-                """
+|---|---|"""
                     |> Advanced.run parser
                     |> Expect.equal
                         (Ok
@@ -117,6 +126,13 @@ suite =
                                 []
                             )
                         )
+        , test "table must have a delimiter row" <|
+            \() ->
+                """| abc | def |
+
+Hey, I forgot to finish my table! Whoops!
+                           """
+                    |> expectFail
         , describe "delimiter row"
             [ test "single with pipes" <|
                 \() ->
