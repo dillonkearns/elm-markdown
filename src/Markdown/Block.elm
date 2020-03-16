@@ -6,7 +6,7 @@ module Markdown.Block exposing
     , Inline(..)
     , HtmlAttribute
     , extractInlineText
-    , map, mapInlines, validateMapInlines, mapAccuml, foldl
+    , mapInlines, validateMapInlines, mapAccuml, foldl
     )
 
 {-|
@@ -281,14 +281,14 @@ walkInlinesHelp function block =
             List.map (inlineParserWalk function) inlines
                 |> Paragraph
 
-        --Heading rawText level inlines ->
-        --    List.map (Inline.walk function) inlines
-        --        |> Heading rawText level
-        --
-        --PlainInlines inlines ->
-        --    List.map (Inline.walk function) inlines
-        --        |> PlainInlines
-        --
+        UnorderedList listItems ->
+            List.map
+                (\(ListItem task children) ->
+                    ListItem task (List.map (inlineParserWalk function) children)
+                )
+                listItems
+                |> UnorderedList
+
         _ ->
             block
 
@@ -372,26 +372,6 @@ walk function block =
 
         _ ->
             function block
-
-
-
---
---
---Heading headingLevel inlines ->
---
---
---Paragraph inlines ->
---
---
---CodeBlock record ->
---
---
---ThematicBreak ->
---HtmlBlock html ->
---Block.OrderedList startingIndex items ->
---    List.map (List.map (walk function)) items
---        |> Block.OrderedList startingIndex
---        |> function
 
 
 validateMap : (Block -> Result error value) -> List Block -> Result error (List value)
