@@ -36,7 +36,7 @@ See <Markdown.Html> for more.
 
 ## Transformations
 
-@docs map, walkInlines, validateMapInlines, mapAccuml, foldl
+@docs walkInlines, validateMapInlines, mapAccuml, foldl
 
 -}
 
@@ -424,7 +424,37 @@ mapAccuml function initialValue blocks =
     ( accFinal, List.reverse generatedList )
 
 
-{-| TODO
+{-| Fold over all blocks to yield a value.
+
+    import Markdown.Block as Block exposing (..)
+
+    let
+        maximumHeadingLevel : List Block -> Maybe HeadingLevel
+        maximumHeadingLevel blocks =
+            blocks
+                |> Block.foldl
+                    (\block maxSoFar ->
+                        case block of
+                            Heading level _ ->
+                                if Block.headingLevelToInt level > (maxSoFar |> Maybe.map Block.headingLevelToInt |> Maybe.withDefault 0) then
+                                    Just level
+
+                                else
+                                    maxSoFar
+
+                            _ ->
+                                maxSoFar
+                    )
+                    Nothing
+    in
+    [ Heading H1 [ Text "Document" ]
+    , Heading H2 [ Text "Section A" ]
+    , Heading H3 [ Text "Subsection" ]
+    , Heading H2 [ Text "Section B" ]
+    ]
+        |> maximumHeadingLevel
+        |> Expect.equal (Just H3)
+
 -}
 foldl : (Block -> acc -> acc) -> acc -> List Block -> acc
 foldl function acc list =
