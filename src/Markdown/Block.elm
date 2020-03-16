@@ -261,14 +261,6 @@ validateMapInlines function blocks =
         |> validateMap newThing
 
 
-{-| TODO recursively apply maps to container blocks
--}
-map : (Block -> value) -> List Block -> List value
-map mapFn blocks =
-    blocks
-        |> List.map mapFn
-
-
 {-| TODO
 -}
 mapInlines : (Inline -> Inline) -> List Block -> List Block
