@@ -127,13 +127,10 @@ suite =
                 "   ***"
                     |> Advanced.run parser
                     |> Expect.equal (Ok ThematicBreak)
-
-        --, test "mixed is not a thematic break" <|
-        --    \() ->
-        --        "--*"
-        --            |> Advanced.run parser
-        --            |> Expect.equal
-        --                (Ok ThematicBreak)
+        , test "mixed is not a thematic break" <|
+            \() ->
+                "--*"
+                    |> expectFail
         ]
 
 
