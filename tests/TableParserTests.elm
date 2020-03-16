@@ -15,8 +15,9 @@ type alias Row =
     List String
 
 
+parser : Parser Table
 parser =
-    Parser.succeed
+    Advanced.succeed
         (\header ->
             Table
                 header
