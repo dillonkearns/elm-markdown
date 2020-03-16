@@ -29,6 +29,21 @@ suite =
                                 []
                             )
                         )
+        , test "simple case with training whitespace" <|
+            \() ->
+                """| abc | def |
+|---|---|
+"""
+                    |> Advanced.run parser
+                    |> Expect.equal
+                        (Ok
+                            (Markdown.Table.Table
+                                [ { label = " abc ", alignment = Nothing }
+                                , { label = " def ", alignment = Nothing }
+                                ]
+                                []
+                            )
+                        )
         , test "tables must have at least one delimiter" <|
             \() ->
                 """| abc | def |

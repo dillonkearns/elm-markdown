@@ -79,8 +79,14 @@ statementsHelp found =
                 [ hyphens found
                 , Advanced.end (Parser.Expecting "end")
                     |> map (\_ -> Done (DelimiterRow found))
+                , tokenHelp "\n"
+                    --|. chompIf (\c -> c == '\n') (Parser.Expecting "\\n")
+                    |> map (\_ -> Done (DelimiterRow found))
                 ]
         , hyphens found
+        , tokenHelp "\n"
+            --|. chompIf (\c -> c == '\n') (Parser.Expecting "\\n")
+            |> map (\_ -> Done (DelimiterRow found))
         , Advanced.end (Parser.Expecting "end")
             |> map (\_ -> Done (DelimiterRow found))
         ]

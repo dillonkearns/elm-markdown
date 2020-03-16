@@ -3,6 +3,7 @@ module Tests exposing (suite)
 import Expect exposing (Expectation)
 import Markdown.Block as Block exposing (..)
 import Markdown.Parser as Markdown exposing (..)
+import Markdown.Table
 import Parser
 import Parser.Advanced as Advanced exposing ((|.), (|=))
 import Test exposing (..)
@@ -238,6 +239,23 @@ Hello!
                     |> Expect.equal
                         (Ok
                             [ Block.ThematicBreak
+                            ]
+                        )
+        , test "simple table" <|
+            \() ->
+                """| abc | def |
+|---|---|
+"""
+                    |> parse
+                    |> Expect.equal
+                        (Ok
+                            [ Block.Table
+                                (Markdown.Table.Table
+                                    [ { label = [ Text "abc" ], alignment = Nothing }
+                                    , { label = [ Text "def" ], alignment = Nothing }
+                                    ]
+                                    []
+                                )
                             ]
                         )
         , test "multiple thematic breaks" <|
