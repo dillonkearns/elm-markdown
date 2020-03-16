@@ -87,7 +87,6 @@ type Block
     | Heading HeadingLevel (List Inline)
     | Paragraph (List Inline)
     | Table (Markdown.Table.Table (List Inline))
-      -- Table TODO  https://github.github.com/gfm/#tables-extension-
       -- Leaf Blocks Without Inlines
     | CodeBlock { body : String, language : Maybe String }
     | ThematicBreak
