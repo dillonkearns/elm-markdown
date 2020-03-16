@@ -2,6 +2,7 @@ module ThematicBreak exposing (ThematicBreak(..), parser)
 
 import Parser
 import Parser.Advanced as Advanced exposing (..)
+import Parser.Extra as Extra exposing (tokenHelp)
 
 
 type alias Parser a =
@@ -100,7 +101,3 @@ succeedIfEnough occurences =
 
     else
         problem (Parser.Expecting "...?")
-
-
-tokenHelp char =
-    Advanced.token (Advanced.Token char (Parser.Expecting char))
