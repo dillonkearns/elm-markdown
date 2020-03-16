@@ -103,6 +103,14 @@ suite =
                             (Ok
                                 [ " abc " ]
                             )
+            , test "row without trailing or leading pipes" <|
+                \() ->
+                    "cell 1 | cell 2 | cell 3"
+                        |> Advanced.run rowParser
+                        |> Expect.equal
+                            (Ok
+                                [ "cell 1 ", " cell 2 ", " cell 3" ]
+                            )
             ]
 
         {-
