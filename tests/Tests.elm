@@ -240,6 +240,19 @@ Hello!
                             [ Block.ThematicBreak
                             ]
                         )
+        , test "multiple thematic breaks" <|
+            \() ->
+                """***
+---
+___"""
+                    |> parse
+                    |> Expect.equal
+                        (Ok
+                            [ Block.ThematicBreak
+                            , Block.ThematicBreak
+                            , Block.ThematicBreak
+                            ]
+                        )
         , test "thematic break followed by newline" <|
             \() ->
                 """---

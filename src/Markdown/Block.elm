@@ -6,6 +6,7 @@ module Markdown.Block exposing
     , Inline(..)
     , HtmlAttribute
     , extractInlineText
+    , walkInlines, validateMapInlines, mapAccuml, foldl
     )
 
 {-|
@@ -31,6 +32,11 @@ See <Markdown.Html> for more.
 @docs Inline
 @docs HtmlAttribute
 @docs extractInlineText
+
+
+## Transformations
+
+@docs walkInlines, validateMapInlines, mapAccuml, foldl
 
 -}
 
@@ -232,3 +238,260 @@ type Html children
 -}
 type alias HtmlAttribute =
     { name : String, value : String }
+
+
+{-| TODO
+-}
+validateMapInlines : (Inline -> Result error Inline) -> List Block -> Result (List error) (List Block)
+validateMapInlines function blocks =
+    let
+        newThing : Block -> Result (List error) Block
+        newThing block =
+            case block of
+                Paragraph inlines ->
+                    inlines
+                        |> List.map (inlineParserValidateWalk function)
+                        |> combine
+                        |> Result.map Paragraph
+
+                _ ->
+                    Debug.todo ""
+    in
+    blocks
+        |> validateMap newThing
+
+
+{-| TODO
+-}
+walkInlines : (Inline -> Inline) -> Block -> Block
+walkInlines function block =
+    walk (walkInlinesHelp function) block
+
+
+walkInlinesHelp : (Inline -> Inline) -> Block -> Block
+walkInlinesHelp function block =
+    case block of
+        Paragraph inlines ->
+            List.map (inlineParserWalk function) inlines
+                |> Paragraph
+
+        UnorderedList listItems ->
+            List.map
+                (\(ListItem task children) ->
+                    ListItem task (List.map (inlineParserWalk function) children)
+                )
+                listItems
+                |> UnorderedList
+
+        OrderedList startingIndex listItems ->
+            List.map
+                (List.map (inlineParserWalk function))
+                listItems
+                |> OrderedList startingIndex
+
+        BlockQuote children ->
+            BlockQuote (List.map (walkInlinesHelp function) children)
+
+        Heading level children ->
+            Heading level (List.map function children)
+
+        HtmlBlock html ->
+            case html of
+                HtmlElement string htmlAttributes blocks ->
+                    HtmlElement string
+                        htmlAttributes
+                        (List.map (walkInlinesHelp function) blocks)
+                        |> HtmlBlock
+
+                _ ->
+                    block
+
+        _ ->
+            block
+
+
+inlineParserWalk : (Inline -> Inline) -> Inline -> Inline
+inlineParserWalk function inline =
+    case inline of
+        Link url maybeTitle inlines ->
+            List.map (inlineParserWalk function) inlines
+                |> Link url maybeTitle
+                |> function
+
+        Image url maybeTitle inlines ->
+            List.map (inlineParserWalk function) inlines
+                |> Image url maybeTitle
+                |> function
+
+        Emphasis inlines ->
+            List.map (inlineParserWalk function) inlines
+                |> Emphasis
+                |> function
+
+        --HtmlInline tag attrs inlines ->
+        --    List.map (inlineParserWalk function) inlines
+        --        |> HtmlInline tag attrs
+        --        |> function
+        _ ->
+            function inline
+
+
+inlineParserValidateWalk : (Inline -> Result error Inline) -> Inline -> Result (List error) Inline
+inlineParserValidateWalk function inline =
+    case inline of
+        Link url maybeTitle inlines ->
+            List.map (inlineParserValidateWalk function) inlines
+                |> combine
+                |> Result.andThen
+                    (\nestedInlines ->
+                        Link url maybeTitle nestedInlines
+                            |> function
+                            |> Result.mapError List.singleton
+                    )
+
+        --Image url maybeTitle inlines ->
+        --    List.map (inlineParserWalk function) inlines
+        --        |> Image url maybeTitle
+        --        |> function
+        --
+        --Emphasis inlines ->
+        --    List.map (inlineParserWalk function) inlines
+        --        |> Emphasis
+        --        |> function
+        --HtmlInline tag attrs inlines ->
+        --    List.map (inlineParserWalk function) inlines
+        --        |> HtmlInline tag attrs
+        --        |> function
+        _ ->
+            function inline
+                |> Result.mapError List.singleton
+
+
+walk : (Block -> Block) -> Block -> Block
+walk function block =
+    case block of
+        BlockQuote blocks ->
+            List.map (walk function) blocks
+                |> BlockQuote
+                |> function
+
+        HtmlBlock html ->
+            case html of
+                HtmlElement string htmlAttributes blocks ->
+                    HtmlElement string
+                        htmlAttributes
+                        (List.map (walk function) blocks)
+                        |> HtmlBlock
+                        |> function
+
+                _ ->
+                    function block
+
+        _ ->
+            function block
+
+
+validateMap : (Block -> Result error value) -> List Block -> Result error (List value)
+validateMap mapFn blocks =
+    blocks
+        |> List.map mapFn
+        |> combine
+
+
+{-| Combine a list of results into a single result (holding a list).
+-}
+combine : List (Result x a) -> Result x (List a)
+combine =
+    List.foldr (Result.map2 (::)) (Ok [])
+
+
+{-| -}
+mapAccuml : (soFar -> Block -> ( soFar, mappedValue )) -> soFar -> List Block -> ( soFar, List mappedValue )
+mapAccuml function initialValue blocks =
+    let
+        ( accFinal, generatedList ) =
+            foldl
+                (\x ( acc1, ys ) ->
+                    let
+                        ( acc2, y ) =
+                            function acc1 x
+                    in
+                    ( acc2, y :: ys )
+                )
+                ( initialValue, [] )
+                blocks
+    in
+    ( accFinal, List.reverse generatedList )
+
+
+{-| Fold over all blocks to yield a value.
+
+    import Markdown.Block as Block exposing (..)
+
+    maximumHeadingLevel : List Block -> Maybe HeadingLevel
+    maximumHeadingLevel blocks =
+        blocks
+            |> Block.foldl
+                (\block maxSoFar ->
+                    case block of
+                        Heading level _ ->
+                            if Block.headingLevelToInt level > (maxSoFar |> Maybe.map Block.headingLevelToInt |> Maybe.withDefault 0) then
+                                Just level
+                            else
+                                maxSoFar
+                        _ ->
+                            maxSoFar
+                )
+                Nothing
+
+    [ Heading H1 [ Text "Document" ]
+    , Heading H2 [ Text "Section A" ]
+    , Heading H3 [ Text "Subsection" ]
+    , Heading H2 [ Text "Section B" ]
+    ]
+        |> maximumHeadingLevel
+    -->  (Just H3)
+
+-}
+foldl : (Block -> acc -> acc) -> acc -> List Block -> acc
+foldl function acc list =
+    case list of
+        [] ->
+            acc
+
+        block :: remainingBlocks ->
+            case block of
+                HtmlBlock html ->
+                    case html of
+                        HtmlElement _ _ children ->
+                            foldl function (function block acc) (children ++ remainingBlocks)
+
+                        _ ->
+                            foldl function (function block acc) remainingBlocks
+
+                UnorderedList listItems ->
+                    foldl function (function block acc) remainingBlocks
+
+                OrderedList int lists ->
+                    foldl function (function block acc) remainingBlocks
+
+                BlockQuote blocks ->
+                    foldl function (function block acc) (blocks ++ remainingBlocks)
+
+                _ ->
+                    foldl function (function block acc) remainingBlocks
+
+
+filter : (Block -> Bool) -> List Block -> List Block
+filter isGood list =
+    foldl
+        (\x xs ->
+            if isGood x then
+                -- TODO need to handle nesting here
+                (::) x xs
+
+            else
+                xs
+        )
+        []
+        list

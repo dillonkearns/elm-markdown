@@ -93,11 +93,9 @@ renderMarkdown markdown =
                                 , Attr.title title
                                 ]
                                 content
-                                |> Ok
 
                         Nothing ->
                             Html.a [ Attr.href link.destination ] content
-                                |> Ok
             , image =
                 \imageInfo ->
                     case imageInfo.title of
@@ -108,7 +106,6 @@ renderMarkdown markdown =
                                 , Attr.title title
                                 ]
                                 []
-                                |> Ok
 
                         Nothing ->
                             Html.img
@@ -116,7 +113,6 @@ renderMarkdown markdown =
                                 , Attr.alt imageInfo.alt
                                 ]
                                 []
-                                |> Ok
             , text =
                 Html.text
             , unorderedList =

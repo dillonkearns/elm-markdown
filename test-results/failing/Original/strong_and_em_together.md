@@ -24,5 +24,5 @@ Should give output:
 But instead was:
 
 ````````````html
-ERROR Problem at row 1 Expecting end Problem at row 1 Expecting newline
+<p><strong>This is strong and em.</strong></p><p>So is<strong>this</strong>word.</p><p><strong>This is strong and em.</strong></p><p>So is<strong>this</strong>word.</p>
 ````````````

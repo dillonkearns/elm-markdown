@@ -1,6 +1,7 @@
 module Markdown.Renderer exposing
     ( Renderer, render
     , defaultHtmlRenderer
+    , renderWithMeta
     )
 
 {-|
@@ -8,6 +9,11 @@ module Markdown.Renderer exposing
 @docs Renderer, render
 
 @docs defaultHtmlRenderer
+
+
+## Attaching Metadata to Blocks
+
+@docs renderWithMeta
 
 -}
 
@@ -42,8 +48,8 @@ type alias Renderer view =
     , strong : List view -> view
     , emphasis : List view -> view
     , hardLineBreak : view
-    , link : { title : Maybe String, destination : String } -> List view -> Result String view
-    , image : { alt : String, src : String, title : Maybe String } -> Result String view
+    , link : { title : Maybe String, destination : String } -> List view -> view
+    , image : { alt : String, src : String, title : Maybe String } -> view
     , unorderedList : List (ListItem view) -> view
     , orderedList : Int -> List (List view) -> view
     , codeBlock : { body : String, language : Maybe String } -> view
@@ -94,11 +100,9 @@ defaultHtmlRenderer =
                         , Attr.title title
                         ]
                         content
-                        |> Ok
 
                 Nothing ->
                     Html.a [ Attr.href link.destination ] content
-                        |> Ok
     , image =
         \imageInfo ->
             case imageInfo.title of
@@ -109,7 +113,6 @@ defaultHtmlRenderer =
                         , Attr.title title
                         ]
                         []
-                        |> Ok
 
                 Nothing ->
                     Html.img
@@ -117,7 +120,6 @@ defaultHtmlRenderer =
                         , Attr.alt imageInfo.alt
                         ]
                         []
-                        |> Ok
     , text =
         Html.text
     , unorderedList =
@@ -194,6 +196,40 @@ render renderer ast =
         |> combineResults
 
 
+{-| Render Tuples of Blocks with arbitrary metadata. See `examples/src/Slugs.elm` for a full example that shows how to
+add metadata to blocks.
+
+    import Markdown.Parser
+    import Markdown.Renderer exposing (defaultHtmlRenderer)
+
+    markdownInput
+        |> Markdown.Parser.parse
+        |> Result.map gatherHeadingOccurrences
+        |> Result.mapError deadEndsToString
+        |> Result.andThen
+            (\ast ->
+                Markdown.Renderer.renderWithMeta
+                    (\maybeSlug ->
+                        { defaultHtmlRenderer
+                            | heading =
+                                \{ level, children } ->
+                                    Html.h1
+                                        [ Attr.id (maybeSlug |> Maybe.withDefault "")
+                                        ]
+                                        children
+                        }
+                    )
+                    ast
+            )
+
+-}
+renderWithMeta : (meta -> Renderer view) -> List ( Block, meta ) -> Result String (List view)
+renderWithMeta renderWithMetaFn blocksWithMeta =
+    blocksWithMeta
+        |> List.filterMap (\( block, meta ) -> renderHelperSingle (renderWithMetaFn meta) block)
+        |> combineResults
+
+
 renderHtml :
     String
     -> List Attribute
@@ -222,71 +258,73 @@ renderHelper :
     -> List Block
     -> List (Result String view)
 renderHelper renderer blocks =
-    List.filterMap
-        (\block ->
-            case block of
-                Block.Heading level content ->
-                    renderStyled renderer content
-                        |> Result.map
-                            (\children ->
-                                renderer.heading
-                                    { level = level
-                                    , rawText = Block.extractInlineText content
-                                    , children = children
-                                    }
-                            )
-                        |> Just
+    List.filterMap (renderHelperSingle renderer) blocks
 
-                Block.Paragraph content ->
-                    renderStyled renderer content
-                        |> Result.map renderer.paragraph
-                        |> Just
 
-                Block.HtmlBlock html ->
-                    case html of
-                        Block.HtmlElement tag attributes children ->
-                            renderHtmlNode renderer tag attributes children
-                                |> Just
+renderHelperSingle : Renderer view -> Block -> Maybe (Result String view)
+renderHelperSingle renderer =
+    \block ->
+        case block of
+            Block.Heading level content ->
+                renderStyled renderer content
+                    |> Result.map
+                        (\children ->
+                            renderer.heading
+                                { level = level
+                                , rawText = Block.extractInlineText content
+                                , children = children
+                                }
+                        )
+                    |> Just
 
-                        _ ->
-                            Nothing
+            Block.Paragraph content ->
+                renderStyled renderer content
+                    |> Result.map renderer.paragraph
+                    |> Just
 
-                Block.UnorderedList items ->
-                    items
-                        |> List.map
-                            (\(Block.ListItem task children) ->
-                                children
-                                    |> renderStyled renderer
-                                    |> Result.map (\renderedBody -> Block.ListItem task renderedBody)
-                            )
-                        |> combineResults
-                        |> Result.map renderer.unorderedList
-                        |> Just
+            Block.HtmlBlock html ->
+                case html of
+                    Block.HtmlElement tag attributes children ->
+                        renderHtmlNode renderer tag attributes children
+                            |> Just
 
-                Block.OrderedList startingIndex items ->
-                    items
-                        |> List.map (renderStyled renderer)
-                        |> combineResults
-                        |> Result.map (renderer.orderedList startingIndex)
-                        |> Just
+                    _ ->
+                        Nothing
 
-                Block.CodeBlock codeBlock ->
-                    codeBlock
-                        |> renderer.codeBlock
-                        |> Ok
-                        |> Just
+            Block.UnorderedList items ->
+                items
+                    |> List.map
+                        (\(Block.ListItem task children) ->
+                            children
+                                |> renderStyled renderer
+                                |> Result.map (\renderedBody -> Block.ListItem task renderedBody)
+                        )
+                    |> combineResults
+                    |> Result.map renderer.unorderedList
+                    |> Just
 
-                Block.ThematicBreak ->
-                    Ok renderer.thematicBreak
-                        |> Just
+            Block.OrderedList startingIndex items ->
+                items
+                    |> List.map (renderStyled renderer)
+                    |> combineResults
+                    |> Result.map (renderer.orderedList startingIndex)
+                    |> Just
 
-                Block.BlockQuote nestedBlocks ->
-                    renderHelper renderer nestedBlocks
-                        |> combineResults
-                        |> Result.map renderer.blockQuote
-                        |> Just
-        )
-        blocks
+            Block.CodeBlock codeBlock ->
+                codeBlock
+                    |> renderer.codeBlock
+                    |> Ok
+                    |> Just
+
+            Block.ThematicBreak ->
+                Ok renderer.thematicBreak
+                    |> Just
+
+            Block.BlockQuote nestedBlocks ->
+                renderHelper renderer nestedBlocks
+                    |> combineResults
+                    |> Result.map renderer.blockQuote
+                    |> Just
 
 
 renderStyled : Renderer view -> List Inline -> Result String (List view)
@@ -336,6 +374,7 @@ renderSingleInline renderer inline =
 
         Block.Image src title children ->
             renderer.image { alt = Block.extractInlineText children, src = src, title = title }
+                |> Ok
                 |> Just
 
         Block.Text string ->
@@ -353,6 +392,7 @@ renderSingleInline renderer inline =
                 |> Result.andThen
                     (\children ->
                         renderer.link { title = title, destination = destination } children
+                            |> Ok
                     )
                 |> Just
 

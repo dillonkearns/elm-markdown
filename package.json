@@ -4,10 +4,10 @@
   "description": "Markdown parsing in pure elm.",
   "scripts": {
     "build": "rm -r dist && parcel build src/index.html --public-url ./",
-    "test": "elm-test tests",
+    "test": "elm-test tests && elm-verify-examples --run-tests",
     "autotest": "elm-test --watch tests",
     "test:check-regressions": "git diff --exit-code -- spec-results.json",
-    "test:ete": "cd spec-tests && npx elm make OutputMarkdownHtml.elm --optimize --output elm.js && cd .. && jasmine --config=jasmine.json spec-tests/specs/**/*-spec.js"
+    "test:ete": "cd spec-tests && npx elm make OutputMarkdownHtml.elm --output elm.js && cd .. && jasmine --config=jasmine.json spec-tests/specs/**/*-spec.js"
   },
   "author": "Dillon Kearns",
   "dependencies": {},
@@ -17,6 +17,7 @@
     "elm-format": "^0.8.2",
     "elm-hot": "^1.0.1",
     "elm-test": "0.19.1-revision3",
+    "elm-verify-examples": "^5.0.0",
     "front-matter": "^3.0.2",
     "jasmine": "^3.4.0",
     "json-stable-stringify": "^1.0.1",
