@@ -196,18 +196,15 @@ renderer =
                         ]
                         body
                 }
-                |> Ok
     , hardLineBreak = Html.br [] [] |> Element.html
     , image =
         \image ->
             case image.title of
                 Just title ->
                     Element.image [ Element.width Element.fill ] { src = image.src, description = image.alt }
-                        |> Ok
 
                 Nothing ->
                     Element.image [ Element.width Element.fill ] { src = image.src, description = image.alt }
-                        |> Ok
     , blockQuote =
         \children ->
             Element.column
