@@ -23,7 +23,7 @@ jobs:
           path: ~/.elm
           key: ${{ runner.os }}-elm--home-${{ hashFiles('**/elm.json') }}
       - run: npm ci
-      - run: npx --no-install elm make --output /dev/null && cd examples && npx --no-install elm make src/*.elm --output /dev/null && cd ..
+      - run: ./node_modules/.bin/elm make --output /dev/null && cd examples && ../node_modules/.bin/elm make src/*.elm --output /dev/null && cd ..
       - run: npm test
 
   lint:
@@ -47,7 +47,7 @@ jobs:
           path: ~/.elm
           key: ${{ runner.os }}-elm--home-${{ hashFiles('**/elm.json') }}
       - run: npm ci
-      - run: npx --no-install elm make --output /dev/null && cd examples && npx --no-install elm make src/*.elm --output /dev/null && cd ..
+      - run: ./node_modules/.bin/elm make --output /dev/null && cd examples && ../node_modules/.bin/elm make src/*.elm --output /dev/null && cd ..
       - name: elm-format
         run: npx --no-install elm-format --validate
 
@@ -72,7 +72,7 @@ jobs:
           path: ~/.elm
           key: ${{ runner.os }}-elm--home-${{ hashFiles('**/elm.json') }}
       - run: npm ci
-      - run: npx --no-install elm make --output /dev/null && cd examples && npx --no-install elm make src/*.elm --output /dev/null && cd ..
+      - run: ./node_modules/.bin/elm make --output /dev/null && cd examples && ../node_modules/.bin/elm make src/*.elm --output /dev/null && cd ..
       - name: Markdown specs
         run: npm run test:ete || true
       - name: Make sure test results are committed
@@ -99,7 +99,7 @@ jobs:
           path: ~/.elm
           key: ${{ runner.os }}-elm--home-${{ hashFiles('**/elm.json') }}
       - run: npm ci
-      - run: npx --no-install elm make --output /dev/null && cd examples && npx --no-install elm make src/*.elm --output /dev/null && cd ..
+      - run: ./node_modules/.bin/elm make --output /dev/null && cd examples && ../node_modules/.bin/elm make src/*.elm --output /dev/null && cd ..
       - name: Build elm docs
         run: ./node_modules/.bin/elm make --docs docs.json
 
@@ -125,7 +125,7 @@ jobs:
           path: ~/.elm
           key: ${{ runner.os }}-elm--home-${{ hashFiles('**/elm.json') }}
       - run: npm ci
-      - run: npx --no-install elm make --output /dev/null && cd examples && npx --no-install elm make src/*.elm --output /dev/null && cd ..
+      - run: ./node_modules/.bin/elm make --output /dev/null && cd examples && ../node_modules/.bin/elm make src/*.elm --output /dev/null && cd ..
       - name: Elm Publish
         uses: dillonkearns/elm-publish-action@v1.0.0
         with:
