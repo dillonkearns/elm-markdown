@@ -55,19 +55,19 @@ statementsHelp found =
         [ succeed identity
             |. tokenHelp "|"
             |= oneOf
-                [ oneOrMore (\c -> c == '-')
-                    |> map (\_ -> Loop (found + 1))
+                [ hyphens found
                 , Advanced.end (Parser.Expecting "end")
                     |> map (\_ -> Done (DelimiterRow found))
                 ]
-        , succeed identity
-            |. tokenHelp "|"
-            |. oneOrMore (\c -> c == '-')
-            |> map (\_ -> Loop (found + 1))
-        , succeed identity
-            |. Advanced.end (Parser.Expecting "end")
+        , hyphens found
+        , Advanced.end (Parser.Expecting "end")
             |> map (\_ -> Done (DelimiterRow found))
         ]
+
+
+hyphens found =
+    oneOrMore (\c -> c == '-')
+        |> map (\_ -> Loop (found + 1))
 
 
 dropTrailingPipe : String -> String
@@ -126,6 +126,18 @@ suite =
             , test "two columns" <|
                 \() ->
                     "|--|--|"
+                        |> Advanced.run delimiterRowParser
+                        |> Expect.equal
+                            (Ok (DelimiterRow 2))
+            , test "no leading" <|
+                \() ->
+                    "--|--|"
+                        |> Advanced.run delimiterRowParser
+                        |> Expect.equal
+                            (Ok (DelimiterRow 2))
+            , test "no trailing" <|
+                \() ->
+                    "|--|--"
                         |> Advanced.run delimiterRowParser
                         |> Expect.equal
                             (Ok (DelimiterRow 2))
