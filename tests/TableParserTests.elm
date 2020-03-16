@@ -16,13 +16,13 @@ type alias Row =
 
 
 parser =
-    Parser.map
+    Parser.succeed
         (\header ->
             Table
                 header
                 []
         )
-        (Parser.succeed [ " abc ", " def " ])
+        |= rowParser
 
 
 rowParser =
