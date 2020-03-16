@@ -46,7 +46,15 @@ type DelimiterRow
 
 delimiterRowParser : Parser DelimiterRow
 delimiterRowParser =
-    succeed (DelimiterRow 1)
+    loop 0 statementsHelp
+
+
+statementsHelp : Int -> Parser (Step Int DelimiterRow)
+statementsHelp found =
+    oneOf
+        [ succeed ()
+            |> map (\_ -> Done (DelimiterRow 1))
+        ]
 
 
 dropTrailingPipe : String -> String
