@@ -40,6 +40,15 @@ rowParser =
             (Advanced.chompUntilEndOr "\n")
 
 
+type DelimeterRow
+    = DelimeterRow Int
+
+
+delimiterRowParser : Parser DelimeterRow
+delimiterRowParser =
+    succeed (DelimeterRow 1)
+
+
 dropTrailingPipe : String -> String
 dropTrailingPipe string =
     if string |> String.endsWith "|" then
@@ -86,6 +95,20 @@ suite =
                                 []
                             )
                         )
+        , describe "delimiter row"
+            [ test "single with pipes" <|
+                \() ->
+                    "|---|"
+                        |> Advanced.run delimiterRowParser
+                        |> Expect.equal
+                            (Ok (DelimeterRow 1))
+            , test "single without pipes" <|
+                \() ->
+                    "|--|"
+                        |> Advanced.run delimiterRowParser
+                        |> Expect.equal
+                            (Ok (DelimeterRow 1))
+            ]
         , describe "row parser"
             [ test "parse row" <|
                 \() ->
