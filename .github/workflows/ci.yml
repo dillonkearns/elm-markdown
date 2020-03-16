@@ -21,9 +21,9 @@ jobs:
         id: elm-cache
         with:
           path: ~/.elm
-          key: ${{ runner.os }}-elm--home-${{ hashFiles('**/elm.json') }}
+          key: ${{ runner.os }}-elm-home-${{ hashFiles('**/elm.json') }}
       - run: npm ci
-      - run: ./node_modules/.bin/elm make --output /dev/null && cd examples && ../node_modules/.bin/elm make src/*.elm --output /dev/null && cd ..
+      - run: ./node_modules/.bin/elm make --output /dev/null && cd examples && ../node_modules/.bin/elm make src/*.elm --output /dev/null && cd .. && cd spec-tests && ../node_modules/.bin/elm make OutputMarkdownHtml.elm --output /dev/null
       - run: npm test
 
   lint:
@@ -45,9 +45,9 @@ jobs:
         id: elm-cache
         with:
           path: ~/.elm
-          key: ${{ runner.os }}-elm--home-${{ hashFiles('**/elm.json') }}
+          key: ${{ runner.os }}-elm-home-${{ hashFiles('**/elm.json') }}
       - run: npm ci
-      - run: ./node_modules/.bin/elm make --output /dev/null && cd examples && ../node_modules/.bin/elm make src/*.elm --output /dev/null && cd ..
+      - run: ./node_modules/.bin/elm make --output /dev/null && cd examples && ../node_modules/.bin/elm make src/*.elm --output /dev/null && cd .. && cd spec-tests && ../node_modules/.bin/elm make OutputMarkdownHtml.elm --output /dev/null
       - name: elm-format
         run: npx --no-install elm-format --validate
 
@@ -70,9 +70,9 @@ jobs:
         id: elm-cache
         with:
           path: ~/.elm
-          key: ${{ runner.os }}-elm--home-${{ hashFiles('**/elm.json') }}
+          key: ${{ runner.os }}-elm-home-${{ hashFiles('**/elm.json') }}
       - run: npm ci
-      - run: ./node_modules/.bin/elm make --output /dev/null && cd examples && ../node_modules/.bin/elm make src/*.elm --output /dev/null && cd ..
+      - run: ./node_modules/.bin/elm make --output /dev/null && cd examples && ../node_modules/.bin/elm make src/*.elm --output /dev/null && cd .. && cd spec-tests && ../node_modules/.bin/elm make OutputMarkdownHtml.elm --output /dev/null
       - name: Markdown specs
         run: npm run test:ete || true
       - name: Make sure test results are committed
@@ -97,9 +97,9 @@ jobs:
         id: elm-cache
         with:
           path: ~/.elm
-          key: ${{ runner.os }}-elm--home-${{ hashFiles('**/elm.json') }}
+          key: ${{ runner.os }}-elm-home-${{ hashFiles('**/elm.json') }}
       - run: npm ci
-      - run: ./node_modules/.bin/elm make --output /dev/null && cd examples && ../node_modules/.bin/elm make src/*.elm --output /dev/null && cd ..
+      - run: ./node_modules/.bin/elm make --output /dev/null && cd examples && ../node_modules/.bin/elm make src/*.elm --output /dev/null && cd .. && cd spec-tests && ../node_modules/.bin/elm make OutputMarkdownHtml.elm --output /dev/null
       - name: Build elm docs
         run: ./node_modules/.bin/elm make --docs docs.json
 
@@ -123,9 +123,9 @@ jobs:
         id: elm-cache
         with:
           path: ~/.elm
-          key: ${{ runner.os }}-elm--home-${{ hashFiles('**/elm.json') }}
+          key: ${{ runner.os }}-elm-home-${{ hashFiles('**/elm.json') }}
       - run: npm ci
-      - run: ./node_modules/.bin/elm make --output /dev/null && cd examples && ../node_modules/.bin/elm make src/*.elm --output /dev/null && cd ..
+      - run: ./node_modules/.bin/elm make --output /dev/null && cd examples && ../node_modules/.bin/elm make src/*.elm --output /dev/null && cd .. && cd spec-tests && ../node_modules/.bin/elm make OutputMarkdownHtml.elm --output /dev/null
       - name: Elm Publish
         uses: dillonkearns/elm-publish-action@v1.0.0
         with:
