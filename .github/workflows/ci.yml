@@ -1,0 +1,132 @@
+name: Elm CI
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 13
+        uses: actions/setup-node@v1
+        with:
+          node-version: 13
+      - uses: actions/cache@v1
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - uses: actions/cache@v1
+        id: elm-cache
+        with:
+          path: ~/.elm
+          key: ${{ runner.os }}-elm--home-${{ hashFiles('**/elm.json') }}
+      - run: npm ci
+      - run: npx --no-install elm make --output /dev/null && cd examples && npx --no-install elm make src/*.elm --output /dev/null && cd ..
+      - run: npm test
+
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 13
+        uses: actions/setup-node@v1
+        with:
+          node-version: 13
+      - uses: actions/cache@v1
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - uses: actions/cache@v1
+        id: elm-cache
+        with:
+          path: ~/.elm
+          key: ${{ runner.os }}-elm--home-${{ hashFiles('**/elm.json') }}
+      - run: npm ci
+      - run: npx --no-install elm make --output /dev/null && cd examples && npx --no-install elm make src/*.elm --output /dev/null && cd ..
+      - name: elm-format
+        run: npx --no-install elm-format --validate
+
+  end-to-end:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 13
+        uses: actions/setup-node@v1
+        with:
+          node-version: 13
+      - uses: actions/cache@v1
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - uses: actions/cache@v1
+        id: elm-cache
+        with:
+          path: ~/.elm
+          key: ${{ runner.os }}-elm--home-${{ hashFiles('**/elm.json') }}
+      - run: npm ci
+      - run: npx --no-install elm make --output /dev/null && cd examples && npx --no-install elm make src/*.elm --output /dev/null && cd ..
+      - name: Markdown specs
+        run: npm run test:ete || true
+      - name: Make sure test results are committed
+        run: git diff --exit-code
+
+  validate-package:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 13
+        uses: actions/setup-node@v1
+        with:
+          node-version: 13
+      - uses: actions/cache@v1
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - uses: actions/cache@v1
+        id: elm-cache
+        with:
+          path: ~/.elm
+          key: ${{ runner.os }}-elm--home-${{ hashFiles('**/elm.json') }}
+      - run: npm ci
+      - run: npx --no-install elm make --output /dev/null && cd examples && npx --no-install elm make src/*.elm --output /dev/null && cd ..
+      - name: Build elm docs
+        run: ./node_modules/.bin/elm make --docs docs.json
+
+  publish-elm-package:
+    needs: [test, lint, validate-package]
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 13
+        uses: actions/setup-node@v1
+        with:
+          node-version: 13
+      - uses: actions/cache@v1
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - uses: actions/cache@v1
+        id: elm-cache
+        with:
+          path: ~/.elm
+          key: ${{ runner.os }}-elm--home-${{ hashFiles('**/elm.json') }}
+      - run: npm ci
+      - run: npx --no-install elm make --output /dev/null && cd examples && npx --no-install elm make src/*.elm --output /dev/null && cd ..
+      - name: Elm Publish
+        uses: dillonkearns/elm-publish-action@v1.0.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
