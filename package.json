@@ -17,6 +17,7 @@
     "elm-format": "^0.8.2",
     "elm-hot": "^1.0.1",
     "elm-test": "0.19.1-revision3",
+    "elm-verify-examples": "^5.0.0",
     "front-matter": "^3.0.2",
     "jasmine": "^3.4.0",
     "json-stable-stringify": "^1.0.1",

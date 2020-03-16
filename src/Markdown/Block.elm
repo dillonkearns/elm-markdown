@@ -428,32 +428,29 @@ mapAccuml function initialValue blocks =
 
     import Markdown.Block as Block exposing (..)
 
-    let
-        maximumHeadingLevel : List Block -> Maybe HeadingLevel
-        maximumHeadingLevel blocks =
-            blocks
-                |> Block.foldl
-                    (\block maxSoFar ->
-                        case block of
-                            Heading level _ ->
-                                if Block.headingLevelToInt level > (maxSoFar |> Maybe.map Block.headingLevelToInt |> Maybe.withDefault 0) then
-                                    Just level
-
-                                else
-                                    maxSoFar
-
-                            _ ->
+    maximumHeadingLevel : List Block -> Maybe HeadingLevel
+    maximumHeadingLevel blocks =
+        blocks
+            |> Block.foldl
+                (\block maxSoFar ->
+                    case block of
+                        Heading level _ ->
+                            if Block.headingLevelToInt level > (maxSoFar |> Maybe.map Block.headingLevelToInt |> Maybe.withDefault 0) then
+                                Just level
+                            else
                                 maxSoFar
-                    )
-                    Nothing
-    in
+                        _ ->
+                            maxSoFar
+                )
+                Nothing
+
     [ Heading H1 [ Text "Document" ]
     , Heading H2 [ Text "Section A" ]
     , Heading H3 [ Text "Subsection" ]
     , Heading H2 [ Text "Section B" ]
     ]
         |> maximumHeadingLevel
-        |> Expect.equal (Just H3)
+    -->  (Just H3)
 
 -}
 foldl : (Block -> acc -> acc) -> acc -> List Block -> acc
