@@ -3,7 +3,7 @@ module TableParserTests exposing (suite)
 import Expect exposing (Expectation)
 import Parser
 import Parser.Advanced as Advanced exposing (..)
-import Parser.Extra exposing (tokenHelp)
+import Parser.Extra exposing (oneOrMore, tokenHelp)
 import Test exposing (..)
 
 
@@ -52,8 +52,21 @@ delimiterRowParser =
 statementsHelp : Int -> Parser (Step Int DelimiterRow)
 statementsHelp found =
     oneOf
-        [ succeed ()
-            |> map (\_ -> Done (DelimiterRow 1))
+        [ succeed identity
+            |. tokenHelp "|"
+            |= oneOf
+                [ oneOrMore (\c -> c == '-')
+                    |> map (\_ -> Loop (found + 1))
+                , Advanced.end (Parser.Expecting "end")
+                    |> map (\_ -> Done (DelimiterRow found))
+                ]
+        , succeed identity
+            |. tokenHelp "|"
+            |. oneOrMore (\c -> c == '-')
+            |> map (\_ -> Loop (found + 1))
+        , succeed identity
+            |. Advanced.end (Parser.Expecting "end")
+            |> map (\_ -> Done (DelimiterRow found))
         ]
 
 
@@ -110,12 +123,12 @@ suite =
                         |> Advanced.run delimiterRowParser
                         |> Expect.equal
                             (Ok (DelimiterRow 1))
-            , test "single without pipes" <|
+            , test "two columns" <|
                 \() ->
-                    "|--|"
+                    "|--|--|"
                         |> Advanced.run delimiterRowParser
                         |> Expect.equal
-                            (Ok (DelimiterRow 1))
+                            (Ok (DelimiterRow 2))
             ]
         , describe "row parser"
             [ test "parse row" <|
