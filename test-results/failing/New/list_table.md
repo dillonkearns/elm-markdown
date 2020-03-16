@@ -30,5 +30,5 @@ Should give output:
 But instead was:
 
 ````````````html
-ERROR Problem at row 18 Expecting end Problem at row 18 Expecting newline
+<ul><li>Table in list:</li></ul><p>| column1 | column2 | |---------|---------| | value1 | value2 | | value3 | value4 |</p><ul><li>No leading pipe table in list:</li></ul><p>column1 | column2 --------|-------- value1 | value2 value3 | value4</p>
 ````````````

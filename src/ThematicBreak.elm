@@ -24,12 +24,14 @@ parser =
 type State
     = Asterisk Int
     | Hyphen Int
+    | Underscore Int
     | NoMatchYet
 
 
 type ThematicToken
     = Star
     | Dash
+    | TokenUnderscore
     | Finished
     | Whitespace
 
@@ -39,6 +41,7 @@ statementsHelp state =
     oneOf
         [ tokenHelp "-" |> map (\_ -> Dash)
         , tokenHelp "*" |> map (\_ -> Star)
+        , tokenHelp "_" |> map (\_ -> TokenUnderscore)
         , end (Parser.Expecting "end") |> map (\_ -> Finished)
         , tokenHelp "\n" |> map (\_ -> Finished)
         , chompIf (\c -> c == ' ') (Parser.Expecting "Space") |> map (\_ -> Whitespace)
@@ -55,12 +58,23 @@ statementsHelp state =
                     ( Finished, Hyphen occurrences ) ->
                         succeedIfEnough occurrences
 
+                    ( Finished, Underscore occurrences ) ->
+                        succeedIfEnough occurrences
+
                     ( Star, Asterisk occurrences ) ->
                         Advanced.Loop (Asterisk (occurrences + 1))
                             |> succeed
 
                     ( Dash, Hyphen occurrences ) ->
                         Advanced.Loop (Hyphen (occurrences + 1))
+                            |> succeed
+
+                    ( TokenUnderscore, Underscore occurrences ) ->
+                        Advanced.Loop (Underscore (occurrences + 1))
+                            |> succeed
+
+                    ( TokenUnderscore, NoMatchYet ) ->
+                        Advanced.Loop (Underscore 1)
                             |> succeed
 
                     ( Star, NoMatchYet ) ->
@@ -76,7 +90,7 @@ statementsHelp state =
                             |> succeed
 
                     _ ->
-                        problem (Parser.Expecting "TODO")
+                        problem (Parser.Expecting (Debug.toString state))
             )
 
 

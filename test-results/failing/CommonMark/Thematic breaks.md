@@ -1,108 +1,25 @@
 # CommonMark - Thematic breaks
 
-## [Example 21](https://spec.commonmark.org/0.29/#example-21)
+## [Example 19](https://spec.commonmark.org/0.29/#example-19)
 
 This markdown:
 
 ````````````markdown
- - - -
+Foo
+    ***
 
 ````````````
 
 Should give output:
 
 ````````````html
-<hr>
+<p>Foo ***</p>
 ````````````
 
 But instead was:
 
 ````````````html
-<p>- - -</p>
-````````````
-## [Example 22](https://spec.commonmark.org/0.29/#example-22)
-
-This markdown:
-
-````````````markdown
- **  * ** * ** * **
-
-````````````
-
-Should give output:
-
-````````````html
-<hr>
-````````````
-
-But instead was:
-
-````````````html
-<p>** * ** * ** * **</p>
-````````````
-## [Example 23](https://spec.commonmark.org/0.29/#example-23)
-
-This markdown:
-
-````````````markdown
--     -      -      -
-
-````````````
-
-Should give output:
-
-````````````html
-<hr>
-````````````
-
-But instead was:
-
-````````````html
-<ul><li>- - -</li></ul>
-````````````
-## [Example 24](https://spec.commonmark.org/0.29/#example-24)
-
-This markdown:
-
-````````````markdown
-- - - -    
-
-````````````
-
-Should give output:
-
-````````````html
-<hr>
-````````````
-
-But instead was:
-
-````````````html
-<ul><li>- - -</li></ul>
-````````````
-## [Example 25](https://spec.commonmark.org/0.29/#example-25)
-
-This markdown:
-
-````````````markdown
-_ _ _ _ a
-
-a------
-
----a---
-
-````````````
-
-Should give output:
-
-````````````html
-<p>_ _ _ _ a</p><p>a------</p><p>---a---</p>
-````````````
-
-But instead was:
-
-````````````html
-ERROR Problem at row 7 Expecting end Problem at row 7 Expecting newline
+<p>Foo</p><hr>
 ````````````
 ## [Example 29](https://spec.commonmark.org/0.29/#example-29)
 

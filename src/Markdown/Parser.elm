@@ -21,6 +21,7 @@ import Markdown.UnorderedList
 import Parser
 import Parser.Advanced as Advanced exposing ((|.), (|=), Nestable(..), Step(..), andThen, chompIf, chompWhile, getChompedString, loop, map, oneOf, problem, succeed, symbol, token)
 import Parser.Extra exposing (zeroOrMore)
+import ThematicBreak
 
 
 {-| Try parsing a markdown String into `Markdown.Block.Block`s.
@@ -678,7 +679,7 @@ statementsHelp2 revStmts =
         , blockQuote |> keepLooping
         , Markdown.CodeBlock.parser |> Advanced.backtrackable |> map CodeBlock |> keepLooping
         , indentedCodeParser
-        , thematicBreak |> keepLooping
+        , ThematicBreak.parser |> Advanced.backtrackable |> map (\_ -> ThematicBreak) |> keepLooping
         , unorderedListBlock |> keepLooping
         , orderedListBlock (List.head revStmts.rawBlocks) |> keepLooping
         , heading |> Advanced.backtrackable |> keepLooping

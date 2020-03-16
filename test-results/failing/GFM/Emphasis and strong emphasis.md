@@ -1,25 +1,5 @@
 # GFM - Emphasis and strong emphasis
 
-## [Example 412](https://spec.commonmark.org/0.29/#example-412)
-
-This markdown:
-
-````````````markdown
-***foo** bar*
-
-````````````
-
-Should give output:
-
-````````````html
-<p><em><strong>foo</strong>bar</em></p>
-````````````
-
-But instead was:
-
-````````````html
-ERROR Problem at row 1 Expecting end Problem at row 1 Expecting newline
-````````````
 ## [Example 415](https://spec.commonmark.org/0.29/#example-415)
 
 This markdown:
@@ -60,166 +40,6 @@ But instead was:
 ````````````html
 <p>foo******bar*********baz</p>
 ````````````
-## [Example 420](https://spec.commonmark.org/0.29/#example-420)
-
-This markdown:
-
-````````````markdown
-**** is not an empty strong emphasis
-
-````````````
-
-Should give output:
-
-````````````html
-<p>**** is not an empty strong emphasis</p>
-````````````
-
-But instead was:
-
-````````````html
-ERROR Problem at row 1 Expecting end Problem at row 1 Expecting newline
-````````````
-## [Example 425](https://spec.commonmark.org/0.29/#example-425)
-
-This markdown:
-
-````````````markdown
-____foo__ bar__
-
-````````````
-
-Should give output:
-
-````````````html
-<p><strong><strong>foo</strong>bar</strong></p>
-````````````
-
-But instead was:
-
-````````````html
-ERROR Problem at row 1 Expecting end Problem at row 1 Expecting newline
-````````````
-## [Example 429](https://spec.commonmark.org/0.29/#example-429)
-
-This markdown:
-
-````````````markdown
-***foo* bar**
-
-````````````
-
-Should give output:
-
-````````````html
-<p><strong><em>foo</em>bar</strong></p>
-````````````
-
-But instead was:
-
-````````````html
-ERROR Problem at row 1 Expecting end Problem at row 1 Expecting newline
-````````````
-## [Example 434](https://spec.commonmark.org/0.29/#example-434)
-
-This markdown:
-
-````````````markdown
-____ is not an empty strong emphasis
-
-````````````
-
-Should give output:
-
-````````````html
-<p>____ is not an empty strong emphasis</p>
-````````````
-
-But instead was:
-
-````````````html
-ERROR Problem at row 1 Expecting end Problem at row 1 Expecting newline
-````````````
-## [Example 443](https://spec.commonmark.org/0.29/#example-443)
-
-This markdown:
-
-````````````markdown
-***foo**
-
-````````````
-
-Should give output:
-
-````````````html
-<p>*<strong>foo</strong></p>
-````````````
-
-But instead was:
-
-````````````html
-ERROR Problem at row 1 Expecting end Problem at row 1 Expecting newline
-````````````
-## [Example 444](https://spec.commonmark.org/0.29/#example-444)
-
-This markdown:
-
-````````````markdown
-****foo*
-
-````````````
-
-Should give output:
-
-````````````html
-<p>***<em>foo</em></p>
-````````````
-
-But instead was:
-
-````````````html
-ERROR Problem at row 1 Expecting end Problem at row 1 Expecting newline
-````````````
-## [Example 455](https://spec.commonmark.org/0.29/#example-455)
-
-This markdown:
-
-````````````markdown
-___foo__
-
-````````````
-
-Should give output:
-
-````````````html
-<p>_<strong>foo</strong></p>
-````````````
-
-But instead was:
-
-````````````html
-ERROR Problem at row 1 Expecting end Problem at row 1 Expecting newline
-````````````
-## [Example 456](https://spec.commonmark.org/0.29/#example-456)
-
-This markdown:
-
-````````````markdown
-____foo_
-
-````````````
-
-Should give output:
-
-````````````html
-<p>___<em>foo</em></p>
-````````````
-
-But instead was:
-
-````````````html
-ERROR Problem at row 1 Expecting end Problem at row 1 Expecting newline
-````````````
 ## [Example 463](https://spec.commonmark.org/0.29/#example-463)
 
 This markdown:
@@ -238,7 +58,7 @@ Should give output:
 But instead was:
 
 ````````````html
-ERROR Problem at row 1 Expecting end Problem at row 1 Expecting newline
+<p><strong>foo</strong></p>
 ````````````
 ## [Example 464](https://spec.commonmark.org/0.29/#example-464)
 
@@ -258,7 +78,7 @@ Should give output:
 But instead was:
 
 ````````````html
-ERROR Problem at row 1 Expecting end Problem at row 1 Expecting newline
+<p><strong>foo</strong></p>
 ````````````
 ## [Example 465](https://spec.commonmark.org/0.29/#example-465)
 
@@ -278,7 +98,7 @@ Should give output:
 But instead was:
 
 ````````````html
-ERROR Problem at row 1 Expecting end Problem at row 1 Expecting newline
+<p><strong>foo</strong></p>
 ````````````
 ## [Example 466](https://spec.commonmark.org/0.29/#example-466)
 
@@ -298,7 +118,7 @@ Should give output:
 But instead was:
 
 ````````````html
-ERROR Problem at row 1 Expecting end Problem at row 1 Expecting newline
+<p><strong>foo</strong></p>
 ````````````
 ## [Example 467](https://spec.commonmark.org/0.29/#example-467)
 
@@ -318,7 +138,7 @@ Should give output:
 But instead was:
 
 ````````````html
-ERROR Problem at row 1 Expecting end Problem at row 1 Expecting newline
+<p><strong>foo</strong></p>
 ````````````
 ## [Example 474](https://spec.commonmark.org/0.29/#example-474)
 

@@ -25,6 +25,11 @@ suite =
                 "***"
                     |> Advanced.run parser
                     |> Expect.equal (Ok ThematicBreak)
+        , test "underscores" <|
+            \() ->
+                "___"
+                    |> Advanced.run parser
+                    |> Expect.equal (Ok ThematicBreak)
         , test "not enough characters" <|
             \() ->
                 "**"

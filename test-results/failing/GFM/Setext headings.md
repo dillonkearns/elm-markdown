@@ -164,29 +164,26 @@ But instead was:
 ````````````html
 <p>Foo</p><hr>
 ````````````
-## [Example 58](https://spec.commonmark.org/0.29/#example-58)
+## [Example 57](https://spec.commonmark.org/0.29/#example-57)
 
 This markdown:
 
 ````````````markdown
 Foo
-= =
-
-Foo
---- -
+    ---
 
 ````````````
 
 Should give output:
 
 ````````````html
-<p>Foo = =</p><p>Foo</p><hr>
+<p>Foo ---</p>
 ````````````
 
 But instead was:
 
 ````````````html
-ERROR Problem at row 8 Expecting end Problem at row 8 Expecting newline
+<p>Foo</p><hr>
 ````````````
 ## [Example 59](https://spec.commonmark.org/0.29/#example-59)
 
@@ -349,27 +346,4 @@ But instead was:
 
 ````````````html
 <p>Foo</p><p>bar</p><hr><p>baz</p>
-````````````
-## [Example 75](https://spec.commonmark.org/0.29/#example-75)
-
-This markdown:
-
-````````````markdown
-Foo
-bar
-* * *
-baz
-
-````````````
-
-Should give output:
-
-````````````html
-<p>Foo bar</p><hr><p>baz</p>
-````````````
-
-But instead was:
-
-````````````html
-<p>Foo bar</p><ul><li>* *</li></ul><p>baz</p>
 ````````````
