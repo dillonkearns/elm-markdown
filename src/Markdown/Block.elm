@@ -366,12 +366,40 @@ walk function block =
                 |> BlockQuote
                 |> function
 
-        --Block.OrderedList startingIndex items ->
-        --    List.map (List.map (walk function)) items
-        --        |> Block.OrderedList startingIndex
-        --        |> function
+        HtmlBlock html ->
+            case html of
+                HtmlElement string htmlAttributes blocks ->
+                    HtmlElement string
+                        htmlAttributes
+                        (List.map (walk function) blocks)
+                        |> HtmlBlock
+                        |> function
+
+                _ ->
+                    function block
+
         _ ->
             function block
+
+
+
+--
+--
+--Heading headingLevel inlines ->
+--
+--
+--Paragraph inlines ->
+--
+--
+--CodeBlock record ->
+--
+--
+--ThematicBreak ->
+--HtmlBlock html ->
+--Block.OrderedList startingIndex items ->
+--    List.map (List.map (walk function)) items
+--        |> Block.OrderedList startingIndex
+--        |> function
 
 
 validateMap : (Block -> Result error value) -> List Block -> Result error (List value)
