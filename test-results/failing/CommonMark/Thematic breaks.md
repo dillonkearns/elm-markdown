@@ -41,7 +41,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<p>Foo</p><hr><p>bar</p>
+<table><thead><th>Foo</th></thead></table><p>bar</p>
 ````````````
 ## [Example 30](https://spec.commonmark.org/0.29/#example-30)
 

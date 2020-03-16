@@ -253,6 +253,12 @@ renderer =
                 )
     , codeBlock = codeBlock
     , html = Markdown.Html.oneOf []
+    , table = Element.column []
+    , tableHeader = Element.column []
+    , tableBody = Element.column []
+    , tableRow = Element.row []
+    , tableHeaderCell = Element.paragraph []
+    , tableCell = Element.paragraph []
     }
 
 

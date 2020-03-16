@@ -138,5 +138,5 @@ Should give output:
 But instead was:
 
 ````````````html
-<h1>Heading</h1><pre><code>foo</code></pre><p>Heading</p><hr><pre><code>foo</code></pre><hr>
+<h1>Heading</h1><pre><code>foo</code></pre><table><thead><th>Heading</th></thead></table><pre><code>foo</code></pre><hr>
 ````````````

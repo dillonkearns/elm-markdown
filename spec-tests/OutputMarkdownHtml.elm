@@ -174,6 +174,12 @@ renderMarkdown markdown =
                             ]
                         ]
             , thematicBreak = Html.hr [] []
+            , table = Html.table []
+            , tableHeader = Html.thead []
+            , tableBody = Html.tbody []
+            , tableRow = Html.tr []
+            , tableHeaderCell = Html.th []
+            , tableCell = Html.td []
             }
         |> Result.map (List.map (Html.toString 0))
         |> Result.map (String.join "")

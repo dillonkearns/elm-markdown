@@ -182,6 +182,12 @@ renderer zoomFactor =
                 |> Markdown.Html.withOptionalAttribute "github"
                 |> Markdown.Html.withOptionalAttribute "dribbble"
             ]
+    , table = Element.column []
+    , tableHeader = Element.column []
+    , tableBody = Element.column []
+    , tableRow = Element.row []
+    , tableHeaderCell = Element.paragraph []
+    , tableCell = Element.paragraph []
     }
 
 

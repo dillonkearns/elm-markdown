@@ -715,11 +715,11 @@ statementsHelp2 revStmts =
         , Markdown.CodeBlock.parser |> Advanced.backtrackable |> map CodeBlock |> keepLooping
         , indentedCodeParser
         , ThematicBreak.parser |> Advanced.backtrackable |> map (\_ -> ThematicBreak) |> keepLooping
-        , TableParser.parser |> Advanced.backtrackable |> map Table |> keepLooping
         , unorderedListBlock |> keepLooping
         , orderedListBlock (List.head revStmts.rawBlocks) |> keepLooping
         , heading |> Advanced.backtrackable |> keepLooping
         , htmlParser |> keepLooping
+        , TableParser.parser |> Advanced.backtrackable |> map Table |> keepLooping
         , plainLine |> keepLooping
         ]
 

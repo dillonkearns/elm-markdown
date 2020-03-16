@@ -23,6 +23,7 @@ import Markdown.Block as Block exposing (Block, Inline, ListItem, Task)
 import Markdown.Html
 import Markdown.HtmlRenderer
 import Markdown.RawBlock exposing (Attribute, RawBlock(..), UnparsedInlines(..))
+import Markdown.Table
 
 
 {-| A record with functions that define how to render all possible markdown blocks.
@@ -54,6 +55,12 @@ type alias Renderer view =
     , orderedList : Int -> List (List view) -> view
     , codeBlock : { body : String, language : Maybe String } -> view
     , thematicBreak : view
+    , table : List view -> view
+    , tableHeader : List view -> view
+    , tableBody : List view -> view
+    , tableRow : List view -> view
+    , tableCell : List view -> view
+    , tableHeaderCell : List view -> view
     }
 
 
@@ -181,6 +188,12 @@ defaultHtmlRenderer =
                     ]
                 ]
     , thematicBreak = Html.hr [] []
+    , table = Html.table []
+    , tableHeader = Html.thead []
+    , tableBody = Html.tbody []
+    , tableRow = Html.tr []
+    , tableHeaderCell = Html.th []
+    , tableCell = Html.td []
     }
 
 
@@ -326,9 +339,29 @@ renderHelperSingle renderer =
                     |> Result.map renderer.blockQuote
                     |> Just
 
-            Block.Table table ->
-                -- TODO need to change the Renderer type to include a table renderer
-                Nothing
+            Block.Table (Markdown.Table.Table header rows) ->
+                let
+                    renderedHeaderCells : Result String (List (List view))
+                    renderedHeaderCells =
+                        header
+                            |> List.map
+                                (\{ label } ->
+                                    renderStyled renderer label
+                                )
+                            |> combineResults
+                in
+                renderedHeaderCells
+                    |> Result.map
+                        (\listListView ->
+                            listListView
+                                |> List.map renderer.tableHeaderCell
+                                |> renderer.tableHeader
+                        )
+                    |> Result.map
+                        (\h ->
+                            renderer.table [ h ]
+                        )
+                    |> Just
 
 
 renderStyled : Renderer view -> List Inline -> Result String (List view)

@@ -315,7 +315,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<p>foo</p><hr><pre><code>bar</code></pre><h1>baz</h1>
+<table><thead><th>foo</th></thead></table><pre><code>bar</code></pre><h1>baz</h1>
 ````````````
 ## [Example 112](https://spec.commonmark.org/0.29/#example-112)
 

@@ -69,6 +69,12 @@ testRenderer htmlRenderer =
         \{ body, language } ->
             Unexpected "String"
     , thematicBreak = Unexpected "String"
+    , table = \_ -> Unexpected "String"
+    , tableHeader = \_ -> Unexpected "String"
+    , tableBody = \_ -> Unexpected "String"
+    , tableRow = \_ -> Unexpected "String"
+    , tableHeaderCell = \_ -> Unexpected "String"
+    , tableCell = \_ -> Unexpected "String"
     }
 
 
