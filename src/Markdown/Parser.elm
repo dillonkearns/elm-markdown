@@ -16,7 +16,9 @@ import Markdown.InlineParser
 import Markdown.LinkReferenceDefinition as LinkReferenceDefinition exposing (LinkReferenceDefinition)
 import Markdown.ListItem as ListItem
 import Markdown.OrderedList
-import Markdown.RawBlock exposing (Attribute, RawBlock(..), UnparsedInlines(..))
+import Markdown.RawBlock as RawBlock exposing (Attribute, RawBlock(..), UnparsedInlines(..))
+import Markdown.Table
+import Markdown.TableParser as TableParser
 import Markdown.UnorderedList
 import Parser
 import Parser.Advanced as Advanced exposing ((|.), (|=), Nestable(..), Step(..), andThen, chompIf, chompWhile, getChompedString, loop, map, oneOf, problem, succeed, symbol, token)
@@ -276,6 +278,39 @@ parseInlines linkReferences rawBlock =
             Block.CodeBlock { body = codeBlockBody, language = Nothing }
                 |> just
 
+        Table (Markdown.Table.Table header rows) ->
+            let
+                parsedHeader : Parser (List (Markdown.Table.HeaderCell (List Inline)))
+                parsedHeader =
+                    header
+                        |> List.map
+                            (\{ label, alignment } ->
+                                label
+                                    |> UnparsedInlines
+                                    |> parseRawInline linkReferences
+                                        (\parsedHeaderLabel ->
+                                            { label = parsedHeaderLabel
+                                            , alignment = alignment
+                                            }
+                                        )
+                            )
+                        --|> List.map (parseRawInline linkReferences identity)
+                        |> combine
+
+                --|> parseRawInline
+                --    linkReferences
+                --    (Debug.todo "")
+                --    (UnparsedInlines "")
+                --header
+            in
+            parsedHeader
+                |> andThen
+                    (\headerThing ->
+                        Markdown.Table.Table headerThing []
+                            |> Block.Table
+                            |> just
+                    )
+
 
 just value =
     succeed (Just value)
@@ -393,29 +428,29 @@ xmlNodeToHtmlNode parser =
                     Advanced.andThen
                         (\parsedChildren ->
                             Block.HtmlElement tag attributes parsedChildren
-                                |> Markdown.RawBlock.Html
+                                |> RawBlock.Html
                                 |> Advanced.succeed
                         )
                         (nodesToBlocksParser children)
 
                 Comment string ->
                     Block.HtmlComment string
-                        |> Markdown.RawBlock.Html
+                        |> RawBlock.Html
                         |> succeed
 
                 Cdata string ->
                     Block.Cdata string
-                        |> Markdown.RawBlock.Html
+                        |> RawBlock.Html
                         |> succeed
 
                 ProcessingInstruction string ->
                     Block.ProcessingInstruction string
-                        |> Markdown.RawBlock.Html
+                        |> RawBlock.Html
                         |> succeed
 
                 Declaration declarationType content ->
                     Block.HtmlDeclaration declarationType content
-                        |> Markdown.RawBlock.Html
+                        |> RawBlock.Html
                         |> succeed
         )
         parser
@@ -680,6 +715,7 @@ statementsHelp2 revStmts =
         , Markdown.CodeBlock.parser |> Advanced.backtrackable |> map CodeBlock |> keepLooping
         , indentedCodeParser
         , ThematicBreak.parser |> Advanced.backtrackable |> map (\_ -> ThematicBreak) |> keepLooping
+        , TableParser.parser |> Advanced.backtrackable |> map Table |> keepLooping
         , unorderedListBlock |> keepLooping
         , orderedListBlock (List.head revStmts.rawBlocks) |> keepLooping
         , heading |> Advanced.backtrackable |> keepLooping

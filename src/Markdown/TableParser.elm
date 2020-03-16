@@ -1,5 +1,6 @@
 module Markdown.TableParser exposing (..)
 
+import Markdown.Table
 import Parser
 import Parser.Advanced as Advanced exposing (..)
 import Parser.Extra exposing (oneOrMore, tokenHelp)
@@ -9,16 +10,23 @@ type alias Parser a =
     Advanced.Parser String Parser.Problem a
 
 
-type alias Row =
-    List String
+type alias Table =
+    Markdown.Table.Table String
 
 
 parser : Parser Table
 parser =
     Advanced.succeed
         (\header ->
-            Table
-                header
+            Markdown.Table.Table
+                (header
+                    |> List.map
+                        (\headerCell ->
+                            { label = headerCell
+                            , alignment = Nothing
+                            }
+                        )
+                )
                 []
         )
         |= rowParser
@@ -52,6 +60,14 @@ type DelimiterRow
 delimiterRowParser : Parser DelimiterRow
 delimiterRowParser =
     loop 0 statementsHelp
+        |> andThen
+            (\((DelimiterRow count) as delimiterRow) ->
+                if count > 0 then
+                    succeed delimiterRow
+
+                else
+                    problem (Parser.Expecting "Must have at least one column in delimiter row.")
+            )
 
 
 statementsHelp : Int -> Parser (Step Int DelimiterRow)
@@ -83,7 +99,3 @@ dropTrailingPipe string =
 
     else
         string
-
-
-type Table
-    = Table Row (List Row)

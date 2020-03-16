@@ -326,6 +326,10 @@ renderHelperSingle renderer =
                     |> Result.map renderer.blockQuote
                     |> Just
 
+            Block.Table table ->
+                -- TODO need to change the Renderer type to include a table renderer
+                Nothing
+
 
 renderStyled : Renderer view -> List Inline -> Result String (List view)
 renderStyled renderer styledStrings =

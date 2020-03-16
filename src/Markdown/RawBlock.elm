@@ -2,6 +2,8 @@ module Markdown.RawBlock exposing (Attribute, RawBlock(..), UnparsedInlines(..))
 
 import Markdown.Block exposing (Block)
 import Markdown.CodeBlock exposing (CodeBlock)
+import Markdown.Table
+import Markdown.TableParser as TableParser
 
 
 type alias Attribute =
@@ -26,5 +28,6 @@ type RawBlock
     | CodeBlock CodeBlock
     | IndentedCodeBlock String
     | ThematicBreak
+    | Table (Markdown.Table.Table String)
     | BlankLine
     | BlockQuote String

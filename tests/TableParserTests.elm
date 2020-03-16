@@ -1,6 +1,7 @@
 module TableParserTests exposing (suite)
 
 import Expect exposing (Expectation)
+import Markdown.Table
 import Markdown.TableParser as TableParser exposing (..)
 import Parser
 import Parser.Advanced as Advanced exposing (..)
@@ -21,11 +22,18 @@ suite =
                     |> Advanced.run parser
                     |> Expect.equal
                         (Ok
-                            (Table
-                                [ " abc ", " def " ]
+                            (Markdown.Table.Table
+                                [ { label = " abc ", alignment = Nothing }
+                                , { label = " def ", alignment = Nothing }
+                                ]
                                 []
                             )
                         )
+        , test "tables must have at least one delimiter" <|
+            \() ->
+                """| abc | def |
+|"""
+                    |> expectFail
         , test "table must have a delimiter row" <|
             \() ->
                 """| abc | def |

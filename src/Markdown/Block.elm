@@ -41,6 +41,7 @@ See <Markdown.Html> for more.
 -}
 
 import Markdown.CodeBlock
+import Markdown.Table
 
 
 {-| This is the AST (abstract syntax tree) that represents your parsed markdown.
@@ -85,6 +86,7 @@ type Block
       -- Leaf Blocks With Inlines
     | Heading HeadingLevel (List Inline)
     | Paragraph (List Inline)
+    | Table (Markdown.Table.Table (List Inline))
       -- Table TODO  https://github.github.com/gfm/#tables-extension-
       -- Leaf Blocks Without Inlines
     | CodeBlock { body : String, language : Maybe String }
