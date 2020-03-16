@@ -295,24 +295,23 @@ walkInlinesHelp function block =
                 listItems
                 |> OrderedList startingIndex
 
-        --  HtmlBlock (Html Block)
-        --| OrderedList Int (List (List Inline))
-        --| BlockQuote (List Block)
-        --  -- Leaf Blocks With Inlines
-        --| Heading HeadingLevel (List Inline)
-        --| Paragraph (List Inline)
-        --  -- Table TODO  https://github.github.com/gfm/#tables-extension-
-        --  -- Leaf Blocks Without Inlines
-        --| CodeBlock { body : String, language : Maybe String }
-        --| ThematicBreak
-        --Heading rawText level inlines ->
-        --    List.map (Inline.walk function) inlines
-        --        |> Heading rawText level
-        --
-        --PlainInlines inlines ->
-        --    List.map (Inline.walk function) inlines
-        --        |> PlainInlines
-        --
+        BlockQuote children ->
+            BlockQuote (List.map (walkInlinesHelp function) children)
+
+        Heading level children ->
+            Heading level (List.map function children)
+
+        HtmlBlock html ->
+            case html of
+                HtmlElement string htmlAttributes blocks ->
+                    HtmlElement string
+                        htmlAttributes
+                        (List.map (walkInlinesHelp function) blocks)
+                        |> HtmlBlock
+
+                _ ->
+                    block
+
         _ ->
             block
 
