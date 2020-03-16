@@ -405,7 +405,64 @@ combine =
     List.foldr (Result.map2 (::)) (Ok [])
 
 
-{-| -}
+{-|
+
+    import Markdown.Block as Block exposing (..)
+    import Dict
+    gatherHeadingOccurrences : List Block -> ( Dict.Dict String Int, List ( Block, Maybe String ) )
+    gatherHeadingOccurrences =
+        Block.mapAccuml
+            (\soFar block ->
+                case block of
+                    Heading level inlines ->
+                        let
+                            inlineText : String
+                            inlineText =
+                                Block.extractInlineText inlines
+                            occurenceModifier : String
+                            occurenceModifier =
+                                soFar
+                                    |> Dict.get inlineText
+                                    |> Maybe.map String.fromInt
+                                    |> Maybe.withDefault ""
+                        in
+                        ( soFar |> trackOccurence inlineText
+                        , ( Heading level inlines, Just (inlineText ++ occurenceModifier) )
+                        )
+                    _ ->
+                        ( soFar
+                        , ( block, Nothing )
+                        )
+            )
+            Dict.empty
+    trackOccurence : String -> Dict.Dict String Int -> Dict.Dict String Int
+    trackOccurence value occurences =
+        occurences
+            |> Dict.update value
+                (\maybeOccurence ->
+                    case maybeOccurence of
+                        Just count ->
+                            Just <| count + 1
+                        Nothing ->
+                            Just 1
+                )
+
+    [ Heading H1 [ Text "foo" ]
+    , Heading H1 [ Text "bar" ]
+    , Heading H1 [ Text "foo" ]
+    ]
+    |> gatherHeadingOccurrences
+    --> ( Dict.fromList
+    -->        [ ( "bar", 1 )
+    -->        , ( "foo", 2 )
+    -->        ]
+    -->    , [ ( Heading H1 [ Text "foo" ], Just "foo" )
+    -->        , ( Heading H1 [ Text "bar" ], Just "bar" )
+    -->        , ( Heading H1 [ Text "foo" ], Just "foo1" )
+    -->        ]
+    -->    )
+
+-}
 mapAccuml : (soFar -> Block -> ( soFar, mappedValue )) -> soFar -> List Block -> ( soFar, List mappedValue )
 mapAccuml function initialValue blocks =
     let
