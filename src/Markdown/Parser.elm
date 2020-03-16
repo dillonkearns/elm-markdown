@@ -783,56 +783,6 @@ indentedCodeBlock =
             ]
 
 
-thematicBreak : Parser RawBlock
-thematicBreak =
-    succeed ThematicBreak
-        |. Advanced.backtrackable
-            (oneOf
-                [ symbol (Advanced.Token "   " (Parser.Problem "Expecting 3 spaces"))
-                , symbol (Advanced.Token "  " (Parser.Problem "Expecting 2 spaces"))
-                , symbol (Advanced.Token " " (Parser.Problem "Expecting space"))
-                , succeed ()
-                ]
-            )
-        |. oneOf
-            [ symbol (Advanced.Token "---" (Parser.Expecting "---"))
-                |. chompWhile
-                    (\c ->
-                        case c of
-                            '-' ->
-                                True
-
-                            _ ->
-                                False
-                    )
-            , symbol (Advanced.Token "***" (Parser.Expecting "***"))
-                |. chompWhile
-                    (\c ->
-                        case c of
-                            '*' ->
-                                True
-
-                            _ ->
-                                False
-                    )
-            , symbol (Advanced.Token "___" (Parser.Expecting "___"))
-                |. chompWhile
-                    (\c ->
-                        case c of
-                            '_' ->
-                                True
-
-                            _ ->
-                                False
-                    )
-            ]
-        |. zeroOrMore Helpers.isSpaceOrTab
-        |. oneOf
-            [ Advanced.end (Parser.Problem "Expecting end")
-            , chompIf Helpers.isNewline (Parser.Problem "Expecting newline")
-            ]
-
-
 heading : Parser RawBlock
 heading =
     succeed Heading
