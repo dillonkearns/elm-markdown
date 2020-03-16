@@ -289,6 +289,30 @@ walkInlinesHelp function block =
                 listItems
                 |> UnorderedList
 
+        OrderedList startingIndex listItems ->
+            List.map
+                (List.map (inlineParserWalk function))
+                listItems
+                |> OrderedList startingIndex
+
+        --  HtmlBlock (Html Block)
+        --| OrderedList Int (List (List Inline))
+        --| BlockQuote (List Block)
+        --  -- Leaf Blocks With Inlines
+        --| Heading HeadingLevel (List Inline)
+        --| Paragraph (List Inline)
+        --  -- Table TODO  https://github.github.com/gfm/#tables-extension-
+        --  -- Leaf Blocks Without Inlines
+        --| CodeBlock { body : String, language : Maybe String }
+        --| ThematicBreak
+        --Heading rawText level inlines ->
+        --    List.map (Inline.walk function) inlines
+        --        |> Heading rawText level
+        --
+        --PlainInlines inlines ->
+        --    List.map (Inline.walk function) inlines
+        --        |> PlainInlines
+        --
         _ ->
             block
 
