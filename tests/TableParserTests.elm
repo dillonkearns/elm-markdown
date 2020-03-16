@@ -141,6 +141,12 @@ suite =
                         |> Advanced.run delimiterRowParser
                         |> Expect.equal
                             (Ok (DelimiterRow 2))
+            , test "no leading or trailing" <|
+                \() ->
+                    "--|--"
+                        |> Advanced.run delimiterRowParser
+                        |> Expect.equal
+                            (Ok (DelimiterRow 2))
             ]
         , describe "row parser"
             [ test "parse row" <|
