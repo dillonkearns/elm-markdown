@@ -6,7 +6,7 @@ module Markdown.Block exposing
     , Inline(..)
     , HtmlAttribute
     , extractInlineText
-    , mapInlines, validateMapInlines, mapAccuml, foldl
+    , walkInlines, validateMapInlines, mapAccuml, foldl
     )
 
 {-|
@@ -36,7 +36,7 @@ See <Markdown.Html> for more.
 
 ## Transformations
 
-@docs map, mapInlines, validateMapInlines, mapAccuml, foldl
+@docs map, walkInlines, validateMapInlines, mapAccuml, foldl
 
 -}
 
@@ -263,12 +263,6 @@ validateMapInlines function blocks =
 
 {-| TODO
 -}
-mapInlines : (Inline -> Inline) -> List Block -> List Block
-mapInlines mapFn blocks =
-    blocks
-        |> List.map (walkInlines mapFn)
-
-
 walkInlines : (Inline -> Inline) -> Block -> Block
 walkInlines function block =
     walk (walkInlinesHelp function) block

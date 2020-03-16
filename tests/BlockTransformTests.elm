@@ -42,14 +42,16 @@ suite =
                     [ Link "http://elm-lang.org" Nothing [ Text "elm-lang homepage" ]
                     ]
                 ]
-                    |> Block.mapInlines
-                        (\inline ->
-                            case inline of
-                                Link destination title inlines ->
-                                    Link (httpLinksToHttps destination) title inlines
+                    |> List.map
+                        (Block.walkInlines
+                            (\inline ->
+                                case inline of
+                                    Link destination title inlines ->
+                                        Link (httpLinksToHttps destination) title inlines
 
-                                _ ->
-                                    inline
+                                    _ ->
+                                        inline
+                            )
                         )
                     |> Expect.equal
                         [ Paragraph
