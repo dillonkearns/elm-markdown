@@ -3,6 +3,7 @@ module TableParserTests exposing (suite)
 import Expect exposing (Expectation)
 import Parser
 import Parser.Advanced as Advanced exposing (..)
+import Parser.Extra exposing (tokenHelp)
 import Test exposing (..)
 
 
@@ -15,14 +16,42 @@ type alias Row =
 
 
 parser =
-    Parser.succeed
-        (Table
-            [ " abc ", " def " ]
-            []
+    Parser.map
+        (\header ->
+            Table
+                header
+                []
         )
+        (Parser.succeed [ " abc ", " def " ])
+
+
+rowParser =
+    succeed
+        (\rowString ->
+            rowString
+                |> dropTrailingPipe
+                |> String.split "|"
+        )
+        |. oneOf
+            [ tokenHelp "|"
+            , succeed ()
+            ]
+        |= Advanced.getChompedString
+            (Advanced.chompUntilEndOr "\n")
+
+
+dropTrailingPipe : String -> String
+dropTrailingPipe string =
+    if string |> String.endsWith "|" then
+        string
+            |> String.dropRight 1
+
+    else
+        string
 
 
 
+--|= Parser.succeed [ " abc ", " def " ]
 {-
 
    | Col 1  | Col 2  | Col 3 |
@@ -57,6 +86,24 @@ suite =
                                 []
                             )
                         )
+        , describe "row parser"
+            [ test "parse row" <|
+                \() ->
+                    "| abc | def |"
+                        |> Advanced.run rowParser
+                        |> Expect.equal
+                            (Ok
+                                [ " abc ", " def " ]
+                            )
+            , test "single row" <|
+                \() ->
+                    "| abc |"
+                        |> Advanced.run rowParser
+                        |> Expect.equal
+                            (Ok
+                                [ " abc " ]
+                            )
+            ]
 
         {-
 
