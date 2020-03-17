@@ -410,7 +410,9 @@ inlineParserValidateWalk function inline =
                 |> Result.mapError List.singleton
 
 
-{-|
+{-| Recurisvely apply a function to transform each Block.
+
+This example bumps headings down by one level.
 
     import Markdown.Block as Block exposing (..)
 
