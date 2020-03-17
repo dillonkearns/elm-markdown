@@ -18,8 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Heading levels are now given as a custom type to make it explicit that the values can't be greater than level 6. There's a helper function in the Block module to convert it to an Int.
 - Some names in the `Renderer` record type have changed to better reflect the markdown spec's terminlogy. The `Renderer` also now has functions for displaying Github-Flavored
   Markdown tables. Take a look at this diff to see an example of how to upgrade your Renderer code: https://github.com/dillonkearns/elm-markdown/pull/35/files#diff-5d05b9d569f6fb96977355f9ff688eb4.
-  Also note that Table parsing is only partially implemented now, so the full table functionality will be coming in a future release. But you can handle the types now so we don't need to
-  do a breaking change to introduce that functionality.
+  Also note that Table parsing is only partially implemented now so it isn't currently turned on. The actual table parsing functionality will be coming in a future release. But you can handle the types now so we don't need to do a breaking change to introduce that functionality.
 
 ### Fixed
 
