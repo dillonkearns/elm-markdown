@@ -324,7 +324,8 @@ type alias HtmlAttribute =
     { name : String, value : String }
 
 
-{-|
+{-| Apply a function to transform each inline recursively.
+If any of the values are `Err`s, the entire value will be an `Err`.
 
     import Markdown.Block as Block exposing (..)
 
