@@ -80,6 +80,55 @@ suite =
                 ]
                     |> Block.validateMapInlines resolveLinkInInline
                     |> Expect.equal (Err [ "Couldn't find key angular" ])
+        , test "walk" <|
+            \() ->
+                let
+                    bumpHeadingLevel level =
+                        case level of
+                            H1 ->
+                                H2
+
+                            H2 ->
+                                H3
+
+                            H3 ->
+                                H4
+
+                            H4 ->
+                                H5
+
+                            H5 ->
+                                H6
+
+                            H6 ->
+                                H6
+                in
+                [ Heading H1 [ Text "First heading" ]
+                , Paragraph [ Text "Paragraph" ]
+                , BlockQuote
+                    [ Heading H2 [ Text "Paragraph" ]
+                    ]
+                , Heading H1 [ Text "Second heading" ]
+                ]
+                    |> List.map
+                        (Block.walk
+                            (\block ->
+                                case block of
+                                    Heading level children ->
+                                        Heading (bumpHeadingLevel level) children
+
+                                    _ ->
+                                        block
+                            )
+                        )
+                    |> Expect.equal
+                        [ Heading H2 [ Text "First heading" ]
+                        , Paragraph [ Text "Paragraph" ]
+                        , BlockQuote
+                            [ Heading H3 [ Text "Paragraph" ]
+                            ]
+                        , Heading H2 [ Text "Second heading" ]
+                        ]
         , test "maximum heading level" <|
             \() ->
                 let

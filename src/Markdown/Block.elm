@@ -6,7 +6,7 @@ module Markdown.Block exposing
     , Inline(..)
     , HtmlAttribute
     , extractInlineText
-    , walkInlines, validateMapInlines, foldMap, foldl
+    , walk, walkInlines, validateMapInlines, foldMap, foldl
     )
 
 {-|
@@ -36,7 +36,7 @@ See <Markdown.Html> for more.
 
 ## Transformations
 
-@docs walkInlines, validateMapInlines, foldMap, foldl
+@docs walk, walkInlines, validateMapInlines, foldMap, foldl
 
 -}
 
@@ -410,6 +410,46 @@ inlineParserValidateWalk function inline =
                 |> Result.mapError List.singleton
 
 
+{-|
+
+    import Markdown.Block as Block exposing (..)
+
+    bumpHeadingLevel : HeadingLevel -> HeadingLevel
+    bumpHeadingLevel level =
+        case level of
+            H1 -> H2
+            H2 -> H3
+            H3 -> H4
+            H4 -> H5
+            H5 -> H6
+            H6 -> H6
+
+    [ Heading H1 [ Text "First heading" ]
+    , Paragraph [ Text "Paragraph" ]
+    , BlockQuote
+        [ Heading H2 [ Text "Paragraph" ]
+        ]
+    , Heading H1 [ Text "Second heading" ]
+    ]
+        |> List.map
+            (Block.walk
+                (\block ->
+                    case block of
+                        Heading level children ->
+                            Heading (bumpHeadingLevel level) children
+                        _ ->
+                            block
+                )
+            )
+    --> [ Heading H2 [ Text "First heading" ]
+    --> , Paragraph [ Text "Paragraph" ]
+    --> , BlockQuote
+    --> [ Heading H3 [ Text "Paragraph" ]
+    --> ]
+    --> , Heading H2 [ Text "Second heading" ]
+    --> ]
+
+-}
 walk : (Block -> Block) -> Block -> Block
 walk function block =
     case block of
