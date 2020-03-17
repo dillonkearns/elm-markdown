@@ -328,7 +328,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<p>-</p><table><thead><th>foo</th></thead></table><p>``` bar</p><table><thead><th>```</th></thead></table><pre><code>baz</code></pre>
+<p>- foo -<code>bar</code>- baz</p>
 ````````````
 ## [Example 249](https://spec.commonmark.org/0.29/#example-249)
 

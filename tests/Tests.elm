@@ -241,21 +241,23 @@ Hello!
                             [ Block.ThematicBreak
                             ]
                         )
-        , test "simple table" <|
-            \() ->
-                """| abc | def |
-|---|---|
-"""
-                    |> parse
-                    |> Expect.equal
-                        (Ok
-                            [ Block.Table
-                                [ { label = [ Text "abc" ], alignment = Nothing }
-                                , { label = [ Text "def" ], alignment = Nothing }
-                                ]
-                                []
-                            ]
-                        )
+
+        -- TODO re-enable this test once table parsing is implemented
+        --        , test "simple table" <|
+        --            \() ->
+        --                """| abc | def |
+        --|---|---|
+        --"""
+        --                    |> parse
+        --                    |> Expect.equal
+        --                        (Ok
+        --                            [ Block.Table
+        --                                [ { label = [ Text "abc" ], alignment = Nothing }
+        --                                , { label = [ Text "def" ], alignment = Nothing }
+        --                                ]
+        --                                []
+        --                            ]
+        --                        )
         , test "multiple thematic breaks" <|
             \() ->
                 """***

@@ -718,7 +718,9 @@ statementsHelp2 revStmts =
         , orderedListBlock (List.head revStmts.rawBlocks) |> keepLooping
         , heading |> Advanced.backtrackable |> keepLooping
         , htmlParser |> keepLooping
-        , TableParser.parser |> Advanced.backtrackable |> map Table |> keepLooping
+
+        -- TODO re-enable this once the table parser handles rows
+        --, TableParser.parser |> Advanced.backtrackable |> map Table |> keepLooping
         , plainLine |> keepLooping
         ]
 

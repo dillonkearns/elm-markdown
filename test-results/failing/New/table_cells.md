@@ -72,5 +72,5 @@ Should give output:
 But instead was:
 
 ````````````html
-<table><thead><th>1</th></thead></table><p>|1|</p><table><thead><th>1</th></thead></table><p>|||</p><table><thead><th>1</th></thead></table><p>|1\1|</p><table><thead><th>1</th></thead></table><p>|\\||</p><table><thead><th>1</th></thead></table><p>|\\||</p><table><thead><th>1</th><th>2</th></thead></table><p>||2|</p><table><thead><th>1</th><th>2</th></thead></table><p>|1|\|2|\|</p><table><thead><th>1</th><th>2</th></thead></table><p>| |2|</p><table><thead><th>1</th><th>2</th></thead></table><p>1|\|2|\</p><table><thead><th>1</th><th>2</th></thead></table><p>|2</p><table><thead><th>1</th><th>2</th></thead></table><p>1|2|</p><table><thead><th>1</th><th>2</th></thead></table><p>1|2|</p><table><thead><th>1</th><th>2</th></thead></table><p>|1|2||</p><table><thead><th>1</th><th>2</th></thead></table><p>|1|2||</p>
+<p>|1| |-| |1|</p><p>|1| |-| |||</p><p>|1| |-| |1\1|</p><p>|1| |-| |\\||</p><p>|1| |-| |\\||</p><p>|1|2| |-|-| ||2|</p><p>|1|2| |-|-| |1|\|2|\|</p><p>|1|2| |-|-| | |2|</p><p>1|2 -|- 1|\|2|\</p><p>1|2 -|- |2</p><p>1|2 -|- 1|2|</p><p>1|2 -|- 1|2|</p><p>|1|2| |-|-| |1|2||</p><p>|1|2| |-|-| |1|2||</p>
 ````````````
