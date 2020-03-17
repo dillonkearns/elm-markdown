@@ -1,16 +1,14 @@
-module XmlParser exposing
-    ( Xml, ProcessingInstruction, DocType, DocTypeDefinition(..), Node(..), Attribute
-    , parse
-    , format
-    , element
+module HtmlParser exposing
+    ( Node(..), Attribute
+    , Parser, html
     )
 
-{-| The XML Parser.
+{-| Parses HTML, specifically for Markdown. Which may have some differences from parsing a full HTML document.
 
 
 # Types
 
-@docs Xml, ProcessingInstruction, DocType, DocTypeDefinition, Node, Attribute
+@docs Html, ProcessingInstruction, DocType, DocTypeDefinition, Node, Attribute
 
 
 # Parse
@@ -26,61 +24,10 @@ module XmlParser exposing
 
 import Char
 import Dict exposing (Dict)
-import Helpers
 import Hex
 import Parser as Parser
-import Parser.Advanced as Advanced exposing ((|.), (|=), Nestable(..), Step(..), andThen, chompUntil, chompWhile, getChompedString, inContext, int, lazy, loop, map, multiComment, oneOf, problem, succeed, token)
+import Parser.Advanced as Advanced exposing ((|.), (|=), Nestable(..), Step(..), andThen, chompUntil, chompWhile, getChompedString, inContext, lazy, loop, map, oneOf, problem, succeed, token)
 import Set exposing (Set)
-
-
-{-| This represents the entire XML structure.
-
-  - processingInstructions: `<?xml-stylesheet type="text/xsl" href="style.xsl"?>`
-  - docType: `<!DOCTYPE root SYSTEM "foo.xml">`
-  - root: `<root><foo/></root>`
-
--}
-type alias Xml =
-    { processingInstructions : List ProcessingInstruction
-    , docType : Maybe DocType
-    , root : Node
-    }
-
-
-{-| Processing Instruction such as `<?xml-stylesheet type="text/xsl" href="style.xsl"?>`.
-
-The example above is parsed as `{ name = "xml-stylesheet", value = "type=\"text/xsl\" href=\"style.xsl\"" }`.
-The value (presudo attributes) should be parsed by application.
-
--}
-type alias ProcessingInstruction =
-    { name : String
-    , value : String
-    }
-
-
-{-| Doc Type Decralation starting with "<!DOCTYPE".
-
-This contains root element name and rest of details as `DocTypeDefinition`.
-
--}
-type alias DocType =
-    { rootElementName : String
-    , definition : DocTypeDefinition
-    }
-
-
-{-| DTD (Doc Type Definition)
-
-  - Public: `<!DOCTYPE root PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">`
-  - System: `<!DOCTYPE root SYSTEM "foo.xml">`
-  - Custom: `<!DOCTYPE root [ <!ELEMENT ...> ]>`
-
--}
-type DocTypeDefinition
-    = Public String String (Maybe String)
-    | System String (Maybe String)
-    | Custom String
 
 
 {-| Node is either a element such as `<a name="value">foo</a>` or text such as `foo`.
@@ -88,6 +35,10 @@ type DocTypeDefinition
 type Node
     = Element String (List Attribute) (List Node)
     | Text String
+    | Comment String
+    | Cdata String
+    | ProcessingInstruction String
+    | Declaration String String
 
 
 {-| Attribute such as `name="value"`
@@ -108,88 +59,13 @@ type Count
     = AtLeast Int
 
 
-{-| Parse XML string.
-
-`<?xml ... ?>` and `<!DOCTYPE ... >` is optional so you don't need to ensure them.
-
-    > import XmlParser
-    > XmlParser.parse """<a name="value">foo</a>"""
-    Ok { processingInstructions = [], docType = Nothing, root = Element "a" ([{ name = "name", value = "value" }]) ([Text "foo"]) }
-
--}
-parse : String -> Result (List DeadEnd) Xml
-parse source =
-    Advanced.run xml source
-
-
-xml : Parser Xml
-xml =
-    inContext "xml" <|
-        succeed Xml
-            |. whiteSpace
-            |= repeat zeroOrMore
-                (succeed identity
-                    |= processingInstruction
-                    |. whiteSpace
-                )
-            |. repeat zeroOrMore (oneOf [ whiteSpace1, comment ])
-            |= maybe docType
-            |. repeat zeroOrMore (oneOf [ whiteSpace1, comment ])
-            |= element
-            |. repeat zeroOrMore (oneOf [ whiteSpace1, comment ])
-            |. end
-
-
-processingInstruction : Parser ProcessingInstruction
+processingInstruction : Parser Node
 processingInstruction =
     inContext "processingInstruction" <|
         succeed ProcessingInstruction
             |. symbol "<?"
-            |= processingInstructionName
-            |. symbol " "
-            |= processingInstructionValue
-
-
-processingInstructionName : Parser String
-processingInstructionName =
-    inContext "processingInstructionName" <|
-        keep oneOrMore (\c -> not <| Helpers.isSpacebar c)
-
-
-processingInstructionValue : Parser String
-processingInstructionValue =
-    inContext "processingInstructionValue" <|
-        oneOf
-            [ succeed ""
-                |. symbol "?>"
-            , symbol "?"
-                |> andThen
-                    (\_ ->
-                        processingInstructionValue
-                            |> map (\tail -> "?" ++ tail)
-                    )
-            , succeed (++)
-                |= keep zeroOrMore notQuestionmark
-                |= lazy (\_ -> processingInstructionValue)
-            ]
-
-
-notQuestionmark c =
-    case c of
-        '?' ->
-            False
-
-        _ ->
-            True
-
-
-notDoubleQuote c =
-    case c of
-        '"' ->
-            False
-
-        _ ->
-            True
+            |= getChompedString (Advanced.chompUntilEndOr "?>")
+            |. symbol "?>"
 
 
 notClosingBracket c =
@@ -210,104 +86,54 @@ notAmpersand c =
             True
 
 
-docType : Parser DocType
-docType =
-    inContext "docType" <|
-        succeed DocType
-            |. symbol "<!DOCTYPE"
-            |. whiteSpace
-            |= tagName
-            |. whiteSpace
-            |= docTypeDefinition
-            |. whiteSpace
-            |. symbol ">"
-
-
-docTypeDefinition : Parser DocTypeDefinition
-docTypeDefinition =
-    inContext "docTypeDefinition" <|
-        oneOf
-            [ succeed Public
-                |. keyword "PUBLIC"
-                |. whiteSpace
-                |= publicIdentifier
-                |. whiteSpace
-                |= docTypeExternalSubset
-                |. whiteSpace
-                |= maybe docTypeInternalSubset
-            , succeed System
-                |. keyword "SYSTEM"
-                |. whiteSpace
-                |= docTypeExternalSubset
-                |. whiteSpace
-                |= maybe docTypeInternalSubset
-            , succeed Custom
-                |= docTypeInternalSubset
-            ]
-
-
-publicIdentifier : Parser String
-publicIdentifier =
-    inContext "publicIdentifier" <|
-        succeed identity
-            |. symbol "\""
-            |= keep zeroOrMore notDoubleQuote
-            |. symbol "\""
-
-
-docTypeExternalSubset : Parser String
-docTypeExternalSubset =
-    inContext "docTypeExternalSubset" <|
-        succeed identity
-            |. symbol "\""
-            |= keep zeroOrMore notDoubleQuote
-            |. symbol "\""
-
-
-docTypeInternalSubset : Parser String
-docTypeInternalSubset =
-    inContext "docTypeInternalSubset" <|
-        succeed identity
-            |. symbol "["
-            |= keep zeroOrMore notClosingBracket
-            |. symbol "]"
-
-
 cdata : Parser String
 cdata =
     inContext "cdata" <|
         succeed identity
             |. symbol "<![CDATA["
-            |= cdataContent
+            |= getChompedString (Advanced.chompUntilEndOr "]]>")
+            |. symbol "]]>"
 
 
-cdataContent : Parser String
-cdataContent =
-    inContext "cdataContent" <|
-        oneOf
-            [ succeed ""
-                |. symbol "]]>"
-            , symbol "]]"
-                |> andThen
-                    (\_ ->
-                        cdataContent
-                            |> map (\tail -> "]]" ++ tail)
-                    )
-            , symbol "]"
-                |> andThen
-                    (\_ ->
-                        cdataContent
-                            |> map (\tail -> "]" ++ tail)
-                    )
-            , succeed (++)
-                |= keep zeroOrMore notClosingBracket
-                |= lazy (\_ -> cdataContent)
-            ]
+docType : Parser Node
+docType =
+    {-
+       <!
+       a name consisting of one or more uppercase ASCII letters
+       whitespace
+       a string of characters not including the character >
+       and the character >
+    -}
+    inContext "declaration" <|
+        succeed Declaration
+            |. symbol "<!"
+            |= allUppercase
+            |. oneOrMoreWhiteSpace
+            |= getChompedString (Advanced.chompUntilEndOr ">")
+            |. symbol ">"
 
 
-element : Parser Node
+allUppercase : Parser String
+allUppercase =
+    keep oneOrMore (\c -> Char.isUpper c)
+
+
+html : Parser Node
+html =
+    oneOf
+        [ cdata |> map Cdata
+        , processingInstruction
+        , comment
+        , docType
+        , element
+        ]
+
+
+element : Advanced.Parser String Parser.Problem Node
 element =
-    inContext "element" <|
+    inContext
+        "element"
+    <|
         succeed identity
             |. symbol "<"
             |= (tagName
@@ -356,7 +182,7 @@ children startTagName =
             , lazy
                 (\_ ->
                     succeed (::)
-                        |= element
+                        |= html
                         |= children startTagName
                 )
             ]
@@ -428,34 +254,6 @@ textNodeString =
                 )
                 |= escapedChar '<'
                 |= lazy (\_ -> textNodeString)
-            , succeed
-                (\s maybeString ->
-                    let
-                        str =
-                            s ++ (maybeString |> Maybe.withDefault "")
-                    in
-                    if not <| Helpers.isEmptyString str then
-                        Just str
-
-                    else
-                        Nothing
-                )
-                |= cdata
-                |= lazy (\_ -> textNodeString)
-            , succeed
-                (\maybeString ->
-                    let
-                        str =
-                            maybeString |> Maybe.withDefault ""
-                    in
-                    if not <| Helpers.isEmptyString str then
-                        Just str
-
-                    else
-                        Nothing
-                )
-                |. comment
-                |= lazy (\_ -> textNodeString)
             , succeed Nothing
             ]
 
@@ -508,7 +306,7 @@ decodeEscape s =
             |> String.dropLeft 1
             |> String.toInt
             |> Maybe.map Char.fromCode
-            |> Result.fromMaybe (Parser.Problem <| "Invalid escaped charactor: " ++ s)
+            |> Result.fromMaybe (Parser.Problem <| "Invalid escaped character: " ++ s)
 
     else
         Dict.get s entities
@@ -604,14 +402,14 @@ attributeValue =
             ]
 
 
+oneOrMoreWhiteSpace : Parser ()
+oneOrMoreWhiteSpace =
+    ignore oneOrMore isWhitespace
+
+
 whiteSpace : Parser ()
 whiteSpace =
     ignore zeroOrMore isWhitespace
-
-
-whiteSpace1 : Parser ()
-whiteSpace1 =
-    ignore oneOrMore isWhitespace
 
 
 isWhitespace : Char -> Bool
@@ -633,83 +431,16 @@ isWhitespace c =
             False
 
 
-comment : Parser ()
+comment : Parser Node
 comment =
-    succeed ()
+    succeed Comment
         |. token (toToken "<!--")
-        |. chompUntil (toToken "-->")
+        |= getChompedString (Advanced.chompUntilEndOr "-->")
         |. token (toToken "-->")
 
 
 
 -- FORMAT
-
-
-{-| Convert Xml into String.
-
-This function does NOT insert line breaks or indents for readability.
-
--}
-format : Xml -> String
-format doc =
-    let
-        pi =
-            doc.processingInstructions
-                |> List.map formatProcessingInstruction
-                |> String.join ""
-
-        dt =
-            doc.docType
-                |> Maybe.map formatDocType
-                |> Maybe.withDefault ""
-
-        node =
-            formatNode doc.root
-    in
-    pi ++ dt ++ node
-
-
-formatProcessingInstruction : ProcessingInstruction -> String
-formatProcessingInstruction processingInstruction_ =
-    "<?" ++ escape processingInstruction_.name ++ " " ++ escape processingInstruction_.value ++ "?>"
-
-
-formatDocType : DocType -> String
-formatDocType docType_ =
-    "<!DOCTYPE " ++ escape docType_.rootElementName ++ " " ++ formatDocTypeDefinition docType_.definition ++ ">"
-
-
-formatDocTypeDefinition : DocTypeDefinition -> String
-formatDocTypeDefinition def =
-    case def of
-        Public publicIdentifier_ internalSubsetRef maybeInternalSubset ->
-            "PUBLIC \""
-                ++ escape publicIdentifier_
-                ++ "\" \""
-                ++ escape internalSubsetRef
-                ++ "\""
-                ++ (case maybeInternalSubset of
-                        Just internalSubset ->
-                            " [" ++ escape internalSubset ++ "]"
-
-                        Nothing ->
-                            ""
-                   )
-
-        System internalSubsetRef maybeInternalSubset ->
-            "SYSTEM \""
-                ++ escape internalSubsetRef
-                ++ "\""
-                ++ (case maybeInternalSubset of
-                        Just internalSubset ->
-                            " [" ++ escape internalSubset ++ "]"
-
-                        Nothing ->
-                            ""
-                   )
-
-        Custom internalSubset ->
-            "[" ++ escape internalSubset ++ "]"
 
 
 formatNode : Node -> String
@@ -733,6 +464,36 @@ formatNode node =
 
         Text s ->
             escape s
+
+        Comment commentContents ->
+            String.concat
+                [ "<!-- "
+                , commentContents
+                , " -->"
+                ]
+
+        Cdata string ->
+            String.concat
+                [ "<![CDATA["
+                , string
+                , "]"
+                ]
+
+        ProcessingInstruction string ->
+            String.concat
+                [ "<?"
+                , string
+                , "?>"
+                ]
+
+        Declaration declarationType content ->
+            String.concat
+                [ "<!"
+                , declarationType
+                , " "
+                , content
+                , ">"
+                ]
 
 
 formatAttribute : Attribute -> String
@@ -765,6 +526,12 @@ maybe parser =
 zeroOrMore : Count
 zeroOrMore =
     AtLeast 0
+
+
+
+--xmlParser : Parser Xml
+--xmlParser =
+--    xml
 
 
 oneOrMore : Count

@@ -4,19 +4,19 @@
 
 This markdown:
 
-```markdown
+````````````markdown
 AAA<script> <img <script> src=x onerror=alert(1) />BBB
 
-```
+````````````
 
 Should give output:
 
-```html
+````````````html
 <p>AAA</p>
-```
+````````````
 
 But instead was:
 
-```html
+````````````html
 <p>AAA&lt;script&gt; &lt;img &lt;script&gt; src=x onerror=alert(1) /&gt;BBB</p>
-```
+````````````

@@ -4,23 +4,23 @@
 
 This markdown:
 
-```markdown
+````````````markdown
 > A list within a blockquote:
 > 
 > *	asterisk 1
 > *	asterisk 2
 > *	asterisk 3
 
-```
+````````````
 
 Should give output:
 
-```html
+````````````html
 <blockquote><p>A list within a blockquote:</p><ul><li>asterisk 1</li><li>asterisk 2</li><li>asterisk 3</li></ul></blockquote>
-```
+````````````
 
 But instead was:
 
-```html
-<blockquote><p>A list within a blockquote:</p><p><em>asterisk 1</em>asterisk 2<em>asterisk 3</em></p></blockquote>
-```
+````````````html
+<blockquote><p>A list within a blockquote:</p><p>* asterisk 1 * asterisk 2 * asterisk 3</p></blockquote>
+````````````

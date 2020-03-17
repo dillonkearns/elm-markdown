@@ -4,7 +4,7 @@
 
 This markdown:
 
-```markdown
+````````````markdown
 Foo [bar][].
 
 Foo [bar](/url/ "Title with "quotes" inside").
@@ -13,16 +13,16 @@ Foo [bar](/url/ "Title with "quotes" inside").
   [bar]: /url/ "Title with "quotes" inside"
 
 
-```
+````````````
 
 Should give output:
 
-```html
+````````````html
 <p>Foo<a href="/url/" title="Title with &quot;quotes&quot; inside">bar</a>.</p><p>Foo<a href="/url/" title="Title with &quot;quotes&quot; inside">bar</a>.</p>
-```
+````````````
 
 But instead was:
 
-```html
-ERROR Problem at row 11 Expecting Problem at row 1 Expecting symbol (
-```
+````````````html
+<p>Foo [bar][].</p><p>Foo [bar](/url/ &quot;Title with &quot;quotes&quot; inside&quot;).</p><p>[bar]: /url/ &quot;Title with &quot;quotes&quot; inside&quot;</p>
+````````````

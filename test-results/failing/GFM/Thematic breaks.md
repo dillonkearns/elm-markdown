@@ -1,214 +1,88 @@
 # GFM - Thematic breaks
 
-## [Example 16](https://spec.commonmark.org/0.29/#example-16)
-
-This markdown:
-
-```markdown
---
-**
-__
-
-```
-
-Should give output:
-
-```html
-<p>-- ** __</p>
-```
-
-But instead was:
-
-```html
-<p>--<strong>__</strong></p>
-```
 ## [Example 19](https://spec.commonmark.org/0.29/#example-19)
 
 This markdown:
 
-```markdown
+````````````markdown
 Foo
     ***
 
-```
+````````````
 
 Should give output:
 
-```html
+````````````html
 <p>Foo ***</p>
-```
+````````````
 
 But instead was:
 
-```html
-<p>Foo</p><pre><code>***</code></pre>
-```
-## [Example 21](https://spec.commonmark.org/0.29/#example-21)
-
-This markdown:
-
-```markdown
- - - -
-
-```
-
-Should give output:
-
-```html
-<hr>
-```
-
-But instead was:
-
-```html
-<p>- - -</p>
-```
-## [Example 22](https://spec.commonmark.org/0.29/#example-22)
-
-This markdown:
-
-```markdown
- **  * ** * ** * **
-
-```
-
-Should give output:
-
-```html
-<hr>
-```
-
-But instead was:
-
-```html
-<p><strong></strong><strong></strong><em></em><strong></strong><strong></strong></p>
-```
-## [Example 23](https://spec.commonmark.org/0.29/#example-23)
-
-This markdown:
-
-```markdown
--     -      -      -
-
-```
-
-Should give output:
-
-```html
-<hr>
-```
-
-But instead was:
-
-```html
-<ul><li>- - -</li></ul>
-```
-## [Example 24](https://spec.commonmark.org/0.29/#example-24)
-
-This markdown:
-
-```markdown
-- - - -    
-
-```
-
-Should give output:
-
-```html
-<hr>
-```
-
-But instead was:
-
-```html
-<ul><li>- - -</li></ul>
-```
-## [Example 25](https://spec.commonmark.org/0.29/#example-25)
-
-This markdown:
-
-```markdown
-_ _ _ _ a
-
-a------
-
----a---
-
-```
-
-Should give output:
-
-```html
-<p>_ _ _ _ a</p><p>a------</p><p>---a---</p>
-```
-
-But instead was:
-
-```html
-ERROR Problem at row 7 Expecting end Problem at row 7 Expecting newline
-```
+````````````html
+<p>Foo</p><hr>
+````````````
 ## [Example 29](https://spec.commonmark.org/0.29/#example-29)
 
 This markdown:
 
-```markdown
+````````````markdown
 Foo
 ---
 bar
 
-```
+````````````
 
 Should give output:
 
-```html
+````````````html
 <h2>Foo</h2><p>bar</p>
-```
+````````````
 
 But instead was:
 
-```html
+````````````html
 <p>Foo</p><hr><p>bar</p>
-```
+````````````
 ## [Example 30](https://spec.commonmark.org/0.29/#example-30)
 
 This markdown:
 
-```markdown
+````````````markdown
 * Foo
 * * *
 * Bar
 
-```
+````````````
 
 Should give output:
 
-```html
+````````````html
 <ul><li>Foo</li></ul><hr><ul><li>Bar</li></ul>
-```
+````````````
 
 But instead was:
 
-```html
-<ul><li>Foo</li><li><em></em></li><li>Bar</li></ul>
-```
+````````````html
+<ul><li>Foo</li><li>* *</li><li>Bar</li></ul>
+````````````
 ## [Example 31](https://spec.commonmark.org/0.29/#example-31)
 
 This markdown:
 
-```markdown
+````````````markdown
 - Foo
 - * * *
 
-```
+````````````
 
 Should give output:
 
-```html
+````````````html
 <ul><li>Foo</li><li><hr></li></ul>
-```
+````````````
 
 But instead was:
 
-```html
-<ul><li>Foo</li><li><em></em></li></ul>
-```
+````````````html
+<ul><li>Foo</li><li>* * *</li></ul>
+````````````

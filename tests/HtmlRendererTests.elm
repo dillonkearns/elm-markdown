@@ -3,8 +3,8 @@ module HtmlRendererTests exposing (suite)
 import Expect exposing (Expectation)
 import Markdown.Block as Block exposing (Block)
 import Markdown.Html
-import Markdown.Inlines
 import Markdown.Parser as Markdown exposing (..)
+import Markdown.Renderer
 import Parser
 import Parser.Advanced as Advanced
 import Test exposing (..)
@@ -23,7 +23,7 @@ render renderer markdown =
     markdown
         |> Markdown.parse
         |> Result.mapError deadEndsToString
-        |> Result.andThen (\ast -> Markdown.render renderer ast)
+        |> Result.andThen (\ast -> Markdown.Renderer.render renderer ast)
 
 
 deadEndsToString deadEnds =
@@ -37,28 +37,25 @@ type Rendered tag
     | Html tag
 
 
-testRenderer : List (Markdown.Html.Renderer (List (Rendered a) -> Rendered a)) -> Markdown.Renderer (Rendered a)
+testRenderer : List (Markdown.Html.Renderer (List (Rendered a) -> Rendered a)) -> Markdown.Renderer.Renderer (Rendered a)
 testRenderer htmlRenderer =
     { heading =
         \{ level, children } ->
             Unexpected "heading"
-    , raw = \_ -> Unexpected "String"
+    , paragraph = \_ -> Unexpected "String"
     , blockQuote = \_ -> Unexpected "String"
-    , bold =
+    , strong =
         \content -> Unexpected "String"
-    , italic =
+    , emphasis =
         \content -> Unexpected "String"
-    , code =
+    , hardLineBreak = Unexpected "String"
+    , codeSpan =
         \content -> Unexpected "String"
-    , image =
-        \link content ->
-            Unexpected "String"
-                |> Ok
+    , image = \link -> Unexpected "String"
     , link =
         \link content ->
             Unexpected "String"
-                |> Ok
-    , plain =
+    , text =
         \_ ->
             Unexpected "String"
     , unorderedList =
@@ -72,6 +69,12 @@ testRenderer htmlRenderer =
         \{ body, language } ->
             Unexpected "String"
     , thematicBreak = Unexpected "String"
+    , table = \_ -> Unexpected "String"
+    , tableHeader = \_ -> Unexpected "String"
+    , tableBody = \_ -> Unexpected "String"
+    , tableRow = \_ -> Unexpected "String"
+    , tableHeaderCell = \_ _ -> Unexpected "String"
+    , tableCell = \_ -> Unexpected "String"
     }
 
 

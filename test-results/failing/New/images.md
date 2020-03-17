@@ -4,7 +4,7 @@
 
 This markdown:
 
-```markdown
+````````````markdown
 ![Image](javascript:alert)
 
 ![Image](vbscript:alert)
@@ -15,16 +15,16 @@ This markdown:
 
 ![Image](data:text/html;base64,PHNjcmlwdD5hbGVydCgnWFNTJyk8L3NjcmlwdD4K)
 
-```
+````````````
 
 Should give output:
 
-```html
+````````````html
 <p>Image</p><p>Image</p><p>Image</p><p>Image</p><p>Image</p>
-```
+````````````
 
 But instead was:
 
-```html
-<p><img src="javascript:alert"></p><p><img src="vbscript:alert"></p><p><img src="javascript:alert(1)"></p><p><img src="javascript:document;alert(1)"></p><p><img src="data:text/html;base64,PHNjcmlwdD5hbGVydCgnWFNTJyk8L3NjcmlwdD4K"></p>
-```
+````````````html
+<p><img alt="Image" src="javascript:alert"></p><p><img alt="Image" src="vbscript:alert"></p><p><img alt="Image" src="javascript:alert(1)"></p><p><img alt="Image" src="javascript:document;alert(1)"></p><p><img alt="Image" src="data:text/html;base64,PHNjcmlwdD5hbGVydCgnWFNTJyk8L3NjcmlwdD4K"></p>
+````````````

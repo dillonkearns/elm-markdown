@@ -257,13 +257,3 @@ suite =
                     |> Advanced.run (Markdown.OrderedList.parser Nothing)
                     |> Expect.err
         ]
-
-
-parserError : String -> Expect.Expectation
-parserError markdown =
-    case parse markdown of
-        Ok _ ->
-            Expect.fail "Expected a parser failure!"
-
-        Err _ ->
-            Expect.pass

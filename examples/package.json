@@ -1,0 +1,19 @@
+{
+  "name": "elm-minimal",
+  "version": "2.2.0",
+  "description": "Minimal template for an Elm project",
+  "license": "MIT",
+  "scripts": {
+    "dev": "elm-live ./src/CustomHtmlBlockSignupForm.elm -- --output=dist/main.js",
+    "build": "elm make ./src/CustomHtmlBlockSignupForm.elm --output=dist/main.js --optimize"
+  },
+  "dependencies": {
+    "elm": "latest-0.19.1"
+  },
+  "devDependencies": {
+    "elm-live": "4.0.2"
+  },
+  "keywords": [
+    "elm"
+  ]
+}

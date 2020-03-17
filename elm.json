@@ -3,9 +3,10 @@
     "name": "dillonkearns/elm-markdown",
     "summary": "Pure Elm markdown parser with customizable rendering.",
     "license": "BSD-3-Clause",
-    "version": "3.0.0",
+    "version": "4.0.0",
     "exposed-modules": [
         "Markdown.Parser",
+        "Markdown.Renderer",
         "Markdown.Block",
         "Markdown.Html"
     ],
@@ -14,6 +15,8 @@
         "elm/core": "1.0.2 <= v < 2.0.0",
         "elm/html": "1.0.0 <= v < 2.0.0",
         "elm/parser": "1.1.0 <= v < 2.0.0",
+        "elm/regex": "1.0.0 <= v < 2.0.0",
+        "elm/url": "1.0.0 <= v < 2.0.0",
         "rtfeldman/elm-hex": "1.0.0 <= v < 2.0.0"
     },
     "test-dependencies": {

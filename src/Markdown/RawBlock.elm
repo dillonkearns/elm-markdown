@@ -2,6 +2,8 @@ module Markdown.RawBlock exposing (Attribute, RawBlock(..), UnparsedInlines(..))
 
 import Markdown.Block exposing (Block)
 import Markdown.CodeBlock exposing (CodeBlock)
+import Markdown.Table
+import Markdown.TableParser as TableParser
 
 
 type alias Attribute =
@@ -15,7 +17,7 @@ type UnparsedInlines
 type RawBlock
     = Heading Int UnparsedInlines
     | Body UnparsedInlines
-    | Html String (List Attribute) (List Block)
+    | Html (Markdown.Block.Html Block)
     | UnorderedListBlock
         (List
             { task : Maybe Bool
@@ -24,6 +26,8 @@ type RawBlock
         )
     | OrderedListBlock Int (List UnparsedInlines)
     | CodeBlock CodeBlock
+    | IndentedCodeBlock String
     | ThematicBreak
+    | Table (Markdown.Table.Table String)
     | BlankLine
     | BlockQuote String

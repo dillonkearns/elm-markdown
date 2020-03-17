@@ -1,16 +1,12 @@
 module TOC exposing (main)
 
 import Element exposing (Element)
-import Element.Background
-import Element.Border
 import Element.Font as Font
-import Element.Region
 import ElmUi
 import Html exposing (Attribute, Html)
-import Html.Attributes
-import Markdown.Block exposing (Block, Inline, InlineStyle)
-import Markdown.Html
+import Markdown.Block exposing (Block, HeadingLevel, Inline)
 import Markdown.Parser
+import Markdown.Renderer
 
 
 main : Html msg
@@ -127,7 +123,7 @@ buildToc blocks =
         |> List.map Tuple.second
         |> List.map
             (\styledList ->
-                { anchorId = styledToString styledList |> rawTextToId
+                { anchorId = styledList |> Markdown.Block.extractInlineText |> rawTextToId
                 , name = styledToString styledList
                 , level = 1
                 }
@@ -136,11 +132,11 @@ buildToc blocks =
 
 styledToString : List Inline -> String
 styledToString list =
-    List.map .string list
-        |> String.join "-"
+    list
+        |> Markdown.Block.extractInlineText
 
 
-gatherHeadings : List Block -> List ( Int, List Inline )
+gatherHeadings : List Block -> List ( HeadingLevel, List Inline )
 gatherHeadings blocks =
     List.filterMap
         (\block ->
@@ -165,7 +161,7 @@ view markdown =
             |> Markdown.Parser.parse
     of
         Ok okAst ->
-            case Markdown.Parser.render renderer okAst of
+            case Markdown.Renderer.render renderer okAst of
                 Ok rendered ->
                     Ok ( buildToc okAst, rendered )
 
@@ -176,12 +172,14 @@ view markdown =
             Err (error |> List.map Markdown.Parser.deadEndToString |> String.join "\n")
 
 
-renderer : Markdown.Parser.Renderer (Element msg)
+renderer : Markdown.Renderer.Renderer (Element msg)
 renderer =
     ElmUi.renderer
 
 
+rawTextToId : String -> String
 rawTextToId rawText =
     rawText
+        |> String.split " "
+        |> String.join "-"
         |> String.toLower
-        |> String.replace " " ""

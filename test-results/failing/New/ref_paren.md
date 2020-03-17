@@ -4,21 +4,21 @@
 
 This markdown:
 
-```markdown
+````````````markdown
 [hi]
 
 [hi]: /url (there)
 
-```
+````````````
 
 Should give output:
 
-```html
+````````````html
 <p><a href="/url" title="there">hi</a></p>
-```
+````````````
 
 But instead was:
 
-```html
-ERROR Problem at row 6 Expecting Problem at row 1 Expecting symbol (
-```
+````````````html
+<p><a href="/url">hi</a></p><p>(there)</p>
+````````````

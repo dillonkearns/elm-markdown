@@ -4,21 +4,21 @@
 
 This markdown:
 
-```markdown
+````````````markdown
 - [x] foo
   - [ ] bar
   - [x] baz
 - [ ] bim
-```
+````````````
 
 Should give output:
 
-```html
+````````````html
 <ul><li><input checked="" disabled="" type="checkbox">foo<ul><li><input disabled="" type="checkbox">bar</li><li><input checked="" disabled="" type="checkbox">baz</li></ul></li><li><input disabled="" type="checkbox">bim</li></ul>
-```
+````````````
 
 But instead was:
 
-```html
-ERROR Problem at row 7 Expecting Problem at row 1 Expecting symbol (
-```
+````````````html
+<ul><li><input checked="" disabled="" type="checkbox">foo</li></ul><p>- [ ] bar - [x] baz</p><ul><li><input disabled="" type="checkbox">bim</li></ul>
+````````````

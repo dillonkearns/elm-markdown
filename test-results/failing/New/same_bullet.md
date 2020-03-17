@@ -4,21 +4,21 @@
 
 This markdown:
 
-```markdown
+````````````markdown
 * test
 + test
 - test
 
-```
+````````````
 
 Should give output:
 
-```html
+````````````html
 <ul><li>test</li><li>test</li><li>test</li></ul>
-```
+````````````
 
 But instead was:
 
-```html
+````````````html
 <ul><li>test</li></ul><ul><li>test</li></ul><ul><li>test</li></ul>
-```
+````````````

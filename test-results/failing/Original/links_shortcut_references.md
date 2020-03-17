@@ -4,7 +4,7 @@
 
 This markdown:
 
-```markdown
+````````````markdown
 This is the [simple case].
 
 [simple case]: /simple
@@ -26,16 +26,16 @@ break] with a line-ending space.
 [that]: /that
 [other]: /other
 
-```
+````````````
 
 Should give output:
 
-```html
+````````````html
 <p>This is the<a href="/simple">simple case</a>.</p><p>This one has a<a href="/foo">line break</a>.</p><p>This one has a<a href="/foo">line break</a>with a line-ending space.</p><p><a href="/that">this</a>and the<a href="/other">other</a></p>
-```
+````````````
 
 But instead was:
 
-```html
-ERROR Problem at row 32 Expecting Problem at row 1 Expecting symbol (
-```
+````````````html
+<p>This is the<a href="/simple">simple case</a>.</p><p>This one has a [line break].</p><p>This one has a [line break] with a line-ending space.</p><p><a href="/this">this</a><a href="/that">that</a>and the<a href="/other">other</a></p>
+````````````

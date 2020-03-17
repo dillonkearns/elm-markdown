@@ -2,9 +2,11 @@ port module OutputMarkdownHtml exposing (main)
 
 import Html.String as Html
 import Html.String.Attributes as Attr
+import Markdown.Block as Block exposing (Block)
 import Markdown.Html
-import Markdown.Inlines
+import Markdown.HtmlRenderer
 import Markdown.Parser as Markdown
+import Markdown.Renderer
 
 
 port requestHtml : (String -> msg) -> Sub msg
@@ -40,7 +42,7 @@ render renderer markdown =
     markdown
         |> Markdown.parse
         |> Result.mapError deadEndsToString
-        |> Result.andThen (\ast -> Markdown.render renderer ast)
+        |> Result.andThen (\ast -> Markdown.Renderer.render renderer ast)
 
 
 deadEndsToString deadEnds =
@@ -56,43 +58,62 @@ renderMarkdown markdown =
             { heading =
                 \{ level, children } ->
                     case level of
-                        1 ->
+                        Block.H1 ->
                             Html.h1 [] children
 
-                        2 ->
+                        Block.H2 ->
                             Html.h2 [] children
 
-                        3 ->
+                        Block.H3 ->
                             Html.h3 [] children
 
-                        4 ->
+                        Block.H4 ->
                             Html.h4 [] children
 
-                        5 ->
+                        Block.H5 ->
                             Html.h5 [] children
 
-                        6 ->
+                        Block.H6 ->
                             Html.h6 [] children
-
-                        _ ->
-                            Html.text "TODO maye use a type here to clean it up... this will never happen"
-            , raw = Html.p []
+            , paragraph = Html.p []
+            , hardLineBreak = Html.br [] []
             , blockQuote = Html.blockquote []
-            , bold =
-                \content -> Html.strong [] [ Html.text content ]
-            , italic =
-                \content -> Html.em [] [ Html.text content ]
-            , code =
+            , strong =
+                \children -> Html.strong [] children
+            , emphasis =
+                \children -> Html.em [] children
+            , codeSpan =
                 \content -> Html.code [] [ Html.text content ]
             , link =
                 \link content ->
-                    Html.a [ Attr.href link.destination ] content
-                        |> Ok
+                    case link.title of
+                        Just title ->
+                            Html.a
+                                [ Attr.href link.destination
+                                , Attr.title title
+                                ]
+                                content
+
+                        Nothing ->
+                            Html.a [ Attr.href link.destination ] content
             , image =
-                \image content ->
-                    Html.img [ Attr.src image.src ] [ Html.text content ]
-                        |> Ok
-            , plain =
+                \imageInfo ->
+                    case imageInfo.title of
+                        Just title ->
+                            Html.img
+                                [ Attr.src imageInfo.src
+                                , Attr.alt imageInfo.alt
+                                , Attr.title title
+                                ]
+                                []
+
+                        Nothing ->
+                            Html.img
+                                [ Attr.src imageInfo.src
+                                , Attr.alt imageInfo.alt
+                                ]
+                                []
+            , text =
                 Html.text
             , unorderedList =
                 \items ->
@@ -101,14 +122,14 @@ renderMarkdown markdown =
                             |> List.map
                                 (\item ->
                                     case item of
-                                        Markdown.ListItem task children ->
+                                        Block.ListItem task children ->
                                             let
                                                 checkbox =
                                                     case task of
-                                                        Markdown.NoTask ->
+                                                        Block.NoTask ->
                                                             Html.text ""
 
-                                                        Markdown.IncompleteTask ->
+                                                        Block.IncompleteTask ->
                                                             Html.input
                                                                 [ Attr.disabled True
                                                                 , Attr.checked False
@@ -116,7 +137,7 @@ renderMarkdown markdown =
                                                                 ]
                                                                 []
 
-                                                        Markdown.CompletedTask ->
+                                                        Block.CompletedTask ->
                                                             Html.input
                                                                 [ Attr.disabled True
                                                                 , Attr.checked True
@@ -144,17 +165,7 @@ renderMarkdown markdown =
                                 )
                         )
             , html =
-                Markdown.Html.oneOf
-                    ([ "table"
-                     , "tr"
-                     , "td"
-                     , "pre"
-                     , "th"
-                     , "div"
-                     , "a"
-                     ]
-                        |> List.map passThroughNode
-                    )
+                htmlRenderer
             , codeBlock =
                 \{ body, language } ->
                     Html.pre []
@@ -163,9 +174,60 @@ renderMarkdown markdown =
                             ]
                         ]
             , thematicBreak = Html.hr [] []
+            , table = Html.table []
+            , tableHeader = Html.thead []
+            , tableBody = Html.tbody []
+            , tableRow = Html.tr []
+            , tableHeaderCell =
+                \maybeAlignment ->
+                    let
+                        attrs =
+                            maybeAlignment
+                                |> Maybe.map
+                                    (\alignment ->
+                                        case alignment of
+                                            Block.AlignLeft ->
+                                                "left"
+
+                                            Block.AlignCenter ->
+                                                "center"
+
+                                            Block.AlignRight ->
+                                                "right"
+                                    )
+                                |> Maybe.map Attr.align
+                                |> Maybe.map List.singleton
+                                |> Maybe.withDefault []
+                    in
+                    Html.th attrs
+            , tableCell = Html.td []
             }
         |> Result.map (List.map (Html.toString 0))
         |> Result.map (String.join "")
+
+
+htmlRenderer : Markdown.Html.Renderer (List (Html.Html msg) -> Html.Html msg)
+htmlRenderer =
+    passthrough
+        (\tag attributes blocks ->
+            let
+                result : Result String (List (Html.Html msg) -> Html.Html msg)
+                result =
+                    (\children ->
+                        Html.node tag htmlAttributes children
+                    )
+                        |> Ok
+
+                htmlAttributes : List (Html.Attribute msg)
+                htmlAttributes =
+                    attributes
+                        |> List.map
+                            (\{ name, value } ->
+                                Attr.attribute name value
+                            )
+            in
+            result
+        )
 
 
 passThroughNode nodeName =
@@ -183,6 +245,13 @@ passThroughNode nodeName =
         |> Markdown.Html.withOptionalAttribute "id"
         |> Markdown.Html.withOptionalAttribute "class"
         |> Markdown.Html.withOptionalAttribute "href"
+
+
+{-| TODO come up with an API to provide a solution to do this sort of thing publicly
+-}
+passthrough : (String -> List Markdown.HtmlRenderer.Attribute -> List Block -> Result String view) -> Markdown.HtmlRenderer.HtmlRenderer view
+passthrough renderFn =
+    Markdown.HtmlRenderer.HtmlRenderer renderFn
 
 
 type Msg

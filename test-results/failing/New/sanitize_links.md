@@ -4,7 +4,7 @@
 
 This markdown:
 
-```markdown
+````````````markdown
 [URL](javascript:alert)
 
 [URL](vbscript:alert)
@@ -15,16 +15,16 @@ This markdown:
 
 [URL](data:text/html;base64,PHNjcmlwdD5hbGVydCgnWFNTJyk8L3NjcmlwdD4K)
 
-```
+````````````
 
 Should give output:
 
-```html
+````````````html
 <p>URL</p><p>URL</p><p>URL</p><p>URL</p><p>URL</p>
-```
+````````````
 
 But instead was:
 
-```html
+````````````html
 <p><a href="javascript:alert">URL</a></p><p><a href="vbscript:alert">URL</a></p><p><a href="javascript:alert(1)">URL</a></p><p><a href="javascript:document;alert(1)">URL</a></p><p><a href="data:text/html;base64,PHNjcmlwdD5hbGVydCgnWFNTJyk8L3NjcmlwdD4K">URL</a></p>
-```
+````````````

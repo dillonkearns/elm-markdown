@@ -1,345 +1,55 @@
-module Markdown.Parser exposing
-    ( Renderer, defaultHtmlRenderer, deadEndToString, parse, render
-    , ListItem(..), Task(..)
-    )
+module Markdown.Parser exposing (parse, deadEndToString)
 
 {-|
 
-@docs Renderer, defaultHtmlRenderer, deadEndToString, parse, render
-
-
-## List Item types
-
-@docs ListItem, Task
+@docs parse, deadEndToString
 
 -}
 
+import Dict exposing (Dict)
 import Helpers
-import Html exposing (Html)
-import Html.Attributes as Attr
-import Markdown.Block as Block exposing (Block, Inline)
+import HtmlParser exposing (Node(..))
+import Markdown.Block as Block exposing (Block, Inline, ListItem, Task)
 import Markdown.CodeBlock
-import Markdown.Html
-import Markdown.HtmlRenderer
-import Markdown.Inlines as Inlines
+import Markdown.Inline as Inline
+import Markdown.InlineParser
+import Markdown.LinkReferenceDefinition as LinkReferenceDefinition exposing (LinkReferenceDefinition)
 import Markdown.ListItem as ListItem
 import Markdown.OrderedList
-import Markdown.RawBlock exposing (Attribute, RawBlock(..), UnparsedInlines(..))
+import Markdown.RawBlock as RawBlock exposing (Attribute, RawBlock(..), UnparsedInlines(..))
+import Markdown.Table
+import Markdown.TableParser as TableParser
 import Markdown.UnorderedList
 import Parser
-import Parser.Advanced as Advanced exposing ((|.), (|=), Nestable(..), Step(..), andThen, chompIf, chompUntil, chompWhile, getChompedString, inContext, int, lazy, loop, map, multiComment, oneOf, problem, succeed, symbol, token)
-import Parser.Extra exposing (oneOrMore, zeroOrMore)
-import XmlParser exposing (Node(..))
+import Parser.Advanced as Advanced exposing ((|.), (|=), Nestable(..), Step(..), andThen, chompIf, chompWhile, getChompedString, loop, map, oneOf, problem, succeed, symbol, token)
+import Parser.Extra exposing (zeroOrMore)
+import ThematicBreak
 
 
-{-| A record with functions that define how to render all possible markdown blocks.
-These renderers are composed together to give you the final rendered output.
+{-| Try parsing a markdown String into `Markdown.Block.Block`s.
 
-You could render to any type you want. Here are some useful things you might render to:
+Often you'll want to render these `Block`s directly:
 
-  - `Html` (using the `defaultHtmlRenderer` provided by this module)
-  - Custom `Html`
-  - `Element`s from [`mdgriffith/elm-ui`](https://package.elm-lang.org/packages/mdgriffith/elm-ui/latest/)
-  - Types from other custom HTML replacement libraries, like [`rtfeldman/elm-css`](https://package.elm-lang.org/packages/rtfeldman/elm-css/latest/) or [`tesk9/accessible-html`](https://package.elm-lang.org/packages/tesk9/accessible-html/latest/)
-  - Raw `String`s with [ANSI color codes](http://www.lihaoyi.com/post/BuildyourownCommandLinewithANSIescapecodes.html) for setting rich colors in terminal (CLI) output
-  - Plain text with any formatting stripped away (maybe for a String search feature)
+    render renderer markdown =
+        markdown
+            |> Markdown.parse
+            |> Result.mapError deadEndsToString
+            |> Result.andThen (\ast -> Markdown.render renderer ast)
+
+    deadEndsToString deadEnds =
+        deadEnds
+            |> List.map deadEndToString
+            |> String.join "\n"
+
+But you can also do a lot with the `Block`s before passing them through:
+
+  - Transform the `Block`s ([example: make each heading one level deeper](TODO))
+  - Use the blocks to gather metadata about the markdown document ([example: building a table of contents from `Block`s](TODO))
 
 -}
-type alias Renderer view =
-    { heading : { level : Int, rawText : String, children : List view } -> view
-    , raw : List view -> view
-    , blockQuote : List view -> view
-    , html : Markdown.Html.Renderer (List view -> view)
-    , plain : String -> view
-    , code : String -> view
-    , bold : String -> view
-    , italic : String -> view
-    , link : { title : Maybe String, destination : String } -> List view -> Result String view
-    , image : { src : String } -> String -> Result String view
-    , unorderedList : List (ListItem view) -> view
-    , orderedList : Int -> List (List view) -> view
-    , codeBlock : { body : String, language : Maybe String } -> view
-    , thematicBreak : view
-    }
-
-
-{-| The value for an unordered list item, which may contain a task.
--}
-type ListItem view
-    = ListItem Task (List view)
-
-
-{-| A task (or no task), which may be contained in a ListItem.
--}
-type Task
-    = NoTask
-    | IncompleteTask
-    | CompletedTask
-
-
-{-| This renders `Html` in an attempt to be as close as possible to
-the HTML output in <https://github.github.com/gfm/>.
--}
-defaultHtmlRenderer : Renderer (Html msg)
-defaultHtmlRenderer =
-    { heading =
-        \{ level, children } ->
-            case level of
-                1 ->
-                    Html.h1 [] children
-
-                2 ->
-                    Html.h2 [] children
-
-                3 ->
-                    Html.h3 [] children
-
-                4 ->
-                    Html.h4 [] children
-
-                5 ->
-                    Html.h5 [] children
-
-                6 ->
-                    Html.h6 [] children
-
-                _ ->
-                    Html.text "TODO maye use a type here to clean it up... this will never happen"
-    , raw = Html.p []
-    , blockQuote = Html.blockquote []
-    , bold =
-        \content -> Html.strong [] [ Html.text content ]
-    , italic =
-        \content -> Html.em [] [ Html.text content ]
-    , code =
-        \content -> Html.code [] [ Html.text content ]
-    , link =
-        \link content ->
-            Html.a [ Attr.href link.destination ] content
-                |> Ok
-    , image =
-        \image content ->
-            Html.img [ Attr.src image.src ] [ Html.text content ]
-                |> Ok
-    , plain =
-        Html.text
-    , unorderedList =
-        \items ->
-            Html.ul []
-                (items
-                    |> List.map
-                        (\item ->
-                            case item of
-                                ListItem task children ->
-                                    let
-                                        checkbox =
-                                            case task of
-                                                NoTask ->
-                                                    Html.text ""
-
-                                                IncompleteTask ->
-                                                    Html.input
-                                                        [ Attr.disabled True
-                                                        , Attr.checked False
-                                                        , Attr.type_ "checkbox"
-                                                        ]
-                                                        []
-
-                                                CompletedTask ->
-                                                    Html.input
-                                                        [ Attr.disabled True
-                                                        , Attr.checked True
-                                                        , Attr.type_ "checkbox"
-                                                        ]
-                                                        []
-                                    in
-                                    Html.li [] (checkbox :: children)
-                        )
-                )
-    , orderedList =
-        \startingIndex items ->
-            Html.ol
-                (case startingIndex of
-                    1 ->
-                        [ Attr.start startingIndex ]
-
-                    _ ->
-                        []
-                )
-                (items
-                    |> List.map
-                        (\itemBlocks ->
-                            Html.li []
-                                itemBlocks
-                        )
-                )
-    , html = Markdown.Html.oneOf []
-    , codeBlock =
-        \{ body, language } ->
-            Html.pre []
-                [ Html.code []
-                    [ Html.text body
-                    ]
-                ]
-    , thematicBreak = Html.hr [] []
-    }
-
-
-renderStyled : Renderer view -> List Inline -> Result String (List view)
-renderStyled renderer styledStrings =
-    styledStrings
-        |> List.foldr (foldThing renderer) []
-        |> combineResults
-
-
-foldThing : Renderer view -> Inline -> List (Result String view) -> List (Result String view)
-foldThing renderer { style, string } soFar =
-    case style.link of
-        Just link ->
-            case link.destination of
-                Block.Link destination ->
-                    case Advanced.run Inlines.parse string of
-                        Ok styledLine ->
-                            (renderStyled renderer styledLine
-                                |> Result.andThen
-                                    (\children ->
-                                        renderer.link { title = link.title, destination = destination } children
-                                    )
-                            )
-                                :: soFar
-
-                        Err error ->
-                            (error |> List.map deadEndToString |> List.map Err)
-                                ++ soFar
-
-                Block.Image src ->
-                    renderer.image { src = src } string
-                        :: soFar
-
-        Nothing ->
-            if style.isBold then
-                (renderer.bold string |> Ok)
-                    :: soFar
-
-            else if style.isItalic then
-                (renderer.italic string |> Ok)
-                    :: soFar
-
-            else if style.isCode then
-                (renderer.code string |> Ok)
-                    :: soFar
-
-            else
-                (renderer.plain string |> Ok)
-                    :: soFar
-
-
-renderHelper :
-    Renderer view
-    -> List Block
-    -> List (Result String view)
-renderHelper renderer blocks =
-    List.map
-        (\block ->
-            case block of
-                Block.Heading level content ->
-                    renderStyled renderer content
-                        |> Result.map
-                            (\children ->
-                                renderer.heading
-                                    { level = level, rawText = Inlines.toString content, children = children }
-                            )
-
-                Block.Body content ->
-                    renderStyled renderer content
-                        |> Result.map renderer.raw
-
-                Block.Html tag attributes children ->
-                    renderHtmlNode renderer tag attributes children
-
-                Block.UnorderedListBlock items ->
-                    items
-                        |> List.map
-                            (\item ->
-                                renderStyled renderer item.body
-                                    |> Result.map
-                                        (\renderedBody ->
-                                            let
-                                                task =
-                                                    case item.task of
-                                                        Just complete ->
-                                                            case complete of
-                                                                True ->
-                                                                    CompletedTask
-
-                                                                False ->
-                                                                    IncompleteTask
-
-                                                        Nothing ->
-                                                            NoTask
-                                            in
-                                            ListItem task renderedBody
-                                        )
-                            )
-                        |> combineResults
-                        |> Result.map renderer.unorderedList
-
-                Block.OrderedListBlock startingIndex items ->
-                    items
-                        |> List.map (renderStyled renderer)
-                        |> combineResults
-                        |> Result.map (renderer.orderedList startingIndex)
-
-                Block.CodeBlock codeBlock ->
-                    codeBlock
-                        |> renderer.codeBlock
-                        |> Ok
-
-                Block.ThematicBreak ->
-                    Ok renderer.thematicBreak
-
-                Block.BlockQuote nestedBlocks ->
-                    renderHelper renderer nestedBlocks
-                        |> combineResults
-                        |> Result.map renderer.blockQuote
-        )
-        blocks
-
-
-{-| Apply a `Markdown.Parser.Renderer` to turn parsed `Block`s into your rendered
-markdown view.
--}
-render :
-    Renderer view
-    -> List Block
-    -> Result String (List view)
-render renderer ast =
-    ast
-        |> renderHelper renderer
-        |> combineResults
-
-
-renderHtml :
-    String
-    -> List Attribute
-    -> List Block
-    -> Markdown.Html.Renderer (List view -> view)
-    -> List (Result String view)
-    -> Result String view
-renderHtml tagName attributes children (Markdown.HtmlRenderer.HtmlRenderer htmlRenderer) renderedChildren =
-    renderedChildren
-        |> combineResults
-        |> Result.andThen
-            (\okChildren ->
-                htmlRenderer tagName attributes children
-                    |> Result.map
-                        (\myRenderer -> myRenderer okChildren)
-            )
-
-
-combineResults : List (Result x a) -> Result x (List a)
-combineResults =
-    List.foldr (Result.map2 (::)) (Ok [])
+parse : String -> Result (List (Advanced.DeadEnd String Parser.Problem)) (List Block)
+parse input =
+    Advanced.run multiParser2 input
 
 
 deadEndsToString : List (Advanced.DeadEnd String Parser.Problem) -> String
@@ -402,40 +112,109 @@ problemToString problem =
             "Bad repeat"
 
 
-renderHtmlNode : Renderer view -> String -> List Attribute -> List Block -> Result String view
-renderHtmlNode renderer tag attributes children =
-    renderHtml tag
-        attributes
-        children
-        renderer.html
-        (renderHelper renderer children)
-
-
 type alias Parser a =
     Advanced.Parser String Parser.Problem a
 
 
-parseInlines : RawBlock -> Parser (Maybe Block)
-parseInlines rawBlock =
+inlineParseHelper : LinkReferenceDefinitions -> UnparsedInlines -> List Block.Inline
+inlineParseHelper referencesDict (UnparsedInlines unparsedInlines) =
+    let
+        referencesDict2 =
+            referencesDict
+                |> List.map (Tuple.mapSecond (\{ destination, title } -> ( destination, title )))
+                |> Dict.fromList
+
+        --
+        --myReferences =
+        --    Dict.fromList
+        --        [ ( "foo", { destination = "/url", title = Just "title" } )
+        --        ]
+    in
+    Markdown.InlineParser.parse referencesDict2 unparsedInlines
+        |> List.map mapInline
+
+
+mapInline : Inline.Inline -> Block.Inline
+mapInline inline =
+    case inline of
+        Inline.Text string ->
+            Block.Text string
+
+        Inline.HardLineBreak ->
+            Block.HardLineBreak
+
+        Inline.CodeInline string ->
+            Block.CodeSpan string
+
+        Inline.Link string maybeString inlines ->
+            Block.Link string maybeString (inlines |> List.map mapInline)
+
+        Inline.Image string maybeString inlines ->
+            Block.Image string maybeString (inlines |> List.map mapInline)
+
+        Inline.HtmlInline node ->
+            node
+                |> nodeToRawBlock
+                |> Block.HtmlInline
+
+        Inline.Emphasis level inlines ->
+            case level of
+                1 ->
+                    Block.Emphasis (inlines |> List.map mapInline)
+
+                2 ->
+                    Block.Strong (inlines |> List.map mapInline)
+
+                _ ->
+                    -- TODO fix this
+                    Block.Strong (inlines |> List.map mapInline)
+
+
+levelParser : Int -> Parser Block.HeadingLevel
+levelParser level =
+    case level of
+        1 ->
+            succeed Block.H1
+
+        2 ->
+            succeed Block.H2
+
+        3 ->
+            succeed Block.H3
+
+        4 ->
+            succeed Block.H4
+
+        5 ->
+            succeed Block.H5
+
+        6 ->
+            succeed Block.H6
+
+        _ ->
+            problem ("A heading with 1 to 6 #'s, but found " ++ String.fromInt level |> Parser.Expecting)
+
+
+parseInlines : LinkReferenceDefinitions -> RawBlock -> Parser (Maybe Block)
+parseInlines linkReferences rawBlock =
     case rawBlock of
-        Heading level (UnparsedInlines unparsedInlines) ->
-            case Advanced.run Inlines.parse unparsedInlines of
-                Ok styledLine ->
-                    just (Block.Heading level styledLine)
+        Heading level unparsedInlines ->
+            level
+                |> levelParser
+                |> andThen
+                    (\parsedLevel ->
+                        unparsedInlines
+                            |> inlineParseHelper linkReferences
+                            |> (\styledLine -> just (Block.Heading parsedLevel styledLine))
+                    )
 
-                Err error ->
-                    problem (Parser.Expecting (error |> List.map deadEndToString |> String.join "\n"))
+        Body unparsedInlines ->
+            unparsedInlines
+                |> inlineParseHelper linkReferences
+                |> (\styledLine -> just (Block.Paragraph styledLine))
 
-        Body (UnparsedInlines unparsedInlines) ->
-            case Advanced.run Inlines.parse unparsedInlines of
-                Ok styledLine ->
-                    just (Block.Body styledLine)
-
-                Err error ->
-                    problem (Parser.Expecting (error |> List.map deadEndToString |> String.join "\n"))
-
-        Html tagName attributes children ->
-            Block.Html tagName attributes children
+        Html html ->
+            Block.HtmlBlock html
                 |> just
 
         UnorderedListBlock unparsedItems ->
@@ -443,23 +222,33 @@ parseInlines rawBlock =
                 |> List.map
                     (\unparsedItem ->
                         unparsedItem.body
-                            |> parseRawInline identity
+                            |> parseRawInline linkReferences identity
                             |> Advanced.map
                                 (\parsedInlines ->
-                                    { task = unparsedItem.task
-                                    , body = parsedInlines
-                                    }
+                                    let
+                                        task =
+                                            case unparsedItem.task of
+                                                Just False ->
+                                                    Block.IncompleteTask
+
+                                                Just True ->
+                                                    Block.CompletedTask
+
+                                                Nothing ->
+                                                    Block.NoTask
+                                    in
+                                    Block.ListItem task parsedInlines
                                 )
                     )
                 |> combine
-                |> map Block.UnorderedListBlock
+                |> map Block.UnorderedList
                 |> map Just
 
         OrderedListBlock startingIndex unparsedInlines ->
             unparsedInlines
-                |> List.map (parseRawInline identity)
+                |> List.map (parseRawInline linkReferences identity)
                 |> combine
-                |> map (Block.OrderedListBlock startingIndex)
+                |> map (Block.OrderedList startingIndex)
                 |> map Just
 
         CodeBlock codeBlock ->
@@ -485,19 +274,53 @@ parseInlines rawBlock =
                 Err error ->
                     Advanced.problem (Parser.Problem (deadEndsToString error))
 
+        IndentedCodeBlock codeBlockBody ->
+            Block.CodeBlock { body = codeBlockBody, language = Nothing }
+                |> just
+
+        Table (Markdown.Table.Table header rows) ->
+            let
+                parsedHeader : Parser (List (Markdown.Table.HeaderCell (List Inline)))
+                parsedHeader =
+                    header
+                        |> List.map
+                            (\{ label, alignment } ->
+                                label
+                                    |> UnparsedInlines
+                                    |> parseRawInline linkReferences
+                                        (\parsedHeaderLabel ->
+                                            { label = parsedHeaderLabel
+                                            , alignment = alignment
+                                            }
+                                        )
+                            )
+                        --|> List.map (parseRawInline linkReferences identity)
+                        |> combine
+
+                --|> parseRawInline
+                --    linkReferences
+                --    (Debug.todo "")
+                --    (UnparsedInlines "")
+                --header
+            in
+            parsedHeader
+                |> andThen
+                    (\headerThing ->
+                        Block.Table headerThing []
+                            |> just
+                    )
+
 
 just value =
     succeed (Just value)
 
 
-parseRawInline : (List Inline -> a) -> UnparsedInlines -> Advanced.Parser c Parser.Problem a
-parseRawInline wrap (UnparsedInlines unparsedInlines) =
-    case Advanced.run Inlines.parse unparsedInlines of
-        Ok styledLine ->
-            succeed (wrap styledLine)
-
-        Err error ->
-            problem (Parser.Expecting (error |> List.map deadEndToString |> String.join "\n"))
+parseRawInline : LinkReferenceDefinitions -> (List Inline -> a) -> UnparsedInlines -> Advanced.Parser c Parser.Problem a
+parseRawInline linkReferences wrap unparsedInlines =
+    unparsedInlines
+        |> inlineParseHelper linkReferences
+        |> (\styledLine -> wrap styledLine)
+        |> succeed
 
 
 plainLine : Parser RawBlock
@@ -508,14 +331,6 @@ plainLine =
                 |> UnparsedInlines
                 |> Body
         )
-        |. Advanced.backtrackable
-            (oneOf
-                [ token (Advanced.Token "   " (Parser.Expecting "   "))
-                , token (Advanced.Token "  " (Parser.Expecting "  "))
-                , token (Advanced.Token " " (Parser.Expecting " "))
-                , succeed ()
-                ]
-            )
         |= innerParagraphParser
         |. oneOf
             [ Advanced.chompIf Helpers.isNewline (Parser.Expecting "A single non-newline char.")
@@ -526,7 +341,7 @@ plainLine =
 innerParagraphParser =
     getChompedString <|
         succeed ()
-            |. Advanced.chompIf (\c -> not <| Helpers.isSpaceOrTab c && (not <| Helpers.isNewline c)) (Parser.Expecting "Not a space or tab.")
+            |. Advanced.chompIf (\c -> not <| Helpers.isNewline c) (Parser.Expecting "Not newline.")
             |. Advanced.chompUntilEndOr "\n"
 
 
@@ -594,7 +409,7 @@ blankLine =
 
 htmlParser : Parser RawBlock
 htmlParser =
-    XmlParser.element
+    HtmlParser.html
         |> xmlNodeToHtmlNode
 
 
@@ -603,24 +418,87 @@ xmlNodeToHtmlNode parser =
     Advanced.andThen
         (\xmlNode ->
             case xmlNode of
-                XmlParser.Text innerText ->
-                    -- TODO is this right?
+                HtmlParser.Text innerText ->
                     Body
                         (UnparsedInlines innerText)
                         |> Advanced.succeed
 
-                XmlParser.Element tag attributes children ->
+                HtmlParser.Element tag attributes children ->
                     Advanced.andThen
                         (\parsedChildren ->
-                            Advanced.succeed
-                                (Html tag
-                                    attributes
-                                    parsedChildren
-                                )
+                            Block.HtmlElement tag attributes parsedChildren
+                                |> RawBlock.Html
+                                |> Advanced.succeed
                         )
                         (nodesToBlocksParser children)
+
+                Comment string ->
+                    Block.HtmlComment string
+                        |> RawBlock.Html
+                        |> succeed
+
+                Cdata string ->
+                    Block.Cdata string
+                        |> RawBlock.Html
+                        |> succeed
+
+                ProcessingInstruction string ->
+                    Block.ProcessingInstruction string
+                        |> RawBlock.Html
+                        |> succeed
+
+                Declaration declarationType content ->
+                    Block.HtmlDeclaration declarationType content
+                        |> RawBlock.Html
+                        |> succeed
         )
         parser
+
+
+textNodeToBlocks : String -> List Block
+textNodeToBlocks textNodeValue =
+    textNodeValue
+        |> Advanced.run multiParser2
+        |> Result.withDefault []
+
+
+nodeToRawBlock : Node -> Block.Html Block
+nodeToRawBlock node =
+    case node of
+        HtmlParser.Text innerText ->
+            Block.HtmlComment "TODO this never happens, but use types to drop this case."
+
+        HtmlParser.Element tag attributes children ->
+            let
+                parsedChildren : List Block
+                parsedChildren =
+                    children
+                        |> List.map
+                            (\child ->
+                                case child of
+                                    HtmlParser.Text text ->
+                                        textNodeToBlocks text
+
+                                    _ ->
+                                        [ nodeToRawBlock child |> Block.HtmlBlock ]
+                            )
+                        |> List.concat
+            in
+            Block.HtmlElement tag
+                attributes
+                parsedChildren
+
+        Comment string ->
+            Block.HtmlComment string
+
+        Cdata string ->
+            Block.Cdata string
+
+        ProcessingInstruction string ->
+            Block.ProcessingInstruction string
+
+        Declaration declarationType content ->
+            Block.HtmlDeclaration declarationType content
 
 
 nodesToBlocksParser : List Node -> Parser (List Block)
@@ -653,7 +531,7 @@ childToParser node =
             nodesToBlocksParser children
                 |> Advanced.andThen
                     (\childrenAsBlocks ->
-                        Advanced.succeed [ Block.Html tag attributes childrenAsBlocks ]
+                        Advanced.succeed [ Block.HtmlElement tag attributes childrenAsBlocks |> Block.HtmlBlock ]
                     )
 
         Text innerText ->
@@ -670,6 +548,18 @@ childToParser node =
                             )
                         )
 
+        Comment string ->
+            succeed [ Block.HtmlComment string |> Block.HtmlBlock ]
+
+        Cdata string ->
+            succeed [ Block.Cdata string |> Block.HtmlBlock ]
+
+        ProcessingInstruction string ->
+            succeed [ Block.ProcessingInstruction string |> Block.HtmlBlock ]
+
+        Declaration declarationType content ->
+            succeed [ Block.HtmlDeclaration declarationType content |> Block.HtmlBlock ]
+
 
 multiParser2 : Parser (List Block)
 multiParser2 =
@@ -681,7 +571,7 @@ multiParser2 =
             (List.filter
                 (\item ->
                     case item of
-                        Block.Body [] ->
+                        Block.Paragraph [] ->
                             False
 
                         _ ->
@@ -690,23 +580,47 @@ multiParser2 =
             )
 
 
-rawBlockParser : Parser (List RawBlock)
+type alias LinkReferenceDefinitions =
+    List ( String, { destination : String, title : Maybe String } )
+
+
+type alias State =
+    { linkReferenceDefinitions : LinkReferenceDefinitions
+    , rawBlocks : List RawBlock
+    }
+
+
+updateRawBlocks : State -> List RawBlock -> State
+updateRawBlocks state updatedRawBlocks =
+    { state | rawBlocks = updatedRawBlocks }
+
+
+addReference : State -> LinkReferenceDefinition -> State
+addReference state linkRef =
+    { state | linkReferenceDefinitions = linkRef :: state.linkReferenceDefinitions }
+
+
+rawBlockParser : Parser State
 rawBlockParser =
-    loop [] statementsHelp2
+    loop
+        { linkReferenceDefinitions = []
+        , rawBlocks = []
+        }
+        statementsHelp2
 
 
-parseAllInlines : List RawBlock -> Parser (List Block)
-parseAllInlines rawBlocks =
-    List.foldl combineBlocks (succeed []) rawBlocks
+parseAllInlines : State -> Parser (List Block)
+parseAllInlines state =
+    List.foldl (combineBlocks state.linkReferenceDefinitions) (succeed []) state.rawBlocks
 
 
-combineBlocks : RawBlock -> Parser (List Block) -> Parser (List Block)
-combineBlocks rawBlock soFar =
+combineBlocks : LinkReferenceDefinitions -> RawBlock -> Parser (List Block) -> Parser (List Block)
+combineBlocks linkReferences rawBlock soFar =
     soFar
         |> andThen
             (\parsedBlocks ->
                 rawBlock
-                    |> parseInlines
+                    |> parseInlines linkReferences
                     |> map
                         (\maybeNewParsedBlock ->
                             case maybeNewParsedBlock of
@@ -719,178 +633,190 @@ combineBlocks rawBlock soFar =
             )
 
 
-statementsHelp2 : List RawBlock -> Parser (Step (List RawBlock) (List RawBlock))
+statementsHelp2 : State -> Parser (Step State State)
 statementsHelp2 revStmts =
     let
         keepLooping parser =
             parser
                 |> map
-                    (\stmts ->
+                    (\newRawBlock ->
                         case
-                            ( stmts
-                            , revStmts
+                            ( newRawBlock
+                            , revStmts.rawBlocks
                             )
                         of
                             ( CodeBlock block1, (CodeBlock block2) :: rest ) ->
                                 (CodeBlock
-                                    { body = joinStringsPreserveIndentation block2.body block1.body
+                                    { body = joinStringsPreserveAll block2.body block1.body
                                     , language = Nothing
                                     }
                                     :: rest
                                 )
+                                    |> updateRawBlocks revStmts
+                                    |> Loop
+
+                            ( IndentedCodeBlock block1, (IndentedCodeBlock block2) :: rest ) ->
+                                (IndentedCodeBlock (joinStringsPreserveAll block2 block1)
+                                    :: rest
+                                )
+                                    |> updateRawBlocks revStmts
                                     |> Loop
 
                             ( Body (UnparsedInlines body1), (BlockQuote body2) :: rest ) ->
                                 (BlockQuote (joinRawStringsWith "\n" body2 body1)
                                     :: rest
                                 )
+                                    |> updateRawBlocks revStmts
                                     |> Loop
 
                             ( BlockQuote body1, (BlockQuote body2) :: rest ) ->
                                 (BlockQuote (joinStringsPreserveAll body2 body1)
                                     :: rest
                                 )
+                                    |> updateRawBlocks revStmts
                                     |> Loop
 
                             ( Body (UnparsedInlines body1), (Body (UnparsedInlines body2)) :: rest ) ->
-                                Loop
-                                    (Body (UnparsedInlines (joinRawStringsWith " " body2 body1))
-                                        :: rest
-                                    )
+                                (Body (UnparsedInlines (joinRawStringsWith "\n" body2 body1))
+                                    :: rest
+                                )
+                                    |> updateRawBlocks revStmts
+                                    |> Loop
 
                             _ ->
-                                Loop (stmts :: revStmts)
+                                (newRawBlock :: revStmts.rawBlocks)
+                                    |> updateRawBlocks revStmts
+                                    |> Loop
                     )
+
+        indentedCodeParser =
+            case revStmts.rawBlocks of
+                (Body _) :: _ ->
+                    oneOf []
+
+                _ ->
+                    indentedCodeBlock
+                        |> keepLooping
     in
     oneOf
         [ Advanced.end (Parser.Expecting "End") |> map (\() -> Done revStmts)
+        , parseAsParagraphInsteadOfHtmlBlock |> keepLooping
+        , LinkReferenceDefinition.parser
+            |> Advanced.backtrackable
+            |> map
+                (\linkReference ->
+                    linkReference
+                        |> addReference revStmts
+                        |> Loop
+                )
         , blankLine |> keepLooping
         , blockQuote |> keepLooping
-        , Markdown.CodeBlock.parser |> map CodeBlock |> keepLooping
-        , thematicBreak |> keepLooping
+        , Markdown.CodeBlock.parser |> Advanced.backtrackable |> map CodeBlock |> keepLooping
+        , indentedCodeParser
+        , ThematicBreak.parser |> Advanced.backtrackable |> map (\_ -> ThematicBreak) |> keepLooping
         , unorderedListBlock |> keepLooping
-        , orderedListBlock (List.head revStmts) |> keepLooping
-        , heading |> keepLooping
+        , orderedListBlock (List.head revStmts.rawBlocks) |> keepLooping
+        , heading |> Advanced.backtrackable |> keepLooping
         , htmlParser |> keepLooping
+
+        -- TODO re-enable this once the table parser handles rows
+        --, TableParser.parser |> Advanced.backtrackable |> map Table |> keepLooping
         , plainLine |> keepLooping
-        , succeed (Done revStmts)
+        ]
+
+
+{-| HTML parsing is intentionally strict in `dillonkearns/elm-markdown`. Paragraphs are supposed to be forgiving.
+This function checks to see if something might be an autolink that could be confused with an HTML block because
+the line starts with `<`. But it's slightly more lenient, so that things like `<>` that aren't actually parsed as
+autolinks are still parsed as paragraphs.
+-}
+parseAsParagraphInsteadOfHtmlBlock : Parser RawBlock
+parseAsParagraphInsteadOfHtmlBlock =
+    -- ^<[A-Za-z][A-Za-z0-9.+-]{1,31}:[^<>\x00-\x20]*>
+    Advanced.succeed ()
+        |. token (Advanced.Token "<" (Parser.Expecting "<"))
+        |. thisIsDefinitelyNotAnHtmlTag
+        |. endOfLineOrFile
+        |> getChompedString
+        |> map (\rawLine -> rawLine |> UnparsedInlines |> Body)
+        |> Advanced.backtrackable
+
+
+endOfLineOrFile =
+    Advanced.chompUntilEndOr "\n"
+        |. oneOf
+            [ Advanced.symbol (Advanced.Token "\n" (Parser.ExpectingSymbol "\\n"))
+            , Advanced.end (Parser.Expecting "End of input")
+            ]
+
+
+thisIsDefinitelyNotAnHtmlTag : Parser ()
+thisIsDefinitelyNotAnHtmlTag =
+    oneOf
+        [ token (Advanced.Token " " (Parser.Expecting " "))
+        , token (Advanced.Token ">" (Parser.Expecting ">"))
+        , chompIf Char.isAlpha (Parser.Expecting "Alpha")
+            |. chompWhile (\c -> Char.isAlphaNum c || c == '-')
+            |. oneOf
+                [ token (Advanced.Token ":" (Parser.Expecting ":"))
+                , token (Advanced.Token "@" (Parser.Expecting "@"))
+                , token (Advanced.Token "\\" (Parser.Expecting "\\"))
+                , token (Advanced.Token "+" (Parser.Expecting "+"))
+                , token (Advanced.Token "." (Parser.Expecting "."))
+                ]
         ]
 
 
 joinStringsPreserveAll string1 string2 =
-    let
-        string1Trimmed =
-            --String.trimRight
-            string1
-
-        string2Trimmed =
-            --String.trimRight
-            string2
-    in
     String.concat
-        [ string1Trimmed
+        [ string1
         , "\n"
-        , string2Trimmed
-        ]
-
-
-joinStringsPreserveIndentation string1 string2 =
-    let
-        string1Trimmed =
-            String.trimRight string1
-
-        string2Trimmed =
-            String.trimRight string2
-    in
-    String.concat
-        [ string1Trimmed
-        , "\n"
-        , string2Trimmed
+        , string2
         ]
 
 
 joinRawStringsWith joinWith string1 string2 =
-    let
-        string1Trimmed =
-            String.trim string1
-
-        string2Trimmed =
-            String.trim string2
-    in
-    case ( string1Trimmed, string2Trimmed ) of
+    case ( string1, string2 ) of
         ( "", "" ) ->
             String.concat
-                [ string1Trimmed
-                , string2Trimmed
+                [ string1
+                , string2
                 ]
 
         ( "", _ ) ->
             String.concat
-                [ string1Trimmed
-                , string2Trimmed
+                [ string1
+                , string2
                 ]
 
         ( _, "" ) ->
             String.concat
-                [ string1Trimmed
-                , string2Trimmed
+                [ string1
+                , string2
                 ]
 
         _ ->
             String.concat
-                [ string1Trimmed
+                [ string1
                 , joinWith
-                , string2Trimmed
+                , string2
                 ]
 
 
-thematicBreak : Parser RawBlock
-thematicBreak =
-    succeed ThematicBreak
-        |. Advanced.backtrackable
-            (oneOf
-                [ symbol (Advanced.Token "   " (Parser.Problem "Expecting 3 spaces"))
-                , symbol (Advanced.Token "  " (Parser.Problem "Expecting 2 spaces"))
-                , symbol (Advanced.Token " " (Parser.Problem "Expecting space"))
-                , succeed ()
-                ]
-            )
+indentedCodeBlock : Parser RawBlock
+indentedCodeBlock =
+    succeed IndentedCodeBlock
         |. oneOf
-            [ symbol (Advanced.Token "---" (Parser.Expecting "---"))
-                |. chompWhile
-                    (\c ->
-                        case c of
-                            '-' ->
-                                True
+            [ Advanced.symbol (Advanced.Token "    " (Parser.ExpectingSymbol "Indentation"))
 
-                            _ ->
-                                False
-                    )
-            , symbol (Advanced.Token "***" (Parser.Expecting "***"))
-                |. chompWhile
-                    (\c ->
-                        case c of
-                            '*' ->
-                                True
-
-                            _ ->
-                                False
-                    )
-            , symbol (Advanced.Token "___" (Parser.Expecting "___"))
-                |. chompWhile
-                    (\c ->
-                        case c of
-                            '_' ->
-                                True
-
-                            _ ->
-                                False
-                    )
+            --tabs behave as if they were replaced by 4 spaces in places where spaces define structure
+            -- see https://spec.commonmark.org/0.29/#tabs
+            , Advanced.symbol (Advanced.Token "\t" (Parser.ExpectingSymbol "Indentation"))
             ]
-        |. zeroOrMore Helpers.isSpaceOrTab
+        |= getChompedString (Advanced.chompUntilEndOr "\n")
         |. oneOf
-            [ Advanced.end (Parser.Problem "Expecting end")
-            , chompIf Helpers.isNewline (Parser.Problem "Expecting newline")
+            [ Advanced.symbol (Advanced.Token "\n" (Parser.ExpectingSymbol "\\n"))
+            , Advanced.end (Parser.Expecting "End of input")
             ]
 
 
@@ -946,31 +872,3 @@ dropTrailingHashes headingString =
 
     else
         headingString
-
-
-{-| Try parsing a markdown String into `Markdown.Block.Block`s.
-
-Often you'll want to render these `Block`s directly:
-
-    render renderer markdown =
-        markdown
-            |> Markdown.parse
-            |> Result.mapError deadEndsToString
-            |> Result.andThen (\ast -> Markdown.render renderer ast)
-
-    deadEndsToString deadEnds =
-        deadEnds
-            |> List.map deadEndToString
-            |> String.join "\n"
-
-But you can also do a lot with the `Block`s before passing them through:
-
-  - Transform the `Block`s ([example: make each heading one level deeper](TODO))
-  - Use the blocks to gather metadata about the markdown document ([example: building a table of contents from `Block`s](TODO))
-
--}
-parse : String -> Result (List (Advanced.DeadEnd String Parser.Problem)) (List Block)
-parse input =
-    Advanced.run
-        multiParser2
-        input

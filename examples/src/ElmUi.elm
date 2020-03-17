@@ -8,9 +8,10 @@ import Element.Input
 import Element.Region
 import Html exposing (Attribute, Html)
 import Html.Attributes
-import Markdown.Block exposing (Block, Inline, InlineStyle)
+import Markdown.Block as Block exposing (Block, Inline, ListItem(..), Task(..))
 import Markdown.Html
-import Markdown.Parser exposing (ListItem(..), Task(..))
+import Markdown.Parser
+import Markdown.Renderer
 
 
 main : Html msg
@@ -120,7 +121,7 @@ buildToc blocks =
         |> List.map Tuple.second
         |> List.map
             (\styledList ->
-                { anchorId = styledToString styledList |> rawTextToId
+                { anchorId = styledList |> inlinesToId
                 , name = styledToString styledList
                 , level = 1
                 }
@@ -128,17 +129,31 @@ buildToc blocks =
 
 
 styledToString : List Inline -> String
-styledToString list =
-    List.map .string list
+styledToString inlines =
+    --List.map .string list
+    --|> String.join "-"
+    -- TODO do I need to hyphenate?
+    inlines
+        |> Block.extractInlineText
+
+
+inlinesToId : List Inline -> String
+inlinesToId list =
+    list
+        |> Block.extractInlineText
+        |> Debug.log "extracted"
+        |> String.split " "
+        |> Debug.log "split"
         |> String.join "-"
+        |> Debug.log "joined"
 
 
-gatherHeadings : List Block -> List ( Int, List Inline )
+gatherHeadings : List Block -> List ( Block.HeadingLevel, List Inline )
 gatherHeadings blocks =
     List.filterMap
         (\block ->
             case block of
-                Markdown.Block.Heading level content ->
+                Block.Heading level content ->
                     Just ( level, content )
 
                 _ ->
@@ -156,20 +171,20 @@ view markdown =
     markdown
         |> Markdown.Parser.parse
         |> Result.mapError (\error -> error |> List.map Markdown.Parser.deadEndToString |> String.join "\n")
-        |> Result.andThen (Markdown.Parser.render renderer)
+        |> Result.andThen (Markdown.Renderer.render renderer)
 
 
-renderer : Markdown.Parser.Renderer (Element msg)
+renderer : Markdown.Renderer.Renderer (Element msg)
 renderer =
     { heading = heading
-    , raw =
+    , paragraph =
         Element.paragraph
             [ Element.spacing 15 ]
     , thematicBreak = Element.none
-    , plain = Element.text
-    , bold = \content -> Element.row [ Font.bold ] [ Element.text content ]
-    , italic = \content -> Element.row [ Font.italic ] [ Element.text content ]
-    , code = code
+    , text = Element.text
+    , strong = \content -> Element.row [ Font.bold ] content
+    , emphasis = \content -> Element.row [ Font.italic ] content
+    , codeSpan = code
     , link =
         \{ title, destination } body ->
             Element.newTabLink
@@ -181,14 +196,18 @@ renderer =
                         ]
                         body
                 }
-                |> Ok
+    , hardLineBreak = Html.br [] [] |> Element.html
     , image =
-        \image body ->
-            Element.image [ Element.width Element.fill ] { src = image.src, description = body }
-                |> Ok
+        \image ->
+            case image.title of
+                Just title ->
+                    Element.image [ Element.width Element.fill ] { src = image.src, description = image.alt }
+
+                Nothing ->
+                    Element.image [ Element.width Element.fill ] { src = image.src, description = image.alt }
     , blockQuote =
         \children ->
-            Element.paragraph
+            Element.column
                 [ Element.Border.widthEach { top = 0, right = 0, bottom = 0, left = 10 }
                 , Element.padding 10
                 , Element.Border.color (Element.rgb255 145 145 145)
@@ -234,24 +253,39 @@ renderer =
                 )
     , codeBlock = codeBlock
     , html = Markdown.Html.oneOf []
+    , table = Element.column []
+    , tableHeader = Element.column []
+    , tableBody = Element.column []
+    , tableRow = Element.row []
+    , tableHeaderCell =
+        \maybeAlignment children ->
+            Element.paragraph [] children
+    , tableCell = Element.paragraph []
     }
 
 
 rawTextToId rawText =
     rawText
+        |> String.split " "
+        |> Debug.log "split"
+        |> String.join "-"
+        |> Debug.log "joined"
         |> String.toLower
-        |> String.replace " " ""
 
 
-heading : { level : Int, rawText : String, children : List (Element msg) } -> Element msg
+
+--|> String.replace " " ""
+
+
+heading : { level : Block.HeadingLevel, rawText : String, children : List (Element msg) } -> Element msg
 heading { level, rawText, children } =
     Element.paragraph
         [ Font.size
             (case level of
-                1 ->
+                Block.H1 ->
                     36
 
-                2 ->
+                Block.H2 ->
                     24
 
                 _ ->
@@ -259,7 +293,7 @@ heading { level, rawText, children } =
             )
         , Font.bold
         , Font.family [ Font.typeface "Montserrat" ]
-        , Element.Region.heading level
+        , Element.Region.heading (Block.headingLevelToInt level)
         , Element.htmlAttribute
             (Html.Attributes.attribute "name" (rawTextToId rawText))
         , Element.htmlAttribute

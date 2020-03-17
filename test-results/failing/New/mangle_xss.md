@@ -4,21 +4,21 @@
 
 This markdown:
 
-```markdown
+````````````markdown
 <<svg/onload="alert(1)"//@x>
 
 <bar"onclick="alert('XSS')"@foo>
 
-```
+````````````
 
 Should give output:
 
-```html
+````````````html
 <p>&lt;&lt;svg/onload=&quot;alert(1)&quot;//@x&gt;</p><p>&lt;bar&quot;onclick=&quot;alert(&#39;XSS&#39;)&quot;@foo&gt;</p>
-```
+````````````
 
 But instead was:
 
-```html
+````````````html
 ERROR Problem at row 1 Bad repeat
-```
+````````````

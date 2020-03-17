@@ -4,18 +4,18 @@
 
 This markdown:
 
-```markdown
+````````````markdown
 ~~Hi~~ Hello, world!
-```
+````````````
 
 Should give output:
 
-```html
+````````````html
 <p><del>Hi</del>Hello, world!</p>
-```
+````````````
 
 But instead was:
 
-```html
+````````````html
 <p>~~Hi~~ Hello, world!</p>
-```
+````````````

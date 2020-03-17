@@ -16,7 +16,8 @@ module Markdown.Html exposing
 
 -}
 
-import List.Extra
+import Html
+import List.Helpers
 import Markdown.Block exposing (Block)
 import Markdown.HtmlRenderer
 
@@ -210,7 +211,7 @@ withAttribute attributeName (Markdown.HtmlRenderer.HtmlRenderer renderer) =
         renderer tagName attributes innerBlocks
             |> (case
                     attributes
-                        |> List.Extra.find
+                        |> List.Helpers.find
                             (\{ name, value } ->
                                 name == attributeName
                             )
@@ -249,7 +250,7 @@ withOptionalAttribute attributeName (Markdown.HtmlRenderer.HtmlRenderer renderer
         renderer tagName attributes innerBlocks
             |> (case
                     attributes
-                        |> List.Extra.find
+                        |> List.Helpers.find
                             (\{ name, value } ->
                                 name == attributeName
                             )
