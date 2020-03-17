@@ -485,22 +485,65 @@ inlineParserValidateWalk function inline =
                             |> Result.mapError List.singleton
                     )
 
-        --Image url maybeTitle inlines ->
-        --    List.map (inlineParserWalk function) inlines
-        --        |> Image url maybeTitle
-        --        |> function
-        --
-        --Emphasis inlines ->
-        --    List.map (inlineParserWalk function) inlines
-        --        |> Emphasis
-        --        |> function
-        --HtmlInline tag attrs inlines ->
-        --    List.map (inlineParserWalk function) inlines
-        --        |> HtmlInline tag attrs
-        --        |> function
-        _ ->
+        Image string maybeString inlines ->
+            List.map (inlineParserValidateWalk function) inlines
+                |> combine
+                |> Result.andThen
+                    (\transformedInlines ->
+                        Image string maybeString transformedInlines
+                            |> function
+                            |> Result.mapError List.singleton
+                    )
+
+        Emphasis inlines ->
+            List.map (inlineParserValidateWalk function) inlines
+                |> combine
+                |> Result.andThen
+                    (\transformedInlines ->
+                        Emphasis transformedInlines
+                            |> function
+                            |> Result.mapError List.singleton
+                    )
+
+        Strong inlines ->
+            List.map (inlineParserValidateWalk function) inlines
+                |> combine
+                |> Result.andThen
+                    (\transformedInlines ->
+                        Strong transformedInlines
+                            |> function
+                            |> Result.mapError List.singleton
+                    )
+
+        CodeSpan string ->
             function inline
                 |> Result.mapError List.singleton
+
+        Text string ->
+            function inline
+                |> Result.mapError List.singleton
+
+        HardLineBreak ->
+            function inline
+                |> Result.mapError List.singleton
+
+        HtmlInline html ->
+            case html of
+                HtmlElement tagName htmlAttributes blocks ->
+                    function inline
+                        |> Result.mapError List.singleton
+
+                --List.map (inlineParserValidateWalk function) inlines
+                --    |> combine
+                --    |> Result.andThen
+                --        (\transformedInlines ->
+                --            Strong transformedInlines
+                --                |> function
+                --                |> Result.mapError List.singleton
+                --        )
+                _ ->
+                    function inline
+                        |> Result.mapError List.singleton
 
 
 {-| Recursively apply a function to transform each Block.
