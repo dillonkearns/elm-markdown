@@ -323,6 +323,18 @@ walkInlinesHelp function block =
         Heading level children ->
             Heading level (List.map function children)
 
+        Table header rows ->
+            Table
+                (header
+                    |> List.map
+                        (\{ alignment, label } ->
+                            { alignment = alignment
+                            , label = List.map function label
+                            }
+                        )
+                )
+                (rows |> List.map (List.map function))
+
         HtmlBlock html ->
             case html of
                 HtmlElement string htmlAttributes blocks ->
@@ -334,7 +346,10 @@ walkInlinesHelp function block =
                 _ ->
                     block
 
-        _ ->
+        CodeBlock record ->
+            block
+
+        ThematicBreak ->
             block
 
 
