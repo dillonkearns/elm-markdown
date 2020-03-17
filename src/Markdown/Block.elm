@@ -449,11 +449,26 @@ inlineParserWalk function inline =
                 |> Emphasis
                 |> function
 
-        --HtmlInline tag attrs inlines ->
-        --    List.map (inlineParserWalk function) inlines
-        --        |> HtmlInline tag attrs
-        --        |> function
-        _ ->
+        HtmlInline html ->
+            case html of
+                HtmlElement string htmlAttributes children ->
+                    HtmlElement string htmlAttributes (List.map (walkInlines function) children)
+                        |> HtmlInline
+
+                _ ->
+                    function inline
+
+        Strong inlines ->
+            List.map (inlineParserWalk function) inlines
+                |> Strong
+
+        CodeSpan _ ->
+            function inline
+
+        Text _ ->
+            function inline
+
+        HardLineBreak ->
             function inline
 
 
