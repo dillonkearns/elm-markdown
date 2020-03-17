@@ -231,7 +231,7 @@ suite =
                 let
                     gatherHeadingOccurrences : List Block -> ( Dict.Dict String Int, List ( Block, Maybe String ) )
                     gatherHeadingOccurrences =
-                        Block.foldMap
+                        Block.mapAndAccumulate
                             (\soFar block ->
                                 case block of
                                     Heading level inlines ->

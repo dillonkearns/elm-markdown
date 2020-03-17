@@ -90,7 +90,7 @@ deadEndsToString deadEnds =
 gatherHeadingOccurrences : List Block -> List ( Block, Maybe String )
 gatherHeadingOccurrences blocks =
     blocks
-        |> Block.foldMap
+        |> Block.mapAndAccumulate
             (\soFar block ->
                 case block of
                     Block.Heading level inlines ->
