@@ -250,12 +250,10 @@ Hello!
                     |> Expect.equal
                         (Ok
                             [ Block.Table
-                                (Markdown.Table.Table
-                                    [ { label = [ Text "abc" ], alignment = Nothing }
-                                    , { label = [ Text "def" ], alignment = Nothing }
-                                    ]
-                                    []
-                                )
+                                [ { label = [ Text "abc" ], alignment = Nothing }
+                                , { label = [ Text "def" ], alignment = Nothing }
+                                ]
+                                []
                             ]
                         )
         , test "multiple thematic breaks" <|

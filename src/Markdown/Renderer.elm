@@ -23,7 +23,6 @@ import Markdown.Block as Block exposing (Block, Inline, ListItem, Task)
 import Markdown.Html
 import Markdown.HtmlRenderer
 import Markdown.RawBlock exposing (Attribute, RawBlock(..), UnparsedInlines(..))
-import Markdown.Table
 
 
 {-| A record with functions that define how to render all possible markdown blocks.
@@ -339,7 +338,7 @@ renderHelperSingle renderer =
                     |> Result.map renderer.blockQuote
                     |> Just
 
-            Block.Table (Markdown.Table.Table header rows) ->
+            Block.Table header rows ->
                 let
                     renderedHeaderCells : Result String (List (List view))
                     renderedHeaderCells =

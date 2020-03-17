@@ -306,8 +306,7 @@ parseInlines linkReferences rawBlock =
             parsedHeader
                 |> andThen
                     (\headerThing ->
-                        Markdown.Table.Table headerThing []
-                            |> Block.Table
+                        Block.Table headerThing []
                             |> just
                     )
 

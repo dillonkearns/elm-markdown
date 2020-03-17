@@ -1,4 +1,6 @@
-module Markdown.Table exposing (..)
+module Markdown.Table exposing (HeaderCell, Table(..))
+
+import Markdown.Block
 
 
 type Table cell
@@ -7,11 +9,5 @@ type Table cell
 
 type alias HeaderCell cell =
     { label : cell
-    , alignment : Maybe Alignment
+    , alignment : Maybe Markdown.Block.Alignment
     }
-
-
-type Alignment
-    = Left
-    | Right
-    | Center

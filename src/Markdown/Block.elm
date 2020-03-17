@@ -1,7 +1,7 @@
 module Markdown.Block exposing
     ( Block(..)
     , HeadingLevel(..), headingLevelToInt
-    , ListItem(..), Task(..)
+    , ListItem(..), Task(..), Alignment(..)
     , Html(..)
     , Inline(..)
     , HtmlAttribute
@@ -17,7 +17,7 @@ module Markdown.Block exposing
 
 ### List Items
 
-@docs ListItem, Task
+@docs ListItem, Task, Alignment
 
 
 ## HTML
@@ -39,9 +39,6 @@ See <Markdown.Html> for more.
 @docs walkInlines, validateMapInlines, mapAccuml, foldl
 
 -}
-
-import Markdown.CodeBlock
-import Markdown.Table
 
 
 {-| This is the AST (abstract syntax tree) that represents your parsed markdown.
@@ -86,10 +83,18 @@ type Block
       -- Leaf Blocks With Inlines
     | Heading HeadingLevel (List Inline)
     | Paragraph (List Inline)
-    | Table (Markdown.Table.Table (List Inline))
+    | Table (List { label : List Inline, alignment : Maybe Alignment }) (List (List Inline))
       -- Leaf Blocks Without Inlines
     | CodeBlock { body : String, language : Maybe String }
     | ThematicBreak
+
+
+{-| Alignment in a header cell in a markdown table. See the `Table` variant in the `Block` type.
+-}
+type Alignment
+    = AlignLeft
+    | AlignRight
+    | AlignCenter
 
 
 {-| The value for an unordered list item, which may contain a task.
