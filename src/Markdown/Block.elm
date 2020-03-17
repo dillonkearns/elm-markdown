@@ -580,18 +580,3 @@ foldl function acc list =
 
                 _ ->
                     foldl function (function block acc) remainingBlocks
-
-
-filter : (Block -> Bool) -> List Block -> List Block
-filter isGood list =
-    foldl
-        (\x xs ->
-            if isGood x then
-                -- TODO need to handle nesting here
-                (::) x xs
-
-            else
-                xs
-        )
-        []
-        list
