@@ -550,7 +550,25 @@ walk function block =
                 _ ->
                     function block
 
-        _ ->
+        UnorderedList _ ->
+            function block
+
+        OrderedList _ _ ->
+            function block
+
+        Heading _ _ ->
+            function block
+
+        Paragraph _ ->
+            function block
+
+        Table _ _ ->
+            function block
+
+        CodeBlock _ ->
+            function block
+
+        ThematicBreak ->
             function block
 
 
