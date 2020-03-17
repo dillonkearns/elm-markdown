@@ -9,7 +9,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.0.0] - 2020-03-17
+
 ### Changed
+
 - Block data type has been changed to better reflect the naming in the markdown spec.
 - The Renderer code is now in a separate module, `Markdown.Renderer`.
 - Heading levels are now given as a custom type to make it explicit that the values can't be greater than level 6. There's a helper function in the Block module to convert it to an Int.
@@ -33,21 +36,24 @@ permission to use it here 🙏
 ## [3.0.0] - 2020-02-13
 
 ### Fixed
+
 - Added parsing for block quotes
 - Added task list item parsing (breaking change: see [an example here](https://github.com/dillonkearns/elm-markdown/blob/ed1bbe6f653e77d75a1b86710813a6b3c21a4cec/examples/src/ElmUi.elm#L198-L222), or [the full diff including ElmUi.elm here](https://github.com/dillonkearns/elm-markdown/compare/2.0.2...bc51469?expand=1#diff-5d05b9d569f6fb96977355f9ff688eb4L1-R231)).
 - Lines with only tabs or spaces no longer cause parsing errors. Instead, they go through the correct
-    blank line handling. See [#28](https://github.com/dillonkearns/elm-markdown/pull/28).
-- Fixed some other various cases, see [the new test cases that are passing]( https://github.com/dillonkearns/elm-markdown/compare/2.0.2...bc51469?expand=1#diff-3a49125c58477a39487c1c1ef69be134)
+  blank line handling. See [#28](https://github.com/dillonkearns/elm-markdown/pull/28).
+- Fixed some other various cases, see [the new test cases that are passing](https://github.com/dillonkearns/elm-markdown/compare/2.0.2...bc51469?expand=1#diff-3a49125c58477a39487c1c1ef69be134)
 
 ## [2.0.2] - 2020-02-07
 
 ### Fixed
+
 - Got a 16x performance improvement thanks to
-    [this performance optimization trick](https://discourse.elm-lang.org/t/performance-optimization/5105)!
+  [this performance optimization trick](https://discourse.elm-lang.org/t/performance-optimization/5105)!
 
 ## [2.0.1] - 2020-01-21
 
 ### Fixed
+
 - Just pushing README update with updated Ellie examples, see [#22](https://github.com/dillonkearns/elm-markdown/issues/22).
 
 ## [2.0.0] - 2020-01-09
@@ -58,6 +64,7 @@ permission to use it here 🙏
 - Fix HTML ordering bug (see [#16](https://github.com/dillonkearns/elm-markdown/pull/16)). Thank you [matheus23](https://github.com/matheus23)! 🎉🙏
 
 ### Changed
+
 - Give error when there is invalid whitespace within link markdown, see [#10](https://github.com/dillonkearns/elm-markdown/pull/10). Thank you [thomasin](https://github.com/thomasin)!!!
 
 ## [1.1.3] - 2019-11-13
