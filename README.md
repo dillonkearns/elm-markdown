@@ -1,4 +1,5 @@
 # elm-markdown
+
 [![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors)
 [![Build Status](https://travis-ci.org/dillonkearns/elm-markdown.svg?branch=master)](https://travis-ci.org/dillonkearns/elm-markdown) [![Elm package](https://img.shields.io/elm-package/v/dillonkearns/elm-markdown.svg)](https://package.elm-lang.org/packages/dillonkearns/elm-markdown/latest/)
 
@@ -14,9 +15,8 @@ It simply provides a declarative way to map certain HTML tags to your Elm view f
   twitter="dillontkearns"
   github="dillonkearns"
 >
-Dillon really likes building things with Elm! Here are some links
-
-- [Articles](https://incrementalelm.com/articles)
+  Dillon really likes building things with Elm! Here are some links -
+  [Articles](https://incrementalelm.com/articles)
 </bio>
 ```
 
@@ -55,10 +55,10 @@ You define your own custom renderer, turning your markdown content into any data
 Here's a snippet from the default HTML renderer that comes built in to give you a sense of how you define a `Renderer`:
 
 ```elm
-import Html
+import Html exposing (Html)
 import Html.Attributes as Attr
-import Markdown.Renderer exposing (Renderer)
-import Markdown.Block as Block
+import Markdown.Block as Block exposing (Block)
+import Markdown.Html
 
 defaultHtmlRenderer : Renderer (Html msg)
 defaultHtmlRenderer =
@@ -100,11 +100,9 @@ defaultHtmlRenderer =
                         , Attr.title title
                         ]
                         content
-                        |> Ok
 
                 Nothing ->
                     Html.a [ Attr.href link.destination ] content
-                        |> Ok
     , image =
         \imageInfo ->
             case imageInfo.title of
@@ -115,7 +113,6 @@ defaultHtmlRenderer =
                         , Attr.title title
                         ]
                         []
-                        |> Ok
 
                 Nothing ->
                     Html.img
@@ -123,10 +120,94 @@ defaultHtmlRenderer =
                         , Attr.alt imageInfo.alt
                         ]
                         []
-                        |> Ok
     , text =
         Html.text
-    , -- ...
+    , unorderedList =
+        \items ->
+            Html.ul []
+                (items
+                    |> List.map
+                        (\item ->
+                            case item of
+                                Block.ListItem task children ->
+                                    let
+                                        checkbox =
+                                            case task of
+                                                Block.NoTask ->
+                                                    Html.text ""
+
+                                                Block.IncompleteTask ->
+                                                    Html.input
+                                                        [ Attr.disabled True
+                                                        , Attr.checked False
+                                                        , Attr.type_ "checkbox"
+                                                        ]
+                                                        []
+
+                                                Block.CompletedTask ->
+                                                    Html.input
+                                                        [ Attr.disabled True
+                                                        , Attr.checked True
+                                                        , Attr.type_ "checkbox"
+                                                        ]
+                                                        []
+                                    in
+                                    Html.li [] (checkbox :: children)
+                        )
+                )
+    , orderedList =
+        \startingIndex items ->
+            Html.ol
+                (case startingIndex of
+                    1 ->
+                        [ Attr.start startingIndex ]
+
+                    _ ->
+                        []
+                )
+                (items
+                    |> List.map
+                        (\itemBlocks ->
+                            Html.li []
+                                itemBlocks
+                        )
+                )
+    , html = Markdown.Html.oneOf []
+    , codeBlock =
+        \{ body, language } ->
+            Html.pre []
+                [ Html.code []
+                    [ Html.text body
+                    ]
+                ]
+    , thematicBreak = Html.hr [] []
+    , table = Html.table []
+    , tableHeader = Html.thead []
+    , tableBody = Html.tbody []
+    , tableRow = Html.tr []
+    , tableHeaderCell =
+        \maybeAlignment ->
+            let
+                attrs =
+                    maybeAlignment
+                        |> Maybe.map
+                            (\alignment ->
+                                case alignment of
+                                    Block.AlignLeft ->
+                                        "left"
+
+                                    Block.AlignCenter ->
+                                        "center"
+
+                                    Block.AlignRight ->
+                                        "right"
+                            )
+                        |> Maybe.map Attr.align
+                        |> Maybe.map List.singleton
+                        |> Maybe.withDefault []
+            in
+            Html.th attrs
+    , tableCell = Html.td []
     }
 ```
 
@@ -135,6 +216,7 @@ defaultHtmlRenderer =
 [Check out this example on Ellie](https://ellie-app.com/6QH7BxdcWxKa1) to tweak and take a look at the full code from the top of the README.
 
 ### Markdown Block Transformation
+
 You get full access to the parsed markdown blocks before passing it to a renderer. That means that you can inspect it, do custom logic on it, perform validations, or even go in and transform it! It's totally customizable, and of course it's all just nice Elm custom types!
 
 [Here's a live Ellie example](https://ellie-app.com/6QtYW8pcCDna1) that transforms the AST into a table of contents and renders a `TOC` data type along with the rendered markdown.
@@ -146,6 +228,7 @@ You get full access to the parsed markdown blocks before passing it to a rendere
 - Allow users to give custom parsing failures with nice error messages (for example, broken links, or custom validation like titles that are too long)
 
 ### Parsing Goals
+
 This is evolving and I would like input on the direction of parsing. My current thinking is that this library should:
 
 - Do not add any new syntax, this library has a subset of the features of Github flavored markdown.
@@ -154,11 +237,13 @@ This is evolving and I would like input on the direction of parsing. My current 
 - Only deviate from Github-flavored markdown rules when it helps give better error feedback for "things you probably didn't mean to do." In all other cases, follow the Github-flavored markdown spec.
 
 ## Current Github-flavored markdown compliance
+
 The test suite for this library runs through all the expected outputs outlined in the GFM spec. It uses the same test suite to test these cases as highlight.js (the library that `elm-explorations/elm-markdown` uses under the hood).
 
 You can see the latest passing and failing tests from this test suite in the `test-results` folder [(in particular, take a look at the Github-Flavored Markdown failures in in `failing/GFM`](https://github.com/dillonkearns/elm-markdown/tree/master/test-results/failing/GFM).
 
 ### Examples of fallback behavior
+
 Github flavored markdown behavior:
 Links with missing closing parens are are rendered as raw text instead of links
 
@@ -170,7 +255,7 @@ Renders the raw string instead of a link, like so:
 
 ```html
 <p>
-[My link](/home/ wait I forgot to close the link
+  [My link](/home/ wait I forgot to close the link
 </p>
 ```
 
@@ -194,7 +279,9 @@ A **huge** thanks to [Pablo Hirafuji](https://github.com/pablohirafuji/), who wa
 
 <!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
+
 <!-- ALL-CONTRIBUTORS-LIST:END -->
+
 Thank you [@jinjor](https://github.com/jinjor) for your
 [`elm-xml-parser`](https://package.elm-lang.org/packages/jinjor/elm-xml-parser/latest/XmlParser) package!
 
