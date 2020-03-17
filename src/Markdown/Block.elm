@@ -6,7 +6,7 @@ module Markdown.Block exposing
     , Inline(..)
     , HtmlAttribute
     , extractInlineText
-    , walkInlines, validateMapInlines, mapAccuml, foldl
+    , walkInlines, validateMapInlines, foldMap, foldl
     )
 
 {-|
@@ -36,7 +36,7 @@ See <Markdown.Html> for more.
 
 ## Transformations
 
-@docs walkInlines, validateMapInlines, mapAccuml, foldl
+@docs walkInlines, validateMapInlines, foldMap, foldl
 
 -}
 
@@ -459,7 +459,7 @@ so this allows us to maintain state rather than just transforming blocks purely 
     import Dict
     gatherHeadingOccurrences : List Block -> ( Dict.Dict String Int, List ( Block, Maybe String ) )
     gatherHeadingOccurrences =
-        Block.mapAccuml
+        Block.foldMap
             (\soFar block ->
                 case block of
                     Heading level inlines ->
@@ -511,8 +511,8 @@ so this allows us to maintain state rather than just transforming blocks purely 
     -->    )
 
 -}
-mapAccuml : (soFar -> Block -> ( soFar, mappedValue )) -> soFar -> List Block -> ( soFar, List mappedValue )
-mapAccuml function initialValue blocks =
+foldMap : (soFar -> Block -> ( soFar, mappedValue )) -> soFar -> List Block -> ( soFar, List mappedValue )
+foldMap function initialValue blocks =
     let
         ( accFinal, generatedList ) =
             foldl
