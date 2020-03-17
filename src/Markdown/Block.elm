@@ -267,7 +267,29 @@ validateMapInlines function blocks =
         |> validateMap newThing
 
 
-{-| TODO
+{-|
+
+    import Markdown.Block as Block exposing (..)
+
+    [ Paragraph
+        [ Link "http://elm-lang.org" Nothing [ Text "elm-lang homepage" ]
+        ]
+    ]
+        |> List.map
+            (Block.walkInlines
+                (\inline ->
+                    case inline of
+                        Link destination title inlines ->
+                            Link (String.replace "http://" "https://" destination) title inlines
+                        _ ->
+                            inline
+                )
+            )
+    -->        [ Paragraph
+    -->            [ Link "https://elm-lang.org" Nothing [ Text "elm-lang homepage" ]
+    -->            ]
+    -->        ]
+
 -}
 walkInlines : (Inline -> Inline) -> Block -> Block
 walkInlines function block =
