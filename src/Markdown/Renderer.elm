@@ -59,7 +59,7 @@ type alias Renderer view =
     , tableBody : List view -> view
     , tableRow : List view -> view
     , tableCell : List view -> view
-    , tableHeaderCell : List view -> view
+    , tableHeaderCell : Maybe Block.Alignment -> List view -> view
     }
 
 
@@ -191,7 +191,28 @@ defaultHtmlRenderer =
     , tableHeader = Html.thead []
     , tableBody = Html.tbody []
     , tableRow = Html.tr []
-    , tableHeaderCell = Html.th []
+    , tableHeaderCell =
+        \maybeAlignment ->
+            let
+                attrs =
+                    maybeAlignment
+                        |> Maybe.map
+                            (\alignment ->
+                                case alignment of
+                                    Block.AlignLeft ->
+                                        "left"
+
+                                    Block.AlignCenter ->
+                                        "center"
+
+                                    Block.AlignRight ->
+                                        "right"
+                            )
+                        |> Maybe.map Attr.align
+                        |> Maybe.map List.singleton
+                        |> Maybe.withDefault []
+            in
+            Html.th attrs
     , tableCell = Html.td []
     }
 
@@ -340,12 +361,12 @@ renderHelperSingle renderer =
 
             Block.Table header rows ->
                 let
-                    renderedHeaderCells : Result String (List (List view))
+                    renderedHeaderCells : Result String (List ( Maybe Block.Alignment, List view ))
                     renderedHeaderCells =
                         header
                             |> List.map
-                                (\{ label } ->
-                                    renderStyled renderer label
+                                (\{ label, alignment } ->
+                                    Result.map (Tuple.pair alignment) (renderStyled renderer label)
                                 )
                             |> combineResults
                 in
@@ -353,7 +374,7 @@ renderHelperSingle renderer =
                     |> Result.map
                         (\listListView ->
                             listListView
-                                |> List.map renderer.tableHeaderCell
+                                |> List.map (\( maybeAlignment, item ) -> renderer.tableHeaderCell maybeAlignment item)
                                 |> renderer.tableHeader
                         )
                     |> Result.map

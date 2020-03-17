@@ -257,7 +257,9 @@ renderer =
     , tableHeader = Element.column []
     , tableBody = Element.column []
     , tableRow = Element.row []
-    , tableHeaderCell = Element.paragraph []
+    , tableHeaderCell =
+        \maybeAlignment children ->
+            Element.paragraph [] children
     , tableCell = Element.paragraph []
     }
 

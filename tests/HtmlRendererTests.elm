@@ -73,7 +73,7 @@ testRenderer htmlRenderer =
     , tableHeader = \_ -> Unexpected "String"
     , tableBody = \_ -> Unexpected "String"
     , tableRow = \_ -> Unexpected "String"
-    , tableHeaderCell = \_ -> Unexpected "String"
+    , tableHeaderCell = \_ _ -> Unexpected "String"
     , tableCell = \_ -> Unexpected "String"
     }
 
