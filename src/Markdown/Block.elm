@@ -202,17 +202,33 @@ extractTextHelp inline text =
             text ++ extractInlineText inlines
 
         HtmlInline html ->
-            --case html of
-            --    HtmlElement _ _ inlines ->
-            --text ++ extractText inlines
-            --_ ->
-            text
+            case html of
+                HtmlElement _ _ blocks ->
+                    blocks
+                        |> foldl
+                            (\block soFar ->
+                                soFar ++ extractInlineBlockText block
+                            )
+                            text
+
+                _ ->
+                    text
 
         Strong inlines ->
             text ++ extractInlineText inlines
 
         Emphasis inlines ->
             text ++ extractInlineText inlines
+
+
+extractInlineBlockText : Block -> String
+extractInlineBlockText block =
+    case block of
+        Paragraph inlines ->
+            extractInlineText inlines
+
+        _ ->
+            ""
 
 
 {-| The way HTML is handled is one of the core ideas of this library.

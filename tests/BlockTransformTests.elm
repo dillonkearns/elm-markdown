@@ -286,4 +286,27 @@ suite =
                           , ( Heading H1 [ Text "foo" ], Just "foo1" )
                           ]
                         )
+        , test "extract text from HTML block" <|
+            \() ->
+                [ HtmlInline
+                    (HtmlElement "greeting"
+                        []
+                        [ [ Strong [ Text "Hello" ]
+                          , Text " there!"
+                          ]
+                            |> Paragraph
+                        ]
+                    )
+                , HtmlInline
+                    (HtmlElement "greeting"
+                        []
+                        [ [ Strong [ Text "Buenos" ]
+                          , Text " dias!"
+                          ]
+                            |> Paragraph
+                        ]
+                    )
+                ]
+                    |> Block.extractInlineText
+                    |> Expect.equal "Hello there!"
         ]
