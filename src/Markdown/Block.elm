@@ -578,5 +578,19 @@ foldl function acc list =
                 BlockQuote blocks ->
                     foldl function (function block acc) (blocks ++ remainingBlocks)
 
-                _ ->
+                -- These cases don't have nested blocks
+                -- So no recursion needed
+                Heading _ _ ->
+                    foldl function (function block acc) remainingBlocks
+
+                Paragraph _ ->
+                    foldl function (function block acc) remainingBlocks
+
+                Table _ _ ->
+                    foldl function (function block acc) remainingBlocks
+
+                CodeBlock _ ->
+                    foldl function (function block acc) remainingBlocks
+
+                ThematicBreak ->
                     foldl function (function block acc) remainingBlocks
