@@ -754,6 +754,8 @@ In this example, we ne need to keep track of the number of occurrences of a head
 use a unique slug to link to (exactly like Github does for its heading links). We keep the occurences in a Dict,
 so this allows us to maintain state rather than just transforming blocks purely based on the current block.
 
+You can see the full end-to-end code for this in `examples/src/Slugs.elm`.
+
     import Markdown.Block as Block exposing (..)
     import Dict
     gatherHeadingOccurrences : List Block -> ( Dict.Dict String Int, List ( Block, Maybe String ) )
