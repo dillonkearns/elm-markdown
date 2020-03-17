@@ -530,20 +530,105 @@ inlineParserValidateWalk function inline =
         HtmlInline html ->
             case html of
                 HtmlElement tagName htmlAttributes blocks ->
-                    function inline
-                        |> Result.mapError List.singleton
+                    blocks
+                        |> List.map (inlineParserValidateWalkBlock function)
+                        |> combine
+                        |> Result.andThen
+                            (\transformedBlocks ->
+                                HtmlElement tagName htmlAttributes transformedBlocks
+                                    |> HtmlInline
+                                    |> function
+                                    |> Result.mapError List.singleton
+                            )
 
-                --List.map (inlineParserValidateWalk function) inlines
-                --    |> combine
-                --    |> Result.andThen
-                --        (\transformedInlines ->
-                --            Strong transformedInlines
-                --                |> function
-                --                |> Result.mapError List.singleton
-                --        )
                 _ ->
                     function inline
                         |> Result.mapError List.singleton
+
+
+inlineParserValidateWalkBlock : (Inline -> Result error Inline) -> Block -> Result (List error) Block
+inlineParserValidateWalkBlock function block =
+    case block of
+        ThematicBreak ->
+            Ok ThematicBreak
+
+        HtmlBlock html ->
+            case html of
+                HtmlElement tagName attributes children ->
+                    children
+                        |> List.map (inlineParserValidateWalkBlock function)
+                        |> combine
+                        |> Result.map (HtmlElement tagName attributes)
+                        |> Result.map HtmlBlock
+
+                _ ->
+                    Ok block
+
+        UnorderedList items ->
+            items
+                |> List.map
+                    (\(ListItem task item) ->
+                        item
+                            |> List.map (inlineParserValidateWalk function)
+                            |> combine
+                            |> Result.map (ListItem task)
+                    )
+                |> combine
+                |> Result.map UnorderedList
+
+        OrderedList startingIndex lists ->
+            lists
+                |> List.map (List.map (inlineParserValidateWalk function))
+                |> List.map combine
+                |> combine
+                |> Result.map (OrderedList startingIndex)
+
+        BlockQuote nestedBlocks ->
+            nestedBlocks
+                |> List.map (inlineParserValidateWalkBlock function)
+                |> combine
+                |> Result.map BlockQuote
+
+        Heading headingLevel inlines ->
+            inlines
+                |> List.map (inlineParserValidateWalk function)
+                |> combine
+                |> Result.map (Heading headingLevel)
+
+        Paragraph inlines ->
+            inlines
+                |> List.map (inlineParserValidateWalk function)
+                |> combine
+                |> Result.map Paragraph
+
+        Table header rows ->
+            let
+                mappedHeader =
+                    header
+                        |> List.map
+                            (\{ label, alignment } ->
+                                label
+                                    |> List.map (inlineParserValidateWalk function)
+                                    |> combine
+                                    |> Result.map
+                                        (\transformedLabel ->
+                                            { alignment = alignment
+                                            , label = transformedLabel
+                                            }
+                                        )
+                            )
+                        |> combine
+
+                mappedRows =
+                    rows
+                        |> List.map (List.map (inlineParserValidateWalk function))
+                        |> List.map combine
+                        |> combine
+            in
+            Result.map2 Table mappedHeader mappedRows
+
+        CodeBlock record ->
+            Ok block
 
 
 {-| Recursively apply a function to transform each Block.
