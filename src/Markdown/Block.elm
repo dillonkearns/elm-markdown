@@ -512,16 +512,16 @@ so this allows us to maintain state rather than just transforming blocks purely 
 
 -}
 foldMap : (soFar -> Block -> ( soFar, mappedValue )) -> soFar -> List Block -> ( soFar, List mappedValue )
-foldMap function initialValue blocks =
+foldMap mapFn initialValue blocks =
     let
         ( accFinal, generatedList ) =
             foldl
-                (\x ( acc1, ys ) ->
+                (\block ( acc1, ys ) ->
                     let
-                        ( acc2, y ) =
-                            function acc1 x
+                        ( acc2, mappedBlock ) =
+                            mapFn acc1 block
                     in
-                    ( acc2, y :: ys )
+                    ( acc2, mappedBlock :: ys )
                 )
                 ( initialValue, [] )
                 blocks
