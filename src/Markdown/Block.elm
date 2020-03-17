@@ -324,25 +324,40 @@ type alias HtmlAttribute =
     { name : String, value : String }
 
 
-{-| TODO
+{-|
+
+    import Markdown.Block as Block exposing (..)
+
+    lookupLink : String -> Result String String
+    lookupLink key =
+        case key of
+            "elm-lang" ->
+                Ok "https://elm-lang.org"
+            _ ->
+                Err <| "Couldn't find key " ++ key
+
+    resolveLinkInInline : Inline -> Result String Inline
+    resolveLinkInInline inline =
+        case inline of
+            Link destination title inlines ->
+                destination
+                    |> lookupLink
+                    |> Result.map (\resolvedLink -> Link resolvedLink title inlines)
+            _ ->
+                Ok inline
+
+    [ Paragraph
+        [ Link "angular" Nothing [ Text "elm-lang homepage" ]
+        ]
+    ]
+        |> Block.validateMapInlines resolveLinkInInline
+    -->  Err [ "Couldn't find key angular" ]
+
 -}
 validateMapInlines : (Inline -> Result error Inline) -> List Block -> Result (List error) (List Block)
 validateMapInlines function blocks =
-    let
-        newThing : Block -> Result (List error) Block
-        newThing block =
-            case block of
-                Paragraph inlines ->
-                    inlines
-                        |> List.map (inlineParserValidateWalk function)
-                        |> combine
-                        |> Result.map Paragraph
-
-                _ ->
-                    Debug.todo ""
-    in
     blocks
-        |> validateMap newThing
+        |> validateMap (inlineParserValidateWalkBlock function)
 
 
 {-|
