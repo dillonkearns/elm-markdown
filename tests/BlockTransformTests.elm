@@ -308,5 +308,5 @@ suite =
                     )
                 ]
                     |> Block.extractInlineText
-                    |> Expect.equal "Hello there!"
+                    |> Expect.equal "Hello there!Buenos dias!"
         ]

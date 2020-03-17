@@ -227,8 +227,70 @@ extractInlineBlockText block =
         Paragraph inlines ->
             extractInlineText inlines
 
-        _ ->
+        HtmlBlock html ->
+            case html of
+                HtmlElement _ _ blocks ->
+                    blocks
+                        |> foldl
+                            (\nestedBlock soFar ->
+                                soFar ++ extractInlineBlockText nestedBlock
+                            )
+                            ""
+
+                _ ->
+                    ""
+
+        UnorderedList items ->
+            items
+                |> List.map
+                    (\(ListItem task inlines) ->
+                        extractInlineText inlines
+                    )
+                |> String.join "\n"
+
+        OrderedList int items ->
+            items
+                |> List.map extractInlineText
+                |> String.join "\n"
+
+        BlockQuote blocks ->
+            blocks
+                |> List.map extractInlineBlockText
+                |> String.join "\n"
+
+        Heading headingLevel inlines ->
+            extractInlineText inlines
+
+        Table header rows ->
+            [ header
+                |> List.map .label
+                |> List.map extractInlineText
+            , List.map extractInlineText rows
+            ]
+                |> List.concat
+                |> String.join "\n"
+
+        CodeBlock { body } ->
+            body
+
+        ThematicBreak ->
             ""
+
+
+
+--BlockQuote blocks ->
+--
+--
+--Heading headingLevel inlines ->
+--
+--
+--Table list lists ->
+--
+--
+--CodeBlock record ->
+--
+--
+--ThematicBreak ->
 
 
 {-| The way HTML is handled is one of the core ideas of this library.
