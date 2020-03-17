@@ -556,6 +556,8 @@ walk function block =
         OrderedList _ _ ->
             function block
 
+        -- These cases don't have nested blocks
+        -- So no recursion needed
         Heading _ _ ->
             function block
 
