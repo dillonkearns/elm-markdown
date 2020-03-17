@@ -752,7 +752,7 @@ combine =
 {-| Map values, while also tracking state while traversing every block. Think of it as a helper for `foldl` and `map`
 in a single handy function!
 
-In this example, we ne need to keep track of the number of occurrences of a heading name so that we can
+In this example, we need to keep track of the number of occurrences of a heading name so that we can
 use a unique slug to link to (exactly like Github does for its heading links). We keep the occurences in a Dict,
 so this allows us to maintain state rather than just transforming blocks purely based on the current block.
 
