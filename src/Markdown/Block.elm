@@ -166,16 +166,18 @@ headingLevelToInt headingLevel =
 
 {-| Extract the text from a list of inlines.
 
+    -- Original string: "Heading with *emphasis*"
+
+    import Markdown.Block as Block exposing (..)
+
     inlines : List (Inline)
     inlines =
         [ Text "Heading with "
-        , Emphasis 1
-            [ Text "emphasis" ]
+        , Emphasis [ Text "emphasis" ]
         ]
 
-    extractText inlines == "Heading with emphasis"
-
-    -- Original string: "Heading with *emphasis*"
+    Block.extractInlineText inlines
+    --> "Heading with emphasis"
 
 -}
 extractInlineText : List Inline -> String
