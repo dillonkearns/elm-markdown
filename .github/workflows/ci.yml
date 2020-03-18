@@ -134,7 +134,7 @@ jobs:
       - run: npm ci
       - run: ./node_modules/.bin/elm make --output /dev/null && cd examples && ../node_modules/.bin/elm make src/*.elm --output /dev/null && cd .. && cd spec-tests && ../node_modules/.bin/elm make OutputMarkdownHtml.elm --output /dev/null
       - name: Elm Publish
-        uses: dillonkearns/elm-publish-action@wait-for-tag-creation
+        uses: dillonkearns/elm-publish-action@1.0.1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path-to-elm: ./node_modules/.bin/elm
