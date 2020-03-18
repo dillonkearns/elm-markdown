@@ -60,7 +60,7 @@ type DelimiterRow
 
 delimiterRowParser : Parser DelimiterRow
 delimiterRowParser =
-    loop 0 statementsHelp
+    loop 0 delimiterRowHelp
         |> andThen
             (\((DelimiterRow count) as delimiterRow) ->
                 if count > 0 then
@@ -71,8 +71,8 @@ delimiterRowParser =
             )
 
 
-statementsHelp : Int -> Parser (Step Int DelimiterRow)
-statementsHelp found =
+delimiterRowHelp : Int -> Parser (Step Int DelimiterRow)
+delimiterRowHelp found =
     oneOf
         [ succeed identity
             |. tokenHelp "|"
