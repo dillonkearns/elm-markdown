@@ -102,7 +102,7 @@ fullTableSuite =
                                 []
                             )
                         )
-        , test "simple case with training whitespace" <|
+        , test "simple case with trailing whitespace" <|
             \() ->
                 """| abc | def |
 |---|---|
