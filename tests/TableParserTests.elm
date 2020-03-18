@@ -1,4 +1,4 @@
-module TableParserTests exposing (suite)
+module TableParserTests exposing (delimiterParsingSuite, fullTableSuite, rowParsingSuite)
 
 import Expect exposing (Expectation)
 import Markdown.Table
@@ -12,8 +12,81 @@ type alias Parser a =
     Advanced.Parser String Parser.Problem a
 
 
-suite : Test
-suite =
+delimiterParsingSuite : Test
+delimiterParsingSuite =
+    describe "delimiter row"
+        [ test "single with pipes" <|
+            \() ->
+                "|---|"
+                    |> Advanced.run delimiterRowParser
+                    |> Expect.equal
+                        (Ok (DelimiterRow 1))
+        , test "two columns" <|
+            \() ->
+                "|--|--|"
+                    |> Advanced.run delimiterRowParser
+                    |> Expect.equal
+                        (Ok (DelimiterRow 2))
+        , test "no leading" <|
+            \() ->
+                "--|--|"
+                    |> Advanced.run delimiterRowParser
+                    |> Expect.equal
+                        (Ok (DelimiterRow 2))
+        , test "no trailing" <|
+            \() ->
+                "|--|--"
+                    |> Advanced.run delimiterRowParser
+                    |> Expect.equal
+                        (Ok (DelimiterRow 2))
+        , test "no leading or trailing" <|
+            \() ->
+                "--|--"
+                    |> Advanced.run delimiterRowParser
+                    |> Expect.equal
+                        (Ok (DelimiterRow 2))
+        , test "delimiter row with no trailing or leading pipes" <|
+            \() ->
+                -- TODO should this be an error?
+                "--"
+                    |> Advanced.run delimiterRowParser
+                    |> Expect.equal
+                        (Ok (DelimiterRow 1))
+        ]
+
+
+rowParsingSuite : Test
+rowParsingSuite =
+    describe "row parser"
+        [ test "parse row" <|
+            \() ->
+                "| abc | def |"
+                    |> Advanced.run rowParser
+                    |> Expect.equal
+                        (Ok
+                            [ "abc", "def" ]
+                        )
+        , test "single row" <|
+            \() ->
+                "| abc |"
+                    |> Advanced.run rowParser
+                    |> Expect.equal
+                        (Ok
+                            [ "abc" ]
+                        )
+        , test "row without trailing or leading pipes" <|
+            \() ->
+                "cell 1 | cell 2 | cell 3"
+                    |> Advanced.run rowParser
+                    |> Expect.equal
+                        (Ok
+                            [ "cell 1", "cell 2", "cell 3" ]
+                        )
+        ]
+
+
+fullTableSuite : Test
+fullTableSuite =
     describe "GFM tables"
         [ test "simple case" <|
             \() ->
@@ -44,6 +117,20 @@ suite =
                                 []
                             )
                         )
+        , test "The delimiter row cannot have fewer columns than the header" <|
+            \() ->
+                """| abc | def |
+|---|
+"""
+                    |> expectFail
+
+        --TODO: What is expected here? It looks like this is what Github itself does, but not everyone agress.
+        , test "The delimiter row cannot have more columns than the header" <|
+            \() ->
+                """| abc | def |
+|---|--|--|
+"""
+                    |> expectFail
         , test "tables must have at least one delimiter" <|
             \() ->
                 """| abc | def |
@@ -56,71 +143,6 @@ suite =
 Hey, I forgot to finish my table! Whoops!
                            """
                     |> expectFail
-        , describe "delimiter row"
-            [ test "single with pipes" <|
-                \() ->
-                    "|---|"
-                        |> Advanced.run delimiterRowParser
-                        |> Expect.equal
-                            (Ok (DelimiterRow 1))
-            , test "two columns" <|
-                \() ->
-                    "|--|--|"
-                        |> Advanced.run delimiterRowParser
-                        |> Expect.equal
-                            (Ok (DelimiterRow 2))
-            , test "no leading" <|
-                \() ->
-                    "--|--|"
-                        |> Advanced.run delimiterRowParser
-                        |> Expect.equal
-                            (Ok (DelimiterRow 2))
-            , test "no trailing" <|
-                \() ->
-                    "|--|--"
-                        |> Advanced.run delimiterRowParser
-                        |> Expect.equal
-                            (Ok (DelimiterRow 2))
-            , test "no leading or trailing" <|
-                \() ->
-                    "--|--"
-                        |> Advanced.run delimiterRowParser
-                        |> Expect.equal
-                            (Ok (DelimiterRow 2))
-            , test "delimiter row with no trailing or leading pipes" <|
-                \() ->
-                    -- TODO should this be an error?
-                    "--"
-                        |> Advanced.run delimiterRowParser
-                        |> Expect.equal
-                            (Ok (DelimiterRow 1))
-            ]
-        , describe "row parser"
-            [ test "parse row" <|
-                \() ->
-                    "| abc | def |"
-                        |> Advanced.run rowParser
-                        |> Expect.equal
-                            (Ok
-                                [ "abc", "def" ]
-                            )
-            , test "single row" <|
-                \() ->
-                    "| abc |"
-                        |> Advanced.run rowParser
-                        |> Expect.equal
-                            (Ok
-                                [ "abc" ]
-                            )
-            , test "row without trailing or leading pipes" <|
-                \() ->
-                    "cell 1 | cell 2 | cell 3"
-                        |> Advanced.run rowParser
-                        |> Expect.equal
-                            (Ok
-                                [ "cell 1", "cell 2", "cell 3" ]
-                            )
-            ]
 
         {-
 

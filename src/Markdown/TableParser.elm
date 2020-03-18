@@ -17,9 +17,9 @@ type alias Table =
 parser : Parser Table
 parser =
     Advanced.succeed
-        (\header ->
+        (\headers delimiters ->
             Markdown.Table.Table
-                (header
+                (headers
                     |> List.map
                         (\headerCell ->
                             { label = headerCell
@@ -30,7 +30,7 @@ parser =
                 []
         )
         |= rowParser
-        |. delimiterRowParser
+        |= delimiterRowParser
 
 
 rowParser : Parser (List String)
