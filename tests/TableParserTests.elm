@@ -23,8 +23,8 @@ suite =
                     |> Expect.equal
                         (Ok
                             (Markdown.Table.Table
-                                [ { label = " abc ", alignment = Nothing }
-                                , { label = " def ", alignment = Nothing }
+                                [ { label = "abc", alignment = Nothing }
+                                , { label = "def", alignment = Nothing }
                                 ]
                                 []
                             )
@@ -38,8 +38,8 @@ suite =
                     |> Expect.equal
                         (Ok
                             (Markdown.Table.Table
-                                [ { label = " abc ", alignment = Nothing }
-                                , { label = " def ", alignment = Nothing }
+                                [ { label = "abc", alignment = Nothing }
+                                , { label = "def", alignment = Nothing }
                                 ]
                                 []
                             )
@@ -102,7 +102,7 @@ Hey, I forgot to finish my table! Whoops!
                         |> Advanced.run rowParser
                         |> Expect.equal
                             (Ok
-                                [ " abc ", " def " ]
+                                [ "abc", "def" ]
                             )
             , test "single row" <|
                 \() ->
@@ -110,7 +110,7 @@ Hey, I forgot to finish my table! Whoops!
                         |> Advanced.run rowParser
                         |> Expect.equal
                             (Ok
-                                [ " abc " ]
+                                [ "abc" ]
                             )
             , test "row without trailing or leading pipes" <|
                 \() ->
@@ -118,7 +118,7 @@ Hey, I forgot to finish my table! Whoops!
                         |> Advanced.run rowParser
                         |> Expect.equal
                             (Ok
-                                [ "cell 1 ", " cell 2 ", " cell 3" ]
+                                [ "cell 1", "cell 2", "cell 3" ]
                             )
             ]
 

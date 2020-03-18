@@ -40,6 +40,7 @@ rowParser =
             rowString
                 |> dropTrailingPipe
                 |> String.split "|"
+                |> List.map String.trim
         )
         |. oneOf
             [ tokenHelp "|"
