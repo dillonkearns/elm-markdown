@@ -123,8 +123,6 @@ fullTableSuite =
 |---|
 """
                     |> expectFail
-
-        --TODO: What is expected here? It looks like this is what Github itself does, but not everyone agress.
         , test "The delimiter row cannot have more columns than the header" <|
             \() ->
                 """| abc | def |
