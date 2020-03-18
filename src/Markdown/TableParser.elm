@@ -16,21 +16,29 @@ type alias Table =
 
 parser : Parser Table
 parser =
-    Advanced.succeed
-        (\headers delimiters ->
-            Markdown.Table.Table
-                (headers
-                    |> List.map
-                        (\headerCell ->
-                            { label = headerCell
-                            , alignment = Nothing
-                            }
-                        )
-                )
-                []
-        )
+    (Advanced.succeed Tuple.pair
         |= rowParser
         |= delimiterRowParser
+    )
+        |> Advanced.andThen
+            (\( headers, DelimiterRow delimiterCount ) ->
+                if List.length headers == delimiterCount then
+                    Advanced.succeed
+                        (Markdown.Table.Table
+                            (headers
+                                |> List.map
+                                    (\headerCell ->
+                                        { label = headerCell
+                                        , alignment = Nothing
+                                        }
+                                    )
+                            )
+                            []
+                        )
+
+                else
+                    Advanced.problem (Parser.Problem "Tables must have the same number of header columns as delimiter columns")
+            )
 
 
 rowParser : Parser (List String)
