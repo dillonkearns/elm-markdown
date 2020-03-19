@@ -52,6 +52,28 @@ delimiterParsingSuite =
                     |> Advanced.run delimiterRowParser
                     |> Expect.equal
                         (Ok (DelimiterRow 1))
+        , test "delimiter row with space padding" <|
+            \() ->
+                "| -- |-- | --   |"
+                    |> Advanced.run delimiterRowParser
+                    |> Expect.equal
+                        (Ok (DelimiterRow 3))
+        , test "delimiter row with space padding and no leading" <|
+            \() ->
+                "-- |-- | --   |"
+                    |> Advanced.run delimiterRowParser
+                    |> Expect.equal
+                        (Ok (DelimiterRow 3))
+        , test "delimiter row with space padding and no trailing" <|
+            \() ->
+                "| -- |-- | --   "
+                    |> Advanced.run delimiterRowParser
+                    |> Expect.equal
+                        (Ok (DelimiterRow 3))
+        , test "delimiter rows cannot have spaces between the hyphens" <|
+            \() ->
+                "|---|- -|"
+                    |> expectParserFail delimiterRowParser
         ]
 
 
@@ -141,6 +163,44 @@ fullTableSuite =
 Hey, I forgot to finish my table! Whoops!
                            """
                     |> expectFail
+        , test "tables have data rows" <|
+            \() ->
+                """| abc | def |
+| --- | --- |
+| foo | bar |
+| bar | baz |
+"""
+                    |> Advanced.run parser
+                    |> Expect.equal
+                        (Ok
+                            (Markdown.Table.Table
+                                [ { label = "abc", alignment = Nothing }
+                                , { label = "def", alignment = Nothing }
+                                ]
+                                [ [ "foo", "bar" ]
+                                , [ "bar", "baz" ]
+                                ]
+                            )
+                        )
+        , test "the data rows can have varying length" <|
+            \() ->
+                """| abc | def |
+| --- | --- |
+| bar |
+| bar | baz | boo |
+"""
+                    |> Advanced.run parser
+                    |> Expect.equal
+                        (Ok
+                            (Markdown.Table.Table
+                                [ { label = "abc", alignment = Nothing }
+                                , { label = "def", alignment = Nothing }
+                                ]
+                                [ [ "bar" ]
+                                , [ "bar", "baz", "boo" ]
+                                ]
+                            )
+                        )
 
         {-
 
@@ -156,7 +216,7 @@ Hey, I forgot to finish my table! Whoops!
         ]
 
 
-expectParserFail input someParser =
+expectParserFail someParser input =
     case Advanced.run someParser input of
         Ok _ ->
             Expect.fail "Expected a parser error."

@@ -16,12 +16,13 @@ type alias Table =
 
 parser : Parser Table
 parser =
-    (Advanced.succeed Tuple.pair
+    (Advanced.succeed (\headers delimiters body -> ( headers, delimiters, body ))
         |= rowParser
         |= delimiterRowParser
+        |= bodyParser
     )
         |> Advanced.andThen
-            (\( headers, DelimiterRow delimiterCount ) ->
+            (\( headers, DelimiterRow delimiterCount, body ) ->
                 if List.length headers == delimiterCount then
                     Advanced.succeed
                         (Markdown.Table.Table
@@ -33,7 +34,7 @@ parser =
                                         }
                                     )
                             )
-                            []
+                            body
                         )
 
                 else
@@ -79,31 +80,79 @@ delimiterRowParser =
             )
 
 
+requirePipeIfNotFirst : Int -> Parser ()
+requirePipeIfNotFirst found =
+    if found > 0 then
+        tokenHelp "|"
+
+    else
+        oneOf
+            [ tokenHelp "|"
+            , succeed ()
+            ]
+
+
 delimiterRowHelp : Int -> Parser (Step Int DelimiterRow)
 delimiterRowHelp found =
     oneOf
-        [ succeed identity
-            |. tokenHelp "|"
-            |= oneOf
-                [ hyphens found
-                , Advanced.end (Parser.Expecting "end")
-                    |> map (\_ -> Done (DelimiterRow found))
-                , tokenHelp "\n"
-                    --|. chompIf (\c -> c == '\n') (Parser.Expecting "\\n")
-                    |> map (\_ -> Done (DelimiterRow found))
-                ]
-        , hyphens found
-        , tokenHelp "\n"
-            --|. chompIf (\c -> c == '\n') (Parser.Expecting "\\n")
-            |> map (\_ -> Done (DelimiterRow found))
-        , Advanced.end (Parser.Expecting "end")
-            |> map (\_ -> Done (DelimiterRow found))
+        [ tokenHelp "|\n" |> Advanced.map (\_ -> Done (DelimiterRow found))
+        , tokenHelp "\n" |> Advanced.map (\_ -> Done (DelimiterRow found))
+        , Advanced.end (Parser.Expecting "end") |> Advanced.map (\_ -> Done (DelimiterRow found))
+        , backtrackable (succeed (Done (DelimiterRow found)) |. tokenHelp "|" |. Advanced.end (Parser.Expecting "end"))
+        , succeed (Loop (found + 1))
+            |. requirePipeIfNotFirst found
+            |. spaces
+            |. oneOrMore (\c -> c == '-')
+            |. spaces
         ]
 
 
-hyphens found =
-    oneOrMore (\c -> c == '-')
-        |> map (\_ -> Loop (found + 1))
+
+--delimiterRowHelp : Int -> Parser (Step Int DelimiterRow)
+--delimiterRowHelp found =
+--    oneOf
+--        [ succeed identity
+--            |. tokenHelp "|"
+--            |. spaces
+--            |= oneOf
+--                [ hyphens found
+--                , Advanced.end (Parser.Expecting "end")
+--                    |> map (\_ -> Done (DelimiterRow found))
+--                , tokenHelp "\n"
+--                    --|. chompIf (\c -> c == '\n') (Parser.Expecting "\\n")
+--                    |> map (\_ -> Done (DelimiterRow found))
+--                ]
+--        , hyphens found
+--        , tokenHelp "\n"
+--            --|. chompIf (\c -> c == '\n') (Parser.Expecting "\\n")
+--            |> map (\_ -> Done (DelimiterRow found))
+--        , Advanced.end (Parser.Expecting "end")
+--            |> map (\_ -> Done (DelimiterRow found))
+--        ]
+
+
+bodyParser : Parser (List (List String))
+bodyParser =
+    loop [] bodyParserHelp
+
+
+bodyParserHelp : List (List String) -> Parser (Step (List (List String)) (List (List String)))
+bodyParserHelp revRows =
+    oneOf
+        [ rowParser
+            |> andThen
+                (\row ->
+                    if List.isEmpty row || List.all String.isEmpty row then
+                        Advanced.problem (Parser.Problem "A line must have at least one column")
+
+                    else
+                        Advanced.succeed (Loop (row :: revRows))
+                )
+        , tokenHelp "\n"
+            |> map (\_ -> Done (List.reverse revRows))
+        , Advanced.end (Parser.Expecting "end")
+            |> map (\_ -> Done (List.reverse revRows))
+        ]
 
 
 dropTrailingPipe : String -> String
