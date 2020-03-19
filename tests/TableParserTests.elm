@@ -201,18 +201,6 @@ Hey, I forgot to finish my table! Whoops!
                                 ]
                             )
                         )
-
-        {-
-
-           Possible strategies:
-           * Do a second pass to validate it
-           * During first pass, check
-
-               TODO test case to fail parser immediately if there aren't enough
-              | Col 1      | Col 2  | Col 3     |
-              | ---------- | ------ |
-              | **Cell 1** | Cell 2 | Extra col |
-        -}
         ]
 
 
