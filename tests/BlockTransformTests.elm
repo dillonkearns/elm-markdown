@@ -2,6 +2,7 @@ module BlockTransformTests exposing (suite)
 
 import Dict
 import Expect
+import GithubSlugs
 import Markdown.Block as Block exposing (..)
 import Test exposing (..)
 
@@ -226,7 +227,7 @@ suite =
                     |> gatherHeadingText
                     |> Expect.equal
                         [ "1", "2", "3A", "3Ai", "3Aii", "3Aiii", "3Aiv", "3B", "4" ]
-        , test "add slugs" <|
+        , test "check that anchor links reference headings" <|
             \() ->
                 let
                     gatherHeadingOccurrences : List Block -> ( Dict.Dict String Int, List ( Block, Maybe String ) )
@@ -286,6 +287,61 @@ suite =
                           , ( Heading H1 [ Text "foo" ], Just "foo1" )
                           ]
                         )
+        , test "add slugs" <|
+            \() ->
+                let
+                    slugs blocks =
+                        blocks
+                            |> GithubSlugs.gatherHeadingOccurrences
+                            |> List.filterMap Tuple.second
+
+                    allLinks : List Block -> List String
+                    allLinks blocks =
+                        blocks
+                            |> Block.foldl
+                                (\block acc ->
+                                    case block of
+                                        Block.Paragraph inlines ->
+                                            (inlines |> List.filterMap extractLinkDestinations) ++ acc
+
+                                        _ ->
+                                            acc
+                                )
+                                []
+
+                    extractLinkDestinations : Inline -> Maybe String
+                    extractLinkDestinations inline =
+                        case inline of
+                            Link destination _ _ ->
+                                Just destination
+
+                            _ ->
+                                Nothing
+
+                    checkLinkReferences blocks =
+                        let
+                            destinations =
+                                allLinks blocks
+                        in
+                        Err
+                            { missingRefs =
+                                destinations
+                                    |> List.filter
+                                        (\destination ->
+                                            (slugs blocks |> List.map (\slug -> "#" ++ slug))
+                                                |> List.member destination
+                                                |> not
+                                        )
+                            }
+                in
+                [ Paragraph
+                    [ Link "#getting-started" Nothing [ Text "see the getting started section." ]
+                    , Link "#resources" Nothing [ Text "Check out the resources" ]
+                    ]
+                , Heading H2 [ Text "getting-started" ]
+                ]
+                    |> checkLinkReferences
+                    |> Expect.equal (Err { missingRefs = [ "#resources" ] })
         , test "extract text from HTML block" <|
             \() ->
                 [ HtmlInline
