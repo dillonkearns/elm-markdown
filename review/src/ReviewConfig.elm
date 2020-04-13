@@ -11,9 +11,11 @@ when inside the directory containing this file.
 
 -}
 
+import NoEmptyDocComments
 import Review.Rule exposing (Rule)
 
 
 config : List Rule
 config =
-    []
+    [ NoEmptyDocComments.rule
+    ]
