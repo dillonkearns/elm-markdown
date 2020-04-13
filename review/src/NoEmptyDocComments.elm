@@ -1,38 +1,46 @@
 module NoEmptyDocComments exposing (..)
 
+import Elm.Syntax.Declaration as Declaration
+import Elm.Syntax.Expression exposing (Expression)
 import Elm.Syntax.Node as Node exposing (Node)
-import Elm.Syntax.Range exposing (Range)
 import Review.Rule as Rule exposing (Error, Rule)
 
 
 rule : Rule
 rule =
     Rule.newModuleRuleSchema "NoEmptyDocComments" ()
-        |> Rule.withSimpleCommentsVisitor commentsVisitor
+        |> Rule.withSimpleDeclarationVisitor declarationVisitor
         |> Rule.fromModuleRuleSchema
 
 
-commentsVisitor : List (Node String) -> List (Error {})
-commentsVisitor comments =
-    []
+declarationVisitor : Node Declaration.Declaration -> List (Error {})
+declarationVisitor node =
+    case Node.value node of
+        Declaration.FunctionDeclaration declaration ->
+            case declaration.documentation of
+                Just documentation ->
+                    if
+                        documentation
+                            |> Node.value
+                            |> String.dropLeft 3
+                            |> String.dropRight 2
+                            |> String.trim
+                            |> String.isEmpty
+                    then
+                        [ Rule.error
+                            { message = "It's not done until the docs are great. Or at least present."
+                            , details =
+                                [ "https://twitter.com/czaplic/status/928359227541798912"
+                                ]
+                            }
+                            (Node.range documentation)
+                        ]
 
+                    else
+                        []
 
+                Nothing ->
+                    []
 
---comments
---    |> List.concatMap
---        (\commentNode ->
---            String.indexes "TODO" (Node.value commentNode)
---                |> List.map (errorAtPosition (Node.range commentNode))
---        )
-
-
-errorAtPosition : Range -> Int -> Error {}
-errorAtPosition range index =
-    Rule.error
-        { message = "TODO needs to be handled"
-        , details = [ "At fruits.com, we prefer not to have lingering TODO comments. Either fix the TODO now or create an issue for it." ]
-        }
-        -- Here you would ideally only target the TODO keyword
-        -- or the rest of the line it appears on,
-        -- so you would change `range` using `index`.
-        range
+        _ ->
+            []

@@ -12,10 +12,11 @@ when inside the directory containing this file.
 -}
 
 import NoEmptyDocComments
-import Review.Rule exposing (Rule)
+import Review.Rule as Rule exposing (Rule)
 
 
 config : List Rule
 config =
     [ NoEmptyDocComments.rule
+        |> Rule.ignoreErrorsForFiles [ "src/List/Helpers.elm" ]
     ]
