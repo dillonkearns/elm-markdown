@@ -33,7 +33,7 @@ jobs:
       - run: ./node_modules/.bin/elm make --output /dev/null && cd examples && ../node_modules/.bin/elm make src/*.elm --output /dev/null && cd .. && cd spec-tests && ../node_modules/.bin/elm make OutputMarkdownHtml.elm --output /dev/null
       - run: npm test
 
-  static-analysis:
+  lint:
     runs-on: ubuntu-latest
 
     steps:
