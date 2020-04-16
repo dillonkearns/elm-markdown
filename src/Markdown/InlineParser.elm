@@ -56,9 +56,10 @@ filterTokens filter model =
 
 reverseTokens : Parser -> Parser
 reverseTokens model =
-    { model
-        | tokens =
-            List.reverse model.tokens
+    { rawText = model.rawText
+    , tokens = List.reverse model.tokens
+    , matches = model.matches
+    , refs = model.refs
     }
 
 
@@ -916,7 +917,15 @@ tokensToMatches =
 
 applyTTM : (( List Token, Parser ) -> Parser) -> Parser -> Parser
 applyTTM finderFunction model =
-    finderFunction ( model.tokens, { model | tokens = [] } )
+    let
+        newModel =
+            { rawText = model.rawText
+            , tokens = []
+            , matches = model.matches
+            , refs = model.refs
+            }
+    in
+    finderFunction ( model.tokens, newModel )
 
 
 
