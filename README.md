@@ -274,6 +274,7 @@ A **huge** thanks to [Pablo Hirafuji](https://github.com/pablohirafuji/), who wa
     <td align="center"><a href="https://github.com/thomasin"><img src="https://avatars3.githubusercontent.com/u/25238976?v=4" width="100px;" alt=""/><br /><sub><b>thomasin</b></sub></a><br /><a href="https://github.com/dillonkearns/elm-markdown/commits?author=thomasin" title="Tests">⚠️</a> <a href="https://github.com/dillonkearns/elm-markdown/commits?author=thomasin" title="Code">💻</a></td>
     <td align="center"><a href="https://brianginsburg.com/"><img src="https://avatars0.githubusercontent.com/u/7957636?v=4" width="100px;" alt=""/><br /><sub><b>Brian Ginsburg</b></sub></a><br /><a href="https://github.com/dillonkearns/elm-markdown/commits?author=bgins" title="Tests">⚠️</a> <a href="https://github.com/dillonkearns/elm-markdown/commits?author=bgins" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/matheus23"><img src="https://avatars1.githubusercontent.com/u/1430958?v=4" width="100px;" alt=""/><br /><sub><b>Philipp Krüger</b></sub></a><br /><a href="https://github.com/dillonkearns/elm-markdown/commits?author=matheus23" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/folkertdev"><img src="https://avatars3.githubusercontent.com/u/7949978?v=4" width="100px;" alt=""/><br /><sub><b>Folkert de Vries</b></sub></a><br /><a href="https://github.com/dillonkearns/elm-markdown/commits?author=folkertdev" title="Code">💻</a></td>
   </tr>
 </table>
 
