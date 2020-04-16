@@ -265,6 +265,9 @@ This library gives an error message here, and aims to do so in similar situation
 
 A **huge** thanks to [Pablo Hirafuji](https://github.com/pablohirafuji/), who was kind enough to allow me to use his InlineParser in this project. It turns out that Markdown inline parsing is a very specialized algorithm, and the `elm/parser` library isn't suited to solve that particular problem.
 
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
 <table>
   <tr>
     <td align="center"><a href="https://github.com/stephenreddek"><img src="https://avatars1.githubusercontent.com/u/1985939?v=4" width="100px;" alt=""/><br /><sub><b>Stephen Reddekopp</b></sub></a><br /><a href="https://github.com/dillonkearns/elm-markdown/commits?author=stephenreddek" title="Tests">⚠️</a> <a href="https://github.com/dillonkearns/elm-markdown/commits?author=stephenreddek" title="Code">💻</a></td>
@@ -273,6 +276,11 @@ A **huge** thanks to [Pablo Hirafuji](https://github.com/pablohirafuji/), who wa
     <td align="center"><a href="https://github.com/matheus23"><img src="https://avatars1.githubusercontent.com/u/1430958?v=4" width="100px;" alt=""/><br /><sub><b>Philipp Krüger</b></sub></a><br /><a href="https://github.com/dillonkearns/elm-markdown/commits?author=matheus23" title="Code">💻</a></td>
   </tr>
 </table>
+
+<!-- markdownlint-enable -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
 
 Thank you [@jinjor](https://github.com/jinjor) for your
 [`elm-xml-parser`](https://package.elm-lang.org/packages/jinjor/elm-xml-parser/latest/XmlParser) package!
