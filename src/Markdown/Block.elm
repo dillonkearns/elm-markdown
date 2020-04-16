@@ -103,7 +103,8 @@ type ListItem children
     = ListItem Task (List children)
 
 
-{-| -}
+{-| A task (or no task), which may be contained in a ListItem.
+-}
 type Task
     = NoTask
     | IncompleteTask
