@@ -91,7 +91,7 @@ statementsHelp state =
                             |> succeed
 
                     _ ->
-                        problem (Parser.Expecting (Debug.toString state))
+                        problem (Parser.Expecting (stateToString state))
             )
 
 
@@ -101,3 +101,19 @@ succeedIfEnough occurences =
 
     else
         problem (Parser.Expecting "...?")
+
+
+stateToString : State -> String
+stateToString state =
+    case state of
+        Asterisk v ->
+            "Asterisk " ++ String.fromInt v
+
+        Hyphen v ->
+            "Hyphen " ++ String.fromInt v
+
+        Underscore v ->
+            "Underscore " ++ String.fromInt v
+
+        NoMatchYet ->
+            "NoMatchYet"

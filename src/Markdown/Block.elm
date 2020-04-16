@@ -494,8 +494,7 @@ inlineParserValidateWalk : (Inline -> Result error Inline) -> Inline -> Result (
 inlineParserValidateWalk function inline =
     case inline of
         Link url maybeTitle inlines ->
-            List.map (inlineParserValidateWalk function) inlines
-                |> combine
+            traverse (inlineParserValidateWalk function) inlines
                 |> Result.andThen
                     (\nestedInlines ->
                         Link url maybeTitle nestedInlines
@@ -504,8 +503,7 @@ inlineParserValidateWalk function inline =
                     )
 
         Image string maybeString inlines ->
-            List.map (inlineParserValidateWalk function) inlines
-                |> combine
+            traverse (inlineParserValidateWalk function) inlines
                 |> Result.andThen
                     (\transformedInlines ->
                         Image string maybeString transformedInlines
@@ -514,8 +512,7 @@ inlineParserValidateWalk function inline =
                     )
 
         Emphasis inlines ->
-            List.map (inlineParserValidateWalk function) inlines
-                |> combine
+            traverse (inlineParserValidateWalk function) inlines
                 |> Result.andThen
                     (\transformedInlines ->
                         Emphasis transformedInlines
@@ -524,8 +521,7 @@ inlineParserValidateWalk function inline =
                     )
 
         Strong inlines ->
-            List.map (inlineParserValidateWalk function) inlines
-                |> combine
+            traverse (inlineParserValidateWalk function) inlines
                 |> Result.andThen
                     (\transformedInlines ->
                         Strong transformedInlines
@@ -549,8 +545,7 @@ inlineParserValidateWalk function inline =
             case html of
                 HtmlElement tagName htmlAttributes blocks ->
                     blocks
-                        |> List.map (inlineParserValidateWalkBlock function)
-                        |> combine
+                        |> traverse (inlineParserValidateWalkBlock function)
                         |> Result.andThen
                             (\transformedBlocks ->
                                 HtmlElement tagName htmlAttributes transformedBlocks
@@ -574,8 +569,7 @@ inlineParserValidateWalkBlock function block =
             case html of
                 HtmlElement tagName attributes children ->
                     children
-                        |> List.map (inlineParserValidateWalkBlock function)
-                        |> combine
+                        |> traverse (inlineParserValidateWalkBlock function)
                         |> Result.map (HtmlElement tagName attributes)
                         |> Result.map HtmlBlock
 
@@ -584,50 +578,42 @@ inlineParserValidateWalkBlock function block =
 
         UnorderedList items ->
             items
-                |> List.map
+                |> traverse
                     (\(ListItem task item) ->
                         item
-                            |> List.map (inlineParserValidateWalk function)
-                            |> combine
+                            |> traverse (inlineParserValidateWalk function)
                             |> Result.map (ListItem task)
                     )
-                |> combine
                 |> Result.map UnorderedList
 
         OrderedList startingIndex lists ->
             lists
-                |> List.map (List.map (inlineParserValidateWalk function))
-                |> List.map combine
-                |> combine
+                |> traverse (traverse (inlineParserValidateWalk function))
                 |> Result.map (OrderedList startingIndex)
 
         BlockQuote nestedBlocks ->
             nestedBlocks
-                |> List.map (inlineParserValidateWalkBlock function)
-                |> combine
+                |> traverse (inlineParserValidateWalkBlock function)
                 |> Result.map BlockQuote
 
         Heading headingLevel inlines ->
             inlines
-                |> List.map (inlineParserValidateWalk function)
-                |> combine
+                |> traverse (inlineParserValidateWalk function)
                 |> Result.map (Heading headingLevel)
 
         Paragraph inlines ->
             inlines
-                |> List.map (inlineParserValidateWalk function)
-                |> combine
+                |> traverse (inlineParserValidateWalk function)
                 |> Result.map Paragraph
 
         Table header rows ->
             let
                 mappedHeader =
                     header
-                        |> List.map
+                        |> traverse
                             (\{ label, alignment } ->
                                 label
-                                    |> List.map (inlineParserValidateWalk function)
-                                    |> combine
+                                    |> traverse (inlineParserValidateWalk function)
                                     |> Result.map
                                         (\transformedLabel ->
                                             { alignment = alignment
@@ -635,13 +621,10 @@ inlineParserValidateWalkBlock function block =
                                             }
                                         )
                             )
-                        |> combine
 
                 mappedRows =
                     rows
-                        |> List.map (List.map (inlineParserValidateWalk function))
-                        |> List.map combine
-                        |> combine
+                        |> traverse (traverse (inlineParserValidateWalk function))
             in
             Result.map2 Table mappedHeader mappedRows
 
@@ -737,16 +720,17 @@ walk function block =
 
 validateMap : (Block -> Result error value) -> List Block -> Result error (List value)
 validateMap mapFn blocks =
-    blocks
-        |> List.map mapFn
-        |> combine
+    traverse mapFn blocks
 
 
-{-| Combine a list of results into a single result (holding a list).
--}
-combine : List (Result x a) -> Result x (List a)
-combine =
-    List.foldr (Result.map2 (::)) (Ok [])
+traverse : (a -> Result x b) -> List a -> Result x (List b)
+traverse f =
+    let
+        folder : a -> Result x (List b) -> Result x (List b)
+        folder x accum =
+            Result.map2 (::) (f x) accum
+    in
+    List.foldr folder (Ok [])
 
 
 {-| Map values, while also tracking state while traversing every block. Think of it as a helper for `foldl` and `map`

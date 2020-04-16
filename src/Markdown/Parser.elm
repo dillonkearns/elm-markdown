@@ -201,11 +201,11 @@ parseInlines linkReferences rawBlock =
         Heading level unparsedInlines ->
             level
                 |> levelParser
-                |> andThen
+                |> map
                     (\parsedLevel ->
                         unparsedInlines
                             |> inlineParseHelper linkReferences
-                            |> (\styledLine -> just (Block.Heading parsedLevel styledLine))
+                            |> (\styledLine -> Just (Block.Heading parsedLevel styledLine))
                     )
 
         Body unparsedInlines ->
@@ -219,7 +219,7 @@ parseInlines linkReferences rawBlock =
 
         UnorderedListBlock unparsedItems ->
             unparsedItems
-                |> List.map
+                |> traverse
                     (\unparsedItem ->
                         unparsedItem.body
                             |> parseRawInline linkReferences identity
@@ -240,14 +240,12 @@ parseInlines linkReferences rawBlock =
                                     Block.ListItem task parsedInlines
                                 )
                     )
-                |> combine
                 |> map Block.UnorderedList
                 |> map Just
 
         OrderedListBlock startingIndex unparsedInlines ->
             unparsedInlines
-                |> List.map (parseRawInline linkReferences identity)
-                |> combine
+                |> traverse (parseRawInline linkReferences identity)
                 |> map (Block.OrderedList startingIndex)
                 |> map Just
 
@@ -283,7 +281,7 @@ parseInlines linkReferences rawBlock =
                 parsedHeader : Parser (List (Markdown.Table.HeaderCell (List Inline)))
                 parsedHeader =
                     header
-                        |> List.map
+                        |> traverse
                             (\{ label, alignment } ->
                                 label
                                     |> UnparsedInlines
@@ -294,9 +292,8 @@ parseInlines linkReferences rawBlock =
                                             }
                                         )
                             )
-                        --|> List.map (parseRawInline linkReferences identity)
-                        |> combine
 
+                --|> List.map (parseRawInline linkReferences identity)
                 --|> parseRawInline
                 --    linkReferences
                 --    (Debug.todo "")
@@ -304,10 +301,9 @@ parseInlines linkReferences rawBlock =
                 --header
             in
             parsedHeader
-                |> andThen
+                |> map
                     (\headerThing ->
-                        Block.Table headerThing []
-                            |> just
+                        Just (Block.Table headerThing [])
                     )
 
 
@@ -424,11 +420,10 @@ xmlNodeToHtmlNode parser =
                         |> Advanced.succeed
 
                 HtmlParser.Element tag attributes children ->
-                    Advanced.andThen
+                    Advanced.map
                         (\parsedChildren ->
                             Block.HtmlElement tag attributes parsedChildren
                                 |> RawBlock.Html
-                                |> Advanced.succeed
                         )
                         (nodesToBlocksParser children)
 
@@ -504,24 +499,20 @@ nodeToRawBlock node =
 nodesToBlocksParser : List Node -> Parser (List Block)
 nodesToBlocksParser children =
     children
-        |> List.map childToParser
-        |> combine
+        |> traverse childToParser
         |> Advanced.map List.concat
 
 
-combine : List (Parser a) -> Parser (List a)
-combine list =
-    list
-        |> List.foldr
-            (\parser listParser ->
-                listParser
-                    |> Advanced.andThen
-                        (\soFar ->
-                            parser
-                                |> Advanced.map (\a -> a :: soFar)
-                        )
-            )
-            (Advanced.succeed [])
+traverse : (a -> Parser b) -> List a -> Parser (List b)
+traverse f =
+    let
+        folder : a -> Parser (List b) -> Parser (List b)
+        folder x accum =
+            Advanced.succeed (::)
+                |= f x
+                |= accum
+    in
+    List.foldr folder (Advanced.succeed [])
 
 
 childToParser : Node -> Parser (List Block)
@@ -529,9 +520,9 @@ childToParser node =
     case node of
         Element tag attributes children ->
             nodesToBlocksParser children
-                |> Advanced.andThen
+                |> Advanced.map
                     (\childrenAsBlocks ->
-                        Advanced.succeed [ Block.HtmlElement tag attributes childrenAsBlocks |> Block.HtmlBlock ]
+                        [ Block.HtmlElement tag attributes childrenAsBlocks |> Block.HtmlBlock ]
                     )
 
         Text innerText ->
@@ -592,12 +583,16 @@ type alias State =
 
 updateRawBlocks : State -> List RawBlock -> State
 updateRawBlocks state updatedRawBlocks =
-    { state | rawBlocks = updatedRawBlocks }
+    { linkReferenceDefinitions = state.linkReferenceDefinitions
+    , rawBlocks = updatedRawBlocks
+    }
 
 
 addReference : State -> LinkReferenceDefinition -> State
 addReference state linkRef =
-    { state | linkReferenceDefinitions = linkRef :: state.linkReferenceDefinitions }
+    { linkReferenceDefinitions = linkRef :: state.linkReferenceDefinitions
+    , rawBlocks = state.rawBlocks
+    }
 
 
 rawBlockParser : Parser State
@@ -611,26 +606,29 @@ rawBlockParser =
 
 parseAllInlines : State -> Parser (List Block)
 parseAllInlines state =
-    List.foldl (combineBlocks state.linkReferenceDefinitions) (succeed []) state.rawBlocks
+    let
+        linkReferences =
+            state.linkReferenceDefinitions
 
+        looper ( rawBlocks, parsedBlocks ) =
+            case rawBlocks of
+                rawBlock :: rest ->
+                    rawBlock
+                        |> parseInlines linkReferences
+                        |> map
+                            (\maybeNewParsedBlock ->
+                                case maybeNewParsedBlock of
+                                    Just newParsedBlock ->
+                                        Loop ( rest, newParsedBlock :: parsedBlocks )
 
-combineBlocks : LinkReferenceDefinitions -> RawBlock -> Parser (List Block) -> Parser (List Block)
-combineBlocks linkReferences rawBlock soFar =
-    soFar
-        |> andThen
-            (\parsedBlocks ->
-                rawBlock
-                    |> parseInlines linkReferences
-                    |> map
-                        (\maybeNewParsedBlock ->
-                            case maybeNewParsedBlock of
-                                Just newParsedBlock ->
-                                    newParsedBlock :: parsedBlocks
+                                    Nothing ->
+                                        Loop ( rest, parsedBlocks )
+                            )
 
-                                Nothing ->
-                                    parsedBlocks
-                        )
-            )
+                [] ->
+                    succeed (Done parsedBlocks)
+    in
+    Advanced.loop ( state.rawBlocks, [] ) looper
 
 
 statementsHelp2 : State -> Parser (Step State State)
@@ -854,12 +852,11 @@ heading =
                 (succeed ()
                     |. Advanced.chompUntilEndOr "\n"
                 )
-                |> Advanced.andThen
+                |> Advanced.map
                     (\headingText ->
                         headingText
                             |> dropTrailingHashes
                             |> UnparsedInlines
-                            |> succeed
                     )
            )
 
