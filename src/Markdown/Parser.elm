@@ -722,15 +722,14 @@ autolinks are still parsed as paragraphs.
 parseAsParagraphInsteadOfHtmlBlock : Parser RawBlock
 parseAsParagraphInsteadOfHtmlBlock =
     -- ^<[A-Za-z][A-Za-z0-9.+-]{1,31}:[^<>\x00-\x20]*>
-    Advanced.succeed ()
-        |. token (Advanced.Token "<" (Parser.Expecting "<"))
+    token (Advanced.Token "<" (Parser.Expecting "<"))
         |. thisIsDefinitelyNotAnHtmlTag
         |. endOfLineOrFile
-        |> getChompedString
-        |> map (\rawLine -> rawLine |> UnparsedInlines |> Body)
+        |> Advanced.mapChompedString (\rawLine _ -> rawLine |> UnparsedInlines |> Body)
         |> Advanced.backtrackable
 
 
+endOfLineOrFile : Parser ()
 endOfLineOrFile =
     Advanced.chompUntilEndOr "\n"
         |. oneOf
