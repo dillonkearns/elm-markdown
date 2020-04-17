@@ -223,8 +223,7 @@ parseInlines linkReferences rawBlock =
                     (\unparsedItem ->
                         unparsedItem.body
                             |> parseRawInline linkReferences identity
-                            |> Advanced.map
-                                (\parsedInlines ->
+                            |> (\parsedInlines ->
                                     let
                                         task =
                                             case unparsedItem.task of
@@ -238,16 +237,18 @@ parseInlines linkReferences rawBlock =
                                                     Block.NoTask
                                     in
                                     Block.ListItem task parsedInlines
-                                )
+                               )
                     )
-                |> map Block.UnorderedList
-                |> map Just
+                |> Block.UnorderedList
+                |> Just
+                |> succeed
 
         OrderedListBlock startingIndex unparsedInlines ->
             unparsedInlines
-                |> traverse (parseRawInline linkReferences identity)
-                |> map (Block.OrderedList startingIndex)
-                |> map Just
+                |> List.map (parseRawInline linkReferences identity)
+                |> Block.OrderedList startingIndex
+                |> Just
+                |> succeed
 
         CodeBlock codeBlock ->
             Block.CodeBlock codeBlock
@@ -278,45 +279,29 @@ parseInlines linkReferences rawBlock =
 
         Table (Markdown.Table.Table header rows) ->
             let
-                parsedHeader : Parser (List (Markdown.Table.HeaderCell (List Inline)))
-                parsedHeader =
-                    header
-                        |> traverse
-                            (\{ label, alignment } ->
-                                label
-                                    |> UnparsedInlines
-                                    |> parseRawInline linkReferences
-                                        (\parsedHeaderLabel ->
-                                            { label = parsedHeaderLabel
-                                            , alignment = alignment
-                                            }
-                                        )
-                            )
-
-                --|> List.map (parseRawInline linkReferences identity)
-                --|> parseRawInline
-                --    linkReferences
-                --    (Debug.todo "")
-                --    (UnparsedInlines "")
-                --header
+                parseHeader { label, alignment } =
+                    let
+                        wrap parsedHeaderLabel =
+                            { label = parsedHeaderLabel
+                            , alignment = alignment
+                            }
+                    in
+                    parseRawInline linkReferences wrap (UnparsedInlines label)
             in
-            parsedHeader
-                |> map
-                    (\headerThing ->
-                        Just (Block.Table headerThing [])
-                    )
+            Block.Table (List.map parseHeader header) []
+                |> Just
+                |> succeed
 
 
 just value =
     succeed (Just value)
 
 
-parseRawInline : LinkReferenceDefinitions -> (List Inline -> a) -> UnparsedInlines -> Advanced.Parser c Parser.Problem a
+parseRawInline : LinkReferenceDefinitions -> (List Inline -> a) -> UnparsedInlines -> a
 parseRawInline linkReferences wrap unparsedInlines =
     unparsedInlines
         |> inlineParseHelper linkReferences
-        |> (\styledLine -> wrap styledLine)
-        |> succeed
+        |> wrap
 
 
 plainLine : Parser RawBlock
