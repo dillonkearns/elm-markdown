@@ -17,10 +17,8 @@ zeroOrMore condition =
 
 positiveInteger : Parser c Parser.Problem Int
 positiveInteger =
-    succeed ()
-        |. oneOrMore Char.isDigit
-        |> mapChompedString
-            (\str _ -> String.toInt str |> Maybe.withDefault 0)
+    mapChompedString (\str _ -> String.toInt str |> Maybe.withDefault 0) <|
+        oneOrMore Char.isDigit
 
 
 tokenHelp : String -> Parser c Parser.Problem ()

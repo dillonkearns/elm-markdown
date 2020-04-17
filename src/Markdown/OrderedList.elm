@@ -109,13 +109,10 @@ itemBody =
 statementsHelp : String -> ListItem -> List ListItem -> Parser (Step (List ListItem) (List ListItem))
 statementsHelp listMarker firstItem revStmts =
     oneOf
-        [ succeed
-            (\offsetBefore stmt offsetAfter ->
-                Loop (stmt :: revStmts)
-            )
-            |= Advanced.getOffset
-            |= singleItemParser listMarker
-            |= Advanced.getOffset
-        , succeed ()
-            |> map (\_ -> Done (firstItem :: List.reverse revStmts))
+        [ singleItemParser listMarker
+            |> map
+                (\stmt ->
+                    Loop (stmt :: revStmts)
+                )
+        , succeed (Done (firstItem :: List.reverse revStmts))
         ]
