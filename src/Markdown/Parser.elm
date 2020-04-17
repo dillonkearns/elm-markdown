@@ -674,10 +674,6 @@ possiblyMergeBlocks state newRawBlock =
 statementsHelp2 : State -> Parser (Step State State)
 statementsHelp2 revStmts =
     let
-        keepLooping parser =
-            parser
-                |> map (possiblyMergeBlocks revStmts >> Loop)
-
         indentedCodeParser =
             case revStmts.rawBlocks of
                 (Body _) :: _ ->
@@ -685,11 +681,11 @@ statementsHelp2 revStmts =
 
                 _ ->
                     indentedCodeBlock
-                        |> keepLooping
     in
     oneOf
         [ Advanced.end (Parser.Expecting "End") |> map (\() -> Done revStmts)
-        , parseAsParagraphInsteadOfHtmlBlock |> keepLooping
+        , parseAsParagraphInsteadOfHtmlBlock
+            |> map (possiblyMergeBlocks revStmts >> Loop)
         , LinkReferenceDefinition.parser
             |> Advanced.backtrackable
             |> map
@@ -698,19 +694,22 @@ statementsHelp2 revStmts =
                         |> addReference revStmts
                         |> Loop
                 )
-        , blankLine |> keepLooping
-        , blockQuote |> keepLooping
-        , Markdown.CodeBlock.parser |> Advanced.backtrackable |> map CodeBlock |> keepLooping
-        , indentedCodeParser
-        , ThematicBreak.parser |> Advanced.backtrackable |> map (\_ -> ThematicBreak) |> keepLooping
-        , unorderedListBlock |> keepLooping
-        , orderedListBlock (List.head revStmts.rawBlocks) |> keepLooping
-        , heading |> Advanced.backtrackable |> keepLooping
-        , htmlParser |> keepLooping
+        , map (possiblyMergeBlocks revStmts >> Loop) <|
+            oneOf
+                [ blankLine
+                , blockQuote
+                , Markdown.CodeBlock.parser |> Advanced.backtrackable |> map CodeBlock
+                , indentedCodeParser
+                , ThematicBreak.parser |> Advanced.backtrackable |> map (\_ -> ThematicBreak)
+                , unorderedListBlock
+                , orderedListBlock (List.head revStmts.rawBlocks)
+                , heading |> Advanced.backtrackable
+                , htmlParser
 
-        -- TODO re-enable this once the table parser handles rows
-        --, TableParser.parser |> Advanced.backtrackable |> map Table |> keepLooping
-        , plainLine |> keepLooping
+                -- TODO re-enable this once the table parser handles rows
+                --, TableParser.parser |> Advanced.backtrackable |> map Table
+                , plainLine
+                ]
         ]
 
 
