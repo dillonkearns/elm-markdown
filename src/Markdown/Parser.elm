@@ -436,12 +436,14 @@ xmlNodeToHtmlNode parser =
                         |> Advanced.succeed
 
                 HtmlParser.Element tag attributes children ->
-                    Advanced.map
-                        (\parsedChildren ->
+                    case nodesToBlocksParser children of
+                        Ok parsedChildren ->
                             Block.HtmlElement tag attributes parsedChildren
                                 |> RawBlock.Html
-                        )
-                        (nodesToBlocksParser children)
+                                |> succeed
+
+                        Err err ->
+                            problem err
 
                 Comment string ->
                     Block.HtmlComment string
@@ -511,42 +513,51 @@ nodeToRawBlock node =
             Block.HtmlDeclaration declarationType content
 
 
-nodesToBlocksParser : List Node -> Parser (List Block)
+nodesToBlocksParser : List Node -> Result Parser.Problem (List Block)
 nodesToBlocksParser children =
     children
-        |> traverse childToParser
-        |> Advanced.map List.concat
+        |> traverseResult childToBlocks
+        |> Result.map List.concat
 
 
-traverse : (a -> Parser b) -> List a -> Parser (List b)
-traverse f =
-    let
-        folder : a -> Parser (List b) -> Parser (List b)
-        folder x accum =
-            Advanced.succeed (::)
-                |= f x
-                |= accum
-    in
-    List.foldr folder (Advanced.succeed [])
+traverseResult : (a -> Result x b) -> List a -> Result x (List b)
+traverseResult f list =
+    traverseResultHelper f list []
 
 
-childToParser : Node -> Parser (List Block)
-childToParser node =
+traverseResultHelper : (a -> Result x b) -> List a -> List b -> Result x (List b)
+traverseResultHelper f list accum =
+    case list of
+        first :: rest ->
+            case f first of
+                Err e ->
+                    Err e
+
+                Ok new ->
+                    traverseResultHelper f rest (new :: accum)
+
+        [] ->
+            Ok (List.reverse accum)
+
+
+childToBlocks : Node -> Result Parser.Problem (List Block)
+childToBlocks node =
     case node of
         Element tag attributes children ->
-            nodesToBlocksParser children
-                |> Advanced.map
-                    (\childrenAsBlocks ->
-                        [ Block.HtmlElement tag attributes childrenAsBlocks |> Block.HtmlBlock ]
-                    )
+            case nodesToBlocksParser children of
+                Ok childrenAsBlocks ->
+                    Ok [ Block.HtmlElement tag attributes childrenAsBlocks |> Block.HtmlBlock ]
+
+                Err err ->
+                    Err err
 
         Text innerText ->
             case parse innerText of
                 Ok value ->
-                    succeed value
+                    Ok value
 
                 Err error ->
-                    Advanced.problem
+                    Err
                         (Parser.Expecting
                             (error
                                 |> List.map deadEndToString
@@ -555,16 +566,16 @@ childToParser node =
                         )
 
         Comment string ->
-            succeed [ Block.HtmlComment string |> Block.HtmlBlock ]
+            Ok [ Block.HtmlComment string |> Block.HtmlBlock ]
 
         Cdata string ->
-            succeed [ Block.Cdata string |> Block.HtmlBlock ]
+            Ok [ Block.Cdata string |> Block.HtmlBlock ]
 
         ProcessingInstruction string ->
-            succeed [ Block.ProcessingInstruction string |> Block.HtmlBlock ]
+            Ok [ Block.ProcessingInstruction string |> Block.HtmlBlock ]
 
         Declaration declarationType content ->
-            succeed [ Block.HtmlDeclaration declarationType content |> Block.HtmlBlock ]
+            Ok [ Block.HtmlDeclaration declarationType content |> Block.HtmlBlock ]
 
 
 type alias LinkReferenceDefinitions =
