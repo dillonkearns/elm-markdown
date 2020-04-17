@@ -753,40 +753,22 @@ thisIsDefinitelyNotAnHtmlTag =
         ]
 
 
+joinStringsPreserveAll : String -> String -> String
 joinStringsPreserveAll string1 string2 =
-    String.concat
-        [ string1
-        , "\n"
-        , string2
-        ]
+    string1 ++ "\n" ++ string2
 
 
+joinRawStringsWith : String -> String -> String -> String
 joinRawStringsWith joinWith string1 string2 =
     case ( string1, string2 ) of
-        ( "", "" ) ->
-            String.concat
-                [ string1
-                , string2
-                ]
-
         ( "", _ ) ->
-            String.concat
-                [ string1
-                , string2
-                ]
+            string2
 
         ( _, "" ) ->
-            String.concat
-                [ string1
-                , string2
-                ]
+            string1
 
         _ ->
-            String.concat
-                [ string1
-                , joinWith
-                , string2
-                ]
+            string1 ++ joinWith ++ string2
 
 
 indentedCodeBlock : Parser RawBlock
