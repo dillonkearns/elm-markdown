@@ -170,43 +170,43 @@ mapInline inline =
                     Block.Strong (inlines |> List.map mapInline)
 
 
-levelParser : Int -> Parser Block.HeadingLevel
-levelParser level =
+toHeading : Int -> Result Parser.Problem Block.HeadingLevel
+toHeading level =
     case level of
         1 ->
-            succeed Block.H1
+            Ok Block.H1
 
         2 ->
-            succeed Block.H2
+            Ok Block.H2
 
         3 ->
-            succeed Block.H3
+            Ok Block.H3
 
         4 ->
-            succeed Block.H4
+            Ok Block.H4
 
         5 ->
-            succeed Block.H5
+            Ok Block.H5
 
         6 ->
-            succeed Block.H6
+            Ok Block.H6
 
         _ ->
-            problem ("A heading with 1 to 6 #'s, but found " ++ String.fromInt level |> Parser.Expecting)
+            Err ("A heading with 1 to 6 #'s, but found " ++ String.fromInt level |> Parser.Expecting)
 
 
 parseInlines : LinkReferenceDefinitions -> RawBlock -> Parser (Maybe Block)
 parseInlines linkReferences rawBlock =
     case rawBlock of
         Heading level unparsedInlines ->
-            level
-                |> levelParser
-                |> map
-                    (\parsedLevel ->
-                        unparsedInlines
-                            |> inlineParseHelper linkReferences
-                            |> (\styledLine -> Just (Block.Heading parsedLevel styledLine))
-                    )
+            case toHeading level of
+                Ok parsedLevel ->
+                    unparsedInlines
+                        |> inlineParseHelper linkReferences
+                        |> (\styledLine -> just (Block.Heading parsedLevel styledLine))
+
+                Err e ->
+                    Advanced.problem e
 
         Body unparsedInlines ->
             unparsedInlines
