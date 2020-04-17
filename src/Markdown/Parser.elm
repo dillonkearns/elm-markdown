@@ -324,10 +324,6 @@ parseInlines linkReferences rawBlock =
                 |> ParsedBlock
 
 
-just value =
-    succeed (Just value)
-
-
 parseRawInline : LinkReferenceDefinitions -> (List Inline -> a) -> UnparsedInlines -> a
 parseRawInline linkReferences wrap unparsedInlines =
     unparsedInlines
@@ -337,39 +333,44 @@ parseRawInline linkReferences wrap unparsedInlines =
 
 plainLine : Parser RawBlock
 plainLine =
-    succeed
-        (\rawLine ->
-            rawLine
-                |> UnparsedInlines
-                |> Body
-        )
-        |= innerParagraphParser
+    innerParagraphParser
         |. oneOf
             [ Advanced.chompIf Helpers.isNewline (Parser.Expecting "A single non-newline char.")
             , Advanced.end (Parser.Expecting "End")
             ]
 
 
+innerParagraphParser : Parser RawBlock
 innerParagraphParser =
-    getChompedString <|
-        succeed ()
-            |. Advanced.chompIf (\c -> not <| Helpers.isNewline c) (Parser.Expecting "Not newline.")
-            |. Advanced.chompUntilEndOr "\n"
+    Advanced.chompIf (\c -> not <| Helpers.isNewline c) (Parser.Expecting "Not newline.")
+        |. Advanced.chompUntilEndOr "\n"
+        |> Advanced.mapChompedString
+            (\rawLine _ ->
+                rawLine
+                    |> UnparsedInlines
+                    |> Body
+            )
+
+
+blockQuoteStarts : List (Parser ())
+blockQuoteStarts =
+    -- Investigate: can we re-order these?
+    -- it would be best to put the shortest first
+    [ symbol (Advanced.Token "   > " (Parser.Expecting "   > "))
+    , symbol (Advanced.Token "  > " (Parser.Expecting "  > "))
+    , symbol (Advanced.Token " > " (Parser.Expecting " > "))
+    , symbol (Advanced.Token "> " (Parser.Expecting "> "))
+    , symbol (Advanced.Token "   >" (Parser.Expecting "   >"))
+    , symbol (Advanced.Token "  >" (Parser.Expecting "  >"))
+    , symbol (Advanced.Token " >" (Parser.Expecting " >"))
+    , symbol (Advanced.Token ">" (Parser.Expecting ">"))
+    ]
 
 
 blockQuote : Parser RawBlock
 blockQuote =
     succeed BlockQuote
-        |. oneOf
-            [ symbol (Advanced.Token "   > " (Parser.Expecting "   > "))
-            , symbol (Advanced.Token "  > " (Parser.Expecting "  > "))
-            , symbol (Advanced.Token " > " (Parser.Expecting " > "))
-            , symbol (Advanced.Token "> " (Parser.Expecting "> "))
-            , symbol (Advanced.Token "   >" (Parser.Expecting "   >"))
-            , symbol (Advanced.Token "  >" (Parser.Expecting "  >"))
-            , symbol (Advanced.Token " >" (Parser.Expecting " >"))
-            , symbol (Advanced.Token ">" (Parser.Expecting ">"))
-            ]
+        |. oneOf blockQuoteStarts
         |= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
         |. oneOf
             [ Advanced.end (Parser.Problem "Expecting end")
@@ -379,31 +380,29 @@ blockQuote =
 
 unorderedListBlock : Parser RawBlock
 unorderedListBlock =
+    let
+        parseListItem unparsedListItem =
+            case unparsedListItem of
+                ListItem.TaskItem completion body ->
+                    { body = UnparsedInlines body
+                    , task =
+                        (case completion of
+                            ListItem.Complete ->
+                                True
+
+                            ListItem.Incomplete ->
+                                False
+                        )
+                            |> Just
+                    }
+
+                ListItem.PlainItem body ->
+                    { body = UnparsedInlines body
+                    , task = Nothing
+                    }
+    in
     Markdown.UnorderedList.parser
-        |> map
-            (List.map
-                (\unparsedListItem ->
-                    case unparsedListItem of
-                        ListItem.TaskItem completion body ->
-                            { body = UnparsedInlines body
-                            , task =
-                                (case completion of
-                                    ListItem.Complete ->
-                                        True
-
-                                    ListItem.Incomplete ->
-                                        False
-                                )
-                                    |> Just
-                            }
-
-                        ListItem.PlainItem body ->
-                            { body = UnparsedInlines body
-                            , task = Nothing
-                            }
-                )
-            )
-        |> map UnorderedListBlock
+        |> map (List.map parseListItem >> UnorderedListBlock)
 
 
 orderedListBlock : Maybe RawBlock -> Parser RawBlock
@@ -422,50 +421,46 @@ blankLine =
 htmlParser : Parser RawBlock
 htmlParser =
     HtmlParser.html
-        |> xmlNodeToHtmlNode
+        |> Advanced.andThen xmlNodeToHtmlNode
 
 
-xmlNodeToHtmlNode : Parser Node -> Parser RawBlock
-xmlNodeToHtmlNode parser =
-    Advanced.andThen
-        (\xmlNode ->
-            case xmlNode of
-                HtmlParser.Text innerText ->
-                    Body
-                        (UnparsedInlines innerText)
-                        |> Advanced.succeed
+xmlNodeToHtmlNode : Node -> Parser RawBlock
+xmlNodeToHtmlNode xmlNode =
+    case xmlNode of
+        HtmlParser.Text innerText ->
+            Body
+                (UnparsedInlines innerText)
+                |> Advanced.succeed
 
-                HtmlParser.Element tag attributes children ->
-                    case nodesToBlocks children of
-                        Ok parsedChildren ->
-                            Block.HtmlElement tag attributes parsedChildren
-                                |> RawBlock.Html
-                                |> succeed
-
-                        Err err ->
-                            problem err
-
-                Comment string ->
-                    Block.HtmlComment string
+        HtmlParser.Element tag attributes children ->
+            case nodesToBlocks children of
+                Ok parsedChildren ->
+                    Block.HtmlElement tag attributes parsedChildren
                         |> RawBlock.Html
                         |> succeed
 
-                Cdata string ->
-                    Block.Cdata string
-                        |> RawBlock.Html
-                        |> succeed
+                Err err ->
+                    problem err
 
-                ProcessingInstruction string ->
-                    Block.ProcessingInstruction string
-                        |> RawBlock.Html
-                        |> succeed
+        Comment string ->
+            Block.HtmlComment string
+                |> RawBlock.Html
+                |> succeed
 
-                Declaration declarationType content ->
-                    Block.HtmlDeclaration declarationType content
-                        |> RawBlock.Html
-                        |> succeed
-        )
-        parser
+        Cdata string ->
+            Block.Cdata string
+                |> RawBlock.Html
+                |> succeed
+
+        ProcessingInstruction string ->
+            Block.ProcessingInstruction string
+                |> RawBlock.Html
+                |> succeed
+
+        Declaration declarationType content ->
+            Block.HtmlDeclaration declarationType content
+                |> RawBlock.Html
+                |> succeed
 
 
 textNodeToBlocks : String -> List Block
@@ -588,13 +583,6 @@ type alias State =
     }
 
 
-updateRawBlocks : State -> List RawBlock -> State
-updateRawBlocks state updatedRawBlocks =
-    { linkReferenceDefinitions = state.linkReferenceDefinitions
-    , rawBlocks = updatedRawBlocks
-    }
-
-
 addReference : State -> LinkReferenceDefinition -> State
 addReference state linkRef =
     { linkReferenceDefinitions = linkRef :: state.linkReferenceDefinitions
@@ -625,6 +613,7 @@ parseAllInlinesHelp state rawBlocks parsedBlocks =
                     parseAllInlinesHelp state rest (newParsedBlock :: parsedBlocks)
 
                 EmptyBlock ->
+                    -- ignore empty blocks
                     parseAllInlinesHelp state rest parsedBlocks
 
                 InlineProblem e ->

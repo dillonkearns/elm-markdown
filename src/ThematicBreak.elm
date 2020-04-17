@@ -39,6 +39,9 @@ type ThematicToken
 
 statementsHelp : State -> Parser (Advanced.Step State ThematicBreak)
 statementsHelp state =
+    -- Investigate: would splitting this out help?
+    -- e.g. oneOf [ whenThematic, whenFinished, whenWhitespace ]
+    -- makes the case shorter, and allows `map` instead of `andThen` in some branches
     oneOf
         [ tokenHelp "-" |> map (\_ -> Dash)
         , tokenHelp "*" |> map (\_ -> Star)
