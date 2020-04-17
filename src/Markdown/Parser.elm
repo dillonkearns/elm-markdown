@@ -49,7 +49,32 @@ But you can also do a lot with the `Block`s before passing them through:
 -}
 parse : String -> Result (List (Advanced.DeadEnd String Parser.Problem)) (List Block)
 parse input =
-    Advanced.run multiParser2 input
+    -- first parse the file as raw blocks
+    case Advanced.run (rawBlockParser |. succeed Advanced.end) input of
+        Err e ->
+            Err e
+
+        Ok v ->
+            -- then parse the inlines of each raw block
+            case parseAllInlines v of
+                Err e ->
+                    -- NOTE these messages get an incorrect location,
+                    -- because they are parsed outside of the main (raw block) parser context.
+                    Advanced.run (Advanced.problem e) ""
+
+                Ok blocks ->
+                    let
+                        -- TODO find a better way to do this
+                        -- e.g. make sure they are never generated
+                        isNotEmptyParagraph block =
+                            case block of
+                                Block.Paragraph [] ->
+                                    False
+
+                                _ ->
+                                    True
+                    in
+                    Ok (List.filter isNotEmptyParagraph blocks)
 
 
 deadEndsToString : List (Advanced.DeadEnd String Parser.Problem) -> String
@@ -170,190 +195,182 @@ mapInline inline =
                     Block.Strong (inlines |> List.map mapInline)
 
 
-levelParser : Int -> Parser Block.HeadingLevel
-levelParser level =
+toHeading : Int -> Result Parser.Problem Block.HeadingLevel
+toHeading level =
     case level of
         1 ->
-            succeed Block.H1
+            Ok Block.H1
 
         2 ->
-            succeed Block.H2
+            Ok Block.H2
 
         3 ->
-            succeed Block.H3
+            Ok Block.H3
 
         4 ->
-            succeed Block.H4
+            Ok Block.H4
 
         5 ->
-            succeed Block.H5
+            Ok Block.H5
 
         6 ->
-            succeed Block.H6
+            Ok Block.H6
 
         _ ->
-            problem ("A heading with 1 to 6 #'s, but found " ++ String.fromInt level |> Parser.Expecting)
+            Err ("A heading with 1 to 6 #'s, but found " ++ String.fromInt level |> Parser.Expecting)
 
 
-parseInlines : LinkReferenceDefinitions -> RawBlock -> Parser (Maybe Block)
+type InlineResult
+    = EmptyBlock
+    | ParsedBlock Block
+    | InlineProblem Parser.Problem
+
+
+parseInlines : LinkReferenceDefinitions -> RawBlock -> InlineResult
 parseInlines linkReferences rawBlock =
     case rawBlock of
         Heading level unparsedInlines ->
-            level
-                |> levelParser
-                |> map
-                    (\parsedLevel ->
-                        unparsedInlines
-                            |> inlineParseHelper linkReferences
-                            |> (\styledLine -> Just (Block.Heading parsedLevel styledLine))
-                    )
+            case toHeading level of
+                Ok parsedLevel ->
+                    unparsedInlines
+                        |> inlineParseHelper linkReferences
+                        |> Block.Heading parsedLevel
+                        |> ParsedBlock
+
+                Err e ->
+                    InlineProblem e
 
         Body unparsedInlines ->
             unparsedInlines
                 |> inlineParseHelper linkReferences
-                |> (\styledLine -> just (Block.Paragraph styledLine))
+                |> Block.Paragraph
+                |> ParsedBlock
 
         Html html ->
             Block.HtmlBlock html
-                |> just
+                |> ParsedBlock
 
         UnorderedListBlock unparsedItems ->
+            let
+                parseItem unparsed =
+                    let
+                        parsedInlines =
+                            parseRawInline linkReferences identity unparsed.body
+
+                        task =
+                            case unparsed.task of
+                                Just False ->
+                                    Block.IncompleteTask
+
+                                Just True ->
+                                    Block.CompletedTask
+
+                                Nothing ->
+                                    Block.NoTask
+                    in
+                    Block.ListItem task parsedInlines
+            in
             unparsedItems
-                |> traverse
-                    (\unparsedItem ->
-                        unparsedItem.body
-                            |> parseRawInline linkReferences identity
-                            |> Advanced.map
-                                (\parsedInlines ->
-                                    let
-                                        task =
-                                            case unparsedItem.task of
-                                                Just False ->
-                                                    Block.IncompleteTask
-
-                                                Just True ->
-                                                    Block.CompletedTask
-
-                                                Nothing ->
-                                                    Block.NoTask
-                                    in
-                                    Block.ListItem task parsedInlines
-                                )
-                    )
-                |> map Block.UnorderedList
-                |> map Just
+                |> List.map parseItem
+                |> Block.UnorderedList
+                |> ParsedBlock
 
         OrderedListBlock startingIndex unparsedInlines ->
             unparsedInlines
-                |> traverse (parseRawInline linkReferences identity)
-                |> map (Block.OrderedList startingIndex)
-                |> map Just
+                |> List.map (parseRawInline linkReferences identity)
+                |> Block.OrderedList startingIndex
+                |> ParsedBlock
 
         CodeBlock codeBlock ->
             Block.CodeBlock codeBlock
-                |> just
+                |> ParsedBlock
 
         ThematicBreak ->
-            just Block.ThematicBreak
+            ParsedBlock Block.ThematicBreak
 
         BlankLine ->
-            succeed Nothing
+            EmptyBlock
 
         BlockQuote rawBlocks ->
             case Advanced.run rawBlockParser rawBlocks of
                 Ok value ->
-                    parseAllInlines value
-                        |> map
-                            (\parsedBlocks ->
-                                Block.BlockQuote parsedBlocks
-                                    |> Just
-                            )
+                    case parseAllInlines value of
+                        Ok parsedBlocks ->
+                            Block.BlockQuote parsedBlocks
+                                |> ParsedBlock
+
+                        Err e ->
+                            InlineProblem e
 
                 Err error ->
-                    Advanced.problem (Parser.Problem (deadEndsToString error))
+                    InlineProblem (Parser.Problem (deadEndsToString error))
 
         IndentedCodeBlock codeBlockBody ->
             Block.CodeBlock { body = codeBlockBody, language = Nothing }
-                |> just
+                |> ParsedBlock
 
         Table (Markdown.Table.Table header rows) ->
             let
-                parsedHeader : Parser (List (Markdown.Table.HeaderCell (List Inline)))
-                parsedHeader =
-                    header
-                        |> traverse
-                            (\{ label, alignment } ->
-                                label
-                                    |> UnparsedInlines
-                                    |> parseRawInline linkReferences
-                                        (\parsedHeaderLabel ->
-                                            { label = parsedHeaderLabel
-                                            , alignment = alignment
-                                            }
-                                        )
-                            )
-
-                --|> List.map (parseRawInline linkReferences identity)
-                --|> parseRawInline
-                --    linkReferences
-                --    (Debug.todo "")
-                --    (UnparsedInlines "")
-                --header
+                parseHeader { label, alignment } =
+                    let
+                        wrap parsedHeaderLabel =
+                            { label = parsedHeaderLabel
+                            , alignment = alignment
+                            }
+                    in
+                    parseRawInline linkReferences wrap (UnparsedInlines label)
             in
-            parsedHeader
-                |> map
-                    (\headerThing ->
-                        Just (Block.Table headerThing [])
-                    )
+            Block.Table (List.map parseHeader header) []
+                |> ParsedBlock
 
 
-just value =
-    succeed (Just value)
-
-
-parseRawInline : LinkReferenceDefinitions -> (List Inline -> a) -> UnparsedInlines -> Advanced.Parser c Parser.Problem a
+parseRawInline : LinkReferenceDefinitions -> (List Inline -> a) -> UnparsedInlines -> a
 parseRawInline linkReferences wrap unparsedInlines =
     unparsedInlines
         |> inlineParseHelper linkReferences
-        |> (\styledLine -> wrap styledLine)
-        |> succeed
+        |> wrap
 
 
 plainLine : Parser RawBlock
 plainLine =
-    succeed
-        (\rawLine ->
-            rawLine
-                |> UnparsedInlines
-                |> Body
-        )
-        |= innerParagraphParser
+    innerParagraphParser
         |. oneOf
             [ Advanced.chompIf Helpers.isNewline (Parser.Expecting "A single non-newline char.")
             , Advanced.end (Parser.Expecting "End")
             ]
 
 
+innerParagraphParser : Parser RawBlock
 innerParagraphParser =
-    getChompedString <|
-        succeed ()
-            |. Advanced.chompIf (\c -> not <| Helpers.isNewline c) (Parser.Expecting "Not newline.")
-            |. Advanced.chompUntilEndOr "\n"
+    Advanced.chompIf (\c -> not <| Helpers.isNewline c) (Parser.Expecting "Not newline.")
+        |. Advanced.chompUntilEndOr "\n"
+        |> Advanced.mapChompedString
+            (\rawLine _ ->
+                rawLine
+                    |> UnparsedInlines
+                    |> Body
+            )
+
+
+blockQuoteStarts : List (Parser ())
+blockQuoteStarts =
+    -- Investigate: can we re-order these?
+    -- it would be best to put the shortest first
+    [ symbol (Advanced.Token "   > " (Parser.Expecting "   > "))
+    , symbol (Advanced.Token "  > " (Parser.Expecting "  > "))
+    , symbol (Advanced.Token " > " (Parser.Expecting " > "))
+    , symbol (Advanced.Token "> " (Parser.Expecting "> "))
+    , symbol (Advanced.Token "   >" (Parser.Expecting "   >"))
+    , symbol (Advanced.Token "  >" (Parser.Expecting "  >"))
+    , symbol (Advanced.Token " >" (Parser.Expecting " >"))
+    , symbol (Advanced.Token ">" (Parser.Expecting ">"))
+    ]
 
 
 blockQuote : Parser RawBlock
 blockQuote =
     succeed BlockQuote
-        |. oneOf
-            [ symbol (Advanced.Token "   > " (Parser.Expecting "   > "))
-            , symbol (Advanced.Token "  > " (Parser.Expecting "  > "))
-            , symbol (Advanced.Token " > " (Parser.Expecting " > "))
-            , symbol (Advanced.Token "> " (Parser.Expecting "> "))
-            , symbol (Advanced.Token "   >" (Parser.Expecting "   >"))
-            , symbol (Advanced.Token "  >" (Parser.Expecting "  >"))
-            , symbol (Advanced.Token " >" (Parser.Expecting " >"))
-            , symbol (Advanced.Token ">" (Parser.Expecting ">"))
-            ]
+        |. oneOf blockQuoteStarts
         |= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
         |. oneOf
             [ Advanced.end (Parser.Problem "Expecting end")
@@ -363,31 +380,29 @@ blockQuote =
 
 unorderedListBlock : Parser RawBlock
 unorderedListBlock =
+    let
+        parseListItem unparsedListItem =
+            case unparsedListItem of
+                ListItem.TaskItem completion body ->
+                    { body = UnparsedInlines body
+                    , task =
+                        (case completion of
+                            ListItem.Complete ->
+                                True
+
+                            ListItem.Incomplete ->
+                                False
+                        )
+                            |> Just
+                    }
+
+                ListItem.PlainItem body ->
+                    { body = UnparsedInlines body
+                    , task = Nothing
+                    }
+    in
     Markdown.UnorderedList.parser
-        |> map
-            (List.map
-                (\unparsedListItem ->
-                    case unparsedListItem of
-                        ListItem.TaskItem completion body ->
-                            { body = UnparsedInlines body
-                            , task =
-                                (case completion of
-                                    ListItem.Complete ->
-                                        True
-
-                                    ListItem.Incomplete ->
-                                        False
-                                )
-                                    |> Just
-                            }
-
-                        ListItem.PlainItem body ->
-                            { body = UnparsedInlines body
-                            , task = Nothing
-                            }
-                )
-            )
-        |> map UnorderedListBlock
+        |> map (List.map parseListItem >> UnorderedListBlock)
 
 
 orderedListBlock : Maybe RawBlock -> Parser RawBlock
@@ -406,54 +421,51 @@ blankLine =
 htmlParser : Parser RawBlock
 htmlParser =
     HtmlParser.html
-        |> xmlNodeToHtmlNode
+        |> Advanced.andThen xmlNodeToHtmlNode
 
 
-xmlNodeToHtmlNode : Parser Node -> Parser RawBlock
-xmlNodeToHtmlNode parser =
-    Advanced.andThen
-        (\xmlNode ->
-            case xmlNode of
-                HtmlParser.Text innerText ->
-                    Body
-                        (UnparsedInlines innerText)
-                        |> Advanced.succeed
+xmlNodeToHtmlNode : Node -> Parser RawBlock
+xmlNodeToHtmlNode xmlNode =
+    case xmlNode of
+        HtmlParser.Text innerText ->
+            Body
+                (UnparsedInlines innerText)
+                |> Advanced.succeed
 
-                HtmlParser.Element tag attributes children ->
-                    Advanced.map
-                        (\parsedChildren ->
-                            Block.HtmlElement tag attributes parsedChildren
-                                |> RawBlock.Html
-                        )
-                        (nodesToBlocksParser children)
-
-                Comment string ->
-                    Block.HtmlComment string
+        HtmlParser.Element tag attributes children ->
+            case nodesToBlocks children of
+                Ok parsedChildren ->
+                    Block.HtmlElement tag attributes parsedChildren
                         |> RawBlock.Html
                         |> succeed
 
-                Cdata string ->
-                    Block.Cdata string
-                        |> RawBlock.Html
-                        |> succeed
+                Err err ->
+                    problem err
 
-                ProcessingInstruction string ->
-                    Block.ProcessingInstruction string
-                        |> RawBlock.Html
-                        |> succeed
+        Comment string ->
+            Block.HtmlComment string
+                |> RawBlock.Html
+                |> succeed
 
-                Declaration declarationType content ->
-                    Block.HtmlDeclaration declarationType content
-                        |> RawBlock.Html
-                        |> succeed
-        )
-        parser
+        Cdata string ->
+            Block.Cdata string
+                |> RawBlock.Html
+                |> succeed
+
+        ProcessingInstruction string ->
+            Block.ProcessingInstruction string
+                |> RawBlock.Html
+                |> succeed
+
+        Declaration declarationType content ->
+            Block.HtmlDeclaration declarationType content
+                |> RawBlock.Html
+                |> succeed
 
 
 textNodeToBlocks : String -> List Block
 textNodeToBlocks textNodeValue =
-    textNodeValue
-        |> Advanced.run multiParser2
+    parse textNodeValue
         |> Result.withDefault []
 
 
@@ -496,42 +508,51 @@ nodeToRawBlock node =
             Block.HtmlDeclaration declarationType content
 
 
-nodesToBlocksParser : List Node -> Parser (List Block)
-nodesToBlocksParser children =
-    children
-        |> traverse childToParser
-        |> Advanced.map List.concat
+nodesToBlocks : List Node -> Result Parser.Problem (List Block)
+nodesToBlocks children =
+    nodesToBlocksHelp children []
 
 
-traverse : (a -> Parser b) -> List a -> Parser (List b)
-traverse f =
-    let
-        folder : a -> Parser (List b) -> Parser (List b)
-        folder x accum =
-            Advanced.succeed (::)
-                |= f x
-                |= accum
-    in
-    List.foldr folder (Advanced.succeed [])
+nodesToBlocksHelp : List Node -> List Block -> Result Parser.Problem (List Block)
+nodesToBlocksHelp remaining soFar =
+    case remaining of
+        node :: rest ->
+            case childToBlocks node soFar of
+                Ok newSoFar ->
+                    nodesToBlocksHelp rest newSoFar
+
+                Err e ->
+                    Err e
+
+        [] ->
+            Ok (List.reverse soFar)
 
 
-childToParser : Node -> Parser (List Block)
-childToParser node =
+{-| Add the blocks from this node to the passed-in list of blocks
+-}
+childToBlocks : Node -> List Block -> Result Parser.Problem (List Block)
+childToBlocks node blocks =
     case node of
         Element tag attributes children ->
-            nodesToBlocksParser children
-                |> Advanced.map
-                    (\childrenAsBlocks ->
-                        [ Block.HtmlElement tag attributes childrenAsBlocks |> Block.HtmlBlock ]
-                    )
+            case nodesToBlocks children of
+                Ok childrenAsBlocks ->
+                    let
+                        block =
+                            Block.HtmlElement tag attributes childrenAsBlocks
+                                |> Block.HtmlBlock
+                    in
+                    Ok (block :: blocks)
+
+                Err err ->
+                    Err err
 
         Text innerText ->
-            case Advanced.run multiParser2 innerText of
+            case parse innerText of
                 Ok value ->
-                    succeed value
+                    Ok (List.reverse value ++ blocks)
 
                 Err error ->
-                    Advanced.problem
+                    Err
                         (Parser.Expecting
                             (error
                                 |> List.map deadEndToString
@@ -540,35 +561,16 @@ childToParser node =
                         )
 
         Comment string ->
-            succeed [ Block.HtmlComment string |> Block.HtmlBlock ]
+            Ok (Block.HtmlBlock (Block.HtmlComment string) :: blocks)
 
         Cdata string ->
-            succeed [ Block.Cdata string |> Block.HtmlBlock ]
+            Ok (Block.HtmlBlock (Block.Cdata string) :: blocks)
 
         ProcessingInstruction string ->
-            succeed [ Block.ProcessingInstruction string |> Block.HtmlBlock ]
+            Ok (Block.HtmlBlock (Block.ProcessingInstruction string) :: blocks)
 
         Declaration declarationType content ->
-            succeed [ Block.HtmlDeclaration declarationType content |> Block.HtmlBlock ]
-
-
-multiParser2 : Parser (List Block)
-multiParser2 =
-    rawBlockParser
-        |. succeed Advanced.end
-        |> andThen parseAllInlines
-        -- TODO find a more elegant way to exclude empty blocks for each blank lines
-        |> map
-            (List.filter
-                (\item ->
-                    case item of
-                        Block.Paragraph [] ->
-                            False
-
-                        _ ->
-                            True
-                )
-            )
+            Ok (Block.HtmlBlock (Block.HtmlDeclaration declarationType content) :: blocks)
 
 
 type alias LinkReferenceDefinitions =
@@ -578,13 +580,6 @@ type alias LinkReferenceDefinitions =
 type alias State =
     { linkReferenceDefinitions : LinkReferenceDefinitions
     , rawBlocks : List RawBlock
-    }
-
-
-updateRawBlocks : State -> List RawBlock -> State
-updateRawBlocks state updatedRawBlocks =
-    { linkReferenceDefinitions = state.linkReferenceDefinitions
-    , rawBlocks = updatedRawBlocks
     }
 
 
@@ -604,89 +599,70 @@ rawBlockParser =
         statementsHelp2
 
 
-parseAllInlines : State -> Parser (List Block)
+parseAllInlines : State -> Result Parser.Problem (List Block)
 parseAllInlines state =
-    let
-        linkReferences =
-            state.linkReferenceDefinitions
+    parseAllInlinesHelp state state.rawBlocks []
 
-        looper ( rawBlocks, parsedBlocks ) =
-            case rawBlocks of
-                rawBlock :: rest ->
-                    rawBlock
-                        |> parseInlines linkReferences
-                        |> map
-                            (\maybeNewParsedBlock ->
-                                case maybeNewParsedBlock of
-                                    Just newParsedBlock ->
-                                        Loop ( rest, newParsedBlock :: parsedBlocks )
 
-                                    Nothing ->
-                                        Loop ( rest, parsedBlocks )
-                            )
+parseAllInlinesHelp : State -> List RawBlock -> List Block -> Result Parser.Problem (List Block)
+parseAllInlinesHelp state rawBlocks parsedBlocks =
+    case rawBlocks of
+        rawBlock :: rest ->
+            case parseInlines state.linkReferenceDefinitions rawBlock of
+                ParsedBlock newParsedBlock ->
+                    parseAllInlinesHelp state rest (newParsedBlock :: parsedBlocks)
 
-                [] ->
-                    succeed (Done parsedBlocks)
-    in
-    Advanced.loop ( state.rawBlocks, [] ) looper
+                EmptyBlock ->
+                    -- ignore empty blocks
+                    parseAllInlinesHelp state rest parsedBlocks
+
+                InlineProblem e ->
+                    Err e
+
+        [] ->
+            Ok parsedBlocks
+
+
+possiblyMergeBlocks : State -> RawBlock -> State
+possiblyMergeBlocks state newRawBlock =
+    { linkReferenceDefinitions = state.linkReferenceDefinitions
+    , rawBlocks =
+        case
+            ( newRawBlock
+            , state.rawBlocks
+            )
+        of
+            ( CodeBlock block1, (CodeBlock block2) :: rest ) ->
+                CodeBlock
+                    { body = joinStringsPreserveAll block2.body block1.body
+                    , language = Nothing
+                    }
+                    :: rest
+
+            ( IndentedCodeBlock block1, (IndentedCodeBlock block2) :: rest ) ->
+                IndentedCodeBlock (joinStringsPreserveAll block2 block1)
+                    :: rest
+
+            ( Body (UnparsedInlines body1), (BlockQuote body2) :: rest ) ->
+                BlockQuote (joinRawStringsWith "\n" body2 body1)
+                    :: rest
+
+            ( BlockQuote body1, (BlockQuote body2) :: rest ) ->
+                BlockQuote (joinStringsPreserveAll body2 body1)
+                    :: rest
+
+            ( Body (UnparsedInlines body1), (Body (UnparsedInlines body2)) :: rest ) ->
+                Body (UnparsedInlines (joinRawStringsWith "\n" body2 body1))
+                    :: rest
+
+            _ ->
+                newRawBlock :: state.rawBlocks
+    }
 
 
 statementsHelp2 : State -> Parser (Step State State)
 statementsHelp2 revStmts =
     let
-        keepLooping parser =
-            parser
-                |> map
-                    (\newRawBlock ->
-                        case
-                            ( newRawBlock
-                            , revStmts.rawBlocks
-                            )
-                        of
-                            ( CodeBlock block1, (CodeBlock block2) :: rest ) ->
-                                (CodeBlock
-                                    { body = joinStringsPreserveAll block2.body block1.body
-                                    , language = Nothing
-                                    }
-                                    :: rest
-                                )
-                                    |> updateRawBlocks revStmts
-                                    |> Loop
-
-                            ( IndentedCodeBlock block1, (IndentedCodeBlock block2) :: rest ) ->
-                                (IndentedCodeBlock (joinStringsPreserveAll block2 block1)
-                                    :: rest
-                                )
-                                    |> updateRawBlocks revStmts
-                                    |> Loop
-
-                            ( Body (UnparsedInlines body1), (BlockQuote body2) :: rest ) ->
-                                (BlockQuote (joinRawStringsWith "\n" body2 body1)
-                                    :: rest
-                                )
-                                    |> updateRawBlocks revStmts
-                                    |> Loop
-
-                            ( BlockQuote body1, (BlockQuote body2) :: rest ) ->
-                                (BlockQuote (joinStringsPreserveAll body2 body1)
-                                    :: rest
-                                )
-                                    |> updateRawBlocks revStmts
-                                    |> Loop
-
-                            ( Body (UnparsedInlines body1), (Body (UnparsedInlines body2)) :: rest ) ->
-                                (Body (UnparsedInlines (joinRawStringsWith "\n" body2 body1))
-                                    :: rest
-                                )
-                                    |> updateRawBlocks revStmts
-                                    |> Loop
-
-                            _ ->
-                                (newRawBlock :: revStmts.rawBlocks)
-                                    |> updateRawBlocks revStmts
-                                    |> Loop
-                    )
-
         indentedCodeParser =
             case revStmts.rawBlocks of
                 (Body _) :: _ ->
@@ -694,11 +670,11 @@ statementsHelp2 revStmts =
 
                 _ ->
                     indentedCodeBlock
-                        |> keepLooping
     in
     oneOf
         [ Advanced.end (Parser.Expecting "End") |> map (\() -> Done revStmts)
-        , parseAsParagraphInsteadOfHtmlBlock |> keepLooping
+        , parseAsParagraphInsteadOfHtmlBlock
+            |> map (possiblyMergeBlocks revStmts >> Loop)
         , LinkReferenceDefinition.parser
             |> Advanced.backtrackable
             |> map
@@ -707,19 +683,22 @@ statementsHelp2 revStmts =
                         |> addReference revStmts
                         |> Loop
                 )
-        , blankLine |> keepLooping
-        , blockQuote |> keepLooping
-        , Markdown.CodeBlock.parser |> Advanced.backtrackable |> map CodeBlock |> keepLooping
-        , indentedCodeParser
-        , ThematicBreak.parser |> Advanced.backtrackable |> map (\_ -> ThematicBreak) |> keepLooping
-        , unorderedListBlock |> keepLooping
-        , orderedListBlock (List.head revStmts.rawBlocks) |> keepLooping
-        , heading |> Advanced.backtrackable |> keepLooping
-        , htmlParser |> keepLooping
+        , map (possiblyMergeBlocks revStmts >> Loop) <|
+            oneOf
+                [ blankLine
+                , blockQuote
+                , Markdown.CodeBlock.parser |> Advanced.backtrackable |> map CodeBlock
+                , indentedCodeParser
+                , ThematicBreak.parser |> Advanced.backtrackable |> map (\_ -> ThematicBreak)
+                , unorderedListBlock
+                , orderedListBlock (List.head revStmts.rawBlocks)
+                , heading |> Advanced.backtrackable
+                , htmlParser
 
-        -- TODO re-enable this once the table parser handles rows
-        --, TableParser.parser |> Advanced.backtrackable |> map Table |> keepLooping
-        , plainLine |> keepLooping
+                -- TODO re-enable this once the table parser handles rows
+                --, TableParser.parser |> Advanced.backtrackable |> map Table
+                , plainLine
+                ]
         ]
 
 
@@ -731,15 +710,14 @@ autolinks are still parsed as paragraphs.
 parseAsParagraphInsteadOfHtmlBlock : Parser RawBlock
 parseAsParagraphInsteadOfHtmlBlock =
     -- ^<[A-Za-z][A-Za-z0-9.+-]{1,31}:[^<>\x00-\x20]*>
-    Advanced.succeed ()
-        |. token (Advanced.Token "<" (Parser.Expecting "<"))
+    token (Advanced.Token "<" (Parser.Expecting "<"))
         |. thisIsDefinitelyNotAnHtmlTag
         |. endOfLineOrFile
-        |> getChompedString
-        |> map (\rawLine -> rawLine |> UnparsedInlines |> Body)
+        |> Advanced.mapChompedString (\rawLine _ -> rawLine |> UnparsedInlines |> Body)
         |> Advanced.backtrackable
 
 
+endOfLineOrFile : Parser ()
 endOfLineOrFile =
     Advanced.chompUntilEndOr "\n"
         |. oneOf
@@ -765,40 +743,22 @@ thisIsDefinitelyNotAnHtmlTag =
         ]
 
 
+joinStringsPreserveAll : String -> String -> String
 joinStringsPreserveAll string1 string2 =
-    String.concat
-        [ string1
-        , "\n"
-        , string2
-        ]
+    string1 ++ "\n" ++ string2
 
 
+joinRawStringsWith : String -> String -> String -> String
 joinRawStringsWith joinWith string1 string2 =
     case ( string1, string2 ) of
-        ( "", "" ) ->
-            String.concat
-                [ string1
-                , string2
-                ]
-
         ( "", _ ) ->
-            String.concat
-                [ string1
-                , string2
-                ]
+            string2
 
         ( _, "" ) ->
-            String.concat
-                [ string1
-                , string2
-                ]
+            string1
 
         _ ->
-            String.concat
-                [ string1
-                , joinWith
-                , string2
-                ]
+            string1 ++ joinWith ++ string2
 
 
 indentedCodeBlock : Parser RawBlock
