@@ -498,7 +498,7 @@ Should give output:
 But instead was:
 
 ````````````html
-ERROR Problem at row 8 Problem at row 2 Expecting symbol
+ERROR Problem at row 1 Problem at row 2 Expecting symbol
 ````````````
 ## [Example 144](https://spec.commonmark.org/0.29/#example-144)
 
