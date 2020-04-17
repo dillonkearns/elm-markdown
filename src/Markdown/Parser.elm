@@ -631,61 +631,49 @@ parseAllInlines state =
     Advanced.loop ( state.rawBlocks, [] ) looper
 
 
+possiblyMergeBlocks : State -> RawBlock -> State
+possiblyMergeBlocks state newRawBlock =
+    { linkReferenceDefinitions = state.linkReferenceDefinitions
+    , rawBlocks =
+        case
+            ( newRawBlock
+            , state.rawBlocks
+            )
+        of
+            ( CodeBlock block1, (CodeBlock block2) :: rest ) ->
+                CodeBlock
+                    { body = joinStringsPreserveAll block2.body block1.body
+                    , language = Nothing
+                    }
+                    :: rest
+
+            ( IndentedCodeBlock block1, (IndentedCodeBlock block2) :: rest ) ->
+                IndentedCodeBlock (joinStringsPreserveAll block2 block1)
+                    :: rest
+
+            ( Body (UnparsedInlines body1), (BlockQuote body2) :: rest ) ->
+                BlockQuote (joinRawStringsWith "\n" body2 body1)
+                    :: rest
+
+            ( BlockQuote body1, (BlockQuote body2) :: rest ) ->
+                BlockQuote (joinStringsPreserveAll body2 body1)
+                    :: rest
+
+            ( Body (UnparsedInlines body1), (Body (UnparsedInlines body2)) :: rest ) ->
+                Body (UnparsedInlines (joinRawStringsWith "\n" body2 body1))
+                    :: rest
+
+            _ ->
+                newRawBlock :: state.rawBlocks
+    }
+
+
 statementsHelp2 : State -> Parser (Step State State)
 statementsHelp2 revStmts =
     let
         keepLooping parser =
             parser
-                |> map
-                    (\newRawBlock ->
-                        case
-                            ( newRawBlock
-                            , revStmts.rawBlocks
-                            )
-                        of
-                            ( CodeBlock block1, (CodeBlock block2) :: rest ) ->
-                                (CodeBlock
-                                    { body = joinStringsPreserveAll block2.body block1.body
-                                    , language = Nothing
-                                    }
-                                    :: rest
-                                )
-                                    |> updateRawBlocks revStmts
-                                    |> Loop
-
-                            ( IndentedCodeBlock block1, (IndentedCodeBlock block2) :: rest ) ->
-                                (IndentedCodeBlock (joinStringsPreserveAll block2 block1)
-                                    :: rest
-                                )
-                                    |> updateRawBlocks revStmts
-                                    |> Loop
-
-                            ( Body (UnparsedInlines body1), (BlockQuote body2) :: rest ) ->
-                                (BlockQuote (joinRawStringsWith "\n" body2 body1)
-                                    :: rest
-                                )
-                                    |> updateRawBlocks revStmts
-                                    |> Loop
-
-                            ( BlockQuote body1, (BlockQuote body2) :: rest ) ->
-                                (BlockQuote (joinStringsPreserveAll body2 body1)
-                                    :: rest
-                                )
-                                    |> updateRawBlocks revStmts
-                                    |> Loop
-
-                            ( Body (UnparsedInlines body1), (Body (UnparsedInlines body2)) :: rest ) ->
-                                (Body (UnparsedInlines (joinRawStringsWith "\n" body2 body1))
-                                    :: rest
-                                )
-                                    |> updateRawBlocks revStmts
-                                    |> Loop
-
-                            _ ->
-                                (newRawBlock :: revStmts.rawBlocks)
-                                    |> updateRawBlocks revStmts
-                                    |> Loop
-                    )
+                |> map (possiblyMergeBlocks revStmts >> Loop)
 
         indentedCodeParser =
             case revStmts.rawBlocks of
