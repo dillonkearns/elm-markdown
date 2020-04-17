@@ -436,7 +436,7 @@ xmlNodeToHtmlNode parser =
                         |> Advanced.succeed
 
                 HtmlParser.Element tag attributes children ->
-                    case nodesToBlocksParser children of
+                    case nodesToBlocks children of
                         Ok parsedChildren ->
                             Block.HtmlElement tag attributes parsedChildren
                                 |> RawBlock.Html
@@ -513,40 +513,40 @@ nodeToRawBlock node =
             Block.HtmlDeclaration declarationType content
 
 
-nodesToBlocksParser : List Node -> Result Parser.Problem (List Block)
-nodesToBlocksParser children =
-    children
-        |> traverseResult childToBlocks
-        |> Result.map List.concat
+nodesToBlocks : List Node -> Result Parser.Problem (List Block)
+nodesToBlocks children =
+    nodesToBlocksHelp children []
 
 
-traverseResult : (a -> Result x b) -> List a -> Result x (List b)
-traverseResult f list =
-    traverseResultHelper f list []
+nodesToBlocksHelp : List Node -> List Block -> Result Parser.Problem (List Block)
+nodesToBlocksHelp remaining soFar =
+    case remaining of
+        node :: rest ->
+            case childToBlocks node soFar of
+                Ok newSoFar ->
+                    nodesToBlocksHelp rest newSoFar
 
-
-traverseResultHelper : (a -> Result x b) -> List a -> List b -> Result x (List b)
-traverseResultHelper f list accum =
-    case list of
-        first :: rest ->
-            case f first of
                 Err e ->
                     Err e
 
-                Ok new ->
-                    traverseResultHelper f rest (new :: accum)
-
         [] ->
-            Ok (List.reverse accum)
+            Ok (List.reverse soFar)
 
 
-childToBlocks : Node -> Result Parser.Problem (List Block)
-childToBlocks node =
+{-| Add the blocks from this node to the passed-in list of blocks
+-}
+childToBlocks : Node -> List Block -> Result Parser.Problem (List Block)
+childToBlocks node blocks =
     case node of
         Element tag attributes children ->
-            case nodesToBlocksParser children of
+            case nodesToBlocks children of
                 Ok childrenAsBlocks ->
-                    Ok [ Block.HtmlElement tag attributes childrenAsBlocks |> Block.HtmlBlock ]
+                    let
+                        block =
+                            Block.HtmlElement tag attributes childrenAsBlocks
+                                |> Block.HtmlBlock
+                    in
+                    Ok (block :: blocks)
 
                 Err err ->
                     Err err
@@ -554,7 +554,7 @@ childToBlocks node =
         Text innerText ->
             case parse innerText of
                 Ok value ->
-                    Ok value
+                    Ok (List.reverse value ++ blocks)
 
                 Err error ->
                     Err
@@ -566,16 +566,16 @@ childToBlocks node =
                         )
 
         Comment string ->
-            Ok [ Block.HtmlComment string |> Block.HtmlBlock ]
+            Ok (Block.HtmlBlock (Block.HtmlComment string) :: blocks)
 
         Cdata string ->
-            Ok [ Block.Cdata string |> Block.HtmlBlock ]
+            Ok (Block.HtmlBlock (Block.Cdata string) :: blocks)
 
         ProcessingInstruction string ->
-            Ok [ Block.ProcessingInstruction string |> Block.HtmlBlock ]
+            Ok (Block.HtmlBlock (Block.ProcessingInstruction string) :: blocks)
 
         Declaration declarationType content ->
-            Ok [ Block.HtmlDeclaration declarationType content |> Block.HtmlBlock ]
+            Ok (Block.HtmlBlock (Block.HtmlDeclaration declarationType content) :: blocks)
 
 
 type alias LinkReferenceDefinitions =
