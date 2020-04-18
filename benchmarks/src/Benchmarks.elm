@@ -3,6 +3,8 @@ module Benchmarks exposing (suite)
 import Benchmark exposing (Benchmark, describe)
 import Markdown
 import Markdown.Parser
+import Parser.Advanced as Advanced
+import ThematicBreak
 
 
 suite : Benchmark
@@ -108,3 +110,8 @@ explorationsParse =
         , smartypants = True
         }
         []
+
+
+thematicBreak =
+    Benchmark.benchmark "thematic break"
+        (\_ -> Advanced.run ThematicBreak.parser "_    __  ____")
