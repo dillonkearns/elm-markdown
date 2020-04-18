@@ -8082,6 +8082,26 @@ Gives this correct output:
 
 ## Setext headings
 
+### [Example 57](https://spec.commonmark.org/0.29/#example-57)
+
+This markdown:
+
+
+````````````markdown
+Foo
+    ---
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p>Foo
+---</p>
+
+````````````
+
 ### [Example 58](https://spec.commonmark.org/0.29/#example-58)
 
 This markdown:
@@ -8691,6 +8711,26 @@ Gives this correct output:
 ````````````html
 <pre><code>***
 </code></pre>
+
+````````````
+
+### [Example 19](https://spec.commonmark.org/0.29/#example-19)
+
+This markdown:
+
+
+````````````markdown
+Foo
+    ***
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p>Foo
+***</p>
 
 ````````````
 

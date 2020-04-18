@@ -1,26 +1,5 @@
 # CommonMark - Thematic breaks
 
-## [Example 19](https://spec.commonmark.org/0.29/#example-19)
-
-This markdown:
-
-````````````markdown
-Foo
-    ***
-
-````````````
-
-Should give output:
-
-````````````html
-<p>Foo ***</p>
-````````````
-
-But instead was:
-
-````````````html
-<p>Foo</p><hr>
-````````````
 ## [Example 29](https://spec.commonmark.org/0.29/#example-29)
 
 This markdown:
