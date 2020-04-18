@@ -106,23 +106,3 @@ But instead was:
 ````````````html
 <p>- foo - bar - baz</p>
 ````````````
-## [Example 11](https://spec.commonmark.org/0.29/#example-11)
-
-This markdown:
-
-````````````markdown
-*	*	*	
-
-````````````
-
-Should give output:
-
-````````````html
-<hr>
-````````````
-
-But instead was:
-
-````````````html
-<p>* * *</p>
-````````````

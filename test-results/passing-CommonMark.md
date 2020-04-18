@@ -8497,6 +8497,24 @@ Gives this correct output:
 
 ````````````
 
+### [Example 11](https://spec.commonmark.org/0.29/#example-11)
+
+This markdown:
+
+
+````````````markdown
+*	*	*	
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<hr />
+
+````````````
+
 ## Textual content
 
 ### [Example 647](https://spec.commonmark.org/0.29/#example-647)
