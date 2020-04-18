@@ -229,6 +229,8 @@ textString end_ =
 
 textNodeString : Parser (Maybe String)
 textNodeString =
+    -- Investigate: could we treat the empty string as no string?
+    -- thereby removing the Maybe wrapper
     inContext "textNodeString" <|
         oneOf
             [ succeed
@@ -523,6 +525,13 @@ maybe parser =
         ]
 
 
+
+-- TODO make custom
+-- zeroOrMore (c -> Bool) -> ...
+-- oneOrMore (c -> Bool) -> ...
+-- that'll remove the andThen from keep
+
+
 zeroOrMore : Count
 zeroOrMore =
     AtLeast 0
@@ -539,32 +548,14 @@ oneOrMore =
     AtLeast 1
 
 
-repeat : Count -> Parser a -> Parser (List a)
-repeat count parser =
-    case count of
-        AtLeast n ->
-            loop []
-                (\state ->
-                    oneOf
-                        [ map (\r -> Loop (List.append state [ r ])) parser
-                        , map (always (Done state)) (succeed ())
-                        ]
-                )
-                |> andThen
-                    (\results ->
-                        if n <= List.length results then
-                            succeed results
-
-                        else
-                            problem Parser.BadRepeat
-                    )
-
-
 keep : Count -> (Char -> Bool) -> Parser String
 keep count predicate =
     case count of
+        AtLeast 0 ->
+            getChompedString (chompWhile predicate)
+
         AtLeast n ->
-            getChompedString (succeed () |. chompWhile predicate)
+            getChompedString (chompWhile predicate)
                 |> andThen
                     (\str ->
                         if n <= String.length str then
@@ -577,7 +568,24 @@ keep count predicate =
 
 ignore : Count -> (Char -> Bool) -> Parser ()
 ignore count predicate =
-    map (\_ -> ()) (keep count predicate)
+    case count of
+        AtLeast 0 ->
+            chompWhile predicate
+
+        AtLeast n ->
+            let
+                checkLength startOffset endOffset =
+                    if n <= (endOffset - startOffset) then
+                        succeed ()
+
+                    else
+                        problem Parser.BadRepeat
+            in
+            succeed checkLength
+                |= Advanced.getOffset
+                |. chompWhile predicate
+                |= Advanced.getOffset
+                |> andThen identity
 
 
 fail : String -> Parser a
@@ -588,16 +596,6 @@ fail str =
 symbol : String -> Parser ()
 symbol str =
     Advanced.symbol (Advanced.Token str (Parser.ExpectingSymbol str))
-
-
-keyword : String -> Parser ()
-keyword kwd =
-    Advanced.keyword (Advanced.Token kwd (Parser.ExpectingKeyword kwd))
-
-
-end : Parser ()
-end =
-    Advanced.end Parser.ExpectingEnd
 
 
 toToken : String -> Advanced.Token Parser.Problem
