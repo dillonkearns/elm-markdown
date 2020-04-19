@@ -113,3 +113,20 @@ carriageReturn =
 toToken : String -> Advanced.Token Parser.Problem
 toToken str =
     Advanced.Token str (Parser.Expecting str)
+
+
+upToThreeSpacesThen : Parser a -> Parser a
+upToThreeSpacesThen rest =
+    Advanced.oneOf
+        [ succeed identity
+            |. singleSpace
+            |. oneOf [ singleSpace, succeed () ]
+            |. oneOf [ singleSpace, succeed () ]
+            |= rest
+        , rest
+        ]
+
+
+singleSpace : Parser ()
+singleSpace =
+    chompIf isSpaceOrTab (Parser.Expecting "Space")
