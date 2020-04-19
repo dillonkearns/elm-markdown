@@ -1,29 +1,5 @@
 # CommonMark - Link reference definitions
 
-## [Example 162](https://spec.commonmark.org/0.29/#example-162)
-
-This markdown:
-
-````````````markdown
-   [foo]: 
-      /url  
-           'the title'  
-
-[foo]
-
-````````````
-
-Should give output:
-
-````````````html
-<p><a href="/url" title="the title">foo</a></p>
-````````````
-
-But instead was:
-
-````````````html
-<p>[foo]: /url<br>&#39;the title&#39;</p><p>[foo]</p>
-````````````
 ## [Example 163](https://spec.commonmark.org/0.29/#example-163)
 
 This markdown:

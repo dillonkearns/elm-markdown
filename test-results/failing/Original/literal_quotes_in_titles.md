@@ -24,5 +24,5 @@ Should give output:
 But instead was:
 
 ````````````html
-<p>Foo [bar][].</p><p>Foo [bar](/url/ &quot;Title with &quot;quotes&quot; inside&quot;).</p><p>[bar]: /url/ &quot;Title with &quot;quotes&quot; inside&quot;</p>
+<p>Foo<a href="/url/" title="Title with ">bar</a>.</p><p>Foo<a href="/url/" title="Title with ">bar</a>(/url/ &quot;Title with &quot;quotes&quot; inside&quot;).</p><p>quotes&quot; inside&quot;</p>
 ````````````
