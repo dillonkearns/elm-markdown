@@ -2,6 +2,7 @@ module Benchmarks exposing (suite)
 
 import Benchmark exposing (Benchmark, describe)
 import Markdown
+import Markdown.OrderedList
 import Markdown.Parser
 import Parser.Advanced as Advanced
 import ThematicBreak
@@ -115,3 +116,14 @@ explorationsParse =
 thematicBreak =
     Benchmark.benchmark "thematic break"
         (\_ -> Advanced.run ThematicBreak.parser "_    __  ____")
+
+
+orderedList =
+    Benchmark.benchmark "thematic break"
+        (\_ ->
+            Advanced.run (Markdown.OrderedList.parser Nothing)
+                """1. foo bar
+            2. stuff stuff
+            3. milk, eggs
+            """
+        )

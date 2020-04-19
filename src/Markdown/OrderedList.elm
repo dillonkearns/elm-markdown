@@ -20,8 +20,8 @@ parser lastBlock =
     openingItemParser lastBlock
         |> andThen
             (\( startingIndex, listMarker, firstItem ) ->
-                loop [] (statementsHelp listMarker firstItem)
-                    |> map (\items -> ( startingIndex, items ))
+                loop [] (statementsHelp listMarker)
+                    |> map (\items -> ( startingIndex, firstItem :: items ))
             )
 
 
@@ -38,46 +38,44 @@ positiveIntegerMaxOf9Digits =
             )
 
 
-listMarkerParser : Parser ( Int, String )
-listMarkerParser =
-    let
-        markerOption : String -> Parser String
-        markerOption marker =
-            Advanced.getChompedString (Advanced.symbol (Advanced.Token marker (Parser.ExpectingSymbol marker)))
-    in
-    succeed Tuple.pair
-        |= positiveIntegerMaxOf9Digits
-        |= Advanced.oneOf
-            [ markerOption "."
-            , markerOption ")"
-            ]
+markerOption : String -> Parser String
+markerOption marker =
+    succeed marker
+        |. Advanced.symbol (Advanced.Token marker (Parser.ExpectingSymbol marker))
 
 
 openingItemParser : Maybe RawBlock -> Parser ( Int, String, ListItem )
 openingItemParser lastBlock =
-    let
-        validateStartsWith1 parsed =
-            case parsed of
-                ( 1, _ ) ->
-                    Advanced.succeed parsed
-
-                _ ->
-                    Advanced.problem (Parser.Problem "Lists inside a paragraph or after a paragraph without a blank line must start with 1")
-
-        validateStartsWith1IfInParagraph parsed =
-            case lastBlock of
+    succeed (\startingIndex marker item -> ( startingIndex, marker, item ))
+        |= backtrackable
+            (case lastBlock of
                 Just (Body _) ->
-                    validateStartsWith1 parsed
+                    positiveIntegerMaxOf9Digits |> andThen validateStartsWith1
 
                 _ ->
-                    succeed parsed
-    in
-    succeed (\( startingIndex, marker ) item -> ( startingIndex, marker, item ))
-        |= (backtrackable (listMarkerParser |> andThen validateStartsWith1IfInParagraph)
-                |. oneOrMore Helpers.isSpacebar
-           )
+                    positiveIntegerMaxOf9Digits
+            )
+        |= backtrackable
+            (Advanced.oneOf
+                [ markerOption "."
+                , markerOption ")"
+                ]
+            )
+        |. oneOrMore Helpers.isSpacebar
         |= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
         |. Advanced.symbol (Advanced.Token "\n" (Parser.ExpectingSymbol "\n"))
+
+
+{-| Lists inside a paragraph, or after a paragraph without a line break, must start with index 1.
+-}
+validateStartsWith1 : Int -> Parser Int
+validateStartsWith1 parsed =
+    case parsed of
+        1 ->
+            Advanced.succeed parsed
+
+        _ ->
+            Advanced.problem (Parser.Problem "Lists inside a paragraph or after a paragraph without a blank line must start with 1")
 
 
 singleItemParser : String -> Parser ListItem
@@ -94,8 +92,7 @@ itemBody : Parser ListItem
 itemBody =
     oneOf
         [ succeed identity
-            |. backtrackable (oneOrMore Helpers.isSpacebar)
-            |. commit ""
+            |. oneOrMore Helpers.isSpacebar
             |= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
             |. oneOf
                 [ Advanced.symbol (Advanced.Token "\n" (Parser.ExpectingSymbol "\\n"))
@@ -106,13 +103,10 @@ itemBody =
         ]
 
 
-statementsHelp : String -> ListItem -> List ListItem -> Parser (Step (List ListItem) (List ListItem))
-statementsHelp listMarker firstItem revStmts =
+statementsHelp : String -> List ListItem -> Parser (Step (List ListItem) (List ListItem))
+statementsHelp listMarker revStmts =
     oneOf
-        [ singleItemParser listMarker
-            |> map
-                (\stmt ->
-                    Loop (stmt :: revStmts)
-                )
-        , succeed (Done (firstItem :: List.reverse revStmts))
+        [ succeed (\stmt -> Loop (stmt :: revStmts))
+            |= singleItemParser listMarker
+        , succeed (Done (List.reverse revStmts))
         ]
