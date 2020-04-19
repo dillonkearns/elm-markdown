@@ -64,27 +64,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<p>bar\baz&quot;</p><p><a href="/url%5Cbar*baz" title="foo\">foo</a></p>
-````````````
-## [Example 178](https://spec.commonmark.org/0.29/#example-178)
-
-This markdown:
-
-````````````markdown
-[foo]: /url "title" ok
-
-````````````
-
-Should give output:
-
-````````````html
-<p>[foo]: /url &quot;title&quot; ok</p>
-````````````
-
-But instead was:
-
-````````````html
-<p>ok</p>
+<p>[foo]: /url\bar*baz &quot;foo&quot;bar\baz&quot;</p><p>[foo]</p>
 ````````````
 ## [Example 179](https://spec.commonmark.org/0.29/#example-179)
 
@@ -105,7 +85,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<p>ok</p>
+<p>[foo]: /url &quot;title&quot; ok</p>
 ````````````
 ## [Example 182](https://spec.commonmark.org/0.29/#example-182)
 

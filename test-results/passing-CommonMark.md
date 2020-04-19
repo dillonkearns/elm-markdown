@@ -5744,6 +5744,24 @@ Gives this correct output:
 
 ````````````
 
+### [Example 178](https://spec.commonmark.org/0.29/#example-178)
+
+This markdown:
+
+
+````````````markdown
+[foo]: /url "title" ok
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p>[foo]: /url &quot;title&quot; ok</p>
+
+````````````
+
 ### [Example 180](https://spec.commonmark.org/0.29/#example-180)
 
 This markdown:
