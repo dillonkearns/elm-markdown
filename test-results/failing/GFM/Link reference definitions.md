@@ -22,32 +22,6 @@ But instead was:
 ````````````html
 <p>[Foo*bar]]:my_(url) &#39;title (with parens)&#39;</p><p>[Foo*bar]]</p>
 ````````````
-## [Example 166](https://spec.commonmark.org/0.29/#example-166)
-
-This markdown:
-
-````````````markdown
-[foo]: /url 'title
-
-with blank line'
-
-[foo]
-
-````````````
-
-Should give output:
-
-````````````html
-<p>[foo]: /url &#39;title</p><p>with blank line&#39;</p><p>[foo]</p>
-````````````
-
-But instead was:
-
-````````````html
-<p><a href="/url" title="title
-
-with blank line">foo</a></p>
-````````````
 ## [Example 170](https://spec.commonmark.org/0.29/#example-170)
 
 This markdown:

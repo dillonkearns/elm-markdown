@@ -5539,6 +5539,30 @@ line2
 
 ````````````
 
+### [Example 166](https://spec.commonmark.org/0.29/#example-166)
+
+This markdown:
+
+
+````````````markdown
+[foo]: /url 'title
+
+with blank line'
+
+[foo]
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p>[foo]: /url 'title</p>
+<p>with blank line'</p>
+<p>[foo]</p>
+
+````````````
+
 ### [Example 167](https://spec.commonmark.org/0.29/#example-167)
 
 This markdown:
