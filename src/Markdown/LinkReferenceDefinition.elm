@@ -97,7 +97,9 @@ titleParser =
                     , inSingleQuotes
                     , succeed Nothing
                     ]
+                |> backtrackable
             , succeed Nothing
+                |. onlyWhitespaceTillNewline
             ]
 
 

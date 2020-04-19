@@ -42,7 +42,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<p>(baz)</p><p><a href="bar">foo</a></p>
+<p>[foo]: &lt;bar&gt;(baz)</p><p>[foo]</p>
 ````````````
 ## [Example 171](https://spec.commonmark.org/0.29/#example-171)
 
@@ -65,27 +65,6 @@ But instead was:
 
 ````````````html
 <p>[foo]: /url\bar*baz &quot;foo&quot;bar\baz&quot;</p><p>[foo]</p>
-````````````
-## [Example 179](https://spec.commonmark.org/0.29/#example-179)
-
-This markdown:
-
-````````````markdown
-[foo]: /url
-"title" ok
-
-````````````
-
-Should give output:
-
-````````````html
-<p>&quot;title&quot; ok</p>
-````````````
-
-But instead was:
-
-````````````html
-<p>[foo]: /url &quot;title&quot; ok</p>
 ````````````
 ## [Example 182](https://spec.commonmark.org/0.29/#example-182)
 
