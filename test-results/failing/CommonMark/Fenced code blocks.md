@@ -1,51 +1,5 @@
 # CommonMark - Fenced code blocks
 
-## [Example 94](https://spec.commonmark.org/0.29/#example-94)
-
-This markdown:
-
-````````````markdown
-````
-aaa
-```
-``````
-
-````````````
-
-Should give output:
-
-````````````html
-<pre><code>aaa ```</code></pre>
-````````````
-
-But instead was:
-
-````````````html
-<pre><code>aaa</code></pre><p>``````</p>
-````````````
-## [Example 95](https://spec.commonmark.org/0.29/#example-95)
-
-This markdown:
-
-````````````markdown
-~~~~
-aaa
-~~~
-~~~~
-
-````````````
-
-Should give output:
-
-````````````html
-<pre><code>aaa ~~~</code></pre>
-````````````
-
-But instead was:
-
-````````````html
-<pre><code>aaa</code></pre><p>~~~~</p>
-````````````
 ## [Example 96](https://spec.commonmark.org/0.29/#example-96)
 
 This markdown:
@@ -87,7 +41,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<pre><code></code></pre><p>aaa</p>
+<p>`````</p><p>``` aaa</p>
 ````````````
 ## [Example 98](https://spec.commonmark.org/0.29/#example-98)
 
@@ -290,7 +244,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<pre><code>aaa</code></pre><p>~~</p>
+<p>~~~~~~ aaa ~~~ ~~</p>
 ````````````
 ## [Example 111](https://spec.commonmark.org/0.29/#example-111)
 
@@ -363,7 +317,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<pre><code>def foo(x) return 3 end</code></pre><p>~~~~</p>
+<pre><code>def foo(x) return 3 end</code></pre>
 ````````````
 ## [Example 114](https://spec.commonmark.org/0.29/#example-114)
 

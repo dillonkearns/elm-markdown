@@ -4296,6 +4296,52 @@ Gives this correct output:
 
 ````````````
 
+### [Example 94](https://spec.commonmark.org/0.29/#example-94)
+
+This markdown:
+
+
+````````````markdown
+````
+aaa
+```
+``````
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<pre><code>aaa
+```
+</code></pre>
+
+````````````
+
+### [Example 95](https://spec.commonmark.org/0.29/#example-95)
+
+This markdown:
+
+
+````````````markdown
+~~~~
+aaa
+~~~
+~~~~
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<pre><code>aaa
+~~~
+</code></pre>
+
+````````````
+
 ### [Example 99](https://spec.commonmark.org/0.29/#example-99)
 
 This markdown:
