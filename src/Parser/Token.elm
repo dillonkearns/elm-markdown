@@ -1,4 +1,4 @@
-module Parser.Token exposing (closingParen, dot, doubleQuote, greaterThan, hash, newline, singleQuote, space, tab)
+module Parser.Token exposing (closingParen, closingSquareBracket, colon, dot, doubleQuote, greaterThan, hash, lessThan, newline, openingSquareBracket, singleQuote, space, tab)
 
 import Parser
 import Parser.Advanced as Advanced exposing (Token(..))
@@ -39,6 +39,11 @@ greaterThan =
     Token ">" (Parser.Expecting "a `>`")
 
 
+lessThan : Token Parser.Problem
+lessThan =
+    Token "<" (Parser.Expecting "a `<`")
+
+
 dot : Token Parser.Problem
 dot =
     Token "." (Parser.Expecting "a `.`")
@@ -47,3 +52,18 @@ dot =
 closingParen : Token Parser.Problem
 closingParen =
     Token ")" (Parser.Expecting "a `)`")
+
+
+openingSquareBracket : Token Parser.Problem
+openingSquareBracket =
+    Token "[" (Parser.Expecting "a `[`")
+
+
+closingSquareBracket : Token Parser.Problem
+closingSquareBracket =
+    Token "]" (Parser.Expecting "a `]`")
+
+
+colon : Token Parser.Problem
+colon =
+    Token ":" (Parser.Expecting "a `:`")

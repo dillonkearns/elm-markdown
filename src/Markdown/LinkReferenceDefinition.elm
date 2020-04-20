@@ -5,6 +5,7 @@ import Markdown.Helpers
 import Parser
 import Parser.Advanced as Advanced exposing (..)
 import Parser.Extra
+import Parser.Token as Token
 import Url
 
 
@@ -34,7 +35,7 @@ parser =
                 -- whitespace that can contain up to 1 newline
                 |. chompWhile Helpers.isSpaceOrTab
                 |. oneOf
-                    [ chompIf (\c -> c == '\n') (Parser.Expecting "newline")
+                    [ symbol Token.newline
                     , succeed ()
                     ]
                 |. chompWhile Helpers.isSpaceOrTab
@@ -46,10 +47,9 @@ parser =
 labelParser : Parser String
 labelParser =
     succeed Markdown.Helpers.prepareRefLabel
-        |. chompIf (\c -> c == '[') (Parser.Expecting "[")
-        |= getChompedString (chompWhile (\c -> c /= ']'))
-        |. chompIf (\c -> c == ']') (Parser.Expecting "]")
-        |. chompIf (\c -> c == ':') (Parser.Expecting ":")
+        |. symbol Token.openingSquareBracket
+        |= getChompedString (chompUntil Token.closingSquareBracket)
+        |. symbol (Token "]:" (Parser.Expecting "]:"))
 
 
 destinationParser : Parser String
@@ -57,9 +57,9 @@ destinationParser =
     inContext "link destination" <|
         oneOf
             [ succeed Url.percentEncode
-                |. chompIf (\c -> c == '<') (Parser.Expecting (String.fromChar '<'))
-                |= getChompedString (chompWhile (\c -> c /= '>'))
-                |. chompIf (\c -> c == '>') (Parser.Expecting (String.fromChar '>'))
+                |. symbol Token.lessThan
+                |= getChompedString (chompUntil Token.greaterThan)
+                |. symbol Token.greaterThan
             , Parser.Extra.oneOrMore (\c -> not <| Helpers.isGfmWhitespace c)
                 |> getChompedString
             ]
@@ -70,22 +70,22 @@ titleParser =
     let
         inDoubleQuotes =
             succeed Just
-                |. chompIf (\c -> c == '"') (Parser.Expecting "\"")
-                |= (chompWhile (\c -> c /= '"')
+                |. symbol Token.doubleQuote
+                |= (chompUntil Token.doubleQuote
                         |> getChompedString
                         |> andThen hasNoBlankLine
                    )
-                |. chompIf (\c -> c == '"') (Parser.Expecting "\"")
+                |. symbol Token.doubleQuote
                 |. onlyWhitespaceTillNewline
 
         inSingleQuotes =
             succeed Just
-                |. chompIf (\c -> c == '\'') (Parser.Expecting "'")
-                |= (chompWhile (\c -> c /= '\'')
+                |. symbol Token.singleQuote
+                |= (chompUntil Token.singleQuote
                         |> getChompedString
                         |> andThen hasNoBlankLine
                    )
-                |. chompIf (\c -> c == '\'') (Parser.Expecting "'")
+                |. symbol Token.singleQuote
                 |. onlyWhitespaceTillNewline
     in
     inContext "title" <|
@@ -116,6 +116,6 @@ onlyWhitespaceTillNewline : Parser ()
 onlyWhitespaceTillNewline =
     chompWhile (\c -> c /= '\n' && Helpers.isGfmWhitespace c)
         |. oneOf
-            [ chompIf (\c -> c == '\n') (Parser.Expecting "\n")
+            [ symbol Token.newline
             , Advanced.end (Parser.Expecting "end of file")
             ]
