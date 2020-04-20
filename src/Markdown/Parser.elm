@@ -355,16 +355,13 @@ innerParagraphParser =
 
 blockQuoteStarts : List (Parser ())
 blockQuoteStarts =
-    -- Investigate: can we re-order these?
-    -- it would be best to put the shortest first
-    [ symbol (Advanced.Token "   > " (Parser.Expecting "   > "))
-    , symbol (Advanced.Token "  > " (Parser.Expecting "  > "))
-    , symbol (Advanced.Token " > " (Parser.Expecting " > "))
-    , symbol (Advanced.Token "> " (Parser.Expecting "> "))
-    , symbol (Advanced.Token "   >" (Parser.Expecting "   >"))
-    , symbol (Advanced.Token "  >" (Parser.Expecting "  >"))
-    , symbol (Advanced.Token " >" (Parser.Expecting " >"))
-    , symbol (Advanced.Token ">" (Parser.Expecting ">"))
+    [ symbol (Advanced.Token ">" (Parser.Expecting ">"))
+    , Advanced.backtrackable (symbol Token.space)
+        |. oneOf
+            [ symbol (Advanced.Token ">" (Parser.Expecting " >"))
+            , symbol (Advanced.Token " >" (Parser.Expecting "  >"))
+            , symbol (Advanced.Token "  >" (Parser.Expecting "   >"))
+            ]
     ]
 
 
@@ -372,6 +369,7 @@ blockQuote : Parser RawBlock
 blockQuote =
     succeed BlockQuote
         |. oneOf blockQuoteStarts
+        |. oneOf [ symbol Token.space, succeed () ]
         |= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
         |. oneOf
             [ Advanced.end (Parser.Problem "Expecting end")

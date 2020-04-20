@@ -5,6 +5,7 @@ import Markdown.RawBlock exposing (RawBlock(..))
 import Parser
 import Parser.Advanced as Advanced exposing (..)
 import Parser.Extra exposing (oneOrMore)
+import Parser.Token as Token
 
 
 type alias Parser a =
@@ -38,14 +39,10 @@ positiveIntegerMaxOf9Digits =
             )
 
 
-markerOption : String -> Parser String
-markerOption marker =
-    succeed marker
-        |. Advanced.symbol (Advanced.Token marker (Parser.ExpectingSymbol marker))
-
-
-openingItemParser : Maybe RawBlock -> Parser ( Int, String, ListItem )
+openingItemParser : Maybe RawBlock -> Parser ( Int, Token Parser.Problem, ListItem )
 openingItemParser lastBlock =
+    -- NOTE this is only a list item when there is at least one space after the marker
+    -- so the first parts must be backtrackable.
     succeed (\startingIndex marker item -> ( startingIndex, marker, item ))
         |= backtrackable
             (case lastBlock of
@@ -57,13 +54,15 @@ openingItemParser lastBlock =
             )
         |= backtrackable
             (Advanced.oneOf
-                [ markerOption "."
-                , markerOption ")"
+                [ succeed Token.dot
+                    |. Advanced.symbol Token.dot
+                , succeed Token.closingParen
+                    |. Advanced.symbol Token.closingParen
                 ]
             )
         |. oneOrMore Helpers.isSpacebar
         |= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
-        |. Advanced.symbol (Advanced.Token "\n" (Parser.ExpectingSymbol "\n"))
+        |. Advanced.symbol Token.newline
 
 
 {-| Lists inside a paragraph, or after a paragraph without a line break, must start with index 1.
@@ -78,12 +77,12 @@ validateStartsWith1 parsed =
             Advanced.problem (Parser.Problem "Lists inside a paragraph or after a paragraph without a blank line must start with 1")
 
 
-singleItemParser : String -> Parser ListItem
+singleItemParser : Token Parser.Problem -> Parser ListItem
 singleItemParser listMarker =
     succeed identity
         |. backtrackable
             (Parser.Extra.positiveInteger
-                |. Advanced.symbol (Advanced.Token listMarker (Parser.ExpectingSymbol listMarker))
+                |. Advanced.symbol listMarker
             )
         |= itemBody
 
@@ -94,16 +93,21 @@ itemBody =
         [ succeed identity
             |. oneOrMore Helpers.isSpacebar
             |= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
-            |. oneOf
-                [ Advanced.symbol (Advanced.Token "\n" (Parser.ExpectingSymbol "\\n"))
-                , Advanced.end (Parser.Expecting "End of input")
-                ]
+            |. endOrNewline
         , succeed ""
-            |. Advanced.symbol (Advanced.Token "\n" (Parser.ExpectingSymbol "\\n"))
+            |. endOrNewline
         ]
 
 
-statementsHelp : String -> List ListItem -> Parser (Step (List ListItem) (List ListItem))
+endOrNewline : Parser ()
+endOrNewline =
+    oneOf
+        [ Advanced.symbol Token.newline
+        , Advanced.end (Parser.Expecting "end of input")
+        ]
+
+
+statementsHelp : Token Parser.Problem -> List ListItem -> Parser (Step (List ListItem) (List ListItem))
 statementsHelp listMarker revStmts =
     oneOf
         [ succeed (\stmt -> Loop (stmt :: revStmts))

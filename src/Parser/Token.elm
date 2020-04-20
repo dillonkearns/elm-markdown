@@ -1,4 +1,4 @@
-module Parser.Token exposing (doubleQuote, hash, newline, singleQuote, space, tab)
+module Parser.Token exposing (closingParen, dot, doubleQuote, greaterThan, hash, newline, singleQuote, space, tab)
 
 import Parser
 import Parser.Advanced as Advanced exposing (Token(..))
@@ -32,3 +32,18 @@ newline =
 hash : Token Parser.Problem
 hash =
     Token "\n" (Parser.Expecting "a `#`")
+
+
+greaterThan : Token Parser.Problem
+greaterThan =
+    Token ">" (Parser.Expecting "a `>`")
+
+
+dot : Token Parser.Problem
+dot =
+    Token "." (Parser.Expecting "a `.`")
+
+
+closingParen : Token Parser.Problem
+closingParen =
+    Token ")" (Parser.Expecting "a `)`")
