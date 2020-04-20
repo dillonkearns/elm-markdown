@@ -62,7 +62,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<p>- foo</p>
+<ul><li>foo</li></ul>
 ````````````
 ## [Example 9](https://spec.commonmark.org/0.29/#example-9)
 

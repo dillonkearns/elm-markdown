@@ -38,5 +38,5 @@ Should give output:
 But instead was:
 
 ````````````html
-<p>+ this is a list item indented with tabs</p><ul><li>this is a list item</li></ul><pre><code>indented with spaces</code></pre><p>Code:</p><pre><code>this code block is indented by one tab</code></pre><p>And:</p><pre><code>this code block is indented by two tabs</code></pre><p>And:</p><pre><code>+ this is an example list item indented with tabs</code></pre><pre><code>+ this is an example list item indented with spaces</code></pre>
+<ul><li>this is a list item</li></ul><pre><code>indented with tabs</code></pre><ul><li>this is a list item</li></ul><pre><code>indented with spaces</code></pre><p>Code:</p><pre><code>this code block is indented by one tab</code></pre><p>And:</p><pre><code>this code block is indented by two tabs</code></pre><p>And:</p><pre><code>+ this is an example list item indented with tabs</code></pre><pre><code>+ this is an example list item indented with spaces</code></pre>
 ````````````

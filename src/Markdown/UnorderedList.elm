@@ -23,22 +23,23 @@ parser =
 listMarkerParser : Parser String
 listMarkerParser =
     let
-        markerOption : String -> Parser String
+        markerOption : String -> Parser ()
         markerOption marker =
-            Advanced.getChompedString (Advanced.symbol (Advanced.Token marker (Parser.ExpectingSymbol marker)))
+            Advanced.symbol (Advanced.Token marker (Parser.ExpectingSymbol marker))
     in
     Advanced.oneOf
         [ markerOption "-"
         , markerOption "+"
         , markerOption "*"
         ]
+        |> Advanced.getChompedString
 
 
 openingItemParser : Parser ( String, ListItem )
 openingItemParser =
     succeed Tuple.pair
         |= (backtrackable listMarkerParser
-                |. oneOrMore Helpers.isSpacebar
+                |. oneOrMore Helpers.isSpaceOrTab
            )
         |= ListItem.parser
 
@@ -59,7 +60,7 @@ itemBody : Parser ListItem
 itemBody =
     oneOf
         [ succeed identity
-            |. backtrackable (oneOrMore Helpers.isSpacebar)
+            |. backtrackable (oneOrMore Helpers.isSpaceOrTab)
             |. commit ""
             |= ListItem.parser
         , succeed (ListItem.PlainItem "")
@@ -79,8 +80,7 @@ statementsHelp listMarker firstItem revStmts =
         -- TODO this is causing files to require newlines
         -- at the end... how do I avoid this?
         -- |. symbol (Advanced.Token "\n" (Parser.Expecting "newline"))
-        , succeed ()
-            |> map (\_ -> Done (firstItem :: List.reverse revStmts))
+        , succeed (Done (firstItem :: List.reverse revStmts))
         ]
 
 
