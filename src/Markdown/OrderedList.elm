@@ -60,7 +60,7 @@ openingItemParser lastBlock =
                     |. Advanced.symbol Token.closingParen
                 ]
             )
-        |. oneOrMore Helpers.isSpacebar
+        |. oneOrMore Helpers.isSpaceOrTab
         |= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
         |. Advanced.symbol Token.newline
 
@@ -91,7 +91,7 @@ itemBody : Parser ListItem
 itemBody =
     oneOf
         [ succeed identity
-            |. oneOrMore Helpers.isSpacebar
+            |. oneOrMore Helpers.isSpaceOrTab
             |= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
             |. endOrNewline
         , succeed ""
