@@ -19,7 +19,8 @@ parser =
             loop [] (statementsHelp listMarker firstItem)
     in
     succeed parseSubsequentItems
-        |= backtrackable (listMarkerParser |. oneOrMore Helpers.isSpaceOrTab)
+        |= backtrackable listMarkerParser
+        |. oneOrMore Helpers.isSpaceOrTab
         |= ListItem.parser
         |> andThen identity
 
@@ -57,14 +58,7 @@ itemBody =
 statementsHelp : Token Parser.Problem -> ListItem -> List ListItem -> Parser (Step (List ListItem) (List ListItem))
 statementsHelp listMarker firstItem revStmts =
     oneOf
-        [ succeed
-            (\stmt ->
-                Loop (stmt :: revStmts)
-            )
+        [ succeed (\stmt -> Loop (stmt :: revStmts))
             |= singleItemParser listMarker
-
-        -- TODO this is causing files to require newlines
-        -- at the end... how do I avoid this?
-        -- |. symbol (Advanced.Token "\n" (Parser.Expecting "newline"))
         , succeed (Done (firstItem :: List.reverse revStmts))
         ]

@@ -18,32 +18,9 @@ type alias ListItem =
 
 parser : Maybe RawBlock -> Parser ( Int, List ListItem )
 parser lastBlock =
-    openingItemParser lastBlock
-        |> andThen
-            (\( startingIndex, listMarker, firstItem ) ->
-                loop [] (statementsHelp listMarker)
-                    |> map (\items -> ( startingIndex, firstItem :: items ))
-            )
-
-
-positiveIntegerMaxOf9Digits : Parser Int
-positiveIntegerMaxOf9Digits =
-    Parser.Extra.positiveInteger
-        |> Advanced.andThen
-            (\parsed ->
-                if parsed <= 999999999 then
-                    Advanced.succeed parsed
-
-                else
-                    Advanced.problem (Parser.Problem "Starting numbers must be nine digits or less.")
-            )
-
-
-openingItemParser : Maybe RawBlock -> Parser ( Int, Token Parser.Problem, ListItem )
-openingItemParser lastBlock =
-    -- NOTE this is only a list item when there is at least one space after the marker
-    -- so the first parts must be backtrackable.
-    succeed (\startingIndex marker item -> ( startingIndex, marker, item ))
+    succeed parseSubsequentItems
+        -- NOTE this is only a list item when there is at least one space after the marker
+        -- so the first parts must be backtrackable.
         |= backtrackable
             (case lastBlock of
                 Just (Body _) ->
@@ -62,7 +39,27 @@ openingItemParser lastBlock =
             )
         |. oneOrMore Helpers.isSpaceOrTab
         |= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
-        |. Advanced.symbol Token.newline
+        |. endOrNewline
+        |> andThen identity
+
+
+parseSubsequentItems : Int -> Token Parser.Problem -> ListItem -> Parser ( Int, List ListItem )
+parseSubsequentItems startingIndex listMarker firstItem =
+    loop [] (statementsHelp listMarker)
+        |> map (\items -> ( startingIndex, firstItem :: items ))
+
+
+positiveIntegerMaxOf9Digits : Parser Int
+positiveIntegerMaxOf9Digits =
+    Parser.Extra.positiveInteger
+        |> Advanced.andThen
+            (\parsed ->
+                if parsed <= 999999999 then
+                    Advanced.succeed parsed
+
+                else
+                    Advanced.problem (Parser.Problem "Starting numbers must be nine digits or less.")
+            )
 
 
 {-| Lists inside a paragraph, or after a paragraph without a line break, must start with index 1.

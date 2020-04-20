@@ -112,3 +112,12 @@ upToThreeSpaces =
 spaceOrTab : Parser ()
 spaceOrTab =
     chompIf isSpaceOrTab (Parser.Expecting "space or tab")
+
+
+endOfLineOrFile : Parser ()
+endOfLineOrFile =
+    oneOf
+        [ Advanced.symbol Token.newline
+        , Advanced.end (Parser.Expecting "end of input")
+        ]
+

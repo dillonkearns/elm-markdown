@@ -7,7 +7,7 @@ module Markdown.Parser exposing (parse, deadEndToString)
 -}
 
 import Dict exposing (Dict)
-import Helpers
+import Helpers exposing (endOfLineOrFile)
 import HtmlParser exposing (Node(..))
 import Markdown.Block as Block exposing (Block, Inline, ListItem, Task)
 import Markdown.CodeBlock
@@ -702,14 +702,6 @@ parseAsParagraphInsteadOfHtmlBlock =
         |. endOfLineOrFile
         |> Advanced.mapChompedString (\rawLine _ -> rawLine |> UnparsedInlines |> Body)
         |> Advanced.backtrackable
-
-
-endOfLineOrFile : Parser ()
-endOfLineOrFile =
-    oneOf
-        [ Advanced.symbol Token.newline
-        , Advanced.end (Parser.Expecting "end of input")
-        ]
 
 
 thisIsDefinitelyNotAnHtmlTag : Parser ()
