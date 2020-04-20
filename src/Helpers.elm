@@ -20,16 +20,6 @@ requiredWhitespace =
         |. chompWhile isGfmWhitespace
 
 
-isSpacebar : Char -> Bool
-isSpacebar c =
-    case c of
-        ' ' ->
-            True
-
-        _ ->
-            False
-
-
 isNewline : Char -> Bool
 isNewline character =
     case character of
@@ -120,4 +110,3 @@ endOfLineOrFile =
         [ Advanced.symbol Token.newline
         , Advanced.end (Parser.Expecting "end of input")
         ]
-
