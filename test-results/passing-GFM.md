@@ -8565,6 +8565,25 @@ Gives this correct output:
 
 ````````````
 
+### [Example 2](https://spec.commonmark.org/0.29/#example-2)
+
+This markdown:
+
+
+````````````markdown
+  	foo	baz		bim
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<pre><code>foo	baz		bim
+</code></pre>
+
+````````````
+
 ### [Example 3](https://spec.commonmark.org/0.29/#example-3)
 
 This markdown:

@@ -1,25 +1,5 @@
 # GFM - Tabs
 
-## [Example 2](https://spec.commonmark.org/0.29/#example-2)
-
-This markdown:
-
-````````````markdown
-  	foo	baz		bim
-
-````````````
-
-Should give output:
-
-````````````html
-<pre><code>foo baz bim</code></pre>
-````````````
-
-But instead was:
-
-````````````html
-<p>foo baz bim</p>
-````````````
 ## [Example 4](https://spec.commonmark.org/0.29/#example-4)
 
 This markdown:

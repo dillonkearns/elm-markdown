@@ -23,6 +23,7 @@ import Markdown.UnorderedList
 import Parser
 import Parser.Advanced as Advanced exposing ((|.), (|=), Nestable(..), Step(..), andThen, chompIf, chompWhile, getChompedString, loop, map, oneOf, problem, succeed, symbol, token)
 import Parser.Extra exposing (zeroOrMore)
+import Parser.Token as Token
 import ThematicBreak
 
 
@@ -335,7 +336,7 @@ plainLine : Parser RawBlock
 plainLine =
     innerParagraphParser
         |. oneOf
-            [ Advanced.chompIf Helpers.isNewline (Parser.Expecting "A single non-newline char.")
+            [ symbol Token.newline
             , Advanced.end (Parser.Expecting "End")
             ]
 
@@ -374,7 +375,7 @@ blockQuote =
         |= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
         |. oneOf
             [ Advanced.end (Parser.Problem "Expecting end")
-            , chompIf Helpers.isNewline (Parser.Problem "Expecting newline")
+            , symbol Token.newline
             ]
 
 
@@ -761,16 +762,23 @@ joinRawStringsWith joinWith string1 string2 =
             string1 ++ joinWith ++ string2
 
 
+exactlyFourSpaces : Parser ()
+exactlyFourSpaces =
+    oneOf
+        [ symbol Token.tab
+        , Advanced.backtrackable (symbol Token.space)
+            |. oneOf
+                [ Advanced.symbol (Advanced.Token "   " (Parser.ExpectingSymbol "Indentation"))
+                , Advanced.symbol (Advanced.Token " \t" (Parser.ExpectingSymbol "Indentation"))
+                , Advanced.symbol (Advanced.Token "  \t" (Parser.ExpectingSymbol "Indentation"))
+                ]
+        ]
+
+
 indentedCodeBlock : Parser RawBlock
 indentedCodeBlock =
     succeed IndentedCodeBlock
-        |. oneOf
-            [ Advanced.symbol (Advanced.Token "    " (Parser.ExpectingSymbol "Indentation"))
-
-            --tabs behave as if they were replaced by 4 spaces in places where spaces define structure
-            -- see https://spec.commonmark.org/0.29/#tabs
-            , Advanced.symbol (Advanced.Token "\t" (Parser.ExpectingSymbol "Indentation"))
-            ]
+        |. exactlyFourSpaces
         |= getChompedString (Advanced.chompUntilEndOr "\n")
         |. oneOf
             [ Advanced.symbol (Advanced.Token "\n" (Parser.ExpectingSymbol "\\n"))
