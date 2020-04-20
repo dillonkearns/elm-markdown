@@ -1,7 +1,7 @@
-module Parser.Token exposing (closingParen, closingSquareBracket, colon, dot, doubleQuote, greaterThan, hash, lessThan, newline, openingSquareBracket, singleQuote, space, tab)
+module Parser.Token exposing (carriageReturn, closingParen, closingSquareBracket, colon, dot, doubleQuote, greaterThan, hash, lessThan, newline, openingSquareBracket, singleQuote, space, tab)
 
 import Parser
-import Parser.Advanced as Advanced exposing (Token(..))
+import Parser.Advanced exposing (Token(..))
 
 
 singleQuote : Token Parser.Problem
@@ -29,9 +29,14 @@ newline =
     Token "\n" (Parser.Expecting "a newline")
 
 
+carriageReturn : Token Parser.Problem
+carriageReturn =
+    Token "\u{000D}" (Parser.Expecting "a carriage return")
+
+
 hash : Token Parser.Problem
 hash =
-    Token "\n" (Parser.Expecting "a `#`")
+    Token "#" (Parser.Expecting "a `#`")
 
 
 greaterThan : Token Parser.Problem

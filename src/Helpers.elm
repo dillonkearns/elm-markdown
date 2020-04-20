@@ -2,6 +2,7 @@ module Helpers exposing (..)
 
 import Parser
 import Parser.Advanced as Advanced exposing (..)
+import Parser.Token as Token
 
 
 type alias Parser a =
@@ -10,25 +11,13 @@ type alias Parser a =
 
 optionalWhitespace : Parser ()
 optionalWhitespace =
-    succeed ()
-        |. chompWhile isGfmWhitespace
+    chompWhile isGfmWhitespace
 
 
 requiredWhitespace : Parser ()
 requiredWhitespace =
-    succeed ()
-        |. chompIf isGfmWhitespace (Parser.Expecting "whitespace")
+    chompIf isGfmWhitespace (Parser.Expecting "gfm whitespace")
         |. chompWhile isGfmWhitespace
-
-
-isEmptyString : String -> Bool
-isEmptyString string =
-    case string of
-        "" ->
-            True
-
-        _ ->
-            False
 
 
 isSpacebar : Char -> Bool
@@ -99,15 +88,10 @@ isGfmWhitespace char =
 lineEnding : Parser ()
 lineEnding =
     oneOf
-        [ token (toToken "\n")
-        , token (toToken (carriageReturn ++ "\n"))
-        , token (toToken carriageReturn)
+        [ token Token.newline
+        , backtrackable (token Token.carriageReturn)
+            |. oneOf [ token Token.newline, succeed () ]
         ]
-
-
-carriageReturn : String
-carriageReturn =
-    "\u{000D}"
 
 
 toToken : String -> Advanced.Token Parser.Problem
@@ -115,18 +99,16 @@ toToken str =
     Advanced.Token str (Parser.Expecting str)
 
 
-upToThreeSpacesThen : Parser a -> Parser a
-upToThreeSpacesThen rest =
-    Advanced.oneOf
-        [ succeed identity
-            |. singleSpace
-            |. oneOf [ singleSpace, succeed () ]
-            |. oneOf [ singleSpace, succeed () ]
-            |= rest
-        , rest
+upToThreeSpaces : Parser ()
+upToThreeSpaces =
+    oneOf
+        [ spaceOrTab
+            |. oneOf [ spaceOrTab, succeed () ]
+            |. oneOf [ spaceOrTab, succeed () ]
+        , succeed ()
         ]
 
 
-singleSpace : Parser ()
-singleSpace =
-    chompIf isSpaceOrTab (Parser.Expecting "Space")
+spaceOrTab : Parser ()
+spaceOrTab =
+    chompIf isSpaceOrTab (Parser.Expecting "space or tab")

@@ -24,24 +24,24 @@ type alias LinkReferenceDefinition =
 parser : Parser LinkReferenceDefinition
 parser =
     inContext "link reference definition" <|
-        Helpers.upToThreeSpacesThen <|
-            succeed
-                (\label destination title ->
-                    ( label
-                    , { destination = destination, title = title }
-                    )
+        succeed
+            (\label destination title ->
+                ( label
+                , { destination = destination, title = title }
                 )
-                |= labelParser
-                -- whitespace that can contain up to 1 newline
-                |. chompWhile Helpers.isSpaceOrTab
-                |. oneOf
-                    [ symbol Token.newline
-                    , succeed ()
-                    ]
-                |. chompWhile Helpers.isSpaceOrTab
-                -- rest
-                |= destinationParser
-                |= titleParser
+            )
+            |. Helpers.upToThreeSpaces
+            |= labelParser
+            -- whitespace that can contain up to 1 newline
+            |. chompWhile Helpers.isSpaceOrTab
+            |. oneOf
+                [ symbol Token.newline
+                , succeed ()
+                ]
+            |. chompWhile Helpers.isSpaceOrTab
+            -- rest
+            |= destinationParser
+            |= titleParser
 
 
 labelParser : Parser String
