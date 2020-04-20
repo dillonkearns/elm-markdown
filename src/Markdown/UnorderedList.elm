@@ -5,6 +5,7 @@ import Markdown.ListItem as ListItem exposing (ListItem)
 import Parser
 import Parser.Advanced as Advanced exposing (..)
 import Parser.Extra exposing (oneOrMore)
+import Parser.Token as Token
 
 
 type alias Parser a =
@@ -13,46 +14,32 @@ type alias Parser a =
 
 parser : Parser (List ListItem)
 parser =
-    openingItemParser
-        |> andThen
-            (\( listMarker, firstItem ) ->
-                loop [] (statementsHelp listMarker firstItem)
-            )
-
-
-listMarkerParser : Parser String
-listMarkerParser =
     let
-        markerOption : String -> Parser ()
-        markerOption marker =
-            Advanced.symbol (Advanced.Token marker (Parser.ExpectingSymbol marker))
+        parseSubsequentItems listMarker firstItem =
+            loop [] (statementsHelp listMarker firstItem)
     in
-    Advanced.oneOf
-        [ markerOption "-"
-        , markerOption "+"
-        , markerOption "*"
-        ]
-        |> Advanced.getChompedString
-
-
-openingItemParser : Parser ( String, ListItem )
-openingItemParser =
-    succeed Tuple.pair
-        |= (backtrackable listMarkerParser
-                |. oneOrMore Helpers.isSpaceOrTab
-           )
+    succeed parseSubsequentItems
+        |= backtrackable (listMarkerParser |. oneOrMore Helpers.isSpaceOrTab)
         |= ListItem.parser
+        |> andThen identity
 
 
+listMarkerParser : Parser (Token Parser.Problem)
+listMarkerParser =
+    Advanced.oneOf
+        [ succeed Token.minus
+            |. symbol Token.minus
+        , succeed Token.plus
+            |. symbol Token.plus
+        , succeed Token.asterisk
+            |. symbol Token.asterisk
+        ]
 
---|. Advanced.symbol (Advanced.Token "\n" (Parser.ExpectingSymbol "\n"))
 
-
-singleItemParser : String -> Parser ListItem
+singleItemParser : Token Parser.Problem -> Parser ListItem
 singleItemParser listMarker =
     succeed identity
-        |. backtrackable
-            (Advanced.symbol (Advanced.Token listMarker (Parser.ExpectingSymbol listMarker)))
+        |. backtrackable (symbol listMarker)
         |= itemBody
 
 
@@ -61,14 +48,13 @@ itemBody =
     oneOf
         [ succeed identity
             |. backtrackable (oneOrMore Helpers.isSpaceOrTab)
-            |. commit ""
             |= ListItem.parser
         , succeed (ListItem.PlainItem "")
-            |. Advanced.symbol (Advanced.Token "\n" (Parser.ExpectingSymbol "\\n"))
+            |. Advanced.symbol Token.newline
         ]
 
 
-statementsHelp : String -> ListItem -> List ListItem -> Parser (Step (List ListItem) (List ListItem))
+statementsHelp : Token Parser.Problem -> ListItem -> List ListItem -> Parser (Step (List ListItem) (List ListItem))
 statementsHelp listMarker firstItem revStmts =
     oneOf
         [ succeed
@@ -82,18 +68,3 @@ statementsHelp listMarker firstItem revStmts =
         -- |. symbol (Advanced.Token "\n" (Parser.Expecting "newline"))
         , succeed (Done (firstItem :: List.reverse revStmts))
         ]
-
-
-
--- |= getChompedString
---     (chompUntilEndOr
---         (Advanced.Token "\n" (Parser.ExpectingSymbol "\n"))
---     )
--- |. Advanced.symbol (Advanced.Token "]" (Parser.ExpectingSymbol "]"))
--- |. Advanced.symbol (Advanced.Token "(" (Parser.ExpectingSymbol "("))
--- |= getChompedString
---     (chompUntil (Advanced.Token ")" (Parser.ExpectingSymbol ")")))
--- |. Advanced.symbol (Advanced.Token ")" (Parser.ExpectingSymbol ")"))
--- isUninteresting : Char -> Bool
--- isUninteresting char =
---     char /= '*' && char /= '`'
