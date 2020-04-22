@@ -33,13 +33,13 @@ Often you'll want to render these `Block`s directly:
 
     render renderer markdown =
         markdown
-            |> Markdown.parse
+            |> Markdown.Parser.parse
             |> Result.mapError deadEndsToString
-            |> Result.andThen (\ast -> Markdown.render renderer ast)
+            |> Result.andThen (\ast -> Markdown.Renderer.render renderer ast)
 
     deadEndsToString deadEnds =
         deadEnds
-            |> List.map deadEndToString
+            |> List.map Markdown.Parser.deadEndToString
             |> String.join "\n"
 
 But you can also do a lot with the `Block`s before passing them through:
