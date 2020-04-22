@@ -1,9 +1,9 @@
 module Markdown.ListItem exposing (Completion(..), ListItem(..), parser)
 
-import Helpers
+import Helpers exposing (endOfLineOrFile)
 import Parser
 import Parser.Advanced as Advanced exposing (..)
-import Parser.Extra exposing (oneOrMore, zeroOrMore)
+import Parser.Extra exposing (zeroOrMore)
 
 
 type ListItem
@@ -25,19 +25,11 @@ parser =
     oneOf
         [ succeed TaskItem
             |= taskItemParser
-            |. zeroOrMore Helpers.isSpacebar
-            |= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
-            |. oneOf
-                [ Advanced.symbol (Advanced.Token "\n" (Parser.ExpectingSymbol "\\n"))
-                , Advanced.end (Parser.Expecting "End of input")
-                ]
+            |. zeroOrMore Helpers.isSpaceOrTab
         , succeed PlainItem
-            |= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
-            |. oneOf
-                [ Advanced.symbol (Advanced.Token "\n" (Parser.ExpectingSymbol "\\n"))
-                , Advanced.end (Parser.Expecting "End of input")
-                ]
         ]
+        |= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
+        |. endOfLineOrFile
 
 
 taskItemParser : Parser Completion

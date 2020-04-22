@@ -4296,6 +4296,52 @@ Gives this correct output:
 
 ````````````
 
+### [Example 94](https://spec.commonmark.org/0.29/#example-94)
+
+This markdown:
+
+
+````````````markdown
+````
+aaa
+```
+``````
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<pre><code>aaa
+```
+</code></pre>
+
+````````````
+
+### [Example 95](https://spec.commonmark.org/0.29/#example-95)
+
+This markdown:
+
+
+````````````markdown
+~~~~
+aaa
+~~~
+~~~~
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<pre><code>aaa
+~~~
+</code></pre>
+
+````````````
+
 ### [Example 99](https://spec.commonmark.org/0.29/#example-99)
 
 This markdown:
@@ -5467,6 +5513,28 @@ Gives this correct output:
 
 ````````````
 
+### [Example 162](https://spec.commonmark.org/0.29/#example-162)
+
+This markdown:
+
+
+````````````markdown
+   [foo]: 
+      /url  
+           'the title'  
+
+[foo]
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p><a href="/url" title="the title">foo</a></p>
+
+````````````
+
 ### [Example 164](https://spec.commonmark.org/0.29/#example-164)
 
 This markdown:
@@ -5514,6 +5582,30 @@ title
 line1
 line2
 ">foo</a></p>
+
+````````````
+
+### [Example 166](https://spec.commonmark.org/0.29/#example-166)
+
+This markdown:
+
+
+````````````markdown
+[foo]: /url 'title
+
+with blank line'
+
+[foo]
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p>[foo]: /url 'title</p>
+<p>with blank line'</p>
+<p>[foo]</p>
 
 ````````````
 
@@ -5695,6 +5787,43 @@ Gives this correct output:
 
 ````````````html
 <p>bar</p>
+
+````````````
+
+### [Example 178](https://spec.commonmark.org/0.29/#example-178)
+
+This markdown:
+
+
+````````````markdown
+[foo]: /url "title" ok
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p>[foo]: /url &quot;title&quot; ok</p>
+
+````````````
+
+### [Example 179](https://spec.commonmark.org/0.29/#example-179)
+
+This markdown:
+
+
+````````````markdown
+[foo]: /url
+"title" ok
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p>&quot;title&quot; ok</p>
 
 ````````````
 
@@ -8082,6 +8211,26 @@ Gives this correct output:
 
 ## Setext headings
 
+### [Example 57](https://spec.commonmark.org/0.29/#example-57)
+
+This markdown:
+
+
+````````````markdown
+Foo
+    ---
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p>Foo
+---</p>
+
+````````````
+
 ### [Example 58](https://spec.commonmark.org/0.29/#example-58)
 
 This markdown:
@@ -8416,6 +8565,25 @@ Gives this correct output:
 
 ````````````
 
+### [Example 2](https://spec.commonmark.org/0.29/#example-2)
+
+This markdown:
+
+
+````````````markdown
+  	foo	baz		bim
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<pre><code>foo	baz		bim
+</code></pre>
+
+````````````
+
 ### [Example 3](https://spec.commonmark.org/0.29/#example-3)
 
 This markdown:
@@ -8494,6 +8662,24 @@ Gives this correct output:
 
 ````````````html
 <h1>Foo</h1>
+
+````````````
+
+### [Example 11](https://spec.commonmark.org/0.29/#example-11)
+
+This markdown:
+
+
+````````````markdown
+*	*	*	
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<hr />
 
 ````````````
 
@@ -8673,6 +8859,26 @@ Gives this correct output:
 ````````````html
 <pre><code>***
 </code></pre>
+
+````````````
+
+### [Example 19](https://spec.commonmark.org/0.29/#example-19)
+
+This markdown:
+
+
+````````````markdown
+Foo
+    ***
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p>Foo
+***</p>
 
 ````````````
 

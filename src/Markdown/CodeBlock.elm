@@ -11,30 +11,44 @@ type alias Parser a =
 
 parser : Parser CodeBlock
 parser =
+    parserHelp
+
+
+openingCodeFence =
     oneOf
-        [ parserHelp "```"
-        , parserHelp "~~~"
+        [ Advanced.symbol (Advanced.Token "```" (Parser.ExpectingSymbol "```"))
+            |. Advanced.chompWhile (\c -> c == '`')
+            |> getChompedString
+            |> map (\delimiter -> ( '`', delimiter ))
+        , Advanced.symbol (Advanced.Token "~~~" (Parser.ExpectingSymbol "~~~"))
+            |. Advanced.chompWhile (\c -> c == '~')
+            |> getChompedString
+            |> map (\delimiter -> ( '~', delimiter ))
         ]
 
 
-parserHelp : String -> Parser CodeBlock
-parserHelp delimeter =
-    succeed
-        (\language body ->
-            { body = body
-            , language =
-                if Helpers.isEmptyString language then
-                    Nothing
+parserHelp : Parser CodeBlock
+parserHelp =
+    openingCodeFence
+        |> Advanced.andThen
+            (\( char, delimiter ) ->
+                succeed
+                    (\language body ->
+                        { body = body
+                        , language =
+                            if String.isEmpty language then
+                                Nothing
 
-                else
-                    Just language
-            }
-        )
-        |. Advanced.symbol (Advanced.Token delimeter (Parser.ExpectingSymbol delimeter))
-        |= getChompedString (chompUntil (Advanced.Token "\n" (Parser.Problem "Expecting newline")))
-        |. Advanced.symbol (Advanced.Token "\n" (Parser.ExpectingSymbol "\n"))
-        |= getChompedString (Advanced.chompUntilEndOr ("\n" ++ delimeter))
-        |. Advanced.symbol (Advanced.Token ("\n" ++ delimeter) (Parser.ExpectingSymbol delimeter))
+                            else
+                                Just language
+                        }
+                    )
+                    |= getChompedString (chompUntil (Advanced.Token "\n" (Parser.Problem "Expecting newline")))
+                    |. Advanced.symbol (Advanced.Token "\n" (Parser.ExpectingSymbol "\n"))
+                    |= getChompedString (Advanced.chompUntilEndOr ("\n" ++ delimiter))
+                    |. Advanced.symbol (Advanced.Token ("\n" ++ delimiter) (Parser.ExpectingSymbol delimiter))
+                    |. chompWhile (\c -> c == char)
+            )
 
 
 type alias CodeBlock =

@@ -5,6 +5,7 @@ import Markdown.RawBlock exposing (RawBlock(..))
 import Parser
 import Parser.Advanced as Advanced exposing (..)
 import Parser.Extra exposing (oneOrMore)
+import Parser.Token as Token
 
 
 type alias Parser a =
@@ -17,12 +18,35 @@ type alias ListItem =
 
 parser : Maybe RawBlock -> Parser ( Int, List ListItem )
 parser lastBlock =
-    openingItemParser lastBlock
-        |> andThen
-            (\( startingIndex, listMarker, firstItem ) ->
-                loop [] (statementsHelp listMarker firstItem)
-                    |> map (\items -> ( startingIndex, items ))
+    succeed parseSubsequentItems
+        -- NOTE this is only a list item when there is at least one space after the marker
+        -- so the first parts must be backtrackable.
+        |= backtrackable
+            (case lastBlock of
+                Just (Body _) ->
+                    positiveIntegerMaxOf9Digits |> andThen validateStartsWith1
+
+                _ ->
+                    positiveIntegerMaxOf9Digits
             )
+        |= backtrackable
+            (Advanced.oneOf
+                [ succeed Token.dot
+                    |. Advanced.symbol Token.dot
+                , succeed Token.closingParen
+                    |. Advanced.symbol Token.closingParen
+                ]
+            )
+        |. oneOrMore Helpers.isSpaceOrTab
+        |= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
+        |. endOrNewline
+        |> andThen identity
+
+
+parseSubsequentItems : Int -> Token Parser.Problem -> ListItem -> Parser ( Int, List ListItem )
+parseSubsequentItems startingIndex listMarker firstItem =
+    loop [] (statementsHelp listMarker)
+        |> map (\items -> ( startingIndex, firstItem :: items ))
 
 
 positiveIntegerMaxOf9Digits : Parser Int
@@ -38,54 +62,24 @@ positiveIntegerMaxOf9Digits =
             )
 
 
-listMarkerParser : Parser ( Int, String )
-listMarkerParser =
-    let
-        markerOption : String -> Parser String
-        markerOption marker =
-            Advanced.getChompedString (Advanced.symbol (Advanced.Token marker (Parser.ExpectingSymbol marker)))
-    in
-    succeed Tuple.pair
-        |= positiveIntegerMaxOf9Digits
-        |= Advanced.oneOf
-            [ markerOption "."
-            , markerOption ")"
-            ]
+{-| Lists inside a paragraph, or after a paragraph without a line break, must start with index 1.
+-}
+validateStartsWith1 : Int -> Parser Int
+validateStartsWith1 parsed =
+    case parsed of
+        1 ->
+            Advanced.succeed parsed
+
+        _ ->
+            Advanced.problem (Parser.Problem "Lists inside a paragraph or after a paragraph without a blank line must start with 1")
 
 
-openingItemParser : Maybe RawBlock -> Parser ( Int, String, ListItem )
-openingItemParser lastBlock =
-    let
-        validateStartsWith1 parsed =
-            case parsed of
-                ( 1, _ ) ->
-                    Advanced.succeed parsed
-
-                _ ->
-                    Advanced.problem (Parser.Problem "Lists inside a paragraph or after a paragraph without a blank line must start with 1")
-
-        validateStartsWith1IfInParagraph parsed =
-            case lastBlock of
-                Just (Body _) ->
-                    validateStartsWith1 parsed
-
-                _ ->
-                    succeed parsed
-    in
-    succeed (\( startingIndex, marker ) item -> ( startingIndex, marker, item ))
-        |= (backtrackable (listMarkerParser |> andThen validateStartsWith1IfInParagraph)
-                |. oneOrMore Helpers.isSpacebar
-           )
-        |= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
-        |. Advanced.symbol (Advanced.Token "\n" (Parser.ExpectingSymbol "\n"))
-
-
-singleItemParser : String -> Parser ListItem
+singleItemParser : Token Parser.Problem -> Parser ListItem
 singleItemParser listMarker =
     succeed identity
         |. backtrackable
             (Parser.Extra.positiveInteger
-                |. Advanced.symbol (Advanced.Token listMarker (Parser.ExpectingSymbol listMarker))
+                |. Advanced.symbol listMarker
             )
         |= itemBody
 
@@ -94,25 +88,26 @@ itemBody : Parser ListItem
 itemBody =
     oneOf
         [ succeed identity
-            |. backtrackable (oneOrMore Helpers.isSpacebar)
-            |. commit ""
+            |. oneOrMore Helpers.isSpaceOrTab
             |= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
-            |. oneOf
-                [ Advanced.symbol (Advanced.Token "\n" (Parser.ExpectingSymbol "\\n"))
-                , Advanced.end (Parser.Expecting "End of input")
-                ]
+            |. endOrNewline
         , succeed ""
-            |. Advanced.symbol (Advanced.Token "\n" (Parser.ExpectingSymbol "\\n"))
+            |. endOrNewline
         ]
 
 
-statementsHelp : String -> ListItem -> List ListItem -> Parser (Step (List ListItem) (List ListItem))
-statementsHelp listMarker firstItem revStmts =
+endOrNewline : Parser ()
+endOrNewline =
     oneOf
-        [ singleItemParser listMarker
-            |> map
-                (\stmt ->
-                    Loop (stmt :: revStmts)
-                )
-        , succeed (Done (firstItem :: List.reverse revStmts))
+        [ Advanced.symbol Token.newline
+        , Advanced.end (Parser.Expecting "end of input")
+        ]
+
+
+statementsHelp : Token Parser.Problem -> List ListItem -> Parser (Step (List ListItem) (List ListItem))
+statementsHelp listMarker revStmts =
+    oneOf
+        [ succeed (\stmt -> Loop (stmt :: revStmts))
+            |= singleItemParser listMarker
+        , succeed (Done (List.reverse revStmts))
         ]

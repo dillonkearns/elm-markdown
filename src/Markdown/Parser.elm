@@ -7,7 +7,7 @@ module Markdown.Parser exposing (parse, deadEndToString)
 -}
 
 import Dict exposing (Dict)
-import Helpers
+import Helpers exposing (endOfLineOrFile)
 import HtmlParser exposing (Node(..))
 import Markdown.Block as Block exposing (Block, Inline, ListItem, Task)
 import Markdown.CodeBlock
@@ -23,6 +23,7 @@ import Markdown.UnorderedList
 import Parser
 import Parser.Advanced as Advanced exposing ((|.), (|=), Nestable(..), Step(..), andThen, chompIf, chompWhile, getChompedString, loop, map, oneOf, problem, succeed, symbol, token)
 import Parser.Extra exposing (zeroOrMore)
+import Parser.Token as Token
 import ThematicBreak
 
 
@@ -334,10 +335,7 @@ parseRawInline linkReferences wrap unparsedInlines =
 plainLine : Parser RawBlock
 plainLine =
     innerParagraphParser
-        |. oneOf
-            [ Advanced.chompIf Helpers.isNewline (Parser.Expecting "A single non-newline char.")
-            , Advanced.end (Parser.Expecting "End")
-            ]
+        |. endOfLineOrFile
 
 
 innerParagraphParser : Parser RawBlock
@@ -354,16 +352,13 @@ innerParagraphParser =
 
 blockQuoteStarts : List (Parser ())
 blockQuoteStarts =
-    -- Investigate: can we re-order these?
-    -- it would be best to put the shortest first
-    [ symbol (Advanced.Token "   > " (Parser.Expecting "   > "))
-    , symbol (Advanced.Token "  > " (Parser.Expecting "  > "))
-    , symbol (Advanced.Token " > " (Parser.Expecting " > "))
-    , symbol (Advanced.Token "> " (Parser.Expecting "> "))
-    , symbol (Advanced.Token "   >" (Parser.Expecting "   >"))
-    , symbol (Advanced.Token "  >" (Parser.Expecting "  >"))
-    , symbol (Advanced.Token " >" (Parser.Expecting " >"))
-    , symbol (Advanced.Token ">" (Parser.Expecting ">"))
+    [ symbol (Advanced.Token ">" (Parser.Expecting ">"))
+    , Advanced.backtrackable (symbol Token.space)
+        |. oneOf
+            [ symbol (Advanced.Token ">" (Parser.Expecting " >"))
+            , symbol (Advanced.Token " >" (Parser.Expecting "  >"))
+            , symbol (Advanced.Token "  >" (Parser.Expecting "   >"))
+            ]
     ]
 
 
@@ -371,11 +366,9 @@ blockQuote : Parser RawBlock
 blockQuote =
     succeed BlockQuote
         |. oneOf blockQuoteStarts
+        |. oneOf [ symbol Token.space, succeed () ]
         |= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
-        |. oneOf
-            [ Advanced.end (Parser.Problem "Expecting end")
-            , chompIf Helpers.isNewline (Parser.Problem "Expecting newline")
-            ]
+        |. endOfLineOrFile
 
 
 unorderedListBlock : Parser RawBlock
@@ -413,9 +406,9 @@ orderedListBlock lastBlock =
 
 blankLine : Parser RawBlock
 blankLine =
-    Advanced.backtrackable (chompWhile (\c -> Helpers.isSpaceOrTab c))
-        |. token (Advanced.Token "\n" (Parser.Expecting "\\n"))
-        |> map (\() -> BlankLine)
+    Advanced.backtrackable (chompWhile Helpers.isSpaceOrTab)
+        |. symbol Token.newline
+        |> map (\_ -> BlankLine)
 
 
 htmlParser : Parser RawBlock
@@ -428,9 +421,8 @@ xmlNodeToHtmlNode : Node -> Parser RawBlock
 xmlNodeToHtmlNode xmlNode =
     case xmlNode of
         HtmlParser.Text innerText ->
-            Body
-                (UnparsedInlines innerText)
-                |> Advanced.succeed
+            Body (UnparsedInlines innerText)
+                |> succeed
 
         HtmlParser.Element tag attributes children ->
             case nodesToBlocks children of
@@ -477,23 +469,17 @@ nodeToRawBlock node =
 
         HtmlParser.Element tag attributes children ->
             let
-                parsedChildren : List Block
-                parsedChildren =
-                    children
-                        |> List.map
-                            (\child ->
-                                case child of
-                                    HtmlParser.Text text ->
-                                        textNodeToBlocks text
+                parseChild child =
+                    case child of
+                        HtmlParser.Text text ->
+                            textNodeToBlocks text
 
-                                    _ ->
-                                        [ nodeToRawBlock child |> Block.HtmlBlock ]
-                            )
-                        |> List.concat
+                        _ ->
+                            [ nodeToRawBlock child |> Block.HtmlBlock ]
             in
             Block.HtmlElement tag
                 attributes
-                parsedChildren
+                (List.concatMap parseChild children)
 
         Comment string ->
             Block.HtmlComment string
@@ -672,7 +658,7 @@ statementsHelp2 revStmts =
                     indentedCodeBlock
     in
     oneOf
-        [ Advanced.end (Parser.Expecting "End") |> map (\() -> Done revStmts)
+        [ Advanced.end (Parser.Expecting "end of input") |> map (\() -> Done revStmts)
         , parseAsParagraphInsteadOfHtmlBlock
             |> map (possiblyMergeBlocks revStmts >> Loop)
         , LinkReferenceDefinition.parser
@@ -712,18 +698,10 @@ parseAsParagraphInsteadOfHtmlBlock =
     -- ^<[A-Za-z][A-Za-z0-9.+-]{1,31}:[^<>\x00-\x20]*>
     token (Advanced.Token "<" (Parser.Expecting "<"))
         |. thisIsDefinitelyNotAnHtmlTag
+        |. Advanced.chompUntilEndOr "\n"
         |. endOfLineOrFile
         |> Advanced.mapChompedString (\rawLine _ -> rawLine |> UnparsedInlines |> Body)
         |> Advanced.backtrackable
-
-
-endOfLineOrFile : Parser ()
-endOfLineOrFile =
-    Advanced.chompUntilEndOr "\n"
-        |. oneOf
-            [ Advanced.symbol (Advanced.Token "\n" (Parser.ExpectingSymbol "\\n"))
-            , Advanced.end (Parser.Expecting "End of input")
-            ]
 
 
 thisIsDefinitelyNotAnHtmlTag : Parser ()
@@ -761,39 +739,32 @@ joinRawStringsWith joinWith string1 string2 =
             string1 ++ joinWith ++ string2
 
 
+exactlyFourSpaces : Parser ()
+exactlyFourSpaces =
+    oneOf
+        [ symbol Token.tab
+        , Advanced.backtrackable (symbol Token.space)
+            |. oneOf
+                [ Advanced.symbol (Advanced.Token "   " (Parser.ExpectingSymbol "Indentation"))
+                , Advanced.symbol (Advanced.Token " \t" (Parser.ExpectingSymbol "Indentation"))
+                , Advanced.symbol (Advanced.Token "  \t" (Parser.ExpectingSymbol "Indentation"))
+                ]
+        ]
+
+
 indentedCodeBlock : Parser RawBlock
 indentedCodeBlock =
     succeed IndentedCodeBlock
-        |. oneOf
-            [ Advanced.symbol (Advanced.Token "    " (Parser.ExpectingSymbol "Indentation"))
-
-            --tabs behave as if they were replaced by 4 spaces in places where spaces define structure
-            -- see https://spec.commonmark.org/0.29/#tabs
-            , Advanced.symbol (Advanced.Token "\t" (Parser.ExpectingSymbol "Indentation"))
-            ]
+        |. exactlyFourSpaces
         |= getChompedString (Advanced.chompUntilEndOr "\n")
-        |. oneOf
-            [ Advanced.symbol (Advanced.Token "\n" (Parser.ExpectingSymbol "\\n"))
-            , Advanced.end (Parser.Expecting "End of input")
-            ]
+        |. endOfLineOrFile
 
 
 heading : Parser RawBlock
 heading =
     succeed Heading
-        |. symbol (Advanced.Token "#" (Parser.Expecting "#"))
-        |= (getChompedString
-                (succeed ()
-                    |. chompWhile
-                        (\c ->
-                            case c of
-                                '#' ->
-                                    True
-
-                                _ ->
-                                    False
-                        )
-                )
+        |. symbol Token.hash
+        |= (getChompedString (chompWhile isHash)
                 |> andThen
                     (\additionalHashes ->
                         let
@@ -807,20 +778,28 @@ heading =
                             succeed level
                     )
            )
-        |. chompWhile Helpers.isSpacebar
-        |= (getChompedString
-                (succeed ()
-                    |. Advanced.chompUntilEndOr "\n"
-                )
-                |> Advanced.map
-                    (\headingText ->
+        |= (Advanced.chompUntilEndOr "\n"
+                |> Advanced.mapChompedString
+                    (\headingText _ ->
                         headingText
+                            |> String.trimLeft
                             |> dropTrailingHashes
                             |> UnparsedInlines
                     )
            )
 
 
+isHash : Char -> Bool
+isHash c =
+    case c of
+        '#' ->
+            True
+
+        _ ->
+            False
+
+
+dropTrailingHashes : String -> String
 dropTrailingHashes headingString =
     if headingString |> String.endsWith "#" then
         String.dropRight 1 headingString

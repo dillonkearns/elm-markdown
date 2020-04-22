@@ -908,6 +908,8 @@ prepareChildMatch parentMatch childMatch =
 
 tokensToMatches : Parser -> Parser
 tokensToMatches =
+    -- TODO make sure all these TTM functions are actually tail-recursive
+    -- note that `|>` breaks tail-recursion.
     applyTTM codeAutolinkTypeHtmlTagTTM
         >> applyTTM htmlElementTTM
         >> applyTTM linkImageTypeTTM
@@ -917,6 +919,7 @@ tokensToMatches =
 
 applyTTM : (( List Token, Parser ) -> Parser) -> Parser -> Parser
 applyTTM finderFunction model =
+    -- TODO don't use a tuple here
     let
         newModel =
             { rawText = model.rawText
@@ -1356,21 +1359,23 @@ htmlElementTTM ( tokens, model ) =
             case token.meaning of
                 HtmlToken isOpen htmlModel ->
                     if isVoidTag htmlModel || not isOpen then
-                        tokenToMatch token (HtmlType htmlModel)
-                            |> addMatch model
-                            |> (\b -> ( tokensTail, b ))
-                            |> htmlElementTTM
+                        htmlElementTTM
+                            (tokenToMatch token (HtmlType htmlModel)
+                                |> addMatch model
+                                |> (\b -> ( tokensTail, b ))
+                            )
 
                     else
-                        tokensTail
-                            |> findToken (isCloseToken htmlModel)
-                            |> Maybe.map (htmlElementToMatch token model htmlModel)
-                            |> Maybe.withDefault
-                                (tokenToMatch token (HtmlType htmlModel)
-                                    |> addMatch model
-                                    |> (\b -> ( tokensTail, b ))
-                                )
-                            |> htmlElementTTM
+                        htmlElementTTM
+                            (tokensTail
+                                |> findToken (isCloseToken htmlModel)
+                                |> Maybe.map (htmlElementToMatch token model htmlModel)
+                                |> Maybe.withDefault
+                                    (tokenToMatch token (HtmlType htmlModel)
+                                        |> addMatch model
+                                        |> (\b -> ( tokensTail, b ))
+                                    )
+                            )
 
                 _ ->
                     htmlElementTTM
@@ -1450,12 +1455,13 @@ linkImageTypeTTM ( tokens, model ) =
         token :: tokensTail ->
             case token.meaning of
                 CharToken ']' ->
-                    model.tokens
-                        |> findToken isLinkTypeOrImageOpenToken
-                        |> Maybe.andThen
-                            (linkOrImageTypeToMatch token tokensTail model)
-                        |> Maybe.withDefault ( tokensTail, model )
-                        |> linkImageTypeTTM
+                    linkImageTypeTTM
+                        (model.tokens
+                            |> findToken isLinkTypeOrImageOpenToken
+                            |> Maybe.andThen
+                                (linkOrImageTypeToMatch token tokensTail model)
+                            |> Maybe.withDefault ( tokensTail, model )
+                        )
 
                 _ ->
                     linkImageTypeTTM
