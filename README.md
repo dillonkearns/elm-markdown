@@ -37,7 +37,7 @@ Markdown.Html.oneOf
 ```
 
 Note that it gets the rendered children as an argument. This is rendering the inner contents of the HTML tag using
-your HTML renderer, so you get all of your rendered lists, code blocks, links, etc. within your tag.
+your HTML renderer, so you get all of your rendered lists, code blocks, links, etc. within your tag. You can try a [live Ellie demo of this code snippet](https://ellie-app.com/8kHgbSLfhfha1).
 
 ## Live Code Demos
 
@@ -211,9 +211,6 @@ defaultHtmlRenderer =
     }
 ```
 
-### Custom HTML Blocks
-
-[Check out this example on Ellie](https://ellie-app.com/6QH7BxdcWxKa1) to tweak and take a look at the full code from the top of the README.
 
 ### Markdown Block Transformation
 
