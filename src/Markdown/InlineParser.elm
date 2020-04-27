@@ -193,28 +193,6 @@ findToken isToken tokens =
 findTokenHelp : ( Maybe Token, List Token, List Token ) -> (Token -> Bool) -> List Token -> Maybe ( Token, List Token, List Token )
 findTokenHelp ( maybeToken_, innerTokens_, remainTokens_ ) isToken tokens =
     let
-        search : Token -> ( Maybe Token, List Token, List Token ) -> ( Maybe Token, List Token, List Token )
-        search token ( maybeToken, innerTokens, remainTokens ) =
-            case maybeToken of
-                Nothing ->
-                    if isToken token then
-                        ( Just token
-                        , innerTokens
-                        , []
-                        )
-
-                    else
-                        ( Nothing
-                        , token :: innerTokens
-                        , []
-                        )
-
-                Just _ ->
-                    ( maybeToken
-                    , innerTokens
-                    , token :: remainTokens
-                    )
-
         return : ( Maybe Token, List Token, List Token ) -> Maybe ( Token, List Token, List Token )
         return ( maybeToken, innerTokens, remainTokens ) =
             maybeToken
@@ -231,10 +209,21 @@ findTokenHelp ( maybeToken_, innerTokens_, remainTokens_ ) isToken tokens =
             return ( maybeToken_, innerTokens_, remainTokens_ )
 
         nextToken :: remainingTokens ->
-            findTokenHelp
-                (search nextToken ( maybeToken_, innerTokens_, remainTokens_ ))
-                isToken
-                remainingTokens
+            if isToken nextToken then
+                return
+                    ( Just nextToken
+                    , innerTokens_
+                    , List.reverse remainingTokens
+                    )
+
+            else
+                findTokenHelp
+                    ( Nothing
+                    , nextToken :: innerTokens_
+                    , []
+                    )
+                    isToken
+                    remainingTokens
 
 
 tokenPairToMatch : Parser -> (String -> String) -> Type -> Token -> Token -> List Token -> Match
