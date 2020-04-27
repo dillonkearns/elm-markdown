@@ -187,41 +187,26 @@ type Meaning
 
 findToken : (Token -> Bool) -> List Token -> Maybe ( Token, List Token, List Token )
 findToken isToken tokens =
-    findTokenHelp ( Nothing, [], [] ) isToken tokens
+    findTokenHelp [] isToken tokens
 
 
-findTokenHelp : ( Maybe Token, List Token, List Token ) -> (Token -> Bool) -> List Token -> Maybe ( Token, List Token, List Token )
-findTokenHelp ( maybeToken_, innerTokens_, remainTokens_ ) isToken tokens =
-    let
-        return : ( Maybe Token, List Token, List Token ) -> Maybe ( Token, List Token, List Token )
-        return ( maybeToken, innerTokens, remainTokens ) =
-            maybeToken
-                |> Maybe.map
-                    (\token ->
-                        ( token
-                        , List.reverse innerTokens
-                        , List.reverse remainTokens
-                        )
-                    )
-    in
+findTokenHelp : List Token -> (Token -> Bool) -> List Token -> Maybe ( Token, List Token, List Token )
+findTokenHelp innerTokens isToken tokens =
     case tokens of
         [] ->
-            return ( maybeToken_, innerTokens_, remainTokens_ )
+            Nothing
 
         nextToken :: remainingTokens ->
             if isToken nextToken then
-                return
-                    ( Just nextToken
-                    , innerTokens_
-                    , List.reverse remainingTokens
+                Just
+                    ( nextToken
+                    , List.reverse innerTokens
+                    , remainingTokens
                     )
 
             else
                 findTokenHelp
-                    ( Nothing
-                    , nextToken :: innerTokens_
-                    , []
-                    )
+                    (nextToken :: innerTokens)
                     isToken
                     remainingTokens
 
