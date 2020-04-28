@@ -195,8 +195,9 @@ type Meaning
     = CodeToken Bool -- isEscaped
     | LinkOpenToken Bool -- isActive
     | ImageOpenToken
-    | CharToken Char
-    | RightAngleBracket Bool -- isEscaped
+    | SquareBracketClose
+    | AngleBracketOpen
+    | AngleBracketClose Bool -- isEscaped
     | HtmlToken Bool HtmlModel -- isOpening
     | EmphasisToken Char ( Int, Int ) -- ( leftFringeRank, rightFringeRank )
     | SoftLineBreakToken
@@ -649,7 +650,7 @@ regMatchToLinkImageCloseToken regMatch =
                 Just
                     { index = regMatch.index + backslashesLength
                     , length = 1
-                    , meaning = CharToken ']'
+                    , meaning = SquareBracketClose
                     }
 
             else
@@ -688,7 +689,7 @@ regMatchToAngleBracketRToken regMatch =
                 { index = regMatch.index + backslashesLength
                 , length = 1
                 , meaning =
-                    RightAngleBracket
+                    AngleBracketClose
                         (not (isEven backslashesLength))
                 }
 
@@ -721,7 +722,7 @@ regMatchToAngleBracketLToken regMatch =
                 Just
                     { index = regMatch.index + backslashesLength
                     , length = 1
-                    , meaning = CharToken '<'
+                    , meaning = AngleBracketOpen
                     }
 
             else
@@ -1006,30 +1007,62 @@ codeAutolinkTypeHtmlTagTTM tokens model =
         token :: tokensTail ->
             case token.meaning of
                 CodeToken isEscaped ->
-                    codeAutolinkTypeHtmlTagTTM tokensTail
-                        (model.tokens
-                            |> findToken (isCodeTokenPair token)
-                            |> Maybe.map (codeToMatch token model)
-                            |> Maybe.withDefault (addToken model token)
-                        )
+                    codeAutolinkTypeHtmlTagTTM tokensTail <|
+                        case findToken (isCodeTokenPair token) model.tokens of
+                            Just code ->
+                                codeToMatch token model code
 
-                RightAngleBracket isEscaped ->
-                    codeAutolinkTypeHtmlTagTTM tokensTail
-                        (model.tokens
-                            |> findToken
-                                (\t -> t.meaning == CharToken '<')
-                            |> Maybe.andThen
-                                (angleBracketsToMatch token
-                                    isEscaped
-                                    model
-                                )
-                            |> Maybe.withDefault model
-                            |> filterTokens
-                                (\t -> t.meaning /= CharToken '<')
-                        )
+                            Nothing ->
+                                addToken model token
+
+                AngleBracketClose isEscaped ->
+                    codeAutolinkTypeHtmlTagTTM tokensTail <|
+                        case findToken (\t -> t.meaning == AngleBracketOpen) model.tokens of
+                            Just (( openToken, _, remainTokens ) as found) ->
+                                case angleBracketsToMatch2 token isEscaped model found of
+                                    Just newModel ->
+                                        newModel
+                                            |> filterTokens (\t -> t.meaning /= AngleBracketOpen)
+
+                                    Nothing ->
+                                        model
+                                            |> filterTokens (\t -> t.meaning /= AngleBracketOpen)
+
+                            Nothing ->
+                                model
+                                    |> filterTokens (\t -> t.meaning /= AngleBracketOpen)
 
                 _ ->
                     codeAutolinkTypeHtmlTagTTM tokensTail (addToken model token)
+
+
+angleBracketsToMatch2 : Token -> Bool -> Parser -> ( Token, List Token, List Token ) -> Maybe Parser
+angleBracketsToMatch2 closeToken isEscaped model ( openToken, _, remainTokens ) =
+    let
+        result =
+            tokenPairToMatch model (\s -> s) CodeType openToken closeToken []
+                |> autolinkToMatch
+                |> ifError emailAutolinkTypeToMatch
+    in
+    case result of
+        Result.Err tempMatch ->
+            if not isEscaped then
+                case htmlToToken2 model.rawText tempMatch of
+                    Just newToken ->
+                        Just { model | tokens = newToken :: remainTokens }
+
+                    Nothing ->
+                        Nothing
+
+            else
+                Nothing
+
+        Result.Ok newMatch ->
+            Just
+                { model
+                    | matches = newMatch :: model.matches
+                    , tokens = remainTokens
+                }
 
 
 
@@ -1180,48 +1213,12 @@ softAsHardLineBreak =
 
 htmlToToken : Parser -> Match -> Maybe Parser
 htmlToToken model (Match match) =
-    --case model.options.rawHtml of
-    --    DontParse ->
-    --        Nothing
-    --
-    --    _ ->
-    --Regex.findAtMost 1 htmlRegex match.text
-    --    |> List.head
-    --    |> Maybe.andThen (\_ -> htmlFromRegex model match)
     htmlFromRegex model match
 
 
-htmlRegex : Regex
-htmlRegex =
-    Regex.fromString "^(\\/)?([a-zA-Z][a-zA-Z0-9\\-]*)(?:\\s+([^<>]*?))?(\\/)?$"
-        |> Maybe.withDefault Regex.never
-
-
-htmlFromRegex : Parser -> MatchModel -> Maybe Parser
-htmlFromRegex model match =
+htmlToToken2 : String -> Match -> Maybe Token
+htmlToToken2 rawText (Match match) =
     let
-        --Advanced.andThen
-        --    (\xmlNode ->
-        --        case xmlNode of
-        --            HtmlParser.Text innerText ->
-        --                -- TODO is this right?
-        --                Body
-        --                    (UnparsedInlines innerText)
-        --                    |> Advanced.succeed
-        --
-        --            HtmlParser.Element tag attributes children ->
-        --                Advanced.andThen
-        --                    (\parsedChildren ->
-        --                        Advanced.succeed
-        --                            (Html tag
-        --                                attributes
-        --                                parsedChildren
-        --                            )
-        --                    )
-        --                    (nodesToBlocksParser children)
-        --    )
-        --    parser
-        --consumedCharacters : HtmlParser.Parser HtmlParser.Xml
         consumedCharacters =
             Advanced.succeed
                 (\startOffset htmlTag endOffset ->
@@ -1233,42 +1230,57 @@ htmlFromRegex model match =
                 |= HtmlParser.html
                 |= Advanced.getOffset
 
-        _ =
-            log "match" match
-
         parsed =
-            model.rawText
-                |> log "rawText"
+            rawText
                 |> String.dropLeft match.start
-                |> log "dropped"
-                --|> HtmlParser.parse
                 |> Advanced.run consumedCharacters
-
-        --_ =
-        --    log "model"
-        --        { model = model
-        --        , match = match
-        --        , parsed = parsed
-        --        }
     in
     case parsed of
         Ok { htmlTag, length } ->
             let
                 htmlToken =
                     HtmlToken False htmlTag
+            in
+            Just
+                { index = match.start
+                , length = length
+                , meaning = htmlToken
+                }
 
-                --(case htmlTag of
-                --    HtmlParser.Element tag attributes _ ->
-                --        { tag = tag
-                --        , attributes = attributes
-                --        }
-                --
-                --    HtmlParser.Comment comment ->
-                --        { tag = "TODO handle comment", attributes = [] }
-                --
-                --    _ ->
-                --        { tag = "TODO", attributes = [] }
-                --)
+        Err error ->
+            Nothing
+
+
+htmlRegex : Regex
+htmlRegex =
+    Regex.fromString "^(\\/)?([a-zA-Z][a-zA-Z0-9\\-]*)(?:\\s+([^<>]*?))?(\\/)?$"
+        |> Maybe.withDefault Regex.never
+
+
+htmlFromRegex : Parser -> MatchModel -> Maybe Parser
+htmlFromRegex model match =
+    let
+        consumedCharacters =
+            Advanced.succeed
+                (\startOffset htmlTag endOffset ->
+                    { length = endOffset - startOffset
+                    , htmlTag = htmlTag
+                    }
+                )
+                |= Advanced.getOffset
+                |= HtmlParser.html
+                |= Advanced.getOffset
+
+        parsed =
+            model.rawText
+                |> String.dropLeft match.start
+                |> Advanced.run consumedCharacters
+    in
+    case parsed of
+        Ok { htmlTag, length } ->
+            let
+                htmlToken =
+                    HtmlToken False htmlTag
             in
             { index = match.start
             , length = length
@@ -1277,130 +1289,14 @@ htmlFromRegex model match =
                 |> addToken model
                 |> Just
 
-        --|> log "Just"
-        --                { index = match.start
-        --                , length = match.end - match.start
-        --                , meaning =
-        --                    HtmlToken
-        --                        (maybeClose
-        --                            == Nothing
-        --                            && maybeSelfClosing
-        --                            == Nothing
-        --                        )
-        --                        (HtmlModel tag attrs)
-        --                }
-        --                    |> addToken model
         Err error ->
-            let
-                _ =
-                    log "error" error
-            in
             Nothing
-
-
-log label value =
-    --Debug.log label value
-    value
-
-
-
--- TODO use HTML parser here
---case regexMatch.submatches of
---    maybeClose :: (Just tag) :: maybeAttributes :: maybeSelfClosing :: _ ->
---        let
---            updateModel : List Attribute -> Parser
---            updateModel attrs =
---                { index = match.start
---                , length = match.end - match.start
---                , meaning =
---                    HtmlToken
---                        (maybeClose
---                            == Nothing
---                            && maybeSelfClosing
---                            == Nothing
---                        )
---                        (HtmlModel tag attrs)
---                }
---                    |> addToken model
---
---            attributes : List Attribute
---            attributes =
---                Maybe.map applyAttributesRegex maybeAttributes
---                    |> Maybe.withDefault []
---
---            filterAttributes : List Attribute -> List String -> List Attribute
---            filterAttributes attrs allowed =
---                List.filter
---                    (\attr ->
---                        List.member (Tuple.first attr) allowed
---                    )
---                    attrs
---
---            noAttributesInCloseTag : Bool
---            noAttributesInCloseTag =
---                maybeClose
---                    == Nothing
---                    || maybeClose
---                    /= Nothing
---                    && attributes
---                    == []
---        in
---        --case model.options.rawHtml of
---        --ParseUnsafe ->
---        if noAttributesInCloseTag then
---            Just (updateModel attributes)
---
---        else
---            Nothing
---_ ->
---    Nothing
---Sanitize { allowedHtmlElements, allowedHtmlAttributes } ->
---    if
---        List.member tag allowedHtmlElements
---            && noAttributesInCloseTag
---    then
---        filterAttributes attributes allowedHtmlAttributes
---            |> updateModel
---            |> Just
---
---    else
---        Nothing
---
---DontParse ->
---    Nothing
---applyAttributesRegex : String -> List Attribute
---applyAttributesRegex =
---    Regex.find htmlAttributesRegex
---        >> List.filterMap attributesFromRegex
 
 
 htmlAttributesRegex : Regex
 htmlAttributesRegex =
     Regex.fromString "([a-zA-Z:_][a-zA-Z0-9\\-_.:]*)(?: ?= ?(?:\"([^\"]*)\"|'([^']*)'|([^\\s\"'=<>`]*)))?"
         |> Maybe.withDefault Regex.never
-
-
-
---attributesFromRegex : Regex.Match -> Maybe Attribute
---attributesFromRegex regexMatch =
---    case regexMatch.submatches of
---        (Just "") :: _ ->
---            Nothing
---
---        (Just name) :: maybeDoubleQuotes :: maybeSingleQuotes :: maybeUnquoted :: _ ->
---            let
---                maybeValue : Maybe String
---                maybeValue =
---                    returnFirstJust
---                        [ maybeDoubleQuotes
---                        , maybeSingleQuotes
---                        , maybeUnquoted
---                        ]
---            in
---            Just ( { name = name, maybeValue )
---
---        _ ->
---            Nothing
 
 
 htmlElementTTM : List Token -> Parser -> Parser
@@ -1493,7 +1389,7 @@ linkImageTypeTTM tokens model =
 
         token :: tokensTail ->
             case token.meaning of
-                CharToken ']' ->
+                SquareBracketClose ->
                     case findToken isLinkTypeOrImageOpenToken model.tokens of
                         Just found ->
                             case linkOrImageTypeToMatch token tokensTail model found of
@@ -1918,16 +1814,16 @@ emphasisToMatch closeToken tokensTail model ( openToken, innerTokens, remainToke
             openToken.length - closeToken.length
 
         updt =
-            -- Perfect match
             if remainLength == 0 then
+                -- Perfect match
                 { openToken = openToken
                 , closeToken = closeToken
                 , remainTokens = remainTokens
                 , tokensTail = tokensTail
                 }
-                -- Still has opening token
 
             else if remainLength > 0 then
+                -- Still has opening token
                 { openToken =
                     { openToken
                         | index = openToken.index + remainLength
@@ -1939,9 +1835,9 @@ emphasisToMatch closeToken tokensTail model ( openToken, innerTokens, remainToke
                         :: remainTokens
                 , tokensTail = tokensTail
                 }
-                -- Still has closing token
 
             else
+                -- Still has closing token
                 { openToken = openToken
                 , closeToken = { closeToken | length = openToken.length }
                 , remainTokens = remainTokens
@@ -1964,9 +1860,10 @@ emphasisToMatch closeToken tokensTail model ( openToken, innerTokens, remainToke
                 (List.reverse innerTokens)
     in
     ( updt.tokensTail
-    , { model
-        | matches = match :: model.matches
-        , tokens = updt.remainTokens
+    , { matches = match :: model.matches
+      , tokens = updt.remainTokens
+      , rawText = model.rawText
+      , refs = model.refs
       }
     )
 
