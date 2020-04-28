@@ -1,4 +1,4 @@
-module Markdown.InlineParser exposing (parse, query, tokenize,  walk)
+module Markdown.InlineParser exposing (parse, query, tokenize, walk)
 
 import Dict exposing (Dict)
 import HtmlParser
@@ -93,9 +93,10 @@ parse refs rawText =
 
 parseText : Parser -> Parser
 parseText model =
-    { model
-        | matches =
-            parseTextMatches model.rawText [] model.matches
+    { matches = parseTextMatches model.rawText [] model.matches
+    , rawText = model.rawText
+    , tokens = model.tokens
+    , refs = model.refs
     }
 
 
@@ -134,9 +135,13 @@ parseTextMatch rawText (Match matchModel) parsedMatches =
         updtMatch : Match
         updtMatch =
             Match
-                { matchModel
-                    | matches =
-                        parseTextMatches matchModel.text [] matchModel.matches
+                { type_ = matchModel.type_
+                , start = matchModel.start
+                , end = matchModel.end
+                , textStart = matchModel.textStart
+                , textEnd = matchModel.textEnd
+                , text = matchModel.text
+                , matches = parseTextMatches matchModel.text [] matchModel.matches
                 }
     in
     case parsedMatches of
@@ -863,7 +868,11 @@ type Type
 
 organizeParserMatches : Parser -> Parser
 organizeParserMatches model =
-    { model | matches = organizeMatches model.matches }
+    { matches = organizeMatches model.matches
+    , tokens = model.tokens
+    , refs = model.refs
+    , rawText = model.rawText
+    }
 
 
 organizeMatches : List Match -> List Match
@@ -1491,7 +1500,11 @@ linkOrImageTypeToMatch closeToken tokensTail model ( openToken, innerTokens, rem
         args isLinkType =
             ( remainText
             , tempMatch isLinkType
-            , { model | tokens = remainTokens }
+            , { tokens = remainTokens
+              , matches = model.matches
+              , refs = model.refs
+              , rawText = model.rawText
+              }
             )
 
         remainText : String
@@ -1940,10 +1953,10 @@ lineBreakTTM tokens model =
 lineBreakTTMHelp remaining model tokens matches =
     case remaining of
         [] ->
-            -- reverseTokens model
-            { model
-                | tokens = List.reverse tokens
-                , matches = matches
+            { tokens = List.reverse tokens
+            , matches = matches
+            , refs = model.refs
+            , rawText = model.rawText
             }
 
         token :: tokensTail ->
