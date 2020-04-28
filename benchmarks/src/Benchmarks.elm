@@ -1,39 +1,57 @@
-module Benchmarks exposing (suite)
+module Benchmarks exposing (..)
 
 import Benchmark exposing (Benchmark, describe)
+import Helpers
 import Markdown
 import Markdown.OrderedList
 import Markdown.Parser
-import Parser.Advanced as Advanced
+import Parser
+import Parser.Advanced as Advanced exposing ((|.), (|=), chompIf, chompUntil, chompWhile, getChompedString, map, succeed, symbol)
+import Parser.Token as Token
 import ThematicBreak
 
 
 suite : Benchmark
 suite =
-    describe "markdown parsing"
-        [ "# This is a heading"
-            |> compare "just a heading"
-        , elmMarkdownExplorationsReadme
-            |> compare "elm-explorations/markdown readme"
-        , withHeadingsAndLists
-            |> compare "withHeadingsAndLists"
-        , withHeadingsAndListsAndHtml
-            |> compare "withHeadingsAndListsAndHtml"
-        ]
+    {-
+    if True then
+        describe "markdown parsing"
+            [ heading
+            , elmMarkdownExplorationsReadme
+            , withHeadingsAndLists
+            , withHeadingsAndListsAndHtml
+            ]
+
+    else
+        succeedOrMap
+    -}
+    describe "" []
+
+
+heading =
+    "# This is a heading"
+        |> compare "just a heading"
 
 
 elmMarkdownExplorationsReadme =
-    """# elm-markdown
+    let
+        source =
+            """# elm-markdown
 
 ## Level 2 heading
 
 ### Level 3 heading
 
 """
+    in
+    source
+        |> compare "elm-explorations/markdown readme"
 
 
 withHeadingsAndLists =
-    """# elm-markdown
+    let
+        source =
+            """# elm-markdown
 
 - Item 1 
 - Item 2 
@@ -51,10 +69,15 @@ withHeadingsAndLists =
 - Item 2
 - Item 3
 """
+    in
+    source
+        |> compare "withHeadingsAndLists"
 
 
 withHeadingsAndListsAndHtml =
-    """# elm-markdown
+    let
+        source =
+            """# elm-markdown
 
 - Item 1 
 - Item 2 
@@ -84,6 +107,9 @@ withHeadingsAndListsAndHtml =
 - Item 2
 - Item 3
 """
+    in
+    source
+        |> compare "withHeadingsAndListsAndHtml"
 
 
 compare title markdown =
@@ -127,3 +153,94 @@ orderedList =
             3. milk, eggs
             """
         )
+
+
+stringBetweenChars =
+    let
+        withChomp =
+            succeed identity
+                |. chompIf (\c -> c == '<') (Parser.Expecting (String.fromChar '<'))
+                |= getChompedString (chompWhile (\c -> c /= '>'))
+                |. chompIf (\c -> c == '>') (Parser.Expecting (String.fromChar '>'))
+
+        withToken =
+            succeed identity
+                |. symbol Token.lessThan
+                |= getChompedString (chompUntil Token.greaterThan)
+                |. symbol Token.greaterThan
+    in
+    Benchmark.compare "between chars"
+        "chomp"
+        (\_ -> Parser.run withChomp "<foo>")
+        "symbol"
+        (\_ -> Parser.run withToken "<foo>")
+
+
+type BlankLine
+    = BlankLine
+
+
+succeedOrMap =
+    describe "succeed or map"
+        [ let
+            withMap =
+                Advanced.backtrackable (chompWhile Helpers.isSpaceOrTab)
+                    |. symbol Token.newline
+                    |> Advanced.map (\_ -> BlankLine)
+
+            withSucceed =
+                succeed BlankLine
+                    |. Advanced.backtrackable (chompWhile Helpers.isSpaceOrTab)
+                    |. symbol Token.newline
+          in
+          Benchmark.compare "ignore argument"
+            "map"
+            (\_ -> Parser.run withMap "               \n")
+            "succeed"
+            (\_ -> Parser.run withSucceed "               \n")
+        , let
+            withMap =
+                getChompedString (symbol Token.newline)
+                    |> Advanced.map String.reverse
+
+            withSucceed =
+                succeed String.reverse
+                    |= getChompedString (symbol Token.newline)
+          in
+          Benchmark.compare "use argument"
+            "map"
+            (\_ -> Parser.run withMap "\n")
+            "succeed"
+            (\_ -> Parser.run withSucceed "\n")
+        ]
+
+
+isSpaceOrTab : Char -> Bool
+isSpaceOrTab c =
+    case c of
+        ' ' ->
+            True
+
+        '\t' ->
+            True
+
+        _ ->
+            False
+
+
+spaceOrTab =
+    let
+        withChomp =
+            chompIf isSpaceOrTab (Parser.Expecting "space or tab")
+
+        withToken =
+            Advanced.oneOf
+                [ symbol Token.space
+                , symbol Token.tab
+                ]
+    in
+    Benchmark.compare "between chars"
+        "chomp"
+        (\_ -> Parser.run withChomp "\t")
+        "token"
+        (\_ -> Parser.run withToken "\t")

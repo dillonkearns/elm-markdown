@@ -340,8 +340,7 @@ plainLine =
 
 innerParagraphParser : Parser RawBlock
 innerParagraphParser =
-    Advanced.chompIf (\c -> not <| Helpers.isNewline c) (Parser.Expecting "Not newline.")
-        |. Advanced.chompUntilEndOr "\n"
+    Advanced.chompUntilEndOr "\n"
         |> Advanced.mapChompedString
             (\rawLine _ ->
                 rawLine
