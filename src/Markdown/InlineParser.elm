@@ -160,22 +160,24 @@ parseTextMatch rawText (Match matchModel) parsedMatches =
                 ]
 
         (Match matchHead) :: matchesTail ->
-            if matchHead.type_ == NormalType then
-                updtMatch :: parsedMatches
-                -- New Match
+            case matchHead.type_ of
+                NormalType ->
+                    updtMatch :: parsedMatches
 
-            else if matchModel.end == matchHead.start then
-                updtMatch :: parsedMatches
-                -- New Match and add in between unmatched string
+                _ ->
+                    if matchModel.end == matchHead.start then
+                        -- New Match
+                        updtMatch :: parsedMatches
 
-            else if matchModel.end < matchHead.start then
-                updtMatch
-                    :: normalMatch (String.slice matchModel.end matchHead.start rawText)
-                    :: parsedMatches
-                -- Overlaping or inside previous Match
+                    else if matchModel.end < matchHead.start then
+                        -- New Match and add in between unmatched string
+                        updtMatch
+                            :: normalMatch (String.slice matchModel.end matchHead.start rawText)
+                            :: parsedMatches
 
-            else
-                parsedMatches
+                    else
+                        -- Overlaping or inside previous Match
+                        parsedMatches
 
 
 
@@ -406,27 +408,26 @@ regMatchToEmphasisToken char rawText regMatch =
             let
                 backslashesLength : Int
                 backslashesLength =
-                    Maybe.map String.length maybeBackslashes
-                        |> Maybe.withDefault 0
+                    case maybeBackslashes of
+                        Just backslashes ->
+                            String.length backslashes
+
+                        Nothing ->
+                            0
 
                 leftFringeLength : Int
                 leftFringeLength =
-                    maybeLeftFringe
-                        |> Maybe.map String.length
-                        |> Maybe.withDefault 0
+                    case maybeLeftFringe of
+                        Just left ->
+                            String.length left
+
+                        Nothing ->
+                            0
 
                 mLeftFringe : Maybe String
                 mLeftFringe =
-                    if
-                        regMatch.index
-                            /= 0
-                            && leftFringeLength
-                            == 0
-                    then
-                        String.slice
-                            (regMatch.index - 1)
-                            regMatch.index
-                            rawText
+                    if regMatch.index /= 0 && leftFringeLength == 0 then
+                        String.slice (regMatch.index - 1) regMatch.index rawText
                             |> Just
 
                     else
@@ -434,33 +435,26 @@ regMatchToEmphasisToken char rawText regMatch =
 
                 isEscaped : Bool
                 isEscaped =
-                    not (isEven backslashesLength)
-                        && leftFringeLength
-                        == 0
-                        || mLeftFringe
-                        == Just "\\"
+                    (not (isEven backslashesLength) && leftFringeLength == 0)
+                        || (case mLeftFringe of
+                                Just "\\" ->
+                                    True
 
-                fringeRank : ( Int, Int )
-                fringeRank =
-                    ( if isEscaped then
+                                _ ->
+                                    False
+                           )
+
+                rFringeRank : Int
+                rFringeRank =
+                    getFringeRank maybeRightFringe
+
+                lFringeRank : Int
+                lFringeRank =
+                    if isEscaped then
                         1
 
-                      else
+                    else
                         getFringeRank mLeftFringe
-                    , getFringeRank maybeRightFringe
-                    )
-
-                index : Int
-                index =
-                    regMatch.index
-                        + backslashesLength
-                        + leftFringeLength
-                        + (if isEscaped then
-                            1
-
-                           else
-                            0
-                          )
 
                 delimiterLength : Int
                 delimiterLength =
@@ -470,19 +464,27 @@ regMatchToEmphasisToken char rawText regMatch =
                     else
                         String.length delimiter
             in
-            if
-                delimiterLength
-                    <= 0
-                    || (char == '_' && fringeRank == ( 2, 2 ))
-            then
+            if delimiterLength <= 0 || (char == '_' && lFringeRank == 2 && rFringeRank == 2) then
                 Nothing
 
             else
+                let
+                    index : Int
+                    index =
+                        regMatch.index
+                            + backslashesLength
+                            + leftFringeLength
+                            + (if isEscaped then
+                                1
+
+                               else
+                                0
+                              )
+                in
                 Just
                     { index = index
                     , length = delimiterLength
-                    , meaning =
-                        EmphasisToken char fringeRank
+                    , meaning = EmphasisToken char ( lFringeRank, rFringeRank )
                     }
 
         _ ->
@@ -490,20 +492,18 @@ regMatchToEmphasisToken char rawText regMatch =
 
 
 getFringeRank : Maybe String -> Int
-getFringeRank =
-    Maybe.map
-        (String.uncons
-            >> Maybe.map Tuple.first
-            >> maybeCharFringeRank
-        )
-        >> Maybe.withDefault 0
+getFringeRank mstring =
+    case mstring of
+        Just string ->
+            case String.uncons string of
+                Nothing ->
+                    0
 
+                Just ( c, _ ) ->
+                    charFringeRank c
 
-maybeCharFringeRank : Maybe Char -> Int
-maybeCharFringeRank maybeChar =
-    maybeChar
-        |> Maybe.map charFringeRank
-        |> Maybe.withDefault 0
+        Nothing ->
+            0
 
 
 charFringeRank : Char -> Int
@@ -598,8 +598,13 @@ regMatchToLinkImageOpenToken regMatch =
                         + backslashesLength
                         + (if
                             isEscaped
-                                && maybeImageOpen
-                                == Just "!"
+                                && (case maybeImageOpen of
+                                        Just "!" ->
+                                            True
+
+                                        _ ->
+                                            False
+                                   )
                            then
                             1
 
@@ -876,17 +881,47 @@ organizeParserMatches model =
 
 
 organizeMatches : List Match -> List Match
-organizeMatches =
-    List.sortBy (\(Match match) -> match.start)
-        >> List.foldl organizeMatch []
-        >> List.map
-            (\(Match match) ->
-                Match
-                    { match
-                        | matches =
-                            organizeMatches match.matches
-                    }
-            )
+organizeMatches matches =
+    case List.sortBy (\(Match match) -> match.start) matches of
+        [] ->
+            []
+
+        first :: rest ->
+            organizeMatchesHelp rest first []
+
+
+organizeChildren : Match -> Match
+organizeChildren (Match match) =
+    Match
+        { type_ = match.type_
+        , start = match.start
+        , end = match.end
+        , textStart = match.textStart
+        , textEnd = match.textEnd
+        , text = match.text
+        , matches = organizeMatches match.matches
+        }
+
+
+organizeMatchesHelp : List Match -> Match -> List Match -> List Match
+organizeMatchesHelp remaining (Match prevMatch) matchesTail =
+    -- NOTE: when a match get pushed on the tail, also organize its children
+    case remaining of
+        [] ->
+            organizeChildren (Match prevMatch) :: matchesTail
+
+        (Match match) :: rest ->
+            if prevMatch.end <= match.start then
+                -- New Match, add it
+                organizeMatchesHelp rest (Match match) (organizeChildren (Match prevMatch) :: matchesTail)
+
+            else if prevMatch.start < match.start && prevMatch.end > match.end then
+                -- Inside previous Match, merge it
+                organizeMatchesHelp rest (addChild prevMatch match) matchesTail
+
+            else
+                -- Overlaping previous Match, ignore it
+                organizeMatchesHelp rest (Match prevMatch) matchesTail
 
 
 organizeMatch : Match -> List Match -> List Match
@@ -899,19 +934,14 @@ organizeMatch (Match match) matches =
             -- New Match
             if prevMatch.end <= match.start then
                 Match match :: matches
-                -- Inside previous Match
 
-            else if
-                prevMatch.start
-                    < match.start
-                    && prevMatch.end
-                    > match.end
-            then
+            else if prevMatch.start < match.start && prevMatch.end > match.end then
+                -- Inside previous Match
                 addChild prevMatch match
                     :: matchesTail
-                -- Overlaping previous Match
 
             else
+                -- Overlaping previous Match
                 matches
 
 
