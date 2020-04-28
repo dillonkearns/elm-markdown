@@ -894,8 +894,6 @@ prepareChildMatch parentMatch childMatch =
 
 tokensToMatches : Parser -> Parser
 tokensToMatches =
-    -- TODO make sure all these TTM functions are actually tail-recursive
-    -- note that `|>` breaks tail-recursion.
     applyTTM codeAutolinkTypeHtmlTagTTM
         >> applyTTM htmlElementTTM
         >> applyTTM linkImageTypeTTM
@@ -903,7 +901,7 @@ tokensToMatches =
         >> applyTTM lineBreakTTM
 
 
-applyTTM : (( List Token, Parser ) -> Parser) -> Parser -> Parser
+applyTTM : (List Token -> Parser -> Parser) -> Parser -> Parser
 applyTTM finderFunction model =
     -- TODO don't use a tuple here
     let
@@ -914,7 +912,7 @@ applyTTM finderFunction model =
             , refs = model.refs
             }
     in
-    finderFunction ( model.tokens, newModel )
+    finderFunction model.tokens newModel
 
 
 
@@ -922,8 +920,8 @@ applyTTM finderFunction model =
 -- CodeType spans, HTML tags, and autolinks have the same precedence
 
 
-codeAutolinkTypeHtmlTagTTM : ( List Token, Parser ) -> Parser
-codeAutolinkTypeHtmlTagTTM ( tokens, model ) =
+codeAutolinkTypeHtmlTagTTM : List Token -> Parser -> Parser
+codeAutolinkTypeHtmlTagTTM tokens model =
     case tokens of
         [] ->
             reverseTokens model
@@ -931,16 +929,15 @@ codeAutolinkTypeHtmlTagTTM ( tokens, model ) =
         token :: tokensTail ->
             case token.meaning of
                 CodeToken isEscaped ->
-                    codeAutolinkTypeHtmlTagTTM
+                    codeAutolinkTypeHtmlTagTTM tokensTail
                         (model.tokens
                             |> findToken (isCodeTokenPair token)
                             |> Maybe.map (codeToMatch token model)
                             |> Maybe.withDefault (addToken model token)
-                            |> (\b -> ( tokensTail, b ))
                         )
 
                 RightAngleBracket isEscaped ->
-                    codeAutolinkTypeHtmlTagTTM
+                    codeAutolinkTypeHtmlTagTTM tokensTail
                         (model.tokens
                             |> findToken
                                 (.meaning >> (==) (CharToken '<'))
@@ -952,14 +949,10 @@ codeAutolinkTypeHtmlTagTTM ( tokens, model ) =
                             |> Maybe.withDefault model
                             |> filterTokens
                                 (.meaning >> (/=) (CharToken '<'))
-                            |> (\b -> ( tokensTail, b ))
                         )
 
                 _ ->
-                    codeAutolinkTypeHtmlTagTTM
-                        ( tokensTail
-                        , addToken model token
-                        )
+                    codeAutolinkTypeHtmlTagTTM tokensTail (addToken model token)
 
 
 
@@ -1337,8 +1330,8 @@ htmlAttributesRegex =
 --            Nothing
 
 
-htmlElementTTM : ( List Token, Parser ) -> Parser
-htmlElementTTM ( tokens, model ) =
+htmlElementTTM : List Token -> Parser -> Parser
+htmlElementTTM tokens model =
     case tokens of
         [] ->
             reverseTokens model
@@ -1347,29 +1340,28 @@ htmlElementTTM ( tokens, model ) =
             case token.meaning of
                 HtmlToken isOpen htmlModel ->
                     if isVoidTag htmlModel || not isOpen then
-                        htmlElementTTM
+                        htmlElementTTM tokensTail
                             (tokenToMatch token (HtmlType htmlModel)
                                 |> addMatch model
-                                |> (\b -> ( tokensTail, b ))
                             )
 
                     else
-                        htmlElementTTM
-                            (tokensTail
-                                |> findToken (isCloseToken htmlModel)
-                                |> Maybe.map (htmlElementToMatch token model htmlModel)
-                                |> Maybe.withDefault
-                                    (tokenToMatch token (HtmlType htmlModel)
-                                        |> addMatch model
-                                        |> (\b -> ( tokensTail, b ))
-                                    )
-                            )
+                        -- TODO clean this up
+                        let
+                            ( x, y ) =
+                                tokensTail
+                                    |> findToken (isCloseToken htmlModel)
+                                    |> Maybe.map (htmlElementToMatch token model htmlModel)
+                                    |> Maybe.withDefault
+                                        (tokenToMatch token (HtmlType htmlModel)
+                                            |> addMatch model
+                                            |> (\b -> ( tokensTail, b ))
+                                        )
+                        in
+                        htmlElementTTM x y
 
                 _ ->
-                    htmlElementTTM
-                        ( tokensTail
-                        , addToken model token
-                        )
+                    htmlElementTTM tokensTail (addToken model token)
 
 
 isVoidTag : HtmlModel -> Bool
@@ -1434,8 +1426,8 @@ htmlElementToMatch openToken model htmlModel ( closeToken, innerTokens, remainTo
 -- LinkType, reference link and images have precedence over emphasis
 
 
-linkImageTypeTTM : ( List Token, Parser ) -> Parser
-linkImageTypeTTM ( tokens, model ) =
+linkImageTypeTTM : List Token -> Parser -> Parser
+linkImageTypeTTM tokens model =
     case tokens of
         [] ->
             reverseTokens model
@@ -1443,19 +1435,18 @@ linkImageTypeTTM ( tokens, model ) =
         token :: tokensTail ->
             case token.meaning of
                 CharToken ']' ->
-                    linkImageTypeTTM
-                        (model.tokens
-                            |> findToken isLinkTypeOrImageOpenToken
-                            |> Maybe.andThen
-                                (linkOrImageTypeToMatch token tokensTail model)
-                            |> Maybe.withDefault ( tokensTail, model )
-                        )
+                    let
+                        ( x, y ) =
+                            model.tokens
+                                |> findToken isLinkTypeOrImageOpenToken
+                                |> Maybe.andThen
+                                    (linkOrImageTypeToMatch token tokensTail model)
+                                |> Maybe.withDefault ( tokensTail, model )
+                    in
+                    linkImageTypeTTM x y
 
                 _ ->
-                    linkImageTypeTTM
-                        ( tokensTail
-                        , addToken model token
-                        )
+                    linkImageTypeTTM tokensTail (addToken model token)
 
 
 isLinkTypeOrImageOpenToken : Token -> Bool
@@ -1774,8 +1765,8 @@ decodeUrlRegex =
 -- EmphasisType Tokens To Matches
 
 
-emphasisTTM : ( List Token, Parser ) -> Parser
-emphasisTTM ( tokens, model ) =
+emphasisTTM : List Token -> Parser -> Parser
+emphasisTTM tokens model =
     case tokens of
         [] ->
             reverseTokens model
@@ -1797,48 +1788,46 @@ emphasisTTM ( tokens, model ) =
                             -- match if the sum of lengths
                             -- is not multiple of 3, otherwise add
                             -- opening tag
-                            emphasisTTM
-                                (model.tokens
+                            let
+                                ( x, y ) =
+                                    model.tokens
+                                        |> findToken (isOpenEmphasisToken token)
+                                        |> Maybe.map
+                                            (emphasisToMatch token
+                                                tokensTail
+                                                model
+                                            )
+                                        |> Maybe.withDefault
+                                            ( tokensTail
+                                            , addToken model token
+                                            )
+                            in
+                            emphasisTTM x y
+
+                        else
+                            emphasisTTM tokensTail model
+
+                    else if leftRank < rightRank then
+                        -- Opening token
+                        emphasisTTM tokensTail (addToken model token)
+
+                    else
+                        -- Closing token
+                        let
+                            ( x, y ) =
+                                model.tokens
                                     |> findToken (isOpenEmphasisToken token)
                                     |> Maybe.map
                                         (emphasisToMatch token
                                             tokensTail
                                             model
                                         )
-                                    |> Maybe.withDefault
-                                        ( tokensTail
-                                        , addToken model token
-                                        )
-                                )
-
-                        else
-                            emphasisTTM ( tokensTail, model )
-                        -- Opening token
-
-                    else if leftRank < rightRank then
-                        emphasisTTM
-                            ( tokensTail
-                            , addToken model token
-                            )
-                        -- Closing token
-
-                    else
-                        emphasisTTM
-                            (model.tokens
-                                |> findToken (isOpenEmphasisToken token)
-                                |> Maybe.map
-                                    (emphasisToMatch token
-                                        tokensTail
-                                        model
-                                    )
-                                |> Maybe.withDefault ( tokensTail, model )
-                            )
+                                    |> Maybe.withDefault ( tokensTail, model )
+                        in
+                        emphasisTTM x y
 
                 _ ->
-                    emphasisTTM
-                        ( tokensTail
-                        , addToken model token
-                        )
+                    emphasisTTM tokensTail (addToken model token)
 
 
 isOpenEmphasisToken : Token -> Token -> Bool
@@ -1932,8 +1921,8 @@ emphasisToMatch closeToken tokensTail model ( openToken, innerTokens, remainToke
 -- Line Break Tokens To Matches
 
 
-lineBreakTTM : ( List Token, Parser ) -> Parser
-lineBreakTTM ( tokens, model ) =
+lineBreakTTM : List Token -> Parser -> Parser
+lineBreakTTM tokens model =
     case tokens of
         [] ->
             reverseTokens model
@@ -1947,20 +1936,15 @@ lineBreakTTM ( tokens, model ) =
                             && softAsHardLineBreak
                        )
             then
-                lineBreakTTM
-                    ({ model
+                lineBreakTTM tokensTail
+                    { model
                         | matches =
                             tokenToMatch token HardLineBreakType
                                 :: model.matches
-                     }
-                        |> (\b -> ( tokensTail, b ))
-                    )
+                    }
 
             else
-                lineBreakTTM
-                    ( tokensTail
-                    , addToken model token
-                    )
+                lineBreakTTM tokensTail ( addToken model token)
 
 
 
