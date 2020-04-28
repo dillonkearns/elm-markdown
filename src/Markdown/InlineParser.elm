@@ -32,25 +32,28 @@ initParser refs rawText =
 
 addMatch : Parser -> Match -> Parser
 addMatch model match =
-    { model
-        | matches =
-            match :: model.matches
+    { rawText = model.rawText
+    , tokens = model.tokens 
+    , matches = match :: model.matches
+    , refs = model.refs
     }
 
 
 addToken : Parser -> Token -> Parser
 addToken model token =
-    { model
-        | tokens =
-            token :: model.tokens
+    { rawText = model.rawText
+    , tokens = token :: model.tokens
+    , matches = model.matches
+    , refs = model.refs
     }
 
 
 filterTokens : (Token -> Bool) -> Parser -> Parser
 filterTokens filter model =
-    { model
-        | tokens =
-            List.filter filter model.tokens
+    { rawText = model.rawText
+    , tokens = List.filter filter model.tokens
+    , matches = model.matches
+    , refs = model.refs
     }
 
 
@@ -1944,7 +1947,7 @@ lineBreakTTM tokens model =
                     }
 
             else
-                lineBreakTTM tokensTail ( addToken model token)
+                lineBreakTTM tokensTail (addToken model token)
 
 
 
