@@ -1,4 +1,4 @@
-module Markdown.InlineParser exposing (parse, query, walk)
+module Markdown.InlineParser exposing (parse, query, tokenize,  walk)
 
 import Dict exposing (Dict)
 import HtmlParser
@@ -18,15 +18,6 @@ type alias Parser =
     , tokens : List Token
     , matches : List Match
     , refs : References
-    }
-
-
-initParser : References -> String -> Parser
-initParser refs rawText =
-    { rawText = rawText
-    , tokens = []
-    , matches = []
-    , refs = refs
     }
 
 
@@ -66,16 +57,33 @@ reverseTokens model =
     }
 
 
+initParser : References -> String -> Parser
+initParser refs rawText =
+    { rawText = rawText
+    , tokens = []
+    , matches = []
+    , refs = refs
+    }
+
+
 
 -- Parser
 
 
 parse : References -> String -> List Inline
 parse refs rawText =
-    rawText
-        |> String.trim
-        |> initParser refs
-        |> tokenize
+    let
+        tokens =
+            tokenize (String.trim rawText)
+
+        parser =
+            { rawText = String.trim rawText
+            , tokens = tokens
+            , matches = []
+            , refs = refs
+            }
+    in
+    parser
         |> tokensToMatches
         |> organizeParserMatches
         |> parseText
@@ -244,18 +252,32 @@ tokenPairToMatch model processText type_ openToken closeToken innerTokens =
 
         matches : List Match
         matches =
-            { model
-                | tokens = innerTokens
-                , matches = []
-            }
-                |> tokensToMatches
+            let
+                initialModel =
+                    { tokens = innerTokens
+                    , matches = []
+                    , rawText = model.rawText
+                    , refs = model.refs
+                    }
+            in
+            tokensToMatches initialModel
                 |> .matches
                 |> List.map
                     (\(Match matchModel) ->
                         prepareChildMatch match matchModel
                     )
     in
-    Match { match | matches = matches }
+    Match
+        { type_ = type_
+        , start = start
+        , end = end
+        , textStart = textStart
+        , textEnd = textEnd
+        , text =
+            String.slice textStart textEnd model.rawText
+                |> processText
+        , matches = matches
+        }
 
 
 tokenToMatch : Token -> Type -> Match
@@ -276,23 +298,37 @@ tokenToMatch token type_ =
 -- Scan all tokens from the string
 
 
-tokenize : Parser -> Parser
-tokenize model =
-    { model
-        | tokens =
-            findCodeTokens model.rawText
-                |> (++) (findAsteriskEmphasisTokens model.rawText)
-                |> (++) (findUnderlineEmphasisTokens model.rawText)
-                |> (++) (findLinkImageOpenTokens model.rawText)
-                |> (++) (findLinkImageCloseTokens model.rawText)
-                |> (++)
-                    (findHardBreakTokens
-                        model.rawText
-                    )
-                |> (++) (findAngleBracketLTokens model.rawText)
-                |> (++) (findAngleBracketRTokens model.rawText)
-                |> List.sortBy .index
-    }
+tokenize : String -> List Token
+tokenize rawText =
+    findCodeTokens rawText
+        |> mergeByIndex (findAsteriskEmphasisTokens rawText)
+        |> mergeByIndex (findUnderlineEmphasisTokens rawText)
+        |> mergeByIndex (findLinkImageOpenTokens rawText)
+        |> mergeByIndex (findLinkImageCloseTokens rawText)
+        |> mergeByIndex (findHardBreakTokens rawText)
+        |> mergeByIndex (findAngleBracketLTokens rawText)
+        |> mergeByIndex (findAngleBracketRTokens rawText)
+
+
+{-| Merges two sorted sequences into a sorted sequence
+-}
+mergeByIndex : List { a | index : Int } -> List { a | index : Int } -> List { a | index : Int }
+mergeByIndex left right =
+    case left of
+        lfirst :: lrest ->
+            case right of
+                rfirst :: rrest ->
+                    if lfirst.index < rfirst.index then
+                        lfirst :: mergeByIndex lrest right
+
+                    else
+                        rfirst :: mergeByIndex left rrest
+
+                [] ->
+                    left
+
+        [] ->
+            right
 
 
 
@@ -942,7 +978,7 @@ codeAutolinkTypeHtmlTagTTM tokens model =
                     codeAutolinkTypeHtmlTagTTM tokensTail
                         (model.tokens
                             |> findToken
-                                (\t -> t.meaning == (CharToken '<'))
+                                (\t -> t.meaning == CharToken '<')
                             |> Maybe.andThen
                                 (angleBracketsToMatch token
                                     isEscaped
@@ -950,7 +986,7 @@ codeAutolinkTypeHtmlTagTTM tokens model =
                                 )
                             |> Maybe.withDefault model
                             |> filterTokens
-                                (\t -> t.meaning /= (CharToken '<'))
+                                (\t -> t.meaning /= CharToken '<')
                         )
 
                 _ ->
@@ -1011,30 +1047,26 @@ codeToMatch closeToken model ( openToken, _, remainTokens ) =
 
 angleBracketsToMatch : Token -> Bool -> Parser -> ( Token, List Token, List Token ) -> Maybe Parser
 angleBracketsToMatch closeToken isEscaped model ( openToken, _, remainTokens ) =
-    tokenPairToMatch model (\s -> s) CodeType openToken closeToken []
-        |> autolinkToMatch
-        |> ifError emailAutolinkTypeToMatch
-        |> Result.map
-            (\newMatch ->
+    let
+        result =
+            tokenPairToMatch model (\s -> s) CodeType openToken closeToken []
+                |> autolinkToMatch
+                |> ifError emailAutolinkTypeToMatch
+    in
+    case result of
+        Result.Err tempMatch ->
+            if not isEscaped then
+                htmlToToken { model | tokens = remainTokens } tempMatch
+
+            else
+                Nothing
+
+        Result.Ok newMatch ->
+            Just
                 { model
                     | matches = newMatch :: model.matches
                     , tokens = remainTokens
                 }
-            )
-        |> (\result ->
-                case result of
-                    Result.Err tempMatch ->
-                        if not isEscaped then
-                            htmlToToken
-                                { model | tokens = remainTokens }
-                                tempMatch
-
-                        else
-                            Result.toMaybe result
-
-                    Result.Ok _ ->
-                        Result.toMaybe result
-           )
 
 
 
@@ -1352,8 +1384,18 @@ htmlElementTTM tokens model =
                             Nothing ->
                                 htmlElementTTM tokensTail (addMatch model (tokenToMatch token (HtmlType htmlModel)))
 
-                            Just (( _, _, newTail ) as found) ->
-                                htmlElementTTM newTail (htmlElementToMatch token model htmlModel found)
+                            Just ( closeToken, innerTokens, newTail ) ->
+                                let
+                                    newMatch =
+                                        tokenPairToMatch
+                                            model
+                                            (\s -> s)
+                                            (HtmlType htmlModel)
+                                            token
+                                            closeToken
+                                            innerTokens
+                                in
+                                htmlElementTTM newTail (addMatch model newMatch)
 
                 _ ->
                     htmlElementTTM tokensTail (addToken model token)
@@ -1397,21 +1439,6 @@ isCloseToken htmlModel token =
     --
     --    _ ->
     False
-
-
-htmlElementToMatch : Token -> Parser -> HtmlModel -> ( Token, List Token, List Token ) -> Parser
-htmlElementToMatch openToken model htmlModel ( closeToken, innerTokens, remainTokens ) =
-    { model
-        | matches =
-            tokenPairToMatch
-                model
-                (\s -> s)
-                (HtmlType htmlModel)
-                openToken
-                closeToken
-                innerTokens
-                :: model.matches
-    }
 
 
 
