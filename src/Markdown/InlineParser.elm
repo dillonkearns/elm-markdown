@@ -906,7 +906,6 @@ tokensToMatches =
 
 applyTTM : (List Token -> Parser -> Parser) -> Parser -> Parser
 applyTTM finderFunction model =
-    -- TODO don't use a tuple here
     let
         newModel =
             { rawText = model.rawText
@@ -943,7 +942,7 @@ codeAutolinkTypeHtmlTagTTM tokens model =
                     codeAutolinkTypeHtmlTagTTM tokensTail
                         (model.tokens
                             |> findToken
-                                (.meaning >> (==) (CharToken '<'))
+                                (\t -> t.meaning == (CharToken '<'))
                             |> Maybe.andThen
                                 (angleBracketsToMatch token
                                     isEscaped
@@ -951,7 +950,7 @@ codeAutolinkTypeHtmlTagTTM tokens model =
                                 )
                             |> Maybe.withDefault model
                             |> filterTokens
-                                (.meaning >> (/=) (CharToken '<'))
+                                (\t -> t.meaning /= (CharToken '<'))
                         )
 
                 _ ->
@@ -1908,28 +1907,26 @@ emphasisToMatch closeToken tokensTail model ( openToken, innerTokens, remainToke
 
 lineBreakTTM : List Token -> Parser -> Parser
 lineBreakTTM tokens model =
-    case tokens of
+    lineBreakTTMHelp tokens model model.tokens model.matches
+
+
+lineBreakTTMHelp remaining model tokens matches =
+    case remaining of
         [] ->
-            reverseTokens model
+            -- reverseTokens model
+            { model
+                | tokens = List.reverse tokens
+                , matches = matches
+            }
 
         token :: tokensTail ->
-            if
-                token.meaning
-                    == HardLineBreakToken
-                    || (token.meaning
-                            == SoftLineBreakToken
-                            && softAsHardLineBreak
-                       )
-            then
-                lineBreakTTM tokensTail
-                    { model
-                        | matches =
-                            tokenToMatch token HardLineBreakType
-                                :: model.matches
-                    }
+            if token.meaning == HardLineBreakToken then
+                -- NOTE: the origiginal also moved into this branch when
+                -- (token.meaning == SoftLineBreakToken && softAsHardLineBreak
+                lineBreakTTMHelp tokensTail model tokens (tokenToMatch token HardLineBreakType :: matches)
 
             else
-                lineBreakTTM tokensTail (addToken model token)
+                lineBreakTTMHelp tokensTail model (token :: tokens) matches
 
 
 
