@@ -33,7 +33,7 @@ initParser refs rawText =
 addMatch : Parser -> Match -> Parser
 addMatch model match =
     { rawText = model.rawText
-    , tokens = model.tokens 
+    , tokens = model.tokens
     , matches = match :: model.matches
     , refs = model.refs
     }
@@ -1349,19 +1349,12 @@ htmlElementTTM tokens model =
                             )
 
                     else
-                        -- TODO clean this up
-                        let
-                            ( x, y ) =
-                                tokensTail
-                                    |> findToken (isCloseToken htmlModel)
-                                    |> Maybe.map (htmlElementToMatch token model htmlModel)
-                                    |> Maybe.withDefault
-                                        (tokenToMatch token (HtmlType htmlModel)
-                                            |> addMatch model
-                                            |> (\b -> ( tokensTail, b ))
-                                        )
-                        in
-                        htmlElementTTM x y
+                        case findToken (isCloseToken htmlModel) tokensTail of
+                            Nothing ->
+                                htmlElementTTM tokensTail (addMatch model (tokenToMatch token (HtmlType htmlModel)))
+
+                            Just (( _, _, newTail ) as found) ->
+                                htmlElementTTM newTail (htmlElementToMatch token model htmlModel found)
 
                 _ ->
                     htmlElementTTM tokensTail (addToken model token)
@@ -1407,10 +1400,9 @@ isCloseToken htmlModel token =
     False
 
 
-htmlElementToMatch : Token -> Parser -> HtmlModel -> ( Token, List Token, List Token ) -> ( List Token, Parser )
+htmlElementToMatch : Token -> Parser -> HtmlModel -> ( Token, List Token, List Token ) -> Parser
 htmlElementToMatch openToken model htmlModel ( closeToken, innerTokens, remainTokens ) =
-    ( remainTokens
-    , { model
+    { model
         | matches =
             tokenPairToMatch
                 model
@@ -1420,8 +1412,7 @@ htmlElementToMatch openToken model htmlModel ( closeToken, innerTokens, remainTo
                 closeToken
                 innerTokens
                 :: model.matches
-      }
-    )
+    }
 
 
 
@@ -1438,15 +1429,17 @@ linkImageTypeTTM tokens model =
         token :: tokensTail ->
             case token.meaning of
                 CharToken ']' ->
-                    let
-                        ( x, y ) =
-                            model.tokens
-                                |> findToken isLinkTypeOrImageOpenToken
-                                |> Maybe.andThen
-                                    (linkOrImageTypeToMatch token tokensTail model)
-                                |> Maybe.withDefault ( tokensTail, model )
-                    in
-                    linkImageTypeTTM x y
+                    case findToken isLinkTypeOrImageOpenToken model.tokens of
+                        Just found ->
+                            case linkOrImageTypeToMatch token tokensTail model found of
+                                Just ( x, y ) ->
+                                    linkImageTypeTTM x y
+
+                                Nothing ->
+                                    linkImageTypeTTM tokensTail model
+
+                        Nothing ->
+                            linkImageTypeTTM tokensTail model
 
                 _ ->
                     linkImageTypeTTM tokensTail (addToken model token)
@@ -1791,21 +1784,14 @@ emphasisTTM tokens model =
                             -- match if the sum of lengths
                             -- is not multiple of 3, otherwise add
                             -- opening tag
-                            let
-                                ( x, y ) =
-                                    model.tokens
-                                        |> findToken (isOpenEmphasisToken token)
-                                        |> Maybe.map
-                                            (emphasisToMatch token
-                                                tokensTail
-                                                model
-                                            )
-                                        |> Maybe.withDefault
-                                            ( tokensTail
-                                            , addToken model token
-                                            )
-                            in
-                            emphasisTTM x y
+                            case findToken (isOpenEmphasisToken token) model.tokens of
+                                Just found ->
+                                    case emphasisToMatch token tokensTail model found of
+                                        ( x, y ) ->
+                                            emphasisTTM x y
+
+                                Nothing ->
+                                    emphasisTTM tokensTail (addToken model token)
 
                         else
                             emphasisTTM tokensTail model
@@ -1816,18 +1802,14 @@ emphasisTTM tokens model =
 
                     else
                         -- Closing token
-                        let
-                            ( x, y ) =
-                                model.tokens
-                                    |> findToken (isOpenEmphasisToken token)
-                                    |> Maybe.map
-                                        (emphasisToMatch token
-                                            tokensTail
-                                            model
-                                        )
-                                    |> Maybe.withDefault ( tokensTail, model )
-                        in
-                        emphasisTTM x y
+                        case findToken (isOpenEmphasisToken token) model.tokens of
+                            Just found ->
+                                case emphasisToMatch token tokensTail model found of
+                                    ( x, y ) ->
+                                        emphasisTTM x y
+
+                            Nothing ->
+                                emphasisTTM tokensTail model
 
                 _ ->
                     emphasisTTM tokensTail (addToken model token)
