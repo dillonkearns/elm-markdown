@@ -549,7 +549,7 @@ getFringeRank mstring =
 
 containSpace : String -> Bool
 containSpace =
-    -- NOTE: this is faster than a `\\s` regex
+    -- NOTE: this is faster than a `\\s` regex for small strings
     String.foldl (\c accum -> accum || isWhitespace c) False
 
 
@@ -643,12 +643,6 @@ isPunctuation c =
             False
 
 
-punctuationRegex : Regex
-punctuationRegex =
-    Regex.fromString "[!-#%-\\*,-/:;\\?@\\[-\\]_\\{\\}]"
-        |> Maybe.withDefault Regex.never
-
-
 
 -- Link & Image Tokens
 
@@ -668,7 +662,7 @@ linkImageOpenTokenRegex =
 regMatchToLinkImageOpenToken : Regex.Match -> Maybe Token
 regMatchToLinkImageOpenToken regMatch =
     case regMatch.submatches of
-        maybeBackslashes :: maybeImageOpen :: (Just delimiter) :: _ ->
+        maybeBackslashes :: maybeImageOpen :: (Just _) :: _ ->
             let
                 backslashesLength =
                     Maybe.map String.length maybeBackslashes
@@ -677,53 +671,40 @@ regMatchToLinkImageOpenToken regMatch =
                 isEscaped =
                     not (isEven backslashesLength)
 
-                meaning =
-                    if isEscaped then
-                        maybeImageOpen
-                            |> Maybe.map
-                                (\_ -> LinkOpenToken True)
-
-                    else
-                        maybeImageOpen
-                            |> Maybe.map
-                                (\_ -> ImageOpenToken)
-                            |> Maybe.withDefault
-                                (LinkOpenToken True)
-                            |> Just
-
-                length =
-                    if meaning == Just ImageOpenToken then
-                        2
-
-                    else
-                        1
-
                 index =
-                    regMatch.index
-                        + backslashesLength
-                        + (if
-                            isEscaped
-                                && (case maybeImageOpen of
-                                        Just "!" ->
-                                            True
+                    if isEscaped then
+                        regMatch.index + backslashesLength + 1
 
-                                        _ ->
-                                            False
-                                   )
-                           then
-                            1
-
-                           else
-                            0
-                          )
-
-                toModel m =
-                    { index = index
-                    , length = length
-                    , meaning = m
-                    }
+                    else
+                        regMatch.index + backslashesLength
             in
-            Maybe.map toModel meaning
+            if isEscaped then
+                case maybeImageOpen of
+                    Just _ ->
+                        Just
+                            { index = index
+                            , length = 1
+                            , meaning = LinkOpenToken True
+                            }
+
+                    Nothing ->
+                        Nothing
+
+            else
+                case maybeImageOpen of
+                    Just _ ->
+                        Just
+                            { index = index
+                            , length = 2
+                            , meaning = ImageOpenToken
+                            }
+
+                    Nothing ->
+                        Just
+                            { index = index
+                            , length = 1
+                            , meaning = LinkOpenToken True
+                            }
 
         _ ->
             Nothing
@@ -744,21 +725,21 @@ linkImageCloseTokenRegex =
 regMatchToLinkImageCloseToken : Regex.Match -> Maybe Token
 regMatchToLinkImageCloseToken regMatch =
     case regMatch.submatches of
-        maybeBackslashes :: (Just delimiter) :: _ ->
-            let
-                backslashesLength =
-                    Maybe.map String.length maybeBackslashes
-                        |> Maybe.withDefault 0
-            in
-            if isEven backslashesLength then
-                Just
-                    { index = regMatch.index + backslashesLength
-                    , length = 1
-                    , meaning = SquareBracketClose
-                    }
+        maybeBackslashes :: (Just _) :: _ ->
+                    let
+                        backslashesLength =
+                            Maybe.map String.length maybeBackslashes
+                                |> Maybe.withDefault 0
+                    in
+                    if isEven backslashesLength then
+                        Just
+                            { index = regMatch.index + backslashesLength
+                            , length = 1
+                            , meaning = SquareBracketClose
+                            }
 
-            else
-                Nothing
+                    else
+                        Nothing
 
         _ ->
             Nothing
