@@ -1047,7 +1047,7 @@ prepareChildMatch parentMatch childMatch =
 tokensToMatches : Parser -> Parser
 tokensToMatches =
     applyTTM codeAutolinkTypeHtmlTagTTM
-        >> applyTTM htmlElementTTM
+        >> applyTTM2 htmlElementTTM
         >> applyTTM2 linkImageTypeTTM
         >> applyTTM2 emphasisTTM
         >> applyTTM2 lineBreakTTM
@@ -1307,42 +1307,47 @@ htmlToToken rawText (Match match) =
             Nothing
 
 
-htmlElementTTM : List Token -> Parser -> Parser
-htmlElementTTM tokens model =
-    case tokens of
+htmlElementTTM : List Token -> List Token -> List Match -> References -> String -> Parser
+htmlElementTTM remaining tokens matches references rawText =
+    case remaining of
         [] ->
-            reverseTokens model
+            { tokens = List.reverse tokens
+            , matches = matches
+            , refs = references
+            , rawText = rawText
+            }
 
         token :: tokensTail ->
             case token.meaning of
                 HtmlToken isOpen htmlModel ->
                     if isVoidTag htmlModel || not isOpen then
                         htmlElementTTM tokensTail
-                            (tokenToMatch token (HtmlType htmlModel)
-                                |> addMatch model
-                            )
+                            tokens
+                            (tokenToMatch token (HtmlType htmlModel) :: matches)
+                            references
+                            rawText
 
                     else
                         case findToken (isCloseToken htmlModel) tokensTail of
                             Nothing ->
-                                htmlElementTTM tokensTail (addMatch model (tokenToMatch token (HtmlType htmlModel)))
+                                htmlElementTTM tokensTail tokens (tokenToMatch token (HtmlType htmlModel) :: matches) references rawText
 
                             Just ( closeToken, innerTokens, newTail ) ->
                                 let
                                     newMatch =
                                         tokenPairToMatch
-                                            model.refs
-                                            model.rawText
+                                            references
+                                            rawText
                                             (\s -> s)
                                             (HtmlType htmlModel)
                                             token
                                             closeToken
                                             innerTokens
                                 in
-                                htmlElementTTM newTail (addMatch model newMatch)
+                                htmlElementTTM newTail tokens (newMatch :: matches) references rawText
 
                 _ ->
-                    htmlElementTTM tokensTail (addToken model token)
+                    htmlElementTTM tokensTail (token :: tokens) matches references rawText
 
 
 isVoidTag : HtmlModel -> Bool
