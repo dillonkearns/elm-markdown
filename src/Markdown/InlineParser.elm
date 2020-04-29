@@ -1019,7 +1019,7 @@ codeAutolinkTypeHtmlTagTTM tokens model =
                     codeAutolinkTypeHtmlTagTTM tokensTail <|
                         case findToken (\t -> t.meaning == AngleBracketOpen) model.tokens of
                             Just (( openToken, _, remainTokens ) as found) ->
-                                case angleBracketsToMatch2 token isEscaped model found of
+                                case angleBracketsToMatch token isEscaped model found of
                                     Just newModel ->
                                         newModel
                                             |> filterTokens (\t -> t.meaning /= AngleBracketOpen)
@@ -1034,35 +1034,6 @@ codeAutolinkTypeHtmlTagTTM tokens model =
 
                 _ ->
                     codeAutolinkTypeHtmlTagTTM tokensTail (addToken model token)
-
-
-angleBracketsToMatch2 : Token -> Bool -> Parser -> ( Token, List Token, List Token ) -> Maybe Parser
-angleBracketsToMatch2 closeToken isEscaped model ( openToken, _, remainTokens ) =
-    let
-        result =
-            tokenPairToMatch model (\s -> s) CodeType openToken closeToken []
-                |> autolinkToMatch
-                |> ifError emailAutolinkTypeToMatch
-    in
-    case result of
-        Result.Err tempMatch ->
-            if not isEscaped then
-                case htmlToToken2 model.rawText tempMatch of
-                    Just newToken ->
-                        Just { model | tokens = newToken :: remainTokens }
-
-                    Nothing ->
-                        Nothing
-
-            else
-                Nothing
-
-        Result.Ok newMatch ->
-            Just
-                { model
-                    | matches = newMatch :: model.matches
-                    , tokens = remainTokens
-                }
 
 
 
@@ -1128,16 +1099,28 @@ angleBracketsToMatch closeToken isEscaped model ( openToken, _, remainTokens ) =
     case result of
         Result.Err tempMatch ->
             if not isEscaped then
-                htmlToToken { model | tokens = remainTokens } tempMatch
+                case htmlToToken model.rawText tempMatch of
+                    Just newToken ->
+                        Just
+                            { tokens = newToken :: remainTokens
+                            , matches = model.matches
+                            , refs = model.refs
+                            , rawText = model.rawText
+                            }
+
+                    Nothing ->
+                        Nothing
 
             else
                 Nothing
 
         Result.Ok newMatch ->
             Just
-                { model
-                    | matches = newMatch :: model.matches
+                { 
+                      matches = newMatch :: model.matches
                     , tokens = remainTokens
+                            , refs = model.refs
+                            , rawText = model.rawText
                 }
 
 
@@ -1211,13 +1194,8 @@ softAsHardLineBreak =
     False
 
 
-htmlToToken : Parser -> Match -> Maybe Parser
-htmlToToken model (Match match) =
-    htmlFromRegex model match
-
-
-htmlToToken2 : String -> Match -> Maybe Token
-htmlToToken2 rawText (Match match) =
+htmlToToken : String -> Match -> Maybe Token
+htmlToToken rawText (Match match) =
     let
         consumedCharacters =
             Advanced.succeed
@@ -1249,54 +1227,6 @@ htmlToToken2 rawText (Match match) =
 
         Err error ->
             Nothing
-
-
-htmlRegex : Regex
-htmlRegex =
-    Regex.fromString "^(\\/)?([a-zA-Z][a-zA-Z0-9\\-]*)(?:\\s+([^<>]*?))?(\\/)?$"
-        |> Maybe.withDefault Regex.never
-
-
-htmlFromRegex : Parser -> MatchModel -> Maybe Parser
-htmlFromRegex model match =
-    let
-        consumedCharacters =
-            Advanced.succeed
-                (\startOffset htmlTag endOffset ->
-                    { length = endOffset - startOffset
-                    , htmlTag = htmlTag
-                    }
-                )
-                |= Advanced.getOffset
-                |= HtmlParser.html
-                |= Advanced.getOffset
-
-        parsed =
-            model.rawText
-                |> String.dropLeft match.start
-                |> Advanced.run consumedCharacters
-    in
-    case parsed of
-        Ok { htmlTag, length } ->
-            let
-                htmlToken =
-                    HtmlToken False htmlTag
-            in
-            { index = match.start
-            , length = length
-            , meaning = htmlToken
-            }
-                |> addToken model
-                |> Just
-
-        Err error ->
-            Nothing
-
-
-htmlAttributesRegex : Regex
-htmlAttributesRegex =
-    Regex.fromString "([a-zA-Z:_][a-zA-Z0-9\\-_.:]*)(?: ?= ?(?:\"([^\"]*)\"|'([^']*)'|([^\\s\"'=<>`]*)))?"
-        |> Maybe.withDefault Regex.never
 
 
 htmlElementTTM : List Token -> Parser -> Parser
