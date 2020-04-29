@@ -230,8 +230,8 @@ findTokenHelp innerTokens isToken tokens =
                     remainingTokens
 
 
-tokenPairToMatch : Parser -> (String -> String) -> Type -> Token -> Token -> List Token -> Match
-tokenPairToMatch model processText type_ openToken closeToken innerTokens =
+tokenPairToMatch : References -> String -> (String -> String) -> Type -> Token -> Token -> List Token -> Match
+tokenPairToMatch references rawText processText type_ openToken closeToken innerTokens =
     let
         start =
             openToken.index
@@ -245,6 +245,10 @@ tokenPairToMatch model processText type_ openToken closeToken innerTokens =
         textEnd =
             closeToken.index
 
+        text =
+            String.slice textStart textEnd rawText
+                |> processText
+
         match : MatchModel
         match =
             { type_ = type_
@@ -252,9 +256,7 @@ tokenPairToMatch model processText type_ openToken closeToken innerTokens =
             , end = end
             , textStart = textStart
             , textEnd = textEnd
-            , text =
-                String.slice textStart textEnd model.rawText
-                    |> processText
+            , text = text
             , matches = []
             }
 
@@ -264,8 +266,8 @@ tokenPairToMatch model processText type_ openToken closeToken innerTokens =
                 initialModel =
                     { tokens = innerTokens
                     , matches = []
-                    , rawText = model.rawText
-                    , refs = model.refs
+                    , rawText = rawText
+                    , refs = references
                     }
             in
             tokensToMatches initialModel
@@ -281,9 +283,7 @@ tokenPairToMatch model processText type_ openToken closeToken innerTokens =
         , end = end
         , textStart = textStart
         , textEnd = textEnd
-        , text =
-            String.slice textStart textEnd model.rawText
-                |> processText
+        , text = text
         , matches = matches
         }
 
@@ -496,31 +496,17 @@ getFringeRank : Maybe String -> Int
 getFringeRank mstring =
     case mstring of
         Just string ->
-            case String.uncons string of
-                Nothing ->
-                    0
+            if String.isEmpty string || containSpace string then
+                0
 
-                Just ( c, _ ) ->
-                    charFringeRank c
+            else if containPunctuation string then
+                1
+
+            else
+                2
 
         Nothing ->
             0
-
-
-charFringeRank : Char -> Int
-charFringeRank char =
-    let
-        string =
-            String.fromChar char
-    in
-    if containSpace string then
-        0
-
-    else if containPunctuation string then
-        1
-
-    else
-        2
 
 
 containSpace : String -> Bool
@@ -976,7 +962,7 @@ tokensToMatches =
     applyTTM codeAutolinkTypeHtmlTagTTM
         >> applyTTM htmlElementTTM
         >> applyTTM linkImageTypeTTM
-        >> applyTTM emphasisTTM
+        >> applyTTM2 emphasisTTM
         >> applyTTM lineBreakTTM
 
 
@@ -991,6 +977,11 @@ applyTTM finderFunction model =
             }
     in
     finderFunction model.tokens newModel
+
+
+applyTTM2 : (List Token -> List Token -> List Match -> References -> String -> Parser) -> Parser -> Parser
+applyTTM2 finderFunction model =
+    finderFunction model.tokens [] model.matches model.refs model.rawText
 
 
 
@@ -1073,7 +1064,8 @@ codeToMatch closeToken model ( openToken, _, remainTokens ) =
     { model
         | matches =
             tokenPairToMatch
-                model
+                model.refs
+                model.rawText
                 cleanWhitespaces
                 CodeType
                 updtOpenToken
@@ -1092,7 +1084,7 @@ angleBracketsToMatch : Token -> Bool -> Parser -> ( Token, List Token, List Toke
 angleBracketsToMatch closeToken isEscaped model ( openToken, _, remainTokens ) =
     let
         result =
-            tokenPairToMatch model (\s -> s) CodeType openToken closeToken []
+            tokenPairToMatch model.refs model.rawText (\s -> s) CodeType openToken closeToken []
                 |> autolinkToMatch
                 |> ifError emailAutolinkTypeToMatch
     in
@@ -1116,11 +1108,10 @@ angleBracketsToMatch closeToken isEscaped model ( openToken, _, remainTokens ) =
 
         Result.Ok newMatch ->
             Just
-                { 
-                      matches = newMatch :: model.matches
-                    , tokens = remainTokens
-                            , refs = model.refs
-                            , rawText = model.rawText
+                { matches = newMatch :: model.matches
+                , tokens = remainTokens
+                , refs = model.refs
+                , rawText = model.rawText
                 }
 
 
@@ -1253,7 +1244,8 @@ htmlElementTTM tokens model =
                                 let
                                     newMatch =
                                         tokenPairToMatch
-                                            model
+                                            model.refs
+                                            model.rawText
                                             (\s -> s)
                                             (HtmlType htmlModel)
                                             token
@@ -1352,25 +1344,15 @@ isLinkTypeOrImageOpenToken token =
 linkOrImageTypeToMatch : Token -> List Token -> Parser -> ( Token, List Token, List Token ) -> Maybe ( List Token, Parser )
 linkOrImageTypeToMatch closeToken tokensTail model ( openToken, innerTokens, remainTokens ) =
     let
-        args : Bool -> ( String, Match, Parser )
-        args isLinkType =
-            ( remainText
-            , tempMatch isLinkType
-            , { tokens = remainTokens
-              , matches = model.matches
-              , refs = model.refs
-              , rawText = model.rawText
-              }
-            )
-
         remainText : String
         remainText =
             String.dropLeft (closeToken.index + 1) model.rawText
 
-        tempMatch : Bool -> Match
-        tempMatch isLinkType =
+        findTempMatch : Bool -> Match
+        findTempMatch isLinkType =
             tokenPairToMatch
-                model
+                model.refs
+                model.rawText
                 (\s -> s)
                 (if isLinkType then
                     LinkType ( "", Nothing )
@@ -1388,40 +1370,66 @@ linkOrImageTypeToMatch closeToken tokensTail model ( openToken, innerTokens, rem
             , { model | tokens = innerTokens ++ remainTokens }
             )
 
+        inactivateLinkOpenToken : Token -> Token
+        inactivateLinkOpenToken token =
+            case token.meaning of
+                LinkOpenToken _ ->
+                    { token | meaning = LinkOpenToken False }
+
+                _ ->
+                    token
+
         linkOpenTokenToInactive : Parser -> Parser
         linkOpenTokenToInactive model_ =
-            let
-                process : Token -> Token
-                process token =
-                    case token.meaning of
-                        LinkOpenToken _ ->
-                            { token | meaning = LinkOpenToken False }
+            { model_ | tokens = List.map inactivateLinkOpenToken model_.tokens }
 
-                        _ ->
-                            token
-            in
-            { model_ | tokens = List.map process model_.tokens }
+        initModel =
+            { tokens = remainTokens
+            , matches = model.matches
+            , refs = model.refs
+            , rawText = model.rawText
+            }
     in
     case openToken.meaning of
         ImageOpenToken ->
-            checkForInlineLinkTypeOrImageType (args False)
-                |> ifError checkForRefLinkTypeOrImageType
-                |> Result.mapError (\_ -> ())
-                |> Result.andThen checkParsedAheadOverlapping
-                |> Result.map (removeParsedAheadTokens tokensTail)
-                |> ifError (\_ -> Result.Ok removeOpenToken)
-                |> Result.toMaybe
+            let
+                tempMatch =
+                    findTempMatch False
+            in
+            case checkForInlineLinkTypeOrImageType remainText tempMatch model.refs of
+                Nothing ->
+                    Just removeOpenToken
+
+                Just match ->
+                    case checkParsedAheadOverlapping (addMatch initModel match) of
+                        Ok v ->
+                            Just (removeParsedAheadTokens tokensTail v)
+
+                        Err _ ->
+                            Just removeOpenToken
 
         -- Active opening: set all before to inactive if found
         LinkOpenToken True ->
-            checkForInlineLinkTypeOrImageType (args True)
-                |> ifError checkForRefLinkTypeOrImageType
-                |> Result.mapError (\_ -> ())
-                |> Result.andThen checkParsedAheadOverlapping
-                |> Result.map linkOpenTokenToInactive
-                |> Result.map (removeParsedAheadTokens tokensTail)
-                |> ifError (\_ -> Result.Ok removeOpenToken)
-                |> Result.toMaybe
+            let
+                tempMatch =
+                    findTempMatch True
+            in
+            (case checkForInlineLinkTypeOrImageType remainText tempMatch model.refs of
+                Nothing ->
+                            Just removeOpenToken
+
+                Just match ->
+                    case checkParsedAheadOverlapping (addMatch initModel match) of
+                        Ok v -> 
+                            v 
+                                |> linkOpenTokenToInactive
+                                |> removeParsedAheadTokens tokensTail
+                                |> Just
+
+                        Err _ -> 
+                            Just removeOpenToken
+            )
+
 
         -- Inactive opening: just remove open and close tokens
         LinkOpenToken False ->
@@ -1484,15 +1492,39 @@ removeParsedAheadTokens tokensTail parser =
 
 
 -- Inline link or image
+{-
+   checkForInlineLinkTypeOrImageType : String -> Match -> Parser -> Result ( String, Match, Parser ) Parser
+   checkForInlineLinkTypeOrImageType remainText (Match tempMatch) model =
+       Regex.findAtMost 1 inlineLinkTypeOrImageTypeRegex remainText
+           |> List.head
+           |> Maybe.andThen (inlineLinkTypeOrImageTypeRegexToMatch tempMatch model)
+           |> Maybe.map (addMatch model)
+           |> Result.fromMaybe ( remainText, Match tempMatch, model )
+-}
 
 
-checkForInlineLinkTypeOrImageType : ( String, Match, Parser ) -> Result ( String, Match, Parser ) Parser
-checkForInlineLinkTypeOrImageType ( remainText, Match tempMatch, model ) =
-    Regex.findAtMost 1 inlineLinkTypeOrImageTypeRegex remainText
-        |> List.head
-        |> Maybe.andThen (inlineLinkTypeOrImageTypeRegexToMatch tempMatch model)
-        |> Maybe.map (addMatch model)
-        |> Result.fromMaybe ( remainText, Match tempMatch, model )
+checkForInlineLinkTypeOrImageType : String -> Match -> References -> Maybe Match
+checkForInlineLinkTypeOrImageType remainText (Match tempMatch) refs =
+    let
+        foo : References -> Maybe Match
+        foo references =
+            let
+                matches =
+                    Regex.findAtMost 1 refLabelRegex remainText
+            in
+            refRegexToMatch tempMatch references (List.head matches)
+    in
+    case Regex.findAtMost 1 inlineLinkTypeOrImageTypeRegex remainText of
+        first :: _ ->
+            case inlineLinkTypeOrImageTypeRegexToMatch tempMatch first of
+                Just match ->
+                    Just match
+
+                Nothing ->
+                    foo refs
+
+        [] ->
+            foo refs
 
 
 inlineLinkTypeOrImageTypeRegex : Regex
@@ -1512,8 +1544,8 @@ hrefRegex =
         ++ "\\(\\)\\\\]*)*))"
 
 
-inlineLinkTypeOrImageTypeRegexToMatch : MatchModel -> Parser -> Regex.Match -> Maybe Match
-inlineLinkTypeOrImageTypeRegexToMatch matchModel model regexMatch =
+inlineLinkTypeOrImageTypeRegexToMatch : MatchModel -> Regex.Match -> Maybe Match
+inlineLinkTypeOrImageTypeRegexToMatch matchModel regexMatch =
     case regexMatch.submatches of
         maybeRawUrlAngleBrackets :: maybeRawUrlWithoutBrackets :: maybeTitleSingleQuotes :: maybeTitleDoubleQuotes :: maybeTitleParenthesis :: _ ->
             let
@@ -1536,8 +1568,7 @@ inlineLinkTypeOrImageTypeRegexToMatch matchModel model regexMatch =
                 toMatch rawUrl =
                     { matchModel
                         | type_ =
-                            ( rawUrl, maybeTitle )
-                                |> prepareUrlAndTitle
+                            prepareUrlAndTitle rawUrl maybeTitle
                                 |> (case matchModel.type_ of
                                         ImageType _ ->
                                             ImageType
@@ -1558,8 +1589,8 @@ inlineLinkTypeOrImageTypeRegexToMatch matchModel model regexMatch =
             Nothing
 
 
-prepareUrlAndTitle : ( String, Maybe String ) -> ( String, Maybe String )
-prepareUrlAndTitle ( rawUrl, maybeTitle ) =
+prepareUrlAndTitle : String -> Maybe String -> ( String, Maybe String )
+prepareUrlAndTitle rawUrl maybeTitle =
     ( encodeUrl (formatStr rawUrl)
     , Maybe.map formatStr maybeTitle
     )
@@ -1569,33 +1600,19 @@ prepareUrlAndTitle ( rawUrl, maybeTitle ) =
 -- Reference link or image
 
 
-checkForRefLinkTypeOrImageType : ( String, Match, Parser ) -> Result ( String, Match, Parser ) Parser
-checkForRefLinkTypeOrImageType ( remainText, Match tempMatch, model ) =
-    Regex.findAtMost 1 refLabelRegex remainText
-        |> List.head
-        |> refRegexToMatch tempMatch model
-        |> Maybe.map (addMatch model)
-        |> Result.fromMaybe ( remainText, Match tempMatch, model )
-
-
 refLabelRegex : Regex
 refLabelRegex =
     Regex.fromString ("^\\[\\s*(" ++ insideSquareBracketRegex ++ ")\\s*\\]")
         |> Maybe.withDefault Regex.never
 
 
-refRegexToMatch : MatchModel -> Parser -> Maybe Regex.Match -> Maybe Match
-refRegexToMatch matchModel model maybeRegexMatch =
+refRegexToMatch : MatchModel -> References -> Maybe Regex.Match -> Maybe Match
+refRegexToMatch matchModel references maybeRegexMatch =
     let
-        maybeRefItem : Maybe ( String, Maybe String )
-        maybeRefItem =
-            Dict.get (prepareRefLabel refLabel) model.refs
-
         refLabel : String
         refLabel =
             maybeRegexMatch
-                |> Maybe.map (.submatches >> List.head)
-                |> Maybe.withDefault Nothing
+                |> Maybe.andThen (.submatches >> List.head)
                 |> Maybe.withDefault Nothing
                 |> Maybe.withDefault matchModel.text
                 |> (\str ->
@@ -1605,30 +1622,36 @@ refRegexToMatch matchModel model maybeRegexMatch =
                         else
                             str
                    )
-
-        toMatch : ( String, Maybe String ) -> Match
-        toMatch urlTitle =
-            { matchModel
-                | type_ =
-                    prepareUrlAndTitle urlTitle
-                        |> (case matchModel.type_ of
-                                ImageType _ ->
-                                    ImageType
-
-                                _ ->
-                                    LinkType
-                           )
-                , end = matchModel.end + regexMatchLength
-            }
-                |> Match
-
-        regexMatchLength : Int
-        regexMatchLength =
-            maybeRegexMatch
-                |> Maybe.map (.match >> String.length)
-                |> Maybe.withDefault 0
     in
-    Maybe.map toMatch maybeRefItem
+    case Dict.get (prepareRefLabel refLabel) references of
+        Nothing ->
+            Nothing
+
+        Just ( rawUrl, maybeTitle ) ->
+            let
+                regexMatchLength : Int
+                regexMatchLength =
+                    case maybeRegexMatch of
+                        Just { match } ->
+                            String.length match
+
+                        Nothing ->
+                            0
+
+                type_ =
+                    case matchModel.type_ of
+                        ImageType _ ->
+                            ImageType (prepareUrlAndTitle rawUrl maybeTitle)
+
+                        _ ->
+                            LinkType (prepareUrlAndTitle rawUrl maybeTitle)
+            in
+            Just <|
+                Match
+                    { matchModel
+                        | type_ = type_
+                        , end = matchModel.end + regexMatchLength
+                    }
 
 
 encodeUrl : String -> String
@@ -1656,11 +1679,11 @@ decodeUrlRegex =
 -- EmphasisType Tokens To Matches
 
 
-emphasisTTM : List Token -> Parser -> Parser
-emphasisTTM tokens model =
-    case tokens of
+emphasisTTM : List Token -> List Token -> List Match -> References -> String -> Parser
+emphasisTTM remaining tokens matches references rawText =
+    case remaining of
         [] ->
-            reverseTokens model
+            { tokens = List.reverse tokens, matches = matches, refs = references, rawText = rawText }
 
         token :: tokensTail ->
             case token.meaning of
@@ -1670,44 +1693,40 @@ emphasisTTM tokens model =
                         -- If 1) is not surrounded by whitespace and
                         --    2) is not '_' or is surronded by puntuaction
                         -- is a close or opening tag
-                        if
-                            rightRank
-                                /= 0
-                                && (char /= '_' || rightRank == 1)
-                        then
+                        if rightRank /= 0 && (char /= '_' || rightRank == 1) then
                             -- Search for opening tag and add
                             -- match if the sum of lengths
                             -- is not multiple of 3, otherwise add
                             -- opening tag
-                            case findToken (isOpenEmphasisToken token) model.tokens of
+                            case findToken (isOpenEmphasisToken token) tokens of
                                 Just found ->
-                                    case emphasisToMatch token tokensTail model found of
-                                        ( x, y ) ->
-                                            emphasisTTM x y
+                                    case emphasisToMatch references rawText token tokensTail found of
+                                        ( x, y, z ) ->
+                                            emphasisTTM x z (y :: matches) references rawText
 
                                 Nothing ->
-                                    emphasisTTM tokensTail (addToken model token)
+                                    emphasisTTM tokensTail (token :: tokens) matches references rawText
 
                         else
-                            emphasisTTM tokensTail model
+                            emphasisTTM tokensTail tokens matches references rawText
 
                     else if leftRank < rightRank then
                         -- Opening token
-                        emphasisTTM tokensTail (addToken model token)
+                        emphasisTTM tokensTail (token :: tokens) matches references rawText
 
                     else
                         -- Closing token
-                        case findToken (isOpenEmphasisToken token) model.tokens of
+                        case findToken (isOpenEmphasisToken token) tokens of
                             Just found ->
-                                case emphasisToMatch token tokensTail model found of
-                                    ( x, y ) ->
-                                        emphasisTTM x y
+                                case emphasisToMatch references rawText token tokensTail found of
+                                    ( x, y, z ) ->
+                                        emphasisTTM x z (y :: matches) references rawText
 
                             Nothing ->
-                                emphasisTTM tokensTail model
+                                emphasisTTM tokensTail tokens matches references rawText
 
                 _ ->
-                    emphasisTTM tokensTail (addToken model token)
+                    emphasisTTM tokensTail (token :: tokens) matches references rawText
 
 
 isOpenEmphasisToken : Token -> Token -> Bool
@@ -1736,8 +1755,8 @@ isOpenEmphasisToken closeToken openToken =
             False
 
 
-emphasisToMatch : Token -> List Token -> Parser -> ( Token, List Token, List Token ) -> ( List Token, Parser )
-emphasisToMatch closeToken tokensTail model ( openToken, innerTokens, remainTokens ) =
+emphasisToMatch : References -> String -> Token -> List Token -> ( Token, List Token, List Token ) -> ( List Token, Match, List Token )
+emphasisToMatch references rawText closeToken tokensTail ( openToken, innerTokens, remainTokens ) =
     let
         remainLength : Int
         remainLength =
@@ -1782,7 +1801,8 @@ emphasisToMatch closeToken tokensTail model ( openToken, innerTokens, remainToke
         match : Match
         match =
             tokenPairToMatch
-                model
+                references
+                rawText
                 (\s -> s)
                 (EmphasisType updt.openToken.length)
                 updt.openToken
@@ -1790,11 +1810,8 @@ emphasisToMatch closeToken tokensTail model ( openToken, innerTokens, remainToke
                 (List.reverse innerTokens)
     in
     ( updt.tokensTail
-    , { matches = match :: model.matches
-      , tokens = updt.remainTokens
-      , rawText = model.rawText
-      , refs = model.refs
-      }
+    , match
+    , updt.remainTokens
     )
 
 

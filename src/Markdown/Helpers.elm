@@ -44,8 +44,7 @@ whiteSpaceChars =
 
 prepareRefLabel : String -> String
 prepareRefLabel =
-    cleanWhitespaces
-        >> String.toLower
+    cleanWhitespaces >> String.toLower
 
 
 cleanWhitespaces : String -> String
