@@ -726,20 +726,20 @@ regMatchToLinkImageCloseToken : Regex.Match -> Maybe Token
 regMatchToLinkImageCloseToken regMatch =
     case regMatch.submatches of
         maybeBackslashes :: (Just _) :: _ ->
-                    let
-                        backslashesLength =
-                            Maybe.map String.length maybeBackslashes
-                                |> Maybe.withDefault 0
-                    in
-                    if isEven backslashesLength then
-                        Just
-                            { index = regMatch.index + backslashesLength
-                            , length = 1
-                            , meaning = SquareBracketClose
-                            }
+            let
+                backslashesLength =
+                    Maybe.map String.length maybeBackslashes
+                        |> Maybe.withDefault 0
+            in
+            if isEven backslashesLength then
+                Just
+                    { index = regMatch.index + backslashesLength
+                    , length = 1
+                    , meaning = SquareBracketClose
+                    }
 
-                    else
-                        Nothing
+            else
+                Nothing
 
         _ ->
             Nothing
@@ -1010,46 +1010,34 @@ organizeMatchesHelp remaining (Match prevMatch) matchesTail =
                 organizeMatchesHelp rest (Match prevMatch) matchesTail
 
 
-organizeMatch : Match -> List Match -> List Match
-organizeMatch (Match match) matches =
-    case matches of
-        [] ->
-            [ Match match ]
-
-        (Match prevMatch) :: matchesTail ->
-            -- New Match
-            if prevMatch.end <= match.start then
-                Match match :: matches
-
-            else if prevMatch.start < match.start && prevMatch.end > match.end then
-                -- Inside previous Match
-                addChild prevMatch match
-                    :: matchesTail
-
-            else
-                -- Overlaping previous Match
-                matches
-
-
 addChild : MatchModel -> MatchModel -> Match
 addChild parentMatch childMatch =
     Match
-        { parentMatch
-            | matches =
-                prepareChildMatch parentMatch childMatch
-                    :: parentMatch.matches
+        { matches = prepareChildMatch parentMatch childMatch :: parentMatch.matches
+
+        -- copy other fields
+        , start = parentMatch.start
+        , end = parentMatch.end
+        , textStart = parentMatch.textStart
+        , textEnd = parentMatch.textEnd
+        , type_ = parentMatch.type_
+        , text = parentMatch.text
         }
 
 
 prepareChildMatch : MatchModel -> MatchModel -> Match
 prepareChildMatch parentMatch childMatch =
-    { childMatch
-        | start = childMatch.start - parentMatch.textStart
+    Match
+        { start = childMatch.start - parentMatch.textStart
         , end = childMatch.end - parentMatch.textStart
         , textStart = childMatch.textStart - parentMatch.textStart
         , textEnd = childMatch.textEnd - parentMatch.textStart
-    }
-        |> Match
+
+        -- copy other fiels
+        , type_ = childMatch.type_
+        , text = childMatch.text
+        , matches = childMatch.matches
+        }
 
 
 
@@ -1060,9 +1048,9 @@ tokensToMatches : Parser -> Parser
 tokensToMatches =
     applyTTM codeAutolinkTypeHtmlTagTTM
         >> applyTTM htmlElementTTM
-        >> applyTTM linkImageTypeTTM
+        >> applyTTM2 linkImageTypeTTM
         >> applyTTM2 emphasisTTM
-        >> applyTTM lineBreakTTM
+        >> applyTTM2 lineBreakTTM
 
 
 applyTTM : (List Token -> Parser -> Parser) -> Parser -> Parser
@@ -1402,29 +1390,33 @@ isCloseToken htmlModel token =
 -- LinkType, reference link and images have precedence over emphasis
 
 
-linkImageTypeTTM : List Token -> Parser -> Parser
-linkImageTypeTTM tokens model =
-    case tokens of
+linkImageTypeTTM : List Token -> List Token -> List Match -> References -> String -> Parser
+linkImageTypeTTM remaining tokens matches references rawText =
+    case remaining of
         [] ->
-            reverseTokens model
+            { tokens = List.reverse tokens
+            , matches = matches
+            , refs = references
+            , rawText = rawText
+            }
 
         token :: tokensTail ->
             case token.meaning of
                 SquareBracketClose ->
-                    case findToken isLinkTypeOrImageOpenToken model.tokens of
+                    case findToken isLinkTypeOrImageOpenToken tokens of
                         Just found ->
-                            case linkOrImageTypeToMatch token tokensTail model found of
-                                Just ( x, y ) ->
-                                    linkImageTypeTTM x y
+                            case linkOrImageTypeToMatch token tokensTail matches references rawText found of
+                                Just ( x, newMatches, newTokens ) ->
+                                    linkImageTypeTTM x newTokens newMatches references rawText
 
                                 Nothing ->
-                                    linkImageTypeTTM tokensTail model
+                                    linkImageTypeTTM tokensTail tokens matches references rawText
 
                         Nothing ->
-                            linkImageTypeTTM tokensTail model
+                            linkImageTypeTTM tokensTail tokens matches references rawText
 
                 _ ->
-                    linkImageTypeTTM tokensTail (addToken model token)
+                    linkImageTypeTTM tokensTail (token :: tokens) matches references rawText
 
 
 isLinkTypeOrImageOpenToken : Token -> Bool
@@ -1440,18 +1432,18 @@ isLinkTypeOrImageOpenToken token =
             False
 
 
-linkOrImageTypeToMatch : Token -> List Token -> Parser -> ( Token, List Token, List Token ) -> Maybe ( List Token, Parser )
-linkOrImageTypeToMatch closeToken tokensTail model ( openToken, innerTokens, remainTokens ) =
+linkOrImageTypeToMatch : Token -> List Token -> List Match -> References -> String -> ( Token, List Token, List Token ) -> Maybe ( List Token, List Match, List Token )
+linkOrImageTypeToMatch closeToken tokensTail oldMatches references rawText ( openToken, innerTokens, remainTokens ) =
     let
         remainText : String
         remainText =
-            String.dropLeft (closeToken.index + 1) model.rawText
+            String.dropLeft (closeToken.index + 1) rawText
 
         findTempMatch : Bool -> Match
         findTempMatch isLinkType =
             tokenPairToMatch
-                model.refs
-                model.rawText
+                references
+                rawText
                 (\s -> s)
                 (if isLinkType then
                     LinkType ( "", Nothing )
@@ -1463,10 +1455,11 @@ linkOrImageTypeToMatch closeToken tokensTail model ( openToken, innerTokens, rem
                 closeToken
                 (List.reverse innerTokens)
 
-        removeOpenToken : ( List Token, Parser )
+        removeOpenToken : ( List Token, List Match, List Token )
         removeOpenToken =
             ( tokensTail
-            , { model | tokens = innerTokens ++ remainTokens }
+            , oldMatches
+            , innerTokens ++ remainTokens
             )
 
         inactivateLinkOpenToken : Token -> Token
@@ -1484,22 +1477,14 @@ linkOrImageTypeToMatch closeToken tokensTail model ( openToken, innerTokens, rem
                 tempMatch =
                     findTempMatch False
             in
-            case checkForInlineLinkTypeOrImageType remainText tempMatch model.refs of
+            case checkForInlineLinkTypeOrImageType remainText tempMatch references of
                 Nothing ->
                     Just removeOpenToken
 
                 Just match ->
-                    case checkParsedAheadOverlapping match model.matches of
+                    case checkParsedAheadOverlapping match oldMatches of
                         Just matches ->
-                            let
-                                initModel =
-                                    { tokens = remainTokens
-                                    , matches = matches
-                                    , refs = model.refs
-                                    , rawText = model.rawText
-                                    }
-                            in
-                            Just ( removeParsedAheadTokens match tokensTail, initModel )
+                            Just ( removeParsedAheadTokens match tokensTail, matches, remainTokens )
 
                         Nothing ->
                             Just removeOpenToken
@@ -1510,22 +1495,14 @@ linkOrImageTypeToMatch closeToken tokensTail model ( openToken, innerTokens, rem
                 tempMatch =
                     findTempMatch True
             in
-            case checkForInlineLinkTypeOrImageType remainText tempMatch model.refs of
+            case checkForInlineLinkTypeOrImageType remainText tempMatch references of
                 Nothing ->
                     Just removeOpenToken
 
                 Just match ->
-                    case checkParsedAheadOverlapping match model.matches of
+                    case checkParsedAheadOverlapping match oldMatches of
                         Just matches ->
-                            let
-                                initModel =
-                                    { tokens = List.map inactivateLinkOpenToken remainTokens
-                                    , matches = matches
-                                    , refs = model.refs
-                                    , rawText = model.rawText
-                                    }
-                            in
-                            Just ( removeParsedAheadTokens match tokensTail, initModel )
+                            Just ( removeParsedAheadTokens match tokensTail, matches, List.map inactivateLinkOpenToken remainTokens )
 
                         Nothing ->
                             Just removeOpenToken
@@ -1885,28 +1862,23 @@ emphasisToMatch references rawText closeToken tokensTail ( openToken, innerToken
 -- Line Break Tokens To Matches
 
 
-lineBreakTTM : List Token -> Parser -> Parser
-lineBreakTTM tokens model =
-    lineBreakTTMHelp tokens model model.tokens model.matches
-
-
-lineBreakTTMHelp remaining model tokens matches =
+lineBreakTTM remaining tokens matches refs rawText =
     case remaining of
         [] ->
             { tokens = List.reverse tokens
             , matches = matches
-            , refs = model.refs
-            , rawText = model.rawText
+            , refs = refs
+            , rawText = rawText
             }
 
         token :: tokensTail ->
             if token.meaning == HardLineBreakToken then
                 -- NOTE: the origiginal also moved into this branch when
                 -- (token.meaning == SoftLineBreakToken && softAsHardLineBreak
-                lineBreakTTMHelp tokensTail model tokens (tokenToMatch token HardLineBreakType :: matches)
+                lineBreakTTM tokensTail tokens (tokenToMatch token HardLineBreakType :: matches) refs rawText
 
             else
-                lineBreakTTMHelp tokensTail model (token :: tokens) matches
+                lineBreakTTM tokensTail (token :: tokens) matches refs rawText
 
 
 
