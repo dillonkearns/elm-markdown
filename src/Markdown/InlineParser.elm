@@ -405,6 +405,8 @@ underlineEmphasisTokenRegex =
 regMatchToEmphasisToken : Char -> String -> Regex.Match -> Maybe Token
 regMatchToEmphasisToken char rawText regMatch =
     case regMatch.submatches of
+        -- NOTE: the fringes are always at most 1 character!
+        -- Therefore we can use simple matching functions. Regex has too much overhead.
         maybeBackslashes :: maybeLeftFringe :: (Just delimiter) :: maybeRightFringe :: _ ->
             let
                 backslashesLength : Int
@@ -492,6 +494,42 @@ regMatchToEmphasisToken char rawText regMatch =
             Nothing
 
 
+{-| Whitespace characters matched by the `\\s` regex
+-}
+isWhitespace : Char -> Bool
+isWhitespace c =
+    case c of
+        ' ' ->
+            True
+
+        '\u{000C}' ->
+            True
+
+        '\n' ->
+            True
+
+        '\u{000D}' ->
+            True
+
+        '\t' ->
+            True
+
+        '\u{000B}' ->
+            True
+
+        '\u{00A0}' ->
+            True
+
+        '\u{2028}' ->
+            True
+
+        '\u{2029}' ->
+            True
+
+        _ ->
+            False
+
+
 getFringeRank : Maybe String -> Int
 getFringeRank mstring =
     case mstring of
@@ -511,18 +549,98 @@ getFringeRank mstring =
 
 containSpace : String -> Bool
 containSpace =
-    Regex.contains spaceRegex
+    -- NOTE: this is faster than a `\\s` regex
+    String.foldl (\c accum -> accum || isWhitespace c) False
 
 
-spaceRegex : Regex
-spaceRegex =
-    Regex.fromString "\\s"
-        |> Maybe.withDefault Regex.never
-
-
+{-| Punctuation as matched by the regex `[!-#%-\\*,-/:;\\?@\\[-\\]_\\{\\}]`
+-}
 containPunctuation : String -> Bool
 containPunctuation =
-    Regex.contains punctuationRegex
+    -- NOTE: a foldl over a 1-char string is much faster than String.uncons
+    -- because of the allocation cost
+    String.foldl (\c accum -> accum || isPunctuation c) False
+
+
+isPunctuation : Char -> Bool
+isPunctuation c =
+    case c of
+        -- 33 - 35
+        '!' ->
+            True
+
+        '"' ->
+            True
+
+        '#' ->
+            True
+
+        -- 37 - 42
+        '%' ->
+            True
+
+        '&' ->
+            True
+
+        '\'' ->
+            True
+
+        '(' ->
+            True
+
+        ')' ->
+            True
+
+        '*' ->
+            True
+
+        -- 44 - 47
+        ',' ->
+            True
+
+        '-' ->
+            True
+
+        '.' ->
+            True
+
+        '/' ->
+            True
+
+        -- 58 - 59
+        ':' ->
+            True
+
+        ';' ->
+            True
+
+        -- 63 - 64
+        '?' ->
+            True
+
+        '@' ->
+            True
+
+        -- 91, 93
+        '[' ->
+            True
+
+        ']' ->
+            True
+
+        -- 95
+        '_' ->
+            True
+
+        -- 123, 125
+        '{' ->
+            True
+
+        '}' ->
+            True
+
+        _ ->
+            False
 
 
 punctuationRegex : Regex
@@ -1378,17 +1496,6 @@ linkOrImageTypeToMatch closeToken tokensTail model ( openToken, innerTokens, rem
 
                 _ ->
                     token
-
-        linkOpenTokenToInactive : Parser -> Parser
-        linkOpenTokenToInactive model_ =
-            { model_ | tokens = List.map inactivateLinkOpenToken model_.tokens }
-
-        initModel =
-            { tokens = remainTokens
-            , matches = model.matches
-            , refs = model.refs
-            , rawText = model.rawText
-            }
     in
     case openToken.meaning of
         ImageOpenToken ->
@@ -1401,11 +1508,19 @@ linkOrImageTypeToMatch closeToken tokensTail model ( openToken, innerTokens, rem
                     Just removeOpenToken
 
                 Just match ->
-                    case checkParsedAheadOverlapping (addMatch initModel match) of
-                        Ok v ->
-                            Just (removeParsedAheadTokens tokensTail v)
+                    case checkParsedAheadOverlapping match model.matches of
+                        Just matches ->
+                            let
+                                initModel =
+                                    { tokens = remainTokens
+                                    , matches = matches
+                                    , refs = model.refs
+                                    , rawText = model.rawText
+                                    }
+                            in
+                            Just ( removeParsedAheadTokens match tokensTail, initModel )
 
-                        Err _ ->
+                        Nothing ->
                             Just removeOpenToken
 
         -- Active opening: set all before to inactive if found
@@ -1414,22 +1529,25 @@ linkOrImageTypeToMatch closeToken tokensTail model ( openToken, innerTokens, rem
                 tempMatch =
                     findTempMatch True
             in
-            (case checkForInlineLinkTypeOrImageType remainText tempMatch model.refs of
+            case checkForInlineLinkTypeOrImageType remainText tempMatch model.refs of
                 Nothing ->
-                            Just removeOpenToken
+                    Just removeOpenToken
 
                 Just match ->
-                    case checkParsedAheadOverlapping (addMatch initModel match) of
-                        Ok v -> 
-                            v 
-                                |> linkOpenTokenToInactive
-                                |> removeParsedAheadTokens tokensTail
-                                |> Just
+                    case checkParsedAheadOverlapping match model.matches of
+                        Just matches ->
+                            let
+                                initModel =
+                                    { tokens = List.map inactivateLinkOpenToken remainTokens
+                                    , matches = matches
+                                    , refs = model.refs
+                                    , rawText = model.rawText
+                                    }
+                            in
+                            Just ( removeParsedAheadTokens match tokensTail, initModel )
 
-                        Err _ -> 
+                        Nothing ->
                             Just removeOpenToken
-            )
-
 
         -- Inactive opening: just remove open and close tokens
         LinkOpenToken False ->
@@ -1443,77 +1561,35 @@ linkOrImageTypeToMatch closeToken tokensTail model ( openToken, innerTokens, rem
 -- Check if is overlapping previous parsed matches (code, html or autolink)
 
 
-checkParsedAheadOverlapping : Parser -> Result () Parser
-checkParsedAheadOverlapping parser =
-    case parser.matches of
-        [] ->
-            Result.Err ()
+checkParsedAheadOverlapping : Match -> List Match -> Maybe (List Match)
+checkParsedAheadOverlapping (Match match) remainMatches =
+    let
+        overlappingMatches : List Match -> List Match
+        overlappingMatches =
+            List.filter (\(Match testMatch) -> match.end > testMatch.start && match.end < testMatch.end)
+    in
+    if List.isEmpty remainMatches || List.isEmpty (overlappingMatches remainMatches) then
+        Just (Match match :: remainMatches)
 
-        (Match match) :: remainMatches ->
-            let
-                overlappingMatches : List Match
-                overlappingMatches =
-                    List.filter
-                        (\(Match testMatch) ->
-                            match.end
-                                > testMatch.start
-                                && match.end
-                                < testMatch.end
-                        )
-                        remainMatches
-            in
-            if
-                List.isEmpty remainMatches
-                    || List.isEmpty overlappingMatches
-            then
-                Result.Ok parser
-
-            else
-                Result.Err ()
+    else
+        Nothing
 
 
 
 -- Remove tokens inside the parsed ahead regex match
 
 
-removeParsedAheadTokens : List Token -> Parser -> ( List Token, Parser )
-removeParsedAheadTokens tokensTail parser =
-    case parser.matches of
-        [] ->
-            ( tokensTail, parser )
-
-        (Match match) :: _ ->
-            ( List.filter
-                (\token -> token.index >= match.end)
-                tokensTail
-            , parser
-            )
+removeParsedAheadTokens : Match -> List Token -> List Token
+removeParsedAheadTokens (Match match) tokensTail =
+    List.filter (\token -> token.index >= match.end) tokensTail
 
 
 
 -- Inline link or image
-{-
-   checkForInlineLinkTypeOrImageType : String -> Match -> Parser -> Result ( String, Match, Parser ) Parser
-   checkForInlineLinkTypeOrImageType remainText (Match tempMatch) model =
-       Regex.findAtMost 1 inlineLinkTypeOrImageTypeRegex remainText
-           |> List.head
-           |> Maybe.andThen (inlineLinkTypeOrImageTypeRegexToMatch tempMatch model)
-           |> Maybe.map (addMatch model)
-           |> Result.fromMaybe ( remainText, Match tempMatch, model )
--}
 
 
 checkForInlineLinkTypeOrImageType : String -> Match -> References -> Maybe Match
 checkForInlineLinkTypeOrImageType remainText (Match tempMatch) refs =
-    let
-        foo : References -> Maybe Match
-        foo references =
-            let
-                matches =
-                    Regex.findAtMost 1 refLabelRegex remainText
-            in
-            refRegexToMatch tempMatch references (List.head matches)
-    in
     case Regex.findAtMost 1 inlineLinkTypeOrImageTypeRegex remainText of
         first :: _ ->
             case inlineLinkTypeOrImageTypeRegexToMatch tempMatch first of
@@ -1521,10 +1597,19 @@ checkForInlineLinkTypeOrImageType remainText (Match tempMatch) refs =
                     Just match
 
                 Nothing ->
-                    foo refs
+                    checkForInlineReferences remainText (Match tempMatch) refs
 
         [] ->
-            foo refs
+            checkForInlineReferences remainText (Match tempMatch) refs
+
+
+checkForInlineReferences : String -> Match -> References -> Maybe Match
+checkForInlineReferences remainText (Match tempMatch) references =
+    let
+        matches =
+            Regex.findAtMost 1 refLabelRegex remainText
+    in
+    refRegexToMatch tempMatch references (List.head matches)
 
 
 inlineLinkTypeOrImageTypeRegex : Regex

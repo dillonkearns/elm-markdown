@@ -69,10 +69,32 @@ tabRegex =
         |> Maybe.withDefault Regex.never
 
 
+containsAmpersand : String -> Bool
+containsAmpersand string =
+    String.contains "&" string
+
+
 initSpacesRegex : Regex
 initSpacesRegex =
     Regex.fromString "^ +"
         |> Maybe.withDefault Regex.never
+
+
+formatStr : String -> String
+formatStr str =
+    let
+        withEscapes =
+            replaceEscapable str
+    in
+    -- check if there is an  ampersand in the string before attempting expensive regexes
+    if containsAmpersand withEscapes then
+        withEscapes
+            |> Entity.replaceEntities
+            |> Entity.replaceDecimals
+            |> Entity.replaceHexadecimals
+
+    else
+        withEscapes
 
 
 escapableRegex : Regex
@@ -81,25 +103,13 @@ escapableRegex =
         |> Maybe.withDefault Regex.never
 
 
-formatStr : String -> String
-formatStr str =
-    replaceEscapable str
-        |> Entity.replaceEntities
-        |> Entity.replaceDecimals
-        |> Entity.replaceHexadecimals
-
-
 replaceEscapable : String -> String
 replaceEscapable =
-    Regex.replace
-        escapableRegex
+    Regex.replace escapableRegex
         (\regexMatch ->
             case regexMatch.submatches of
                 (Just backslashes) :: (Just escapedStr) :: _ ->
-                    String.repeat
-                        (String.length backslashes // 2)
-                        "\\"
-                        ++ escapedStr
+                    String.repeat (String.length backslashes // 2) "\\" ++ escapedStr
 
                 _ ->
                     regexMatch.match
