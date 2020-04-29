@@ -1,8 +1,10 @@
 module Benchmarks exposing (..)
 
 import Benchmark exposing (Benchmark, describe)
+import Dict
 import Helpers
 import Markdown
+import Markdown.InlineParser
 import Markdown.OrderedList
 import Markdown.Parser
 import Parser
@@ -13,19 +15,31 @@ import ThematicBreak
 
 suite : Benchmark
 suite =
-    {-
-    if True then
-        describe "markdown parsing"
-            [ heading
-            , elmMarkdownExplorationsReadme
-            , withHeadingsAndLists
-            , withHeadingsAndListsAndHtml
-            ]
+    describe "markdown parsing"
+        [ heading
+        , elmMarkdownExplorationsReadme
+        , withHeadingsAndLists
+        , withHeadingsAndListsAndHtml
+        ]
 
-    else
-        succeedOrMap
-    -}
-    describe "" []
+
+compare title markdown =
+    Benchmark.benchmark title
+        (\_ -> Markdown.Parser.parse markdown)
+
+
+explorationsParse =
+    Markdown.toHtmlWith
+        { defaultHighlighting = Just "elm"
+        , githubFlavored =
+            Just
+                { tables = True
+                , breaks = True
+                }
+        , sanitize = False
+        , smartypants = True
+        }
+        []
 
 
 heading =
@@ -112,31 +126,29 @@ withHeadingsAndListsAndHtml =
         |> compare "withHeadingsAndListsAndHtml"
 
 
-compare title markdown =
-    Benchmark.benchmark title
-        (\_ -> Markdown.Parser.parse markdown)
+
+-- SPECIFIC MARKDOWN CONSTRUCTS
 
 
-
---Benchmark.compare "long example"
---    "elm-markdown-decoder"
---    (\_ -> Markdown.Parser.parse markdown)
---    "elm-explorations/markdown"
---    (\_ -> explorationsParse markdown)
+inlines =
+    "*foo* **bar** _baz_ __ __ [linklinklink](foo bar)"
+        |> String.repeat 5
+        |> compare "inlines"
 
 
-explorationsParse =
-    Markdown.toHtmlWith
-        { defaultHighlighting = Just "elm"
-        , githubFlavored =
-            Just
-                { tables = True
-                , breaks = True
-                }
-        , sanitize = False
-        , smartypants = True
-        }
-        []
+tokenize =
+    let
+        input =
+            "*foo* **bar** _baz_ __ __ [linklinklink](foo bar)"
+                |> String.repeat 5
+    in
+    Benchmark.benchmark "tokenize"
+        (\_ -> Markdown.InlineParser.tokenize input)
+
+
+inlineLink =
+    Benchmark.benchmark "inline link"
+        (\_ -> Markdown.InlineParser.parse Dict.empty "[linklinklink](foo bar)")
 
 
 thematicBreak =
@@ -155,6 +167,12 @@ orderedList =
         )
 
 
+
+-- STRING BETWEEN CHARACTERS
+
+
+{-| Conclusion: Chomp is much faster when matching a literal string
+-}
 stringBetweenChars =
     let
         withChomp =
@@ -176,10 +194,16 @@ stringBetweenChars =
         (\_ -> Parser.run withToken "<foo>")
 
 
+
+-- SUCCEED OR MAP
+
+
 type BlankLine
     = BlankLine
 
 
+{-| Conclusion: Map is a bit faster, but can't always be used instead of `succeed`
+-}
 succeedOrMap =
     describe "succeed or map"
         [ let
@@ -215,19 +239,12 @@ succeedOrMap =
         ]
 
 
-isSpaceOrTab : Char -> Bool
-isSpaceOrTab c =
-    case c of
-        ' ' ->
-            True
 
-        '\t' ->
-            True
-
-        _ ->
-            False
+-- SPACE OR TAB
 
 
+{-| Conclusion: Chomp is faster for the tab case, performance is about equal for the space
+-}
 spaceOrTab =
     let
         withChomp =
@@ -244,3 +261,16 @@ spaceOrTab =
         (\_ -> Parser.run withChomp "\t")
         "token"
         (\_ -> Parser.run withToken "\t")
+
+
+isSpaceOrTab : Char -> Bool
+isSpaceOrTab c =
+    case c of
+        ' ' ->
+            True
+
+        '\t' ->
+            True
+
+        _ ->
+            False
