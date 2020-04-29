@@ -1046,7 +1046,7 @@ prepareChildMatch parentMatch childMatch =
 
 tokensToMatches : Parser -> Parser
 tokensToMatches =
-    applyTTM codeAutolinkTypeHtmlTagTTM
+    applyTTM2 codeAutolinkTypeHtmlTagTTM
         >> applyTTM2 htmlElementTTM
         >> applyTTM2 linkImageTypeTTM
         >> applyTTM2 emphasisTTM
@@ -1076,42 +1076,57 @@ applyTTM2 finderFunction model =
 -- CodeType spans, HTML tags, and autolinks have the same precedence
 
 
-codeAutolinkTypeHtmlTagTTM : List Token -> Parser -> Parser
-codeAutolinkTypeHtmlTagTTM tokens model =
-    case tokens of
+codeAutolinkTypeHtmlTagTTM : List Token -> List Token -> List Match -> References -> String -> Parser
+codeAutolinkTypeHtmlTagTTM remaining tokens matches references rawText =
+    case remaining of
         [] ->
-            reverseTokens model
+            { tokens = List.reverse tokens
+            , matches = matches
+            , refs = references
+            , rawText = rawText
+            }
 
         token :: tokensTail ->
             case token.meaning of
                 CodeToken isEscaped ->
-                    codeAutolinkTypeHtmlTagTTM tokensTail <|
-                        case findToken (isCodeTokenPair token) model.tokens of
-                            Just code ->
-                                codeToMatch token model code
+                    case findToken (isCodeTokenPair token) tokens of
+                        Just code ->
+                            let
+                                ( newTokens, newMatches ) =
+                                    codeToMatch token matches references rawText code
+                            in
+                            codeAutolinkTypeHtmlTagTTM tokensTail newTokens newMatches references rawText
 
-                            Nothing ->
-                                addToken model token
+                        Nothing ->
+                            codeAutolinkTypeHtmlTagTTM tokensTail (token :: tokens) matches references rawText
 
                 AngleBracketClose isEscaped ->
-                    codeAutolinkTypeHtmlTagTTM tokensTail <|
-                        case findToken (\t -> t.meaning == AngleBracketOpen) model.tokens of
-                            Just (( openToken, _, remainTokens ) as found) ->
-                                case angleBracketsToMatch token isEscaped model found of
-                                    Just newModel ->
-                                        newModel
-                                            |> filterTokens (\t -> t.meaning /= AngleBracketOpen)
+                    case findToken (\t -> t.meaning == AngleBracketOpen) tokens of
+                        Just found ->
+                            case angleBracketsToMatch token isEscaped matches references rawText found of
+                                Just ( newTokens, newMatches ) ->
+                                    codeAutolinkTypeHtmlTagTTM tokensTail
+                                        (List.filter (\t -> t.meaning /= AngleBracketOpen) newTokens)
+                                        newMatches
+                                        references
+                                        rawText
 
-                                    Nothing ->
-                                        model
-                                            |> filterTokens (\t -> t.meaning /= AngleBracketOpen)
+                                Nothing ->
+                                    codeAutolinkTypeHtmlTagTTM tokensTail
+                                        (List.filter (\t -> t.meaning /= AngleBracketOpen) tokens)
+                                        matches
+                                        references
+                                        rawText
 
-                            Nothing ->
-                                model
-                                    |> filterTokens (\t -> t.meaning /= AngleBracketOpen)
+                        Nothing ->
+                            codeAutolinkTypeHtmlTagTTM tokensTail
+                                (List.filter (\t -> t.meaning /= AngleBracketOpen) tokens)
+                                matches
+                                references
+                                rawText
 
                 _ ->
-                    codeAutolinkTypeHtmlTagTTM tokensTail (addToken model token)
+                    codeAutolinkTypeHtmlTagTTM tokensTail (token :: tokens) matches references rawText
 
 
 
@@ -1133,8 +1148,8 @@ isCodeTokenPair closeToken openToken =
             False
 
 
-codeToMatch : Token -> Parser -> ( Token, List Token, List Token ) -> Parser
-codeToMatch closeToken model ( openToken, _, remainTokens ) =
+codeToMatch : Token -> List Match -> References -> String -> ( Token, List Token, List Token ) -> ( List Token, List Match )
+codeToMatch closeToken matches references rawText ( openToken, _, remainTokens ) =
     let
         -- If open token is escaped, ignore first '`'
         updtOpenToken : Token
@@ -1148,44 +1163,37 @@ codeToMatch closeToken model ( openToken, _, remainTokens ) =
             else
                 openToken
     in
-    { model
-        | matches =
-            tokenPairToMatch
-                model.refs
-                model.rawText
-                cleanWhitespaces
-                CodeType
-                updtOpenToken
-                closeToken
-                []
-                :: model.matches
-        , tokens = remainTokens
-    }
+    ( remainTokens
+    , tokenPairToMatch
+        references
+        rawText
+        cleanWhitespaces
+        CodeType
+        updtOpenToken
+        closeToken
+        []
+        :: matches
+    )
 
 
 
 -- AutolinkTypes & HTML
 
 
-angleBracketsToMatch : Token -> Bool -> Parser -> ( Token, List Token, List Token ) -> Maybe Parser
-angleBracketsToMatch closeToken isEscaped model ( openToken, _, remainTokens ) =
+angleBracketsToMatch : Token -> Bool -> List Match -> References -> String -> ( Token, List Token, List Token ) -> Maybe ( List Token, List Match )
+angleBracketsToMatch closeToken isEscaped matches references rawText ( openToken, _, remainTokens ) =
     let
         result =
-            tokenPairToMatch model.refs model.rawText (\s -> s) CodeType openToken closeToken []
+            tokenPairToMatch references rawText (\s -> s) CodeType openToken closeToken []
                 |> autolinkToMatch
                 |> ifError emailAutolinkTypeToMatch
     in
     case result of
         Result.Err tempMatch ->
             if not isEscaped then
-                case htmlToToken model.rawText tempMatch of
+                case htmlToToken rawText tempMatch of
                     Just newToken ->
-                        Just
-                            { tokens = newToken :: remainTokens
-                            , matches = model.matches
-                            , refs = model.refs
-                            , rawText = model.rawText
-                            }
+                        Just ( newToken :: remainTokens, matches )
 
                     Nothing ->
                         Nothing
@@ -1194,12 +1202,7 @@ angleBracketsToMatch closeToken isEscaped model ( openToken, _, remainTokens ) =
                 Nothing
 
         Result.Ok newMatch ->
-            Just
-                { matches = newMatch :: model.matches
-                , tokens = remainTokens
-                , refs = model.refs
-                , rawText = model.rawText
-                }
+            Just ( remainTokens, newMatch :: matches )
 
 
 
