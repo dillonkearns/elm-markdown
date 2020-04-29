@@ -71,29 +71,24 @@ initParser refs rawText =
 
 
 parse : References -> String -> List Inline
-parse refs rawText =
+parse refs rawText_ =
     let
-        tokens =
-            tokenize (String.trim rawText)
+        rawText =
+            String.trim rawText_
 
-        parser =
-            { rawText = String.trim rawText
-            , tokens = tokens
-            , matches = []
-            , refs = refs
-            }
+        tokens =
+            tokenize rawText
     in
-    parser
-        |> tokensToMatches
-        |> organizeParserMatches
-        |> parseText
+    tokensToMatches tokens [] refs rawText
         |> .matches
+        |> organizeMatches
+        |> parseTextMatches rawText []
         |> matchesToInlines
 
 
 parseText : Parser -> Parser
 parseText model =
-    { matches = parseTextMatches model.rawText [] model.matches
+    { matches = model.matches
     , rawText = model.rawText
     , tokens = model.tokens
     , refs = model.refs
@@ -270,7 +265,7 @@ tokenPairToMatch references rawText processText type_ openToken closeToken inner
                     , refs = references
                     }
             in
-            tokensToMatches initialModel
+            tokensToMatches innerTokens [] references rawText
                 |> .matches
                 |> List.map
                     (\(Match matchModel) ->
@@ -957,15 +952,6 @@ type Type
     | EmphasisType Int -- Tag length
 
 
-organizeParserMatches : Parser -> Parser
-organizeParserMatches model =
-    { matches = organizeMatches model.matches
-    , tokens = model.tokens
-    , refs = model.refs
-    , rawText = model.rawText
-    }
-
-
 organizeMatches : List Match -> List Match
 organizeMatches matches =
     case List.sortBy (\(Match match) -> match.start) matches of
@@ -1044,31 +1030,9 @@ prepareChildMatch parentMatch childMatch =
 -- Transform Tokens to Matches (TTM)
 
 
-tokensToMatches : Parser -> Parser
-tokensToMatches =
-    applyTTM2 codeAutolinkTypeHtmlTagTTM
-        >> applyTTM2 htmlElementTTM
-        >> applyTTM2 linkImageTypeTTM
-        >> applyTTM2 emphasisTTM
-        >> applyTTM2 lineBreakTTM
-
-
-applyTTM : (List Token -> Parser -> Parser) -> Parser -> Parser
-applyTTM finderFunction model =
-    let
-        newModel =
-            { rawText = model.rawText
-            , tokens = []
-            , matches = model.matches
-            , refs = model.refs
-            }
-    in
-    finderFunction model.tokens newModel
-
-
-applyTTM2 : (List Token -> List Token -> List Match -> References -> String -> Parser) -> Parser -> Parser
-applyTTM2 finderFunction model =
-    finderFunction model.tokens [] model.matches model.refs model.rawText
+tokensToMatches : List Token -> List Match -> References -> String -> Parser
+tokensToMatches tokens matches references rawText =
+    codeAutolinkTypeHtmlTagTTM tokens [] matches references rawText
 
 
 
@@ -1080,11 +1044,7 @@ codeAutolinkTypeHtmlTagTTM : List Token -> List Token -> List Match -> Reference
 codeAutolinkTypeHtmlTagTTM remaining tokens matches references rawText =
     case remaining of
         [] ->
-            { tokens = List.reverse tokens
-            , matches = matches
-            , refs = references
-            , rawText = rawText
-            }
+            htmlElementTTM (List.reverse tokens) [] matches references rawText
 
         token :: tokensTail ->
             case token.meaning of
@@ -1314,11 +1274,7 @@ htmlElementTTM : List Token -> List Token -> List Match -> References -> String 
 htmlElementTTM remaining tokens matches references rawText =
     case remaining of
         [] ->
-            { tokens = List.reverse tokens
-            , matches = matches
-            , refs = references
-            , rawText = rawText
-            }
+            linkImageTypeTTM (List.reverse tokens) [] matches references rawText
 
         token :: tokensTail ->
             case token.meaning of
@@ -1402,11 +1358,7 @@ linkImageTypeTTM : List Token -> List Token -> List Match -> References -> Strin
 linkImageTypeTTM remaining tokens matches references rawText =
     case remaining of
         [] ->
-            { tokens = List.reverse tokens
-            , matches = matches
-            , refs = references
-            , rawText = rawText
-            }
+            emphasisTTM (List.reverse tokens) [] matches references rawText
 
         token :: tokensTail ->
             case token.meaning of
@@ -1734,7 +1686,7 @@ emphasisTTM : List Token -> List Token -> List Match -> References -> String -> 
 emphasisTTM remaining tokens matches references rawText =
     case remaining of
         [] ->
-            { tokens = List.reverse tokens, matches = matches, refs = references, rawText = rawText }
+            lineBreakTTM (List.reverse tokens) [] matches references rawText
 
         token :: tokensTail ->
             case token.meaning of
