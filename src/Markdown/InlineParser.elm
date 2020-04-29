@@ -1,69 +1,12 @@
 module Markdown.InlineParser exposing (parse, query, tokenize, walk)
 
-import Dict exposing (Dict)
+import Dict
 import HtmlParser
-import Markdown.Helpers exposing (Attribute, References, cleanWhitespaces, formatStr, ifError, insideSquareBracketRegex, isEven, lineEndChars, prepareRefLabel, returnFirstJust, titleRegex, whiteSpaceChars)
-import Markdown.Inline exposing (..)
-import Parser.Advanced as Advanced exposing ((|.), (|=))
+import Markdown.Helpers exposing (References, cleanWhitespaces, formatStr, ifError, insideSquareBracketRegex, isEven, lineEndChars, prepareRefLabel, returnFirstJust, titleRegex, whiteSpaceChars)
+import Markdown.Inline exposing (Inline(..))
+import Parser.Advanced as Advanced exposing ((|=))
 import Regex exposing (Regex)
 import Url
-
-
-
--- Parser Model & Helpers
-
-
-type alias Parser =
-    { rawText : String
-    , tokens : List Token
-    , matches : List Match
-    , refs : References
-    }
-
-
-addMatch : Parser -> Match -> Parser
-addMatch model match =
-    { rawText = model.rawText
-    , tokens = model.tokens
-    , matches = match :: model.matches
-    , refs = model.refs
-    }
-
-
-addToken : Parser -> Token -> Parser
-addToken model token =
-    { rawText = model.rawText
-    , tokens = token :: model.tokens
-    , matches = model.matches
-    , refs = model.refs
-    }
-
-
-filterTokens : (Token -> Bool) -> Parser -> Parser
-filterTokens filter model =
-    { rawText = model.rawText
-    , tokens = List.filter filter model.tokens
-    , matches = model.matches
-    , refs = model.refs
-    }
-
-
-reverseTokens : Parser -> Parser
-reverseTokens model =
-    { rawText = model.rawText
-    , tokens = List.reverse model.tokens
-    , matches = model.matches
-    , refs = model.refs
-    }
-
-
-initParser : References -> String -> Parser
-initParser refs rawText =
-    { rawText = rawText
-    , tokens = []
-    , matches = []
-    , refs = refs
-    }
 
 
 
@@ -80,19 +23,9 @@ parse refs rawText_ =
             tokenize rawText
     in
     tokensToMatches tokens [] refs rawText
-        |> .matches
         |> organizeMatches
         |> parseTextMatches rawText []
         |> matchesToInlines
-
-
-parseText : Parser -> Parser
-parseText model =
-    { matches = model.matches
-    , rawText = model.rawText
-    , tokens = model.tokens
-    , refs = model.refs
-    }
 
 
 parseTextMatches : String -> List Match -> List Match -> List Match
@@ -186,15 +119,30 @@ type alias Token =
     }
 
 
+type Escaped
+    = Escaped
+    | NotEscaped
+
+
+type Active
+    = Active
+    | Inactive
+
+
+type Opening
+    = Opening
+    | NotOpening
+
+
 type Meaning
-    = CodeToken Bool -- isEscaped
-    | LinkOpenToken Bool -- isActive
+    = CodeToken Escaped
+    | LinkOpenToken Active
     | ImageOpenToken
     | SquareBracketClose
     | AngleBracketOpen
-    | AngleBracketClose Bool -- isEscaped
-    | HtmlToken Bool HtmlModel -- isOpening
-    | EmphasisToken Char ( Int, Int ) -- ( leftFringeRank, rightFringeRank )
+    | AngleBracketClose Escaped
+    | HtmlToken Opening HtmlModel
+    | EmphasisToken Char { leftFringeRank : Int, rightFringeRank : Int }
     | SoftLineBreakToken
     | HardLineBreakToken
 
@@ -257,16 +205,7 @@ tokenPairToMatch references rawText processText type_ openToken closeToken inner
 
         matches : List Match
         matches =
-            let
-                initialModel =
-                    { tokens = innerTokens
-                    , matches = []
-                    , rawText = rawText
-                    , refs = references
-                    }
-            in
             tokensToMatches innerTokens [] references rawText
-                |> .matches
                 |> List.map
                     (\(Match matchModel) ->
                         prepareChildMatch match matchModel
@@ -285,15 +224,15 @@ tokenPairToMatch references rawText processText type_ openToken closeToken inner
 
 tokenToMatch : Token -> Type -> Match
 tokenToMatch token type_ =
-    { type_ = type_
-    , start = token.index
-    , end = token.index + token.length
-    , textStart = 0
-    , textEnd = 0
-    , text = ""
-    , matches = []
-    }
-        |> Match
+    Match
+        { type_ = type_
+        , start = token.index
+        , end = token.index + token.length
+        , textStart = 0
+        , textEnd = 0
+        , text = ""
+        , matches = []
+        }
 
 
 
@@ -362,7 +301,12 @@ regMatchToCodeToken regMatch =
             Just
                 { index = regMatch.index + backslashesLength
                 , length = String.length backtick
-                , meaning = CodeToken (not (isEven backslashesLength))
+                , meaning =
+                    if isEven backslashesLength then
+                        CodeToken NotEscaped
+
+                    else
+                        CodeToken Escaped
                 }
 
         _ ->
@@ -482,7 +426,7 @@ regMatchToEmphasisToken char rawText regMatch =
                 Just
                     { index = index
                     , length = delimiterLength
-                    , meaning = EmphasisToken char ( lFringeRank, rFringeRank )
+                    , meaning = EmphasisToken char { leftFringeRank = lFringeRank, rightFringeRank = rFringeRank }
                     }
 
         _ ->
@@ -679,7 +623,7 @@ regMatchToLinkImageOpenToken regMatch =
                         Just
                             { index = index
                             , length = 1
-                            , meaning = LinkOpenToken True
+                            , meaning = LinkOpenToken Active
                             }
 
                     Nothing ->
@@ -698,7 +642,7 @@ regMatchToLinkImageOpenToken regMatch =
                         Just
                             { index = index
                             , length = 1
-                            , meaning = LinkOpenToken True
+                            , meaning = LinkOpenToken Active
                             }
 
         _ ->
@@ -769,8 +713,11 @@ regMatchToAngleBracketRToken regMatch =
                 { index = regMatch.index + backslashesLength
                 , length = 1
                 , meaning =
-                    AngleBracketClose
-                        (not (isEven backslashesLength))
+                    if isEven backslashesLength then
+                        AngleBracketClose NotEscaped
+
+                    else
+                        AngleBracketClose Escaped
                 }
 
         _ ->
@@ -1030,7 +977,7 @@ prepareChildMatch parentMatch childMatch =
 -- Transform Tokens to Matches (TTM)
 
 
-tokensToMatches : List Token -> List Match -> References -> String -> Parser
+tokensToMatches : List Token -> List Match -> References -> String -> List Match
 tokensToMatches tokens matches references rawText =
     codeAutolinkTypeHtmlTagTTM tokens [] matches references rawText
 
@@ -1040,7 +987,7 @@ tokensToMatches tokens matches references rawText =
 -- CodeType spans, HTML tags, and autolinks have the same precedence
 
 
-codeAutolinkTypeHtmlTagTTM : List Token -> List Token -> List Match -> References -> String -> Parser
+codeAutolinkTypeHtmlTagTTM : List Token -> List Token -> List Match -> References -> String -> List Match
 codeAutolinkTypeHtmlTagTTM remaining tokens matches references rawText =
     case remaining of
         [] ->
@@ -1061,26 +1008,35 @@ codeAutolinkTypeHtmlTagTTM remaining tokens matches references rawText =
                             codeAutolinkTypeHtmlTagTTM tokensTail (token :: tokens) matches references rawText
 
                 AngleBracketClose isEscaped ->
-                    case findToken (\t -> t.meaning == AngleBracketOpen) tokens of
+                    let
+                        isAngleBracketOpen { meaning } =
+                            case meaning of
+                                AngleBracketOpen ->
+                                    True
+
+                                _ ->
+                                    False
+                    in
+                    case findToken isAngleBracketOpen tokens of
                         Just found ->
                             case angleBracketsToMatch token isEscaped matches references rawText found of
                                 Just ( newTokens, newMatches ) ->
                                     codeAutolinkTypeHtmlTagTTM tokensTail
-                                        (List.filter (\t -> t.meaning /= AngleBracketOpen) newTokens)
+                                        (List.filter (not << isAngleBracketOpen) newTokens)
                                         newMatches
                                         references
                                         rawText
 
                                 Nothing ->
                                     codeAutolinkTypeHtmlTagTTM tokensTail
-                                        (List.filter (\t -> t.meaning /= AngleBracketOpen) tokens)
+                                        (List.filter (not << isAngleBracketOpen) tokens)
                                         matches
                                         references
                                         rawText
 
                         Nothing ->
                             codeAutolinkTypeHtmlTagTTM tokensTail
-                                (List.filter (\t -> t.meaning /= AngleBracketOpen) tokens)
+                                (List.filter (not << isAngleBracketOpen) tokens)
                                 matches
                                 references
                                 rawText
@@ -1096,13 +1052,12 @@ codeAutolinkTypeHtmlTagTTM remaining tokens matches references rawText =
 isCodeTokenPair : Token -> Token -> Bool
 isCodeTokenPair closeToken openToken =
     case openToken.meaning of
-        CodeToken isEscaped ->
-            -- If open token is escaped, ignore first '`'
-            if isEscaped then
-                openToken.length - 1 == closeToken.length
+        -- If open token is escaped, ignore first '`'
+        CodeToken Escaped ->
+            openToken.length - 1 == closeToken.length
 
-            else
-                openToken.length == closeToken.length
+        CodeToken NotEscaped ->
+            openToken.length == closeToken.length
 
         _ ->
             False
@@ -1112,27 +1067,30 @@ codeToMatch : Token -> List Match -> References -> String -> ( Token, List Token
 codeToMatch closeToken matches references rawText ( openToken, _, remainTokens ) =
     let
         -- If open token is escaped, ignore first '`'
-        updtOpenToken : Token
-        updtOpenToken =
-            if openToken.meaning == CodeToken True then
-                { openToken
-                    | index = openToken.index + 1
-                    , length = openToken.length - 1
-                }
+        updatedOpenToken : Token
+        updatedOpenToken =
+            case openToken.meaning of
+                CodeToken Escaped ->
+                    { openToken
+                        | index = openToken.index + 1
+                        , length = openToken.length - 1
+                    }
 
-            else
-                openToken
+                _ ->
+                    openToken
+
+        match =
+            tokenPairToMatch
+                references
+                rawText
+                cleanWhitespaces
+                CodeType
+                updatedOpenToken
+                closeToken
+                []
     in
     ( remainTokens
-    , tokenPairToMatch
-        references
-        rawText
-        cleanWhitespaces
-        CodeType
-        updtOpenToken
-        closeToken
-        []
-        :: matches
+    , match :: matches
     )
 
 
@@ -1140,8 +1098,8 @@ codeToMatch closeToken matches references rawText ( openToken, _, remainTokens )
 -- AutolinkTypes & HTML
 
 
-angleBracketsToMatch : Token -> Bool -> List Match -> References -> String -> ( Token, List Token, List Token ) -> Maybe ( List Token, List Match )
-angleBracketsToMatch closeToken isEscaped matches references rawText ( openToken, _, remainTokens ) =
+angleBracketsToMatch : Token -> Escaped -> List Match -> References -> String -> ( Token, List Token, List Token ) -> Maybe ( List Token, List Match )
+angleBracketsToMatch closeToken escaped matches references rawText ( openToken, _, remainTokens ) =
     let
         result =
             tokenPairToMatch references rawText (\s -> s) CodeType openToken closeToken []
@@ -1150,16 +1108,17 @@ angleBracketsToMatch closeToken isEscaped matches references rawText ( openToken
     in
     case result of
         Result.Err tempMatch ->
-            if not isEscaped then
-                case htmlToToken rawText tempMatch of
-                    Just newToken ->
-                        Just ( newToken :: remainTokens, matches )
+            case escaped of
+                NotEscaped ->
+                    case htmlToToken rawText tempMatch of
+                        Just newToken ->
+                            Just ( newToken :: remainTokens, matches )
 
-                    Nothing ->
-                        Nothing
+                        Nothing ->
+                            Nothing
 
-            else
-                Nothing
+                Escaped ->
+                    Nothing
 
         Result.Ok newMatch ->
             Just ( remainTokens, newMatch :: matches )
@@ -1258,7 +1217,7 @@ htmlToToken rawText (Match match) =
         Ok { htmlTag, length } ->
             let
                 htmlToken =
-                    HtmlToken False htmlTag
+                    HtmlToken NotOpening htmlTag
             in
             Just
                 { index = match.start
@@ -1266,11 +1225,11 @@ htmlToToken rawText (Match match) =
                 , meaning = htmlToken
                 }
 
-        Err error ->
+        Err _ ->
             Nothing
 
 
-htmlElementTTM : List Token -> List Token -> List Match -> References -> String -> Parser
+htmlElementTTM : List Token -> List Token -> List Match -> References -> String -> List Match
 htmlElementTTM remaining tokens matches references rawText =
     case remaining of
         [] ->
@@ -1279,31 +1238,33 @@ htmlElementTTM remaining tokens matches references rawText =
         token :: tokensTail ->
             case token.meaning of
                 HtmlToken isOpen htmlModel ->
-                    if isVoidTag htmlModel || not isOpen then
-                        htmlElementTTM tokensTail
-                            tokens
-                            (tokenToMatch token (HtmlType htmlModel) :: matches)
-                            references
-                            rawText
+                    -- NOTE: should we also entered this branch for void tags?
+                    case isOpen of
+                        NotOpening ->
+                            htmlElementTTM tokensTail
+                                tokens
+                                (tokenToMatch token (HtmlType htmlModel) :: matches)
+                                references
+                                rawText
 
-                    else
-                        case findToken (isCloseToken htmlModel) tokensTail of
-                            Nothing ->
-                                htmlElementTTM tokensTail tokens (tokenToMatch token (HtmlType htmlModel) :: matches) references rawText
+                        Opening ->
+                            case findToken (isCloseToken htmlModel) tokensTail of
+                                Nothing ->
+                                    htmlElementTTM tokensTail tokens (tokenToMatch token (HtmlType htmlModel) :: matches) references rawText
 
-                            Just ( closeToken, innerTokens, newTail ) ->
-                                let
-                                    newMatch =
-                                        tokenPairToMatch
-                                            references
-                                            rawText
-                                            (\s -> s)
-                                            (HtmlType htmlModel)
-                                            token
-                                            closeToken
-                                            innerTokens
-                                in
-                                htmlElementTTM newTail tokens (newMatch :: matches) references rawText
+                                Just ( closeToken, innerTokens, newTail ) ->
+                                    let
+                                        newMatch =
+                                            tokenPairToMatch
+                                                references
+                                                rawText
+                                                (\s -> s)
+                                                (HtmlType htmlModel)
+                                                token
+                                                closeToken
+                                                innerTokens
+                                    in
+                                    htmlElementTTM newTail tokens (newMatch :: matches) references rawText
 
                 _ ->
                     htmlElementTTM tokensTail (token :: tokens) matches references rawText
@@ -1312,11 +1273,8 @@ htmlElementTTM remaining tokens matches references rawText =
 isVoidTag : HtmlModel -> Bool
 isVoidTag htmlModel =
     -- TODO should I use this later?
+    --List.member htmlModel.tag voidHtmlTags
     False
-
-
-
---List.member htmlModel.tag voidHtmlTags
 
 
 voidHtmlTags : List String
@@ -1354,7 +1312,7 @@ isCloseToken htmlModel token =
 -- LinkType, reference link and images have precedence over emphasis
 
 
-linkImageTypeTTM : List Token -> List Token -> List Match -> References -> String -> Parser
+linkImageTypeTTM : List Token -> List Token -> List Match -> References -> String -> List Match
 linkImageTypeTTM remaining tokens matches references rawText =
     case remaining of
         [] ->
@@ -1426,7 +1384,7 @@ linkOrImageTypeToMatch closeToken tokensTail oldMatches references rawText ( ope
         inactivateLinkOpenToken token =
             case token.meaning of
                 LinkOpenToken _ ->
-                    { token | meaning = LinkOpenToken False }
+                    { token | meaning = LinkOpenToken Inactive }
 
                 _ ->
                     token
@@ -1450,7 +1408,7 @@ linkOrImageTypeToMatch closeToken tokensTail oldMatches references rawText ( ope
                             Just removeOpenToken
 
         -- Active opening: set all before to inactive if found
-        LinkOpenToken True ->
+        LinkOpenToken Active ->
             let
                 tempMatch =
                     findTempMatch True
@@ -1468,7 +1426,7 @@ linkOrImageTypeToMatch closeToken tokensTail oldMatches references rawText ( ope
                             Just removeOpenToken
 
         -- Inactive opening: just remove open and close tokens
-        LinkOpenToken False ->
+        LinkOpenToken Inactive ->
             Just removeOpenToken
 
         _ ->
@@ -1649,12 +1607,13 @@ refRegexToMatch matchModel references maybeRegexMatch =
                         _ ->
                             LinkType (prepareUrlAndTitle rawUrl maybeTitle)
             in
-            Just <|
+            Just (
                 Match
                     { matchModel
                         | type_ = type_
                         , end = matchModel.end + regexMatchLength
                     }
+                    )
 
 
 encodeUrl : String -> String
@@ -1682,7 +1641,7 @@ decodeUrlRegex =
 -- EmphasisType Tokens To Matches
 
 
-emphasisTTM : List Token -> List Token -> List Match -> References -> String -> Parser
+emphasisTTM : List Token -> List Token -> List Match -> References -> String -> List Match
 emphasisTTM remaining tokens matches references rawText =
     case remaining of
         [] ->
@@ -1690,22 +1649,24 @@ emphasisTTM remaining tokens matches references rawText =
 
         token :: tokensTail ->
             case token.meaning of
-                EmphasisToken char ( leftRank, rightRank ) ->
+                EmphasisToken char { leftFringeRank, rightFringeRank } ->
                     -- Close or opening token
-                    if leftRank == rightRank then
+                    if leftFringeRank == rightFringeRank then
                         -- If 1) is not surrounded by whitespace and
                         --    2) is not '_' or is surronded by puntuaction
                         -- is a close or opening tag
-                        if rightRank /= 0 && (char /= '_' || rightRank == 1) then
+                        if rightFringeRank /= 0 && (char /= '_' || rightFringeRank == 1) then
                             -- Search for opening tag and add
                             -- match if the sum of lengths
                             -- is not multiple of 3, otherwise add
                             -- opening tag
                             case findToken (isOpenEmphasisToken token) tokens of
                                 Just found ->
-                                    case emphasisToMatch references rawText token tokensTail found of
-                                        ( x, y, z ) ->
-                                            emphasisTTM x z (y :: matches) references rawText
+                                    let
+                                        ( newRemaining, match, newTokens ) =
+                                            emphasisToMatch references rawText token tokensTail found
+                                    in
+                                    emphasisTTM newRemaining newTokens (match :: matches) references rawText
 
                                 Nothing ->
                                     emphasisTTM tokensTail (token :: tokens) matches references rawText
@@ -1713,7 +1674,7 @@ emphasisTTM remaining tokens matches references rawText =
                         else
                             emphasisTTM tokensTail tokens matches references rawText
 
-                    else if leftRank < rightRank then
+                    else if leftFringeRank < rightFringeRank then
                         -- Opening token
                         emphasisTTM tokensTail (token :: tokens) matches references rawText
 
@@ -1721,9 +1682,11 @@ emphasisTTM remaining tokens matches references rawText =
                         -- Closing token
                         case findToken (isOpenEmphasisToken token) tokens of
                             Just found ->
-                                case emphasisToMatch references rawText token tokensTail found of
-                                    ( x, y, z ) ->
-                                        emphasisTTM x z (y :: matches) references rawText
+                                let
+                                    ( newRemaining, match, newTokens ) =
+                                        emphasisToMatch references rawText token tokensTail found
+                                in
+                                emphasisTTM newRemaining newTokens (match :: matches) references rawText
 
                             Nothing ->
                                 emphasisTTM tokensTail tokens matches references rawText
@@ -1735,11 +1698,11 @@ emphasisTTM remaining tokens matches references rawText =
 isOpenEmphasisToken : Token -> Token -> Bool
 isOpenEmphasisToken closeToken openToken =
     case openToken.meaning of
-        EmphasisToken openChar ( openLR, openRR ) ->
+        EmphasisToken openChar open ->
             case closeToken.meaning of
-                EmphasisToken closeChar ( closeLR, closeRR ) ->
+                EmphasisToken closeChar close ->
                     if openChar == closeChar then
-                        if openLR == openRR || closeLR == closeRR then
+                        if open.leftFringeRank == open.rightFringeRank || close.leftFringeRank == close.rightFringeRank then
                             -- if the sum of lengths
                             -- is not multiple of 3
                             -- is Open emphasis
@@ -1822,23 +1785,21 @@ emphasisToMatch references rawText closeToken tokensTail ( openToken, innerToken
 -- Line Break Tokens To Matches
 
 
+lineBreakTTM : List Token -> List Token -> List Match -> References -> String -> List Match
 lineBreakTTM remaining tokens matches refs rawText =
     case remaining of
         [] ->
-            { tokens = List.reverse tokens
-            , matches = matches
-            , refs = refs
-            , rawText = rawText
-            }
+            matches
 
         token :: tokensTail ->
-            if token.meaning == HardLineBreakToken then
-                -- NOTE: the origiginal also moved into this branch when
-                -- (token.meaning == SoftLineBreakToken && softAsHardLineBreak
-                lineBreakTTM tokensTail tokens (tokenToMatch token HardLineBreakType :: matches) refs rawText
+            case token.meaning of
+                HardLineBreakToken ->
+                    -- NOTE: the origiginal also moved into this branch when
+                    -- (token.meaning == SoftLineBreakToken && softAsHardLineBreak
+                    lineBreakTTM tokensTail tokens (tokenToMatch token HardLineBreakType :: matches) refs rawText
 
-            else
-                lineBreakTTM tokensTail (token :: tokens) matches refs rawText
+                _ ->
+                    lineBreakTTM tokensTail (token :: tokens) matches refs rawText
 
 
 
