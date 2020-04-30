@@ -16,18 +16,17 @@ type alias ListItem =
     String
 
 
-parser : Maybe RawBlock -> Parser ( Int, List ListItem )
-parser lastBlock =
+parser : Bool -> Parser ( Int, List ListItem )
+parser previousWasBody =
     succeed parseSubsequentItems
         -- NOTE this is only a list item when there is at least one space after the marker
         -- so the first parts must be backtrackable.
         |= backtrackable
-            (case lastBlock of
-                Just (Body _) ->
-                    positiveIntegerMaxOf9Digits |> andThen validateStartsWith1
+            (if previousWasBody then
+                positiveIntegerMaxOf9Digits |> andThen validateStartsWith1
 
-                _ ->
-                    positiveIntegerMaxOf9Digits
+             else
+                positiveIntegerMaxOf9Digits
             )
         |= backtrackable
             (Advanced.oneOf

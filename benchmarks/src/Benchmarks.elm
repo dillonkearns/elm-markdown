@@ -159,7 +159,7 @@ thematicBreak =
 orderedList =
     Benchmark.benchmark "thematic break"
         (\_ ->
-            Advanced.run (Markdown.OrderedList.parser Nothing)
+            Advanced.run (Markdown.OrderedList.parser False)
                 """1. foo bar
             2. stuff stuff
             3. milk, eggs

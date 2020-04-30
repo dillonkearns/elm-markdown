@@ -397,9 +397,9 @@ unorderedListBlock =
         |> map (List.map parseListItem >> UnorderedListBlock)
 
 
-orderedListBlock : Maybe RawBlock -> Parser RawBlock
-orderedListBlock lastBlock =
-    Markdown.OrderedList.parser lastBlock
+orderedListBlock : Bool -> Parser RawBlock
+orderedListBlock previousWasBody =
+    Markdown.OrderedList.parser previousWasBody
         |> map (\( startingIndex, unparsedLines ) -> OrderedListBlock startingIndex (List.map UnparsedInlines unparsedLines))
 
 
@@ -581,7 +581,7 @@ rawBlockParser =
         { linkReferenceDefinitions = []
         , rawBlocks = []
         }
-        statementsHelp2
+        stepRawBlock
 
 
 parseAllInlines : State -> Result Parser.Problem (List Block)
@@ -645,16 +645,16 @@ possiblyMergeBlocks state newRawBlock =
     }
 
 
-statementsHelp2 : State -> Parser (Step State State)
-statementsHelp2 revStmts =
+stepRawBlock : State -> Parser (Step State State)
+stepRawBlock revStmts =
     let
-        indentedCodeParser =
+        previousWasBody =
             case revStmts.rawBlocks of
                 (Body _) :: _ ->
-                    oneOf []
+                    True
 
                 _ ->
-                    indentedCodeBlock
+                    False
     in
     oneOf
         [ Advanced.end (Parser.Expecting "end of input") |> map (\() -> Done revStmts)
@@ -669,22 +669,60 @@ statementsHelp2 revStmts =
                         |> Loop
                 )
         , map (possiblyMergeBlocks revStmts >> Loop) <|
-            oneOf
-                [ blankLine
-                , blockQuote
-                , Markdown.CodeBlock.parser |> Advanced.backtrackable |> map CodeBlock
-                , indentedCodeParser
-                , ThematicBreak.parser |> Advanced.backtrackable |> map (\_ -> ThematicBreak)
-                , unorderedListBlock
-                , orderedListBlock (List.head revStmts.rawBlocks)
-                , heading |> Advanced.backtrackable
-                , htmlParser
+            if previousWasBody then
+                oneOf whenPreviousWasBody
 
-                -- TODO re-enable this once the table parser handles rows
-                --, TableParser.parser |> Advanced.backtrackable |> map Table
-                , plainLine
-                ]
+            else
+                oneOf whenPreviousWasNotBody
         ]
+
+
+{-| Performance note
+
+It's extremely important that this list of parsers is a constant, and not defined in the above function.
+
+-}
+whenPreviousWasBody : List (Parser RawBlock)
+whenPreviousWasBody =
+    [ blankLine
+    , blockQuote
+    , Markdown.CodeBlock.parser |> Advanced.backtrackable |> map CodeBlock
+
+    -- indentedCodeBlock is not an option immediately after a Body
+    , ThematicBreak.parser |> Advanced.backtrackable |> map (\_ -> ThematicBreak)
+    , unorderedListBlock
+    , orderedListBlock True
+    , heading |> Advanced.backtrackable
+    , htmlParser
+
+    -- TODO re-enable this once the table parser handles rows
+    --, TableParser.parser |> Advanced.backtrackable |> map Table
+    , plainLine
+    ]
+
+
+{-| Performance note
+
+It's extremely important that this list of parsers is a constant, and not defined in the above function.
+
+-}
+whenPreviousWasNotBody : List (Parser RawBlock)
+whenPreviousWasNotBody =
+    [ blankLine
+    , blockQuote
+    , Markdown.CodeBlock.parser |> Advanced.backtrackable |> map CodeBlock
+    , -- indentedCodeParser
+      indentedCodeBlock
+    , ThematicBreak.parser |> Advanced.backtrackable |> map (\_ -> ThematicBreak)
+    , unorderedListBlock
+    , orderedListBlock False
+    , heading |> Advanced.backtrackable
+    , htmlParser
+
+    -- TODO re-enable this once the table parser handles rows
+    --, TableParser.parser |> Advanced.backtrackable |> map Table
+    , plainLine
+    ]
 
 
 {-| HTML parsing is intentionally strict in `dillonkearns/elm-markdown`. Paragraphs are supposed to be forgiving.
