@@ -26,8 +26,7 @@ import Char
 import Dict exposing (Dict)
 import Hex
 import Parser as Parser
-import Parser.Advanced as Advanced exposing ((|.), (|=), Nestable(..), Step(..), andThen, chompUntil, chompWhile, getChompedString, inContext, lazy, loop, map, oneOf, problem, succeed, token)
-import Set exposing (Set)
+import Parser.Advanced as Advanced exposing ((|.), (|=), Nestable(..), Step(..), andThen, chompWhile, getChompedString, loop, map, oneOf, problem, succeed, token)
 
 
 {-| Node is either a element such as `<a name="value">foo</a>` or text such as `foo`.
@@ -42,19 +41,13 @@ type Node
 
 
 type alias Attribute =
-    { name : String, value : String }
+    { name : String
+    , value : String
+    }
 
 
 type alias Parser a =
     Advanced.Parser String Parser.Problem a
-
-
-type alias DeadEnd =
-    Advanced.DeadEnd String Parser.Problem
-
-
-type Count
-    = AtLeast Int
 
 
 processingInstruction : Parser Node
@@ -63,24 +56,6 @@ processingInstruction =
         |. symbol "<?"
         |= getChompedString (Advanced.chompUntilEndOr "?>")
         |. symbol "?>"
-
-
-notClosingBracket c =
-    case c of
-        ']' ->
-            False
-
-        _ ->
-            True
-
-
-notAmpersand c =
-    case c of
-        '&' ->
-            False
-
-        _ ->
-            True
 
 
 cdata : Parser String
@@ -110,7 +85,7 @@ docType =
 
 allUppercase : Parser String
 allUppercase =
-    keepOneOrMore (\c -> Char.isUpper c)
+    keepOneOrMore Char.isUpper
 
 
 html : Parser Node
@@ -124,13 +99,14 @@ html =
         ]
 
 
-element : Advanced.Parser String Parser.Problem Node
+element : Parser Node
 element =
     succeed identity
         |. symbol "<"
         |= (tagName |> andThen elementContinuation)
 
 
+elementContinuation : String -> Parser Node
 elementContinuation startTagName =
     succeed (Element startTagName)
         |. whiteSpace
@@ -156,6 +132,7 @@ tagNameCharacter : Char -> Bool
 tagNameCharacter c =
     -- inlined equivalent of `not (isWhitespace c) && isUninteresting c`
     case c of
+        -- whitespace chars
         ' ' ->
             False
 
@@ -168,6 +145,7 @@ tagNameCharacter c =
         '\t' ->
             False
 
+        -- html structural characters
         '/' ->
             False
 
@@ -197,8 +175,10 @@ children startTagName =
 
 childrenStep : List (Parser (List Node -> Step (List Node) (List Node))) -> List Node -> Parser (Step (List Node) (List Node))
 childrenStep options accum =
+    -- This weird construction is so the `childrenStepOptions` can be shared by all iterations,
+    -- rather than be re-defined on every iteration
     oneOf options
-        |= succeed accum
+        |> map (\f -> f accum)
 
 
 childrenStepOptions : String -> List (Parser (List Node -> Step (List Node) (List Node)))
@@ -223,9 +203,8 @@ childrenStepOptions startTagName =
 closingTag : String -> Parser ()
 closingTag startTagName =
     let
-        -- we can't use Advanced.token, because html tag names are supposed to
-        -- be case-insensitive. So `<div>` could be closed by `</DIV>`.
-        -- `tagName` normalizes to lowercase
+        -- we can't use Advanced.token, because html tag names are case-insensitive.
+        --So `<div>` could be closed by `</DIV>`. `tagName` normalizes to lowercase
         closingTagName =
             tagName
                 |> andThen
@@ -245,20 +224,23 @@ closingTag startTagName =
 
 
 textString : Char -> Parser String
-textString end_ =
-    keepZeroOrMore (\c -> c /= end_ && notAmpersand c)
-        |> andThen
-            (\s ->
-                oneOf
-                    [ succeed
-                        (\c t ->
-                            s ++ String.cons c t
-                        )
-                        |= escapedChar end_
-                        |= lazy (\_ -> textString end_)
-                    , succeed s
-                    ]
-            )
+textString closingChar =
+    let
+        predicate c =
+            c /= closingChar && c /= '&'
+    in
+    Advanced.loop () (textStringStep closingChar predicate)
+        |> getChompedString
+
+
+textStringStep closingChar predicate _ =
+    succeed identity
+        |. chompWhile predicate
+        |= oneOf
+            [ escapedChar closingChar
+                |> map (\_ -> Loop ())
+            , succeed (Done ())
+            ]
 
 
 
@@ -271,6 +253,7 @@ textNodeString =
         |> Advanced.getChompedString
 
 
+textNodeStringStepOptions : List (Parser (Step () ()))
 textNodeStringStepOptions =
     [ Advanced.chompIf isNotTextNodeIgnoreChar (Parser.Expecting "is not & or <")
         |. chompWhile isNotTextNodeIgnoreChar
@@ -281,10 +264,12 @@ textNodeStringStepOptions =
     ]
 
 
+textNodeStringStep : () -> Parser (Step () ())
 textNodeStringStep _ =
     oneOf textNodeStringStepOptions
 
 
+isNotTextNodeIgnoreChar : Char -> Bool
 isNotTextNodeIgnoreChar c =
     case c of
         '<' ->
@@ -297,36 +282,28 @@ isNotTextNodeIgnoreChar c =
             True
 
 
-notSemiColon c =
-    case c of
-        ';' ->
-            False
-
-        _ ->
-            True
-
-
 escapedChar : Char -> Parser Char
 escapedChar end_ =
+    let
+        isEntityChar c =
+            c /= end_ && c /= ';'
+
+        process entityStr =
+            case decodeEscape entityStr of
+                Ok c ->
+                    succeed c
+
+                Err e ->
+                    problem e
+    in
     succeed identity
         |. symbol "&"
-        |= keepOneOrMore (\c -> c /= end_ && notSemiColon c)
-        |> andThen
-            (\s ->
-                oneOf
-                    [ symbol ";"
-                        |> andThen
-                            (\_ ->
-                                case decodeEscape s of
-                                    Ok c ->
-                                        succeed c
-
-                                    Err e ->
-                                        problem e
-                            )
-                    , fail ("Entities must end_ with \";\": &" ++ s)
-                    ]
-            )
+        |= (Advanced.chompIf isEntityChar (Parser.Expecting "an entity character")
+                |. chompWhile isEntityChar
+                |> Advanced.getChompedString
+                |> andThen process
+           )
+        |. symbol ";"
 
 
 decodeEscape : String -> Result Parser.Problem Char
@@ -363,24 +340,16 @@ entities =
 
 attributes : Parser (List Attribute)
 attributes =
-    -- attributesHelp Set.empty
     Advanced.loop Dict.empty attributesStep
         |> Advanced.map (Dict.foldl (\key value accum -> { name = key, value = value } :: accum) [])
 
 
+attributesStep : Dict String String -> Parser (Step (Dict String String) (Dict String String))
 attributesStep attrs =
     let
         -- when the same attribute is defined twice, the first definition is used
-        updater new mValue =
-            case mValue of
-                Just v ->
-                    Just v
-
-                Nothing ->
-                    Just new
-
         process name value =
-            Loop (Dict.update (String.toLower name) (updater value) attrs)
+            Loop (Dict.update (String.toLower name) (keepOldest value) attrs)
     in
     oneOf
         [ succeed process
@@ -394,9 +363,18 @@ attributesStep attrs =
         ]
 
 
+keepOldest : a -> Maybe a -> Maybe a
+keepOldest new mValue =
+    case mValue of
+        Just v ->
+            Just v
+
+        Nothing ->
+            Just new
+
+
 attributeName : Parser String
 attributeName =
-    -- keepOneOrMore (\c -> not (isWhitespace c) && isUninteresting c)
     tagName
 
 
@@ -416,12 +394,13 @@ attributeValue =
 
 oneOrMoreWhiteSpace : Parser ()
 oneOrMoreWhiteSpace =
-    ignore oneOrMore isWhitespace
+    Advanced.chompIf isWhitespace (Parser.Expecting "at least one whitespace")
+        |. chompWhile isWhitespace
 
 
 whiteSpace : Parser ()
 whiteSpace =
-    ignore zeroOrMore isWhitespace
+    chompWhile isWhitespace
 
 
 isWhitespace : Char -> Bool
@@ -462,7 +441,6 @@ formatNode node =
             let
                 formattedAttributes =
                     attributes_
-                        -- |> Dict.foldl (\key value accum -> formatAttribute key value :: accum) []
                         |> List.map (\{ name, value } -> formatAttribute name value)
                         |> String.join " "
             in
@@ -534,80 +512,11 @@ escape s =
 -- UTILITY
 
 
-maybe : Parser a -> Parser (Maybe a)
-maybe parser =
-    oneOf
-        [ map Just parser
-        , succeed Nothing
-        ]
-
-
-zeroOrMore : Count
-zeroOrMore =
-    AtLeast 0
-
-
-
---xmlParser : Parser Xml
---xmlParser =
---    xml
-
-
-oneOrMore : Count
-oneOrMore =
-    AtLeast 1
-
-
-keepZeroOrMore : (Char -> Bool) -> Parser String
-keepZeroOrMore predicate =
-    getChompedString (chompWhile predicate)
-
-
 keepOneOrMore : (Char -> Bool) -> Parser String
 keepOneOrMore predicate =
     Advanced.chompIf predicate (Parser.Expecting "at least one")
         |. chompWhile predicate
         |> getChompedString
-
-
-keep : Count -> (Char -> Bool) -> Parser String
-keep count predicate =
-    case count of
-        AtLeast 0 ->
-            getChompedString (chompWhile predicate)
-
-        AtLeast n ->
-            getChompedString (chompWhile predicate)
-                |> andThen
-                    (\str ->
-                        if n <= String.length str then
-                            succeed str
-
-                        else
-                            problem Parser.BadRepeat
-                    )
-
-
-ignore : Count -> (Char -> Bool) -> Parser ()
-ignore count predicate =
-    case count of
-        AtLeast 0 ->
-            chompWhile predicate
-
-        AtLeast n ->
-            let
-                checkLength startOffset endOffset =
-                    if n <= (endOffset - startOffset) then
-                        succeed ()
-
-                    else
-                        problem Parser.BadRepeat
-            in
-            succeed checkLength
-                |= Advanced.getOffset
-                |. chompWhile predicate
-                |= Advanced.getOffset
-                |> andThen identity
 
 
 fail : String -> Parser a
