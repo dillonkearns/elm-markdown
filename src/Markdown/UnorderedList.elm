@@ -16,7 +16,7 @@ parser : Parser (List ListItem)
 parser =
     let
         parseSubsequentItems listMarker firstItem =
-            loop [] (statementsHelp listMarker firstItem)
+            loop [] (statementsHelp (singleItemParser listMarker) firstItem)
     in
     succeed parseSubsequentItems
         |= backtrackable listMarkerParser
@@ -55,10 +55,10 @@ itemBody =
         ]
 
 
-statementsHelp : Token Parser.Problem -> ListItem -> List ListItem -> Parser (Step (List ListItem) (List ListItem))
-statementsHelp listMarker firstItem revStmts =
+statementsHelp : Parser ListItem -> ListItem -> List ListItem -> Parser (Step (List ListItem) (List ListItem))
+statementsHelp itemParser firstItem revStmts =
     oneOf
-        [ succeed (\stmt -> Loop (stmt :: revStmts))
-            |= singleItemParser listMarker
+        [ itemParser
+            |> Advanced.map (\stmt -> Loop (stmt :: revStmts))
         , succeed (Done (firstItem :: List.reverse revStmts))
         ]

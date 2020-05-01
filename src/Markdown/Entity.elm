@@ -25,12 +25,17 @@ decimalRegex =
 
 replaceDecimal : Regex.Match -> String
 replaceDecimal match =
-    match.submatches
-        |> List.head
-        |> Maybe.withDefault Nothing
-        |> Maybe.andThen String.toInt
-        |> Maybe.map validUnicode
-        |> Maybe.withDefault match.match
+    case match.submatches of
+        (Just first) :: _ ->
+            case String.toInt first of
+                Just v ->
+                    validUnicode v
+
+                Nothing ->
+                    match.match
+
+        _ ->
+            match.match
 
 
 validUnicode : Int -> String
@@ -103,22 +108,23 @@ hexadecimalRegex =
 
 replaceHexadecimal : Regex.Match -> String
 replaceHexadecimal match =
-    match.submatches
-        |> List.head
-        |> Maybe.withDefault Nothing
-        |> Maybe.map (hexToInt >> validUnicode)
-        |> Maybe.withDefault match.match
+    case match.submatches of
+        (Just first) :: _ ->
+            validUnicode (hexToInt first)
+
+        _ ->
+            match.match
 
 
 hexToInt : String -> Int
-hexToInt =
-    String.toLower
-        >> String.toList
-        >> List.foldl
-            (\hexDigit int ->
-                int * 16 + modBy 39 (Char.toCode hexDigit) - 9
-            )
-            0
+hexToInt string =
+    let
+        folder hexDigit int =
+            int * 16 + modBy 39 (Char.toCode hexDigit) - 9
+    in
+    string
+        |> String.toLower
+        |> String.foldl folder 0
 
 
 
@@ -140,12 +146,17 @@ entitiesRegex =
 
 replaceEntity : Regex.Match -> String
 replaceEntity match =
-    match.submatches
-        |> List.head
-        |> Maybe.withDefault Nothing
-        |> Maybe.andThen (\a -> Dict.get a entities)
-        |> Maybe.map (Char.fromCode >> String.fromChar)
-        |> Maybe.withDefault match.match
+    case match.submatches of
+        (Just first) :: _ ->
+            case Dict.get first entities of
+                Just code ->
+                    String.fromChar (Char.fromCode code)
+
+                Nothing ->
+                    match.match
+
+        _ ->
+            match.match
 
 
 

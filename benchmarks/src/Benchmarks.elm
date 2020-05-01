@@ -1,39 +1,71 @@
-module Benchmarks exposing (suite)
+module Benchmarks exposing (..)
 
 import Benchmark exposing (Benchmark, describe)
+import Dict
+import Helpers
 import Markdown
+import Markdown.InlineParser
 import Markdown.OrderedList
 import Markdown.Parser
-import Parser.Advanced as Advanced
+import Parser
+import Parser.Advanced as Advanced exposing ((|.), (|=), chompIf, chompUntil, chompWhile, getChompedString, map, succeed, symbol)
+import Parser.Token as Token
 import ThematicBreak
 
 
 suite : Benchmark
 suite =
     describe "markdown parsing"
-        [ "# This is a heading"
-            |> compare "just a heading"
+        [ heading
         , elmMarkdownExplorationsReadme
-            |> compare "elm-explorations/markdown readme"
         , withHeadingsAndLists
-            |> compare "withHeadingsAndLists"
         , withHeadingsAndListsAndHtml
-            |> compare "withHeadingsAndListsAndHtml"
         ]
 
 
+compare title markdown =
+    Benchmark.benchmark title
+        (\_ -> Markdown.Parser.parse markdown)
+
+
+explorationsParse =
+    Markdown.toHtmlWith
+        { defaultHighlighting = Just "elm"
+        , githubFlavored =
+            Just
+                { tables = True
+                , breaks = True
+                }
+        , sanitize = False
+        , smartypants = True
+        }
+        []
+
+
+heading =
+    "# This is a heading"
+        |> compare "just a heading"
+
+
 elmMarkdownExplorationsReadme =
-    """# elm-markdown
+    let
+        source =
+            """# elm-markdown
 
 ## Level 2 heading
 
 ### Level 3 heading
 
 """
+    in
+    source
+        |> compare "elm-explorations/markdown readme"
 
 
 withHeadingsAndLists =
-    """# elm-markdown
+    let
+        source =
+            """# elm-markdown
 
 - Item 1 
 - Item 2 
@@ -51,10 +83,15 @@ withHeadingsAndLists =
 - Item 2
 - Item 3
 """
+    in
+    source
+        |> compare "withHeadingsAndLists"
 
 
 withHeadingsAndListsAndHtml =
-    """# elm-markdown
+    let
+        source =
+            """# elm-markdown
 
 - Item 1 
 - Item 2 
@@ -84,33 +121,34 @@ withHeadingsAndListsAndHtml =
 - Item 2
 - Item 3
 """
-
-
-compare title markdown =
-    Benchmark.benchmark title
-        (\_ -> Markdown.Parser.parse markdown)
+    in
+    source
+        |> compare "withHeadingsAndListsAndHtml"
 
 
 
---Benchmark.compare "long example"
---    "elm-markdown-decoder"
---    (\_ -> Markdown.Parser.parse markdown)
---    "elm-explorations/markdown"
---    (\_ -> explorationsParse markdown)
+-- SPECIFIC MARKDOWN CONSTRUCTS
 
 
-explorationsParse =
-    Markdown.toHtmlWith
-        { defaultHighlighting = Just "elm"
-        , githubFlavored =
-            Just
-                { tables = True
-                , breaks = True
-                }
-        , sanitize = False
-        , smartypants = True
-        }
-        []
+inlines =
+    "*foo* **bar** _baz_ __ __ [linklinklink](foo bar)"
+        |> String.repeat 5
+        |> compare "inlines"
+
+
+tokenize =
+    let
+        input =
+            "*foo* **bar** _baz_ __ __ [linklinklink](foo bar)"
+                |> String.repeat 5
+    in
+    Benchmark.benchmark "tokenize"
+        (\_ -> Markdown.InlineParser.tokenize input)
+
+
+inlineLink =
+    Benchmark.benchmark "inline link"
+        (\_ -> Markdown.InlineParser.parse Dict.empty "[linklinklink](foo bar)")
 
 
 thematicBreak =
@@ -121,9 +159,118 @@ thematicBreak =
 orderedList =
     Benchmark.benchmark "thematic break"
         (\_ ->
-            Advanced.run (Markdown.OrderedList.parser Nothing)
+            Advanced.run (Markdown.OrderedList.parser False)
                 """1. foo bar
             2. stuff stuff
             3. milk, eggs
             """
         )
+
+
+
+-- STRING BETWEEN CHARACTERS
+
+
+{-| Conclusion: Chomp is much faster when matching a literal string
+-}
+stringBetweenChars =
+    let
+        withChomp =
+            succeed identity
+                |. chompIf (\c -> c == '<') (Parser.Expecting (String.fromChar '<'))
+                |= getChompedString (chompWhile (\c -> c /= '>'))
+                |. chompIf (\c -> c == '>') (Parser.Expecting (String.fromChar '>'))
+
+        withToken =
+            succeed identity
+                |. symbol Token.lessThan
+                |= getChompedString (chompUntil Token.greaterThan)
+                |. symbol Token.greaterThan
+    in
+    Benchmark.compare "between chars"
+        "chomp"
+        (\_ -> Parser.run withChomp "<foo>")
+        "symbol"
+        (\_ -> Parser.run withToken "<foo>")
+
+
+
+-- SUCCEED OR MAP
+
+
+type BlankLine
+    = BlankLine
+
+
+{-| Conclusion: Map is a bit faster, but can't always be used instead of `succeed`
+-}
+succeedOrMap =
+    describe "succeed or map"
+        [ let
+            withMap =
+                Advanced.backtrackable (chompWhile Helpers.isSpaceOrTab)
+                    |. symbol Token.newline
+                    |> Advanced.map (\_ -> BlankLine)
+
+            withSucceed =
+                succeed BlankLine
+                    |. Advanced.backtrackable (chompWhile Helpers.isSpaceOrTab)
+                    |. symbol Token.newline
+          in
+          Benchmark.compare "ignore argument"
+            "map"
+            (\_ -> Parser.run withMap "               \n")
+            "succeed"
+            (\_ -> Parser.run withSucceed "               \n")
+        , let
+            withMap =
+                getChompedString (symbol Token.newline)
+                    |> Advanced.map String.reverse
+
+            withSucceed =
+                succeed String.reverse
+                    |= getChompedString (symbol Token.newline)
+          in
+          Benchmark.compare "use argument"
+            "map"
+            (\_ -> Parser.run withMap "\n")
+            "succeed"
+            (\_ -> Parser.run withSucceed "\n")
+        ]
+
+
+
+-- SPACE OR TAB
+
+
+{-| Conclusion: Chomp is faster for the tab case, performance is about equal for the space
+-}
+spaceOrTab =
+    let
+        withChomp =
+            chompIf isSpaceOrTab (Parser.Expecting "space or tab")
+
+        withToken =
+            Advanced.oneOf
+                [ symbol Token.space
+                , symbol Token.tab
+                ]
+    in
+    Benchmark.compare "between chars"
+        "chomp"
+        (\_ -> Parser.run withChomp "\t")
+        "token"
+        (\_ -> Parser.run withToken "\t")
+
+
+isSpaceOrTab : Char -> Bool
+isSpaceOrTab c =
+    case c of
+        ' ' ->
+            True
+
+        '\t' ->
+            True
+
+        _ ->
+            False

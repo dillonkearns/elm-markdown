@@ -51,7 +51,7 @@ But you can also do a lot with the `Block`s before passing them through:
 parse : String -> Result (List (Advanced.DeadEnd String Parser.Problem)) (List Block)
 parse input =
     -- first parse the file as raw blocks
-    case Advanced.run (rawBlockParser |. succeed Advanced.end) input of
+    case Advanced.run (rawBlockParser |. Helpers.endOfFile) input of
         Err e ->
             Err e
 
@@ -340,8 +340,7 @@ plainLine =
 
 innerParagraphParser : Parser RawBlock
 innerParagraphParser =
-    Advanced.chompIf (\c -> not <| Helpers.isNewline c) (Parser.Expecting "Not newline.")
-        |. Advanced.chompUntilEndOr "\n"
+    Advanced.chompUntilEndOr "\n"
         |> Advanced.mapChompedString
             (\rawLine _ ->
                 rawLine
@@ -398,9 +397,9 @@ unorderedListBlock =
         |> map (List.map parseListItem >> UnorderedListBlock)
 
 
-orderedListBlock : Maybe RawBlock -> Parser RawBlock
-orderedListBlock lastBlock =
-    Markdown.OrderedList.parser lastBlock
+orderedListBlock : Bool -> Parser RawBlock
+orderedListBlock previousWasBody =
+    Markdown.OrderedList.parser previousWasBody
         |> map (\( startingIndex, unparsedLines ) -> OrderedListBlock startingIndex (List.map UnparsedInlines unparsedLines))
 
 
@@ -582,7 +581,7 @@ rawBlockParser =
         { linkReferenceDefinitions = []
         , rawBlocks = []
         }
-        statementsHelp2
+        stepRawBlock
 
 
 parseAllInlines : State -> Result Parser.Problem (List Block)
@@ -646,46 +645,97 @@ possiblyMergeBlocks state newRawBlock =
     }
 
 
-statementsHelp2 : State -> Parser (Step State State)
-statementsHelp2 revStmts =
-    let
-        indentedCodeParser =
-            case revStmts.rawBlocks of
-                (Body _) :: _ ->
-                    oneOf []
 
-                _ ->
-                    indentedCodeBlock
-    in
-    oneOf
-        [ Advanced.end (Parser.Expecting "end of input") |> map (\() -> Done revStmts)
-        , parseAsParagraphInsteadOfHtmlBlock
-            |> map (possiblyMergeBlocks revStmts >> Loop)
-        , LinkReferenceDefinition.parser
-            |> Advanced.backtrackable
-            |> map
-                (\linkReference ->
-                    linkReference
-                        |> addReference revStmts
-                        |> Loop
-                )
-        , map (possiblyMergeBlocks revStmts >> Loop) <|
-            oneOf
-                [ blankLine
-                , blockQuote
-                , Markdown.CodeBlock.parser |> Advanced.backtrackable |> map CodeBlock
-                , indentedCodeParser
-                , ThematicBreak.parser |> Advanced.backtrackable |> map (\_ -> ThematicBreak)
-                , unorderedListBlock
-                , orderedListBlock (List.head revStmts.rawBlocks)
-                , heading |> Advanced.backtrackable
-                , htmlParser
+-- RAW BLOCK PARSER
 
-                -- TODO re-enable this once the table parser handles rows
-                --, TableParser.parser |> Advanced.backtrackable |> map Table
-                , plainLine
-                ]
+
+stepRawBlock : State -> Parser (Step State State)
+stepRawBlock revStmts =
+    -- Some blocks can't immediately follow a body
+    case revStmts.rawBlocks of
+        (Body _) :: _ ->
+            oneOf whenPreviousWasBody
+                |= succeed revStmts
+
+        _ ->
+            oneOf whenPreviousWasNotBody
+                |= succeed revStmts
+
+
+
+-- Note [Static Parser Structure]
+--
+-- For performance reasons, it is VERY IMPORTANT that `whenPreviousWasBody` and `whenPreviousWasNotBody`
+-- defined as `var` in javascript (and not as a function taking any, even zero, arguments).
+--
+-- A `var` is defined once, then re-used for every raw block we parse. If they were functions, the parser
+-- structure would need to be re-built for every raw block.
+-- Because there are lists involved (in the `oneOf`s), that is expensive.
+--
+-- All my attempts so far to "DRY" this code below cause a degradation in performance.
+
+
+whenPreviousWasBody : List (Parser (State -> Step State State))
+whenPreviousWasBody =
+    [ Helpers.endOfFile
+        |> map (\_ revStmts -> Done revStmts)
+    , parseAsParagraphInsteadOfHtmlBlock
+        |> map (\block revStmts -> Loop (possiblyMergeBlocks revStmts block))
+    , LinkReferenceDefinition.parser
+        |> Advanced.backtrackable
+        |> map (\reference revStmts -> Loop (addReference revStmts reference))
+    , oneOf
+        [ blankLine
+        , blockQuote
+        , Markdown.CodeBlock.parser |> Advanced.backtrackable |> map CodeBlock
+
+        -- NOTE: indented block is not an option immediately after a Body
+        , ThematicBreak.parser |> Advanced.backtrackable |> map (\_ -> ThematicBreak)
+        , unorderedListBlock
+
+        -- NOTE: the ordered list block changes its parsing rules when it's right after a Body
+        , orderedListBlock True
+        , heading |> Advanced.backtrackable
+        , htmlParser
+
+        -- TODO re-enable this once the table parser handles rows
+        --, TableParser.parser |> Advanced.backtrackable |> map Table
+        , plainLine
         ]
+        |> map (\block revStmts -> Loop (possiblyMergeBlocks revStmts block))
+    ]
+
+
+whenPreviousWasNotBody : List (Parser (State -> Step State State))
+whenPreviousWasNotBody =
+    [ Helpers.endOfFile
+        |> map (\_ revStmts -> Done revStmts)
+    , parseAsParagraphInsteadOfHtmlBlock
+        |> map (\block revStmts -> Loop (possiblyMergeBlocks revStmts block))
+    , LinkReferenceDefinition.parser
+        |> Advanced.backtrackable
+        |> map (\reference revStmts -> Loop (addReference revStmts reference))
+    , oneOf
+        [ blankLine
+        , blockQuote
+        , Markdown.CodeBlock.parser |> Advanced.backtrackable |> map CodeBlock
+
+        -- NOTE: indented block is an option after any non-Body block
+        , indentedCodeBlock
+        , ThematicBreak.parser |> Advanced.backtrackable |> map (\_ -> ThematicBreak)
+        , unorderedListBlock
+
+        -- NOTE: the ordered list block changes its parsing rules when it's right after a Body
+        , orderedListBlock False
+        , heading |> Advanced.backtrackable
+        , htmlParser
+
+        -- TODO re-enable this once the table parser handles rows
+        --, TableParser.parser |> Advanced.backtrackable |> map Table
+        , plainLine
+        ]
+        |> map (\block revStmts -> Loop (possiblyMergeBlocks revStmts block))
+    ]
 
 
 {-| HTML parsing is intentionally strict in `dillonkearns/elm-markdown`. Paragraphs are supposed to be forgiving.

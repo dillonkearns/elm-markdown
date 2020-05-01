@@ -108,5 +108,10 @@ endOfLineOrFile : Parser ()
 endOfLineOrFile =
     oneOf
         [ Advanced.symbol Token.newline
-        , Advanced.end (Parser.Expecting "end of input")
+        , endOfFile
         ]
+
+
+endOfFile : Parser ()
+endOfFile =
+    Advanced.end (Parser.Expecting "end of input")
