@@ -20,5 +20,5 @@ Should give output:
 But instead was:
 
 ````````````html
-ERROR Problem at row 1 Expecting at least one
+ERROR Problem at row 1 Expecting at least 1 tag name character
 ````````````

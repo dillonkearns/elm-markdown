@@ -85,7 +85,14 @@ docType =
 
 allUppercase : Parser String
 allUppercase =
-    keepOneOrMore Char.isUpper
+    Advanced.chompIf Char.isUpper expectUppercaseCharacter
+        |. chompWhile Char.isUpper
+        |> getChompedString
+
+
+expectUppercaseCharacter : Parser.Problem
+expectUppercaseCharacter =
+    Parser.Expecting "at least 1 uppercase character"
 
 
 html : Parser Node
@@ -123,9 +130,14 @@ elementContinuation startTagName =
 
 tagName : Parser String
 tagName =
-    Advanced.chompIf tagNameCharacter (Parser.Expecting "at least one")
+    Advanced.chompIf tagNameCharacter expectTagNameCharacter
         |. chompWhile tagNameCharacter
         |> Advanced.mapChompedString (\name _ -> String.toLower name)
+
+
+expectTagNameCharacter : Parser.Problem
+expectTagNameCharacter =
+    Parser.Expecting "at least 1 tag name character"
 
 
 tagNameCharacter : Char -> Bool
@@ -510,13 +522,6 @@ escape s =
 
 
 -- UTILITY
-
-
-keepOneOrMore : (Char -> Bool) -> Parser String
-keepOneOrMore predicate =
-    Advanced.chompIf predicate (Parser.Expecting "at least one")
-        |. chompWhile predicate
-        |> getChompedString
 
 
 fail : String -> Parser a
