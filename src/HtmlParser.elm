@@ -1,5 +1,5 @@
 module HtmlParser exposing
-    ( Node(..), Attribute
+    ( Node(..)
     , Parser, html
     )
 
@@ -41,8 +41,6 @@ type Node
     | Declaration String String
 
 
-{-| Attribute such as `name="value"`
--}
 type alias Attribute =
     { name : String, value : String }
 
@@ -61,11 +59,10 @@ type Count
 
 processingInstruction : Parser Node
 processingInstruction =
-    inContext "processingInstruction" <|
-        succeed ProcessingInstruction
-            |. symbol "<?"
-            |= getChompedString (Advanced.chompUntilEndOr "?>")
-            |. symbol "?>"
+    succeed ProcessingInstruction
+        |. symbol "<?"
+        |= getChompedString (Advanced.chompUntilEndOr "?>")
+        |. symbol "?>"
 
 
 notClosingBracket c =
@@ -88,11 +85,10 @@ notAmpersand c =
 
 cdata : Parser String
 cdata =
-    inContext "cdata" <|
-        succeed identity
-            |. symbol "<![CDATA["
-            |= getChompedString (Advanced.chompUntilEndOr "]]>")
-            |. symbol "]]>"
+    succeed identity
+        |. symbol "<![CDATA["
+        |= getChompedString (Advanced.chompUntilEndOr "]]>")
+        |. symbol "]]>"
 
 
 docType : Parser Node
@@ -104,18 +100,17 @@ docType =
        a string of characters not including the character >
        and the character >
     -}
-    inContext "declaration" <|
-        succeed Declaration
-            |. symbol "<!"
-            |= allUppercase
-            |. oneOrMoreWhiteSpace
-            |= getChompedString (Advanced.chompUntilEndOr ">")
-            |. symbol ">"
+    succeed Declaration
+        |. symbol "<!"
+        |= allUppercase
+        |. oneOrMoreWhiteSpace
+        |= getChompedString (Advanced.chompUntilEndOr ">")
+        |. symbol ">"
 
 
 allUppercase : Parser String
 allUppercase =
-    keep oneOrMore (\c -> Char.isUpper c)
+    keepOneOrMore (\c -> Char.isUpper c)
 
 
 html : Parser Node
@@ -131,133 +126,175 @@ html =
 
 element : Advanced.Parser String Parser.Problem Node
 element =
-    inContext
-        "element"
-    <|
-        succeed identity
-            |. symbol "<"
-            |= (tagName
-                    |> andThen
-                        (\startTagName ->
-                            succeed (Element startTagName)
-                                |. whiteSpace
-                                |= attributes Set.empty
-                                |. whiteSpace
-                                |= oneOf
-                                    [ succeed []
-                                        |. symbol "/>"
-                                    , succeed identity
-                                        |. symbol ">"
-                                        |= lazy (\_ -> children startTagName)
-                                    ]
-                        )
-               )
+    succeed identity
+        |. symbol "<"
+        |= (tagName |> andThen elementContinuation)
+
+
+elementContinuation startTagName =
+    succeed (Element startTagName)
+        |. whiteSpace
+        |= attributes
+        |. whiteSpace
+        |= oneOf
+            [ symbol "/>"
+                |> Advanced.map (\_ -> [])
+            , succeed identity
+                |. symbol ">"
+                |= children startTagName
+            ]
 
 
 tagName : Parser String
 tagName =
-    map (\name -> String.toLower name) <|
-        inContext "tagName" <|
-            keep oneOrMore (\c -> not (isWhitespace c) && isUninteresting c)
+    Advanced.chompIf tagNameCharacter (Parser.Expecting "at least one")
+        |. chompWhile tagNameCharacter
+        |> Advanced.mapChompedString (\name _ -> String.toLower name)
+
+
+tagNameCharacter : Char -> Bool
+tagNameCharacter c =
+    -- inlined equivalent of `not (isWhitespace c) && isUninteresting c`
+    case c of
+        ' ' ->
+            False
+
+        '\u{000D}' ->
+            False
+
+        '\n' ->
+            False
+
+        '\t' ->
+            False
+
+        '/' ->
+            False
+
+        '<' ->
+            False
+
+        '>' ->
+            False
+
+        '"' ->
+            False
+
+        '\'' ->
+            False
+
+        '=' ->
+            False
+
+        _ ->
+            True
 
 
 children : String -> Parser (List Node)
 children startTagName =
-    inContext "children" <|
-        oneOf
-            [ succeed []
-                |. closingTag startTagName
-            , textNodeString
-                |> andThen
-                    (\maybeString ->
-                        case maybeString of
-                            Just s ->
-                                succeed (\rest -> Text s :: rest)
-                                    |= children startTagName
+    Advanced.loop [] (childrenStep (childrenStepOptions startTagName))
 
-                            Nothing ->
-                                succeed []
-                                    |. closingTag startTagName
-                    )
-            , lazy
-                (\_ ->
-                    succeed (::)
-                        |= html
-                        |= children startTagName
-                )
-            ]
+
+childrenStep : List (Parser (List Node -> Step (List Node) (List Node))) -> List Node -> Parser (Step (List Node) (List Node))
+childrenStep options accum =
+    oneOf options
+        |= succeed accum
+
+
+childrenStepOptions : String -> List (Parser (List Node -> Step (List Node) (List Node)))
+childrenStepOptions startTagName =
+    [ closingTag startTagName
+        |> Advanced.map (\_ accum -> Done (List.reverse accum))
+    , textNodeString
+        |> andThen
+            (\text ->
+                if String.isEmpty text then
+                    closingTag startTagName
+                        |> Advanced.map (\_ accum -> Done (List.reverse accum))
+
+                else
+                    succeed (\accum -> Loop (Text text :: accum))
+            )
+    , html
+        |> Advanced.map (\new accum -> Loop (new :: accum))
+    ]
 
 
 closingTag : String -> Parser ()
 closingTag startTagName =
-    inContext "closingTag" <|
-        succeed ()
-            |. symbol "</"
-            |. whiteSpace
-            |. (tagName
-                    |> andThen
-                        (\endTagName ->
-                            if startTagName == endTagName then
-                                succeed ()
+    let
+        -- we can't use Advanced.token, because html tag names are supposed to
+        -- be case-insensitive. So `<div>` could be closed by `</DIV>`.
+        -- `tagName` normalizes to lowercase
+        closingTagName =
+            tagName
+                |> andThen
+                    (\endTagName ->
+                        if startTagName == endTagName then
+                            succeed ()
 
-                            else
-                                fail ("tag name mismatch: " ++ startTagName ++ " and " ++ endTagName)
-                        )
-               )
-            |. whiteSpace
-            |. symbol ">"
+                        else
+                            fail ("tag name mismatch: " ++ startTagName ++ " and " ++ endTagName)
+                    )
+    in
+    symbol "</"
+        |. whiteSpace
+        |. closingTagName
+        |. whiteSpace
+        |. symbol ">"
 
 
 textString : Char -> Parser String
 textString end_ =
-    inContext "textString" <|
-        (keep zeroOrMore (\c -> c /= end_ && notAmpersand c)
-            |> andThen
-                (\s ->
-                    oneOf
-                        [ succeed
-                            (\c t ->
-                                s ++ String.cons c t
-                            )
-                            |= escapedChar end_
-                            |= lazy (\_ -> textString end_)
-                        , succeed s
-                        ]
-                )
-        )
+    keepZeroOrMore (\c -> c /= end_ && notAmpersand c)
+        |> andThen
+            (\s ->
+                oneOf
+                    [ succeed
+                        (\c t ->
+                            s ++ String.cons c t
+                        )
+                        |= escapedChar end_
+                        |= lazy (\_ -> textString end_)
+                    , succeed s
+                    ]
+            )
 
 
-textNodeString : Parser (Maybe String)
+
+-- TEXT NODE STRING
+
+
+textNodeString : Parser String
 textNodeString =
-    -- Investigate: could we treat the empty string as no string?
-    -- thereby removing the Maybe wrapper
-    inContext "textNodeString" <|
-        oneOf
-            [ succeed
-                (\s maybeString ->
-                    Just (s ++ (maybeString |> Maybe.withDefault ""))
-                )
-                |= keep oneOrMore
-                    (\c ->
-                        case c of
-                            '<' ->
-                                False
+    Advanced.loop () textNodeStringStep
+        |> Advanced.getChompedString
 
-                            '&' ->
-                                False
 
-                            _ ->
-                                True
-                    )
-                |= lazy (\_ -> textNodeString)
-            , succeed
-                (\c maybeString ->
-                    Just (String.cons c (maybeString |> Maybe.withDefault ""))
-                )
-                |= escapedChar '<'
-                |= lazy (\_ -> textNodeString)
-            , succeed Nothing
-            ]
+textNodeStringStepOptions =
+    [ Advanced.chompIf isNotTextNodeIgnoreChar (Parser.Expecting "is not & or <")
+        |. chompWhile isNotTextNodeIgnoreChar
+        |> Advanced.map (\_ -> Loop ())
+    , escapedChar '<'
+        |> Advanced.map (\_ -> Loop ())
+    , succeed (Done ())
+    ]
+
+
+textNodeStringStep _ =
+    oneOf textNodeStringStepOptions
+
+
+isNotTextNodeIgnoreChar c =
+    case c of
+        '<' ->
+            False
+
+        '&' ->
+            False
+
+        _ ->
+            True
 
 
 notSemiColon c =
@@ -271,27 +308,25 @@ notSemiColon c =
 
 escapedChar : Char -> Parser Char
 escapedChar end_ =
-    inContext "escapedChar" <|
-        (succeed identity
-            |. symbol "&"
-            |= keep oneOrMore (\c -> c /= end_ && notSemiColon c)
-            |> andThen
-                (\s ->
-                    oneOf
-                        [ symbol ";"
-                            |> andThen
-                                (\_ ->
-                                    case decodeEscape s of
-                                        Ok c ->
-                                            succeed c
+    succeed identity
+        |. symbol "&"
+        |= keepOneOrMore (\c -> c /= end_ && notSemiColon c)
+        |> andThen
+            (\s ->
+                oneOf
+                    [ symbol ";"
+                        |> andThen
+                            (\_ ->
+                                case decodeEscape s of
+                                    Ok c ->
+                                        succeed c
 
-                                        Err e ->
-                                            problem e
-                                )
-                        , fail ("Entities must end_ with \";\": &" ++ s)
-                        ]
-                )
-        )
+                                    Err e ->
+                                        problem e
+                            )
+                    , fail ("Entities must end_ with \";\": &" ++ s)
+                    ]
+            )
 
 
 decodeEscape : String -> Result Parser.Problem Char
@@ -326,82 +361,57 @@ entities =
         ]
 
 
-attributes : Set String -> Parser (List Attribute)
-attributes keys =
-    map
-        (\attrs ->
-            List.map
-                (\attr ->
-                    { name = String.toLower attr.name
-                    , value = attr.value
-                    }
-                )
-                attrs
-        )
-    <|
-        inContext
-            "attributes"
-        <|
-            oneOf
-                [ attribute
-                    |> andThen
-                        (\attr ->
-                            if Set.member attr.name keys then
-                                fail ("attribute " ++ attr.name ++ " is duplicated")
-
-                            else
-                                succeed ((::) attr)
-                                    |. whiteSpace
-                                    |= attributes (Set.insert attr.name keys)
-                        )
-                , succeed []
-                ]
+attributes : Parser (List Attribute)
+attributes =
+    -- attributesHelp Set.empty
+    Advanced.loop Dict.empty attributesStep
+        |> Advanced.map (Dict.foldl (\key value accum -> { name = key, value = value } :: accum) [])
 
 
-validateAttributes : Set String -> List Attribute -> Maybe String
-validateAttributes keys attrs =
-    case attrs of
-        [] ->
-            Nothing
+attributesStep attrs =
+    let
+        -- when the same attribute is defined twice, the first definition is used
+        updater new mValue =
+            case mValue of
+                Just v ->
+                    Just v
 
-        x :: xs ->
-            if Set.member x.name keys then
-                Just x.name
+                Nothing ->
+                    Just new
 
-            else
-                validateAttributes (Set.insert x.name keys) xs
-
-
-attribute : Parser Attribute
-attribute =
-    inContext "attribute" <|
-        succeed Attribute
+        process name value =
+            Loop (Dict.update (String.toLower name) (updater value) attrs)
+    in
+    oneOf
+        [ succeed process
             |= attributeName
             |. whiteSpace
             |. symbol "="
             |. whiteSpace
             |= attributeValue
+            |. whiteSpace
+        , succeed (Done attrs)
+        ]
 
 
 attributeName : Parser String
 attributeName =
-    inContext "attributeName" <|
-        keep oneOrMore (\c -> not (isWhitespace c) && isUninteresting c)
+    -- keepOneOrMore (\c -> not (isWhitespace c) && isUninteresting c)
+    tagName
 
 
 attributeValue : Parser String
 attributeValue =
-    inContext "attributeValue" <|
-        oneOf
-            [ succeed identity
-                |. symbol "\""
-                |= textString '"'
-                |. symbol "\""
-            , succeed identity
-                |. symbol "'"
-                |= textString '\''
-                |. symbol "'"
-            ]
+    oneOf
+        [ succeed identity
+            |. symbol "\""
+            |= textString '"'
+            |. symbol "\""
+        , succeed identity
+            |. symbol "'"
+            |= textString '\''
+            |. symbol "'"
+        ]
 
 
 oneOrMoreWhiteSpace : Parser ()
@@ -449,10 +459,17 @@ formatNode : Node -> String
 formatNode node =
     case node of
         Element tagName_ attributes_ children_ ->
+            let
+                formattedAttributes =
+                    attributes_
+                        -- |> Dict.foldl (\key value accum -> formatAttribute key value :: accum) []
+                        |> List.map (\{ name, value } -> formatAttribute name value)
+                        |> String.join " "
+            in
             "<"
                 ++ escape tagName_
                 ++ " "
-                ++ (attributes_ |> List.map formatAttribute |> String.join " ")
+                ++ formattedAttributes
                 ++ (if children_ == [] then
                         "/>"
 
@@ -498,9 +515,9 @@ formatNode node =
                 ]
 
 
-formatAttribute : Attribute -> String
-formatAttribute attribute_ =
-    escape attribute_.name ++ "=\"" ++ escape attribute_.value ++ "\""
+formatAttribute : String -> String -> String
+formatAttribute name value =
+    escape name ++ "=\"" ++ escape value ++ "\""
 
 
 escape : String -> String
@@ -525,13 +542,6 @@ maybe parser =
         ]
 
 
-
--- TODO make custom
--- zeroOrMore (c -> Bool) -> ...
--- oneOrMore (c -> Bool) -> ...
--- that'll remove the andThen from keep
-
-
 zeroOrMore : Count
 zeroOrMore =
     AtLeast 0
@@ -546,6 +556,18 @@ zeroOrMore =
 oneOrMore : Count
 oneOrMore =
     AtLeast 1
+
+
+keepZeroOrMore : (Char -> Bool) -> Parser String
+keepZeroOrMore predicate =
+    getChompedString (chompWhile predicate)
+
+
+keepOneOrMore : (Char -> Bool) -> Parser String
+keepOneOrMore predicate =
+    Advanced.chompIf predicate (Parser.Expecting "at least one")
+        |. chompWhile predicate
+        |> getChompedString
 
 
 keep : Count -> (Char -> Bool) -> Parser String
@@ -595,7 +617,7 @@ fail str =
 
 symbol : String -> Parser ()
 symbol str =
-    Advanced.symbol (Advanced.Token str (Parser.ExpectingSymbol str))
+    Advanced.token (Advanced.Token str (Parser.ExpectingSymbol str))
 
 
 toToken : String -> Advanced.Token Parser.Problem
