@@ -95,7 +95,7 @@ Should give output:
 But instead was:
 
 ````````````html
-ERROR Problem at row 1 Bad repeat
+ERROR Problem at row 1 Expecting at least one
 ````````````
 ## [Example 125](https://spec.commonmark.org/0.29/#example-125)
 
@@ -333,7 +333,7 @@ Should give output:
 But instead was:
 
 ````````````html
-ERROR Problem at row 1 Bad repeat
+ERROR Problem at row 1 Expecting at least one
 ````````````
 ## [Example 136](https://spec.commonmark.org/0.29/#example-136)
 

@@ -223,7 +223,7 @@ Should give output:
 But instead was:
 
 ````````````html
-ERROR Problem at row 1 Bad repeat
+ERROR Problem at row 1 Expecting at least one
 ````````````
 ## [Example 620](https://spec.commonmark.org/0.29/#example-620)
 
@@ -243,7 +243,7 @@ Should give output:
 But instead was:
 
 ````````````html
-ERROR Problem at row 1 Bad repeat
+ERROR Problem at row 1 Expecting at least one
 ````````````
 ## [Example 622](https://spec.commonmark.org/0.29/#example-622)
 
