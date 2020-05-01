@@ -241,18 +241,21 @@ textString closingChar =
         predicate c =
             c /= closingChar && c /= '&'
     in
-    Advanced.loop () (textStringStep closingChar predicate)
+    Advanced.loop "" (textStringStep closingChar predicate)
+
+
+textStringStep : Char -> (Char -> Bool) -> String -> Parser (Step String String)
+textStringStep closingChar predicate accum =
+    chompWhile predicate
         |> getChompedString
-
-
-textStringStep closingChar predicate _ =
-    succeed identity
-        |. chompWhile predicate
-        |= oneOf
-            [ escapedChar closingChar
-                |> map (\_ -> Loop ())
-            , succeed (Done ())
-            ]
+        |> andThen
+            (\soFar ->
+                oneOf
+                    [ escapedChar closingChar
+                        |> map (\escaped -> Loop (accum ++ soFar ++ String.fromChar escaped))
+                    , succeed (Done (accum ++ soFar))
+                    ]
+            )
 
 
 
