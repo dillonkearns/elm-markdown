@@ -44,7 +44,7 @@ parser previousWasBody =
 
 parseSubsequentItems : Int -> Token Parser.Problem -> ListItem -> Parser ( Int, List ListItem )
 parseSubsequentItems startingIndex listMarker firstItem =
-    loop [] (statementsHelp listMarker)
+    loop [] (statementsHelp (singleItemParser listMarker))
         |> map (\items -> ( startingIndex, firstItem :: items ))
 
 
@@ -103,10 +103,10 @@ endOrNewline =
         ]
 
 
-statementsHelp : Token Parser.Problem -> List ListItem -> Parser (Step (List ListItem) (List ListItem))
-statementsHelp listMarker revStmts =
+statementsHelp : Parser ListItem -> List ListItem -> Parser (Step (List ListItem) (List ListItem))
+statementsHelp itemParser revStmts =
     oneOf
-        [ succeed (\stmt -> Loop (stmt :: revStmts))
-            |= singleItemParser listMarker
+        [ itemParser
+            |> Advanced.map (\stmt -> Loop (stmt :: revStmts))
         , succeed (Done (List.reverse revStmts))
         ]
