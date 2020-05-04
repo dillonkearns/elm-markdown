@@ -655,11 +655,11 @@ stepRawBlock revStmts =
     case revStmts.rawBlocks of
         (Body _) :: _ ->
             oneOf whenPreviousWasBody
-                |= succeed revStmts
+                |> map (\f -> f revStmts)
 
         _ ->
             oneOf whenPreviousWasNotBody
-                |= succeed revStmts
+                |> map (\f -> f revStmts)
 
 
 

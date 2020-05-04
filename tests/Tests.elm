@@ -477,8 +477,9 @@ I'm part of the block quote
                                     [ Block.Text "italicized inline HTML "
                                     , Block.HtmlInline
                                         (Block.HtmlElement "bio"
-                                            [ { name = "name", value = "Dillon Kearns" }
-                                            , { name = "photo", value = "https://avatars2.githubusercontent.com/u/1384166" }
+                                            -- NOTE: attribute names are in reverse alphabetical order
+                                            [ { name = "photo", value = "https://avatars2.githubusercontent.com/u/1384166" }
+                                            , { name = "name", value = "Dillon Kearns" }
                                             ]
                                             []
                                         )
