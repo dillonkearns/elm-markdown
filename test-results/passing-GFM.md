@@ -8879,6 +8879,37 @@ Gives this correct output:
 
 ## [extension] Tables
 
+### [Example 198](https://github.github.com/gfm/#example-198)
+
+This markdown:
+
+
+````````````markdown
+| foo | bar |
+| --- | --- |
+| baz | bim |
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<table>
+<thead>
+<tr>
+<th>foo</th>
+<th>bar</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>baz</td>
+<td>bim</td>
+</tr>
+</tbody>
+</table>
+````````````
+
 ### [Example 203](https://github.github.com/gfm/#example-203)
 
 This markdown:
@@ -8897,6 +8928,66 @@ Gives this correct output:
 <p>| abc | def |
 | --- |
 | bar |</p>
+````````````
+
+### [Example 204](https://github.github.com/gfm/#example-204)
+
+This markdown:
+
+
+````````````markdown
+| abc | def |
+| --- | --- |
+| bar |
+| bar | baz | boo |
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<table>
+<thead>
+<tr>
+<th>abc</th>
+<th>def</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>bar</td>
+<td></td>
+</tr>
+<tr>
+<td>bar</td>
+<td>baz</td>
+</tr>
+</tbody>
+</table>
+````````````
+
+### [Example 205](https://github.github.com/gfm/#example-205)
+
+This markdown:
+
+
+````````````markdown
+| abc | def |
+| --- | --- |
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<table>
+<thead>
+<tr>
+<th>abc</th>
+<th>def</th>
+</tr>
+</thead>
+</table>
 ````````````
 
 ## [extension] Task list items

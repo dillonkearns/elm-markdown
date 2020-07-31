@@ -22,7 +22,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<p>Foo<em>bar</em>=========</p><p>Foo<em>bar</em></p><hr>
+<p>Foo<em>bar</em>=========</p><table><thead><tr><th>Foo<em>bar</em></th></tr></thead></table>
 ````````````
 ## [Example 51](https://spec.commonmark.org/0.29/#example-51)
 
@@ -162,7 +162,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<p>Foo</p><hr>
+<table><thead><tr><th>Foo</th></tr></thead></table>
 ````````````
 ## [Example 57](https://spec.commonmark.org/0.29/#example-57)
 
@@ -183,7 +183,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<p>Foo</p><hr>
+<table><thead><tr><th>Foo</th></tr></thead></table>
 ````````````
 ## [Example 59](https://spec.commonmark.org/0.29/#example-59)
 
@@ -204,7 +204,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<p>Foo</p><hr>
+<table><thead><tr><th>Foo</th></tr></thead></table>
 ````````````
 ## [Example 60](https://spec.commonmark.org/0.29/#example-60)
 
@@ -225,7 +225,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<p>Foo\</p><hr>
+<table><thead><tr><th>Foo\</th></tr></thead></table>
 ````````````
 ## [Example 61](https://spec.commonmark.org/0.29/#example-61)
 
@@ -275,7 +275,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<p>Foo Bar</p><hr>
+<p>Foo</p><table><thead><tr><th>Bar</th></tr></thead></table>
 ````````````
 ## [Example 66](https://spec.commonmark.org/0.29/#example-66)
 
@@ -321,7 +321,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<p>&gt; foo</p><hr>
+<table><thead><tr><th>&gt; foo</th></tr></thead></table>
 ````````````
 ## [Example 73](https://spec.commonmark.org/0.29/#example-73)
 
