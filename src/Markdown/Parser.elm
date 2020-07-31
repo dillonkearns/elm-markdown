@@ -297,17 +297,27 @@ parseInlines linkReferences rawBlock =
                         --|> List.map (parseRawInline linkReferences identity)
                         |> combine
 
-                --|> parseRawInline
-                --    linkReferences
-                --    (Debug.todo "")
-                --    (UnparsedInlines "")
-                --header
+                parsedRows : Parser (List (List (List Inline)))
+                parsedRows =
+                    rows
+                        |> List.map
+                            (\row ->
+                                List.map
+                                    (\column ->
+                                        column
+                                            |> UnparsedInlines
+                                            |> parseRawInline linkReferences identity
+                                    )
+                                    row
+                                    |> combine
+                            )
+                        |> combine
             in
             parsedHeader
                 |> andThen
                     (\headerThing ->
-                        Block.Table headerThing []
-                            |> just
+                        parsedRows
+                            |> andThen (\rowThing -> Block.Table headerThing rowThing |> just)
                     )
 
 
@@ -718,9 +728,7 @@ statementsHelp2 revStmts =
         , orderedListBlock (List.head revStmts.rawBlocks) |> keepLooping
         , heading |> Advanced.backtrackable |> keepLooping
         , htmlParser |> keepLooping
-
-        -- TODO re-enable this once the table parser handles rows
-        --, TableParser.parser |> Advanced.backtrackable |> map Table |> keepLooping
+        , TableParser.parser |> Advanced.backtrackable |> map Table |> keepLooping
         , plainLine |> keepLooping
         ]
 

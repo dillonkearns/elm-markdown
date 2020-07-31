@@ -83,7 +83,7 @@ type Block
       -- Leaf Blocks With Inlines
     | Heading HeadingLevel (List Inline)
     | Paragraph (List Inline)
-    | Table (List { label : List Inline, alignment : Maybe Alignment }) (List (List Inline))
+    | Table (List { label : List Inline, alignment : Maybe Alignment }) (List (List (List Inline)))
       -- Leaf Blocks Without Inlines
     | CodeBlock { body : String, language : Maybe String }
     | ThematicBreak
@@ -267,7 +267,9 @@ extractInlineBlockText block =
             [ header
                 |> List.map .label
                 |> List.map extractInlineText
-            , List.map extractInlineText rows
+            , rows
+                |> List.map (List.map extractInlineText)
+                |> List.concat
             ]
                 |> List.concat
                 |> String.join "\n"
@@ -429,7 +431,7 @@ walkInlinesHelp function block =
                             }
                         )
                 )
-                (rows |> List.map (List.map function))
+                (rows |> List.map (List.map (List.map function)))
 
         HtmlBlock html ->
             case html of
@@ -639,8 +641,17 @@ inlineParserValidateWalkBlock function block =
 
                 mappedRows =
                     rows
-                        |> List.map (List.map (inlineParserValidateWalk function))
-                        |> List.map combine
+                        |> List.map
+                            (\row ->
+                                row
+                                    |> List.map
+                                        (\cell ->
+                                            cell
+                                                |> List.map (inlineParserValidateWalk function)
+                                                |> combine
+                                        )
+                                    |> combine
+                            )
                         |> combine
             in
             Result.map2 Table mappedHeader mappedRows

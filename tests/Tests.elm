@@ -3,7 +3,6 @@ module Tests exposing (suite)
 import Expect exposing (Expectation)
 import Markdown.Block as Block exposing (..)
 import Markdown.Parser as Markdown exposing (..)
-import Markdown.Table
 import Parser
 import Parser.Advanced as Advanced exposing ((|.), (|=))
 import Test exposing (..)
@@ -241,23 +240,40 @@ Hello!
                             [ Block.ThematicBreak
                             ]
                         )
-
-        -- TODO re-enable this test once table parsing is implemented
-        --        , test "simple table" <|
-        --            \() ->
-        --                """| abc | def |
-        --|---|---|
-        --"""
-        --                    |> parse
-        --                    |> Expect.equal
-        --                        (Ok
-        --                            [ Block.Table
-        --                                [ { label = [ Text "abc" ], alignment = Nothing }
-        --                                , { label = [ Text "def" ], alignment = Nothing }
-        --                                ]
-        --                                []
-        --                            ]
-        --                        )
+        , test "simple table" <|
+            \() ->
+                """| abc | def |
+|---|---|
+"""
+                    |> parse
+                    |> Expect.equal
+                        (Ok
+                            [ Block.Table
+                                [ { label = [ Text "abc" ], alignment = Nothing }
+                                , { label = [ Text "def" ], alignment = Nothing }
+                                ]
+                                []
+                            ]
+                        )
+        , test "simple table with data" <|
+            \() ->
+                """| abc | def |
+|---|---|
+| foo | bar |
+| bar | baz |
+"""
+                    |> parse
+                    |> Expect.equal
+                        (Ok
+                            [ Block.Table
+                                [ { label = [ Text "abc" ], alignment = Nothing }
+                                , { label = [ Text "def" ], alignment = Nothing }
+                                ]
+                                [ [ [ Text "foo" ], [ Text "bar" ] ]
+                                , [ [ Text "bar" ], [ Text "baz" ] ]
+                                ]
+                            ]
+                        )
         , test "multiple thematic breaks" <|
             \() ->
                 """***

@@ -34,12 +34,32 @@ parser =
                                         }
                                     )
                             )
-                            body
+                            (standardizeRowLength (List.length headers) body)
                         )
 
                 else
                     Advanced.problem (Parser.Problem "Tables must have the same number of header columns as delimiter columns")
             )
+
+
+standardizeRowLength : Int -> List (List String) -> List (List String)
+standardizeRowLength expectedLength =
+    List.map
+        (\row ->
+            let
+                rowLength =
+                    List.length row
+            in
+            case compare expectedLength rowLength of
+                LT ->
+                    List.take expectedLength row
+
+                EQ ->
+                    row
+
+                GT ->
+                    row ++ List.repeat (expectedLength - rowLength) ""
+        )
 
 
 rowParser : Parser (List String)

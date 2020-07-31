@@ -163,6 +163,13 @@ fullTableSuite =
 Hey, I forgot to finish my table! Whoops!
                            """
                     |> expectFail
+        , test "table must have a delimiter row before body rows" <|
+            \() ->
+                """| abc | def |
+| foo | bar |
+| bar | baz |
+"""
+                    |> expectFail
         , test "tables have data rows" <|
             \() ->
                 """| abc | def |
@@ -182,7 +189,7 @@ Hey, I forgot to finish my table! Whoops!
                                 ]
                             )
                         )
-        , test "the data rows can have varying length" <|
+        , test "the data rows can have varying length but the result should be even" <|
             \() ->
                 """| abc | def |
 | --- | --- |
@@ -196,12 +203,18 @@ Hey, I forgot to finish my table! Whoops!
                                 [ { label = "abc", alignment = Nothing }
                                 , { label = "def", alignment = Nothing }
                                 ]
-                                [ [ "bar" ]
-                                , [ "bar", "baz", "boo" ]
+                                [ [ "bar", "" ]
+                                , [ "bar", "baz" ]
                                 ]
                             )
                         )
         ]
+
+
+
+-- NOTABLE TODOS
+-- handle \| appropriately
+-- handle
 
 
 expectParserFail someParser input =
