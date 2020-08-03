@@ -242,6 +242,44 @@ bar | baz
                                 []
                             )
                         )
+        , test "tables with only a single column and the delimiter does NOT have surrounding pipes" <|
+            \() ->
+                """| abc |
+---
+bar
+
+"""
+                    |> expectFail
+        , test "tables with only a single column and the delimiter has surrounding pipes" <|
+            \() ->
+                """| abc |
+| --- |
+bar
+"""
+                    |> Advanced.run parser
+                    |> Expect.equal
+                        (Ok
+                            (Markdown.Table.Table
+                                [ { label = "abc", alignment = Nothing }
+                                ]
+                                [ [ "bar" ] ]
+                            )
+                        )
+        , test "tables with only a single column and the delimiter has surrounding pipes but the header does not" <|
+            \() ->
+                """abc
+| --- |
+bar
+"""
+                    |> Advanced.run parser
+                    |> Expect.equal
+                        (Ok
+                            (Markdown.Table.Table
+                                [ { label = "abc", alignment = Nothing }
+                                ]
+                                [ [ "bar" ] ]
+                            )
+                        )
         ]
 
 
