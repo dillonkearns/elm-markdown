@@ -40,7 +40,7 @@ parser =
                         )
 
                 else
-                    Advanced.problem (Parser.Problem "Tables must have the same number of header columns as delimiter columns")
+                    Advanced.problem (Parser.Problem ("Tables must have the same number of header columns (" ++ String.fromInt (List.length headers) ++ ") as delimiter columns (" ++ String.fromInt (List.length columnAlignments) ++ ")"))
             )
 
 
@@ -67,22 +67,55 @@ standardizeRowLength expectedLength =
 rowParser : Parser (List String)
 rowParser =
     succeed
-        (\rowString ->
-            rowString
-                |> dropTrailingPipe
-                |> String.split "|"
-                |> List.map String.trim
+        (\revCells ->
+            revCells
+                |> List.foldl (\cell acc -> formatCell cell :: acc) []
         )
         |. oneOf
             [ tokenHelp "|"
             , succeed ()
             ]
-        |= Advanced.getChompedString
-            (Advanced.chompUntilEndOr "\n")
-        |. oneOf
-            [ Advanced.end (Parser.Expecting "end")
-            , chompIf (\c -> c == '\n') (Parser.Expecting "\\n")
-            ]
+        |= parseCells
+
+
+formatCell : String -> String
+formatCell =
+    String.replace "\\|" "|"
+        >> String.trim
+
+
+parseCells : Parser (List String)
+parseCells =
+    loop ( Nothing, [] ) parseCellHelper
+
+
+parseCellHelper : ( Maybe String, List String ) -> Parser (Step ( Maybe String, List String ) (List String))
+parseCellHelper ( curr, acc ) =
+    let
+        addToCurrent c =
+            c ++ Maybe.withDefault "" curr
+
+        continueCell c =
+            Loop ( Just (addToCurrent c), acc )
+
+        finishCell =
+            curr
+                |> Maybe.map (\cell -> Loop ( Nothing, String.reverse cell :: acc ))
+                |> Maybe.withDefault (Loop ( Nothing, acc ))
+
+        return =
+            curr
+                |> Maybe.map (\cell -> Done (String.reverse cell :: acc))
+                |> Maybe.withDefault (Done acc)
+    in
+    oneOf
+        [ tokenHelp "|\n" |> Advanced.map (\_ -> return)
+        , tokenHelp "\n" |> Advanced.map (\_ -> return)
+        , Advanced.end (Parser.Expecting "end") |> Advanced.map (\_ -> return)
+        , backtrackable (succeed (continueCell "|\\")) |. tokenHelp "\\|"
+        , backtrackable (succeed finishCell) |. tokenHelp "|"
+        , mapChompedString (\char _ -> continueCell char) (chompIf (always True) (Parser.Problem "No character found"))
+        ]
 
 
 type DelimiterRow
@@ -123,7 +156,7 @@ delimiterRowParser =
             )
 
 
-requirePipeIfNotFirst : List String -> Parser ()
+requirePipeIfNotFirst : List a -> Parser ()
 requirePipeIfNotFirst columns =
     if List.isEmpty columns then
         oneOf
@@ -182,13 +215,3 @@ bodyParserHelp revRows =
                         Advanced.succeed (Loop (row :: revRows))
                 )
         ]
-
-
-dropTrailingPipe : String -> String
-dropTrailingPipe string =
-    if string |> String.endsWith "|" then
-        string
-            |> String.dropRight 1
-
-    else
-        string

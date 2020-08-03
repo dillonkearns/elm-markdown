@@ -68,7 +68,7 @@ delimiterParsingSuite =
 rowParsingSuite : Test
 rowParsingSuite =
     describe "row parser"
-        [ test "parse row" <|
+        [ test "simple row" <|
             \() ->
                 "| abc | def |"
                     |> Advanced.run rowParser
@@ -91,6 +91,38 @@ rowParsingSuite =
                     |> Expect.equal
                         (Ok
                             [ "cell 1", "cell 2", "cell 3" ]
+                        )
+        , test "row with escaped pipes" <|
+            \() ->
+                "| abc | a \\| b |"
+                    |> Advanced.run rowParser
+                    |> Expect.equal
+                        (Ok
+                            [ "abc", "a | b" ]
+                        )
+        , test "row with escaped pipes at the end" <|
+            \() ->
+                "| abc | def\\|"
+                    |> Advanced.run rowParser
+                    |> Expect.equal
+                        (Ok
+                            [ "abc", "def|" ]
+                        )
+        , test "row with escaped pipes at the beginning" <|
+            \() ->
+                "\\|  abc | def |"
+                    |> Advanced.run rowParser
+                    |> Expect.equal
+                        (Ok
+                            [ "|  abc", "def" ]
+                        )
+        , test "row with empty cell contents" <|
+            \() ->
+                "| abc |  |"
+                    |> Advanced.run rowParser
+                    |> Expect.equal
+                        (Ok
+                            [ "abc", "" ]
                         )
         ]
 
