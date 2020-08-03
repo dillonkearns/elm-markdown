@@ -8910,6 +8910,45 @@ Gives this correct output:
 </table>
 ````````````
 
+### [Example 202](https://github.github.com/gfm/#example-202)
+
+This markdown:
+
+
+````````````markdown
+| abc | def |
+| --- | --- |
+| bar | baz |
+bar
+
+bar
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<table>
+<thead>
+<tr>
+<th>abc</th>
+<th>def</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>bar</td>
+<td>baz</td>
+</tr>
+<tr>
+<td>bar</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>bar</p>
+````````````
+
 ### [Example 203](https://github.github.com/gfm/#example-203)
 
 This markdown:

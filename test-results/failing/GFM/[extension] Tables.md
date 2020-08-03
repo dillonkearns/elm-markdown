@@ -65,27 +65,3 @@ But instead was:
 ````````````html
 <table><thead><tr><th>abc</th><th>def</th></tr></thead><tbody><tr><td>bar</td><td>baz</td></tr><tr><td>&gt; bar</td><td></td></tr></tbody></table>
 ````````````
-## [Example 202](https://github.github.com/gfm/#example-202)
-
-This markdown:
-
-````````````markdown
-| abc | def |
-| --- | --- |
-| bar | baz |
-bar
-
-bar
-````````````
-
-Should give output:
-
-````````````html
-<table><thead><tr><th>abc</th><th>def</th></tr></thead><tbody><tr><td>bar</td><td>baz</td></tr><tr><td>bar</td><td></td></tr></tbody></table><p>bar</p>
-````````````
-
-But instead was:
-
-````````````html
-<p>| abc | def | | --- | --- | | bar | baz | bar</p><p>bar</p>
-````````````
