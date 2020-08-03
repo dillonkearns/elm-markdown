@@ -8941,6 +8941,39 @@ Gives this correct output:
 </table>
 ````````````
 
+### [Example 200](https://github.github.com/gfm/#example-200)
+
+This markdown:
+
+
+````````````markdown
+| f\|oo  |
+| ------ |
+| b `\|` az |
+| b **\|** im |
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<table>
+<thead>
+<tr>
+<th>f|oo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>b <code>|</code> az</td>
+</tr>
+<tr>
+<td>b <strong>|</strong> im</td>
+</tr>
+</tbody>
+</table>
+````````````
+
 ### [Example 202](https://github.github.com/gfm/#example-202)
 
 This markdown:
