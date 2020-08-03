@@ -274,6 +274,27 @@ Hello!
                                 ]
                             ]
                         )
+        , test "table with alignment" <|
+            \() ->
+                """| abc | def | ghi | jkl
+|:---|:------:|--:|---|
+| foo | bar | baz | boo |
+| bar | baz | boo | foo |
+"""
+                    |> parse
+                    |> Expect.equal
+                        (Ok
+                            [ Block.Table
+                                [ { label = [ Text "abc" ], alignment = Just AlignLeft }
+                                , { label = [ Text "def" ], alignment = Just AlignCenter }
+                                , { label = [ Text "ghi" ], alignment = Just AlignRight }
+                                , { label = [ Text "jkl" ], alignment = Nothing }
+                                ]
+                                [ [ [ Text "foo" ], [ Text "bar" ], [ Text "baz" ], [ Text "boo" ] ]
+                                , [ [ Text "bar" ], [ Text "baz" ], [ Text "boo" ], [ Text "foo" ] ]
+                                ]
+                            ]
+                        )
         , test "multiple thematic breaks" <|
             \() ->
                 """***

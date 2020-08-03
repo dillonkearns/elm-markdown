@@ -1,8 +1,9 @@
 module TableParserTests exposing (delimiterParsingSuite, fullTableSuite, rowParsingSuite)
 
 import Expect exposing (Expectation)
+import Markdown.Block exposing (Alignment(..))
 import Markdown.Table
-import Markdown.TableParser as TableParser exposing (..)
+import Markdown.TableParser exposing (..)
 import Parser
 import Parser.Advanced as Advanced exposing (..)
 import Test exposing (..)
@@ -12,49 +13,55 @@ type alias Parser a =
     Advanced.Parser String Parser.Problem a
 
 
-expectDelimiterRowOk : String -> Int -> Expectation
-expectDelimiterRowOk testString rowCount =
+expectDelimiterRowOk : String -> List (Maybe Alignment) -> Expectation
+expectDelimiterRowOk testString columns =
     testString
         |> Advanced.run delimiterRowParser
         |> Expect.equal
-            (Ok (DelimiterRow rowCount (String.trim testString)))
+            (Ok (DelimiterRow (String.trim testString) columns))
 
 
 delimiterParsingSuite : Test
 delimiterParsingSuite =
     describe "delimiter row"
-        [ test "single with pipes" <|
+        [ test "single column with pipes" <|
             \() ->
-                expectDelimiterRowOk "|---|" 1
+                expectDelimiterRowOk "|---|" [ Nothing ]
         , test "two columns" <|
             \() ->
-                expectDelimiterRowOk "|--|--|" 2
+                expectDelimiterRowOk "|--|--|" [ Nothing, Nothing ]
         , test "no leading" <|
             \() ->
-                expectDelimiterRowOk "--|--|" 2
+                expectDelimiterRowOk "--|--|" [ Nothing, Nothing ]
         , test "no trailing" <|
             \() ->
-                expectDelimiterRowOk "|--|--" 2
+                expectDelimiterRowOk "|--|--" [ Nothing, Nothing ]
         , test "no leading or trailing" <|
             \() ->
-                expectDelimiterRowOk "--|--" 2
+                expectDelimiterRowOk "--|--" [ Nothing, Nothing ]
+        , test "only a single hyphen per column" <|
+            \() ->
+                expectDelimiterRowOk "- | -" [ Nothing, Nothing ]
         , test "delimiter row with no trailing or leading pipes" <|
             \() ->
                 "--"
                     |> expectParserFail delimiterRowParser
         , test "delimiter row with space padding" <|
             \() ->
-                expectDelimiterRowOk "| -- |-- | --   |" 3
+                expectDelimiterRowOk "| -- |-- | --   |" [ Nothing, Nothing, Nothing ]
         , test "delimiter row with space padding and no leading" <|
             \() ->
-                expectDelimiterRowOk "-- |-- | --   |" 3
+                expectDelimiterRowOk "-- |-- | --   |" [ Nothing, Nothing, Nothing ]
         , test "delimiter row with space padding and no trailing" <|
             \() ->
-                expectDelimiterRowOk "| -- |-- | --   " 3
+                expectDelimiterRowOk "| -- |-- | --   " [ Nothing, Nothing, Nothing ]
         , test "delimiter rows cannot have spaces between the hyphens" <|
             \() ->
                 "|---|- -|"
                     |> expectParserFail delimiterRowParser
+        , test "delimiter row with alignment in columns" <|
+            \() ->
+                expectDelimiterRowOk "| :-- |-- | :-: | ---:   " [ Just AlignLeft, Nothing, Just AlignCenter, Just AlignRight ]
         ]
 
 

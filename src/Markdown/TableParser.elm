@@ -1,9 +1,10 @@
 module Markdown.TableParser exposing (..)
 
+import Markdown.Block exposing (Alignment(..))
 import Markdown.Table
 import Parser
 import Parser.Advanced as Advanced exposing (..)
-import Parser.Extra exposing (oneOrMore, tokenHelp)
+import Parser.Extra exposing (maybeChomp, oneOrMore, tokenHelp)
 
 
 type alias Parser a =
@@ -22,17 +23,18 @@ parser =
         |= bodyParser
     )
         |> Advanced.andThen
-            (\( headers, DelimiterRow delimiterCount _, body ) ->
-                if List.length headers == delimiterCount then
+            (\( headers, DelimiterRow _ columnAlignments, body ) ->
+                if List.length headers == List.length columnAlignments then
                     Advanced.succeed
                         (Markdown.Table.Table
-                            (headers
-                                |> List.map
-                                    (\headerCell ->
-                                        { label = headerCell
-                                        , alignment = Nothing
-                                        }
-                                    )
+                            (List.map2
+                                (\headerCell alignment ->
+                                    { label = headerCell
+                                    , alignment = alignment
+                                    }
+                                )
+                                headers
+                                columnAlignments
                             )
                             (standardizeRowLength (List.length headers) body)
                         )
@@ -84,48 +86,71 @@ rowParser =
 
 
 type DelimiterRow
-    = DelimiterRow Int String
+    = DelimiterRow String (List (Maybe Alignment))
+
+
+delimiterToAlignment : String -> Maybe Alignment
+delimiterToAlignment cell =
+    case ( String.startsWith ":" cell, String.endsWith ":" cell ) of
+        ( True, True ) ->
+            Just AlignCenter
+
+        ( True, False ) ->
+            Just AlignLeft
+
+        ( False, True ) ->
+            Just AlignRight
+
+        ( False, False ) ->
+            Nothing
 
 
 delimiterRowParser : Parser DelimiterRow
 delimiterRowParser =
-    mapChompedString (\delimiterText count -> DelimiterRow count (String.trim delimiterText)) (loop 0 delimiterRowHelp)
+    mapChompedString
+        (\delimiterText revDelimiterColumns -> DelimiterRow (String.trim delimiterText) (List.map delimiterToAlignment (List.reverse revDelimiterColumns)))
+        (loop [] delimiterRowHelp)
         |> andThen
-            (\((DelimiterRow count delimiterText) as delimiterRow) ->
-                if count == 1 && not (String.startsWith "|" delimiterText && String.endsWith "|" delimiterText) then
-                    Advanced.problem (Parser.Problem "Tables with a single column must have pipes at the start and end of the delimiter row to avoid ambiguity.")
+            (\((DelimiterRow delimiterText headers) as delimiterRow) ->
+                if List.isEmpty headers then
+                    problem (Parser.Expecting "Must have at least one column in delimiter row.")
 
-                else if count > 0 then
-                    succeed delimiterRow
+                else if List.length headers == 1 && not (String.startsWith "|" delimiterText && String.endsWith "|" delimiterText) then
+                    problem (Parser.Problem "Tables with a single column must have pipes at the start and end of the delimiter row to avoid ambiguity.")
 
                 else
-                    problem (Parser.Expecting "Must have at least one column in delimiter row.")
+                    succeed delimiterRow
             )
 
 
-requirePipeIfNotFirst : Int -> Parser ()
-requirePipeIfNotFirst found =
-    if found > 0 then
-        tokenHelp "|"
-
-    else
+requirePipeIfNotFirst : List String -> Parser ()
+requirePipeIfNotFirst columns =
+    if List.isEmpty columns then
         oneOf
             [ tokenHelp "|"
             , succeed ()
             ]
 
+    else
+        tokenHelp "|"
 
-delimiterRowHelp : Int -> Parser (Step Int Int)
-delimiterRowHelp found =
+
+delimiterRowHelp : List String -> Parser (Step (List String) (List String))
+delimiterRowHelp revDelimiterColumns =
     oneOf
-        [ backtrackable (tokenHelp "|\n" |> Advanced.map (\_ -> Done found))
-        , tokenHelp "\n" |> Advanced.map (\_ -> Done found)
-        , Advanced.end (Parser.Expecting "end") |> Advanced.map (\_ -> Done found)
-        , backtrackable (succeed (Done found) |. tokenHelp "|" |. Advanced.end (Parser.Expecting "end"))
-        , succeed (Loop (found + 1))
-            |. requirePipeIfNotFirst found
+        [ backtrackable (tokenHelp "|\n" |> Advanced.map (\_ -> Done revDelimiterColumns))
+        , tokenHelp "\n" |> Advanced.map (\_ -> Done revDelimiterColumns)
+        , Advanced.end (Parser.Expecting "end") |> Advanced.map (\_ -> Done revDelimiterColumns)
+        , backtrackable (succeed (Done revDelimiterColumns) |. tokenHelp "|" |. Advanced.end (Parser.Expecting "end"))
+        , succeed (\column -> Loop (column :: revDelimiterColumns))
+            |. requirePipeIfNotFirst revDelimiterColumns
             |. chompSpaceCharacter
-            |. oneOrMore (\c -> c == '-')
+            |= Advanced.getChompedString
+                (succeed ()
+                    |. maybeChomp (\c -> c == ':')
+                    |. oneOrMore (\c -> c == '-')
+                    |. maybeChomp (\c -> c == ':')
+                )
             |. chompSpaceCharacter
         ]
 
