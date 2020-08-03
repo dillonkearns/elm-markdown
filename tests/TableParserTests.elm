@@ -12,64 +12,45 @@ type alias Parser a =
     Advanced.Parser String Parser.Problem a
 
 
+expectDelimiterRowOk : String -> Int -> Expectation
+expectDelimiterRowOk testString rowCount =
+    testString
+        |> Advanced.run delimiterRowParser
+        |> Expect.equal
+            (Ok (DelimiterRow rowCount (String.trim testString)))
+
+
 delimiterParsingSuite : Test
 delimiterParsingSuite =
     describe "delimiter row"
         [ test "single with pipes" <|
             \() ->
-                "|---|"
-                    |> Advanced.run delimiterRowParser
-                    |> Expect.equal
-                        (Ok (DelimiterRow 1))
+                expectDelimiterRowOk "|---|" 1
         , test "two columns" <|
             \() ->
-                "|--|--|"
-                    |> Advanced.run delimiterRowParser
-                    |> Expect.equal
-                        (Ok (DelimiterRow 2))
+                expectDelimiterRowOk "|--|--|" 2
         , test "no leading" <|
             \() ->
-                "--|--|"
-                    |> Advanced.run delimiterRowParser
-                    |> Expect.equal
-                        (Ok (DelimiterRow 2))
+                expectDelimiterRowOk "--|--|" 2
         , test "no trailing" <|
             \() ->
-                "|--|--"
-                    |> Advanced.run delimiterRowParser
-                    |> Expect.equal
-                        (Ok (DelimiterRow 2))
+                expectDelimiterRowOk "|--|--" 2
         , test "no leading or trailing" <|
             \() ->
-                "--|--"
-                    |> Advanced.run delimiterRowParser
-                    |> Expect.equal
-                        (Ok (DelimiterRow 2))
+                expectDelimiterRowOk "--|--" 2
         , test "delimiter row with no trailing or leading pipes" <|
             \() ->
-                -- TODO should this be an error?
                 "--"
-                    |> Advanced.run delimiterRowParser
-                    |> Expect.equal
-                        (Ok (DelimiterRow 1))
+                    |> expectParserFail delimiterRowParser
         , test "delimiter row with space padding" <|
             \() ->
-                "| -- |-- | --   |"
-                    |> Advanced.run delimiterRowParser
-                    |> Expect.equal
-                        (Ok (DelimiterRow 3))
+                expectDelimiterRowOk "| -- |-- | --   |" 3
         , test "delimiter row with space padding and no leading" <|
             \() ->
-                "-- |-- | --   |"
-                    |> Advanced.run delimiterRowParser
-                    |> Expect.equal
-                        (Ok (DelimiterRow 3))
+                expectDelimiterRowOk "-- |-- | --   |" 3
         , test "delimiter row with space padding and no trailing" <|
             \() ->
-                "| -- |-- | --   "
-                    |> Advanced.run delimiterRowParser
-                    |> Expect.equal
-                        (Ok (DelimiterRow 3))
+                expectDelimiterRowOk "| -- |-- | --   " 3
         , test "delimiter rows cannot have spaces between the hyphens" <|
             \() ->
                 "|---|- -|"

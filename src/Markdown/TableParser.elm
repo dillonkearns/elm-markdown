@@ -22,7 +22,7 @@ parser =
         |= bodyParser
     )
         |> Advanced.andThen
-            (\( headers, DelimiterRow delimiterCount, body ) ->
+            (\( headers, DelimiterRow delimiterCount _, body ) ->
                 if List.length headers == delimiterCount then
                     Advanced.succeed
                         (Markdown.Table.Table
@@ -84,15 +84,18 @@ rowParser =
 
 
 type DelimiterRow
-    = DelimiterRow Int
+    = DelimiterRow Int String
 
 
 delimiterRowParser : Parser DelimiterRow
 delimiterRowParser =
-    loop 0 delimiterRowHelp
+    mapChompedString (\delimiterText count -> DelimiterRow count (String.trim delimiterText)) (loop 0 delimiterRowHelp)
         |> andThen
-            (\((DelimiterRow count) as delimiterRow) ->
-                if count > 0 then
+            (\((DelimiterRow count delimiterText) as delimiterRow) ->
+                if count == 1 && not (String.startsWith "|" delimiterText && String.endsWith "|" delimiterText) then
+                    Advanced.problem (Parser.Problem ("Tables with a single column must have pipes at the start and end of the delimiter row to avoid ambiguity [" ++ delimiterText ++ "]"))
+
+                else if count > 0 then
                     succeed delimiterRow
 
                 else
@@ -112,13 +115,13 @@ requirePipeIfNotFirst found =
             ]
 
 
-delimiterRowHelp : Int -> Parser (Step Int DelimiterRow)
+delimiterRowHelp : Int -> Parser (Step Int Int)
 delimiterRowHelp found =
     oneOf
-        [ backtrackable (tokenHelp "|\n" |> Advanced.map (\_ -> Done (DelimiterRow found)))
-        , tokenHelp "\n" |> Advanced.map (\_ -> Done (DelimiterRow found))
-        , Advanced.end (Parser.Expecting "end") |> Advanced.map (\_ -> Done (DelimiterRow found))
-        , backtrackable (succeed (Done (DelimiterRow found)) |. tokenHelp "|" |. Advanced.end (Parser.Expecting "end"))
+        [ backtrackable (tokenHelp "|\n" |> Advanced.map (\_ -> Done found))
+        , tokenHelp "\n" |> Advanced.map (\_ -> Done found)
+        , Advanced.end (Parser.Expecting "end") |> Advanced.map (\_ -> Done found)
+        , backtrackable (succeed (Done found) |. tokenHelp "|" |. Advanced.end (Parser.Expecting "end"))
         , succeed (Loop (found + 1))
             |. requirePipeIfNotFirst found
             |. chompSpaceCharacter
