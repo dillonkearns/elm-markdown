@@ -124,6 +124,22 @@ rowParsingSuite =
                         (Ok
                             [ "abc", "" ]
                         )
+        , test "with double escaped pipe character" <|
+            \() ->
+                "| abc \\\\|  |"
+                    |> Advanced.run rowParser
+                    |> Expect.equal
+                        (Ok
+                            [ "abc |" ]
+                        )
+        , test "with triple escaped pipe character" <|
+            \() ->
+                "| abc \\\\\\|  |"
+                    |> Advanced.run rowParser
+                    |> Expect.equal
+                        (Ok
+                            [ "abc \\|" ]
+                        )
         ]
 
 
@@ -298,6 +314,35 @@ bar
                                 [ { label = "abc", alignment = Nothing }
                                 ]
                                 [ [ "bar" ] ]
+                            )
+                        )
+        , test "table with many layers of escaping" <|
+            \() ->
+                """|abc|
+|---|
+|\\\\\\\\\\\\|
+|\\\\\\\\\\|
+|\\\\\\\\|
+|\\\\\\|
+|\\\\|
+|\\|
+|\\\\\\\\||
+
+"""
+                    |> Advanced.run parser
+                    |> Expect.equal
+                        (Ok
+                            (Markdown.Table.Table
+                                [ { label = "abc", alignment = Nothing }
+                                ]
+                                [ [ "\\\\|" ]
+                                , [ "\\\\|" ]
+                                , [ "\\|" ]
+                                , [ "\\|" ]
+                                , [ "|" ]
+                                , [ "|" ]
+                                , [ "\\|" ]
+                                ]
                             )
                         )
         ]

@@ -80,8 +80,7 @@ rowParser =
 
 formatCell : String -> String
 formatCell =
-    String.replace "\\|" "|"
-        >> String.trim
+    String.trim
 
 
 parseCells : Parser (List String)
@@ -112,7 +111,9 @@ parseCellHelper ( curr, acc ) =
         [ tokenHelp "|\n" |> Advanced.map (\_ -> return)
         , tokenHelp "\n" |> Advanced.map (\_ -> return)
         , Advanced.end (Parser.Expecting "end") |> Advanced.map (\_ -> return)
-        , backtrackable (succeed (continueCell "|\\")) |. tokenHelp "\\|"
+        , backtrackable (succeed (continueCell "|")) |. tokenHelp "\\\\|"
+        , backtrackable (succeed (continueCell "\\")) |. tokenHelp "\\\\"
+        , backtrackable (succeed (continueCell "|")) |. tokenHelp "\\|"
         , backtrackable (succeed finishCell) |. tokenHelp "|"
         , mapChompedString (\char _ -> continueCell char) (chompIf (always True) (Parser.Problem "No character found"))
         ]
