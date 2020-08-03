@@ -115,40 +115,21 @@ requirePipeIfNotFirst found =
 delimiterRowHelp : Int -> Parser (Step Int DelimiterRow)
 delimiterRowHelp found =
     oneOf
-        [ tokenHelp "|\n" |> Advanced.map (\_ -> Done (DelimiterRow found))
+        [ backtrackable (tokenHelp "|\n" |> Advanced.map (\_ -> Done (DelimiterRow found)))
         , tokenHelp "\n" |> Advanced.map (\_ -> Done (DelimiterRow found))
         , Advanced.end (Parser.Expecting "end") |> Advanced.map (\_ -> Done (DelimiterRow found))
         , backtrackable (succeed (Done (DelimiterRow found)) |. tokenHelp "|" |. Advanced.end (Parser.Expecting "end"))
         , succeed (Loop (found + 1))
             |. requirePipeIfNotFirst found
-            |. spaces
+            |. chompSpaceCharacter
             |. oneOrMore (\c -> c == '-')
-            |. spaces
+            |. chompSpaceCharacter
         ]
 
 
-
---delimiterRowHelp : Int -> Parser (Step Int DelimiterRow)
---delimiterRowHelp found =
---    oneOf
---        [ succeed identity
---            |. tokenHelp "|"
---            |. spaces
---            |= oneOf
---                [ hyphens found
---                , Advanced.end (Parser.Expecting "end")
---                    |> map (\_ -> Done (DelimiterRow found))
---                , tokenHelp "\n"
---                    --|. chompIf (\c -> c == '\n') (Parser.Expecting "\\n")
---                    |> map (\_ -> Done (DelimiterRow found))
---                ]
---        , hyphens found
---        , tokenHelp "\n"
---            --|. chompIf (\c -> c == '\n') (Parser.Expecting "\\n")
---            |> map (\_ -> Done (DelimiterRow found))
---        , Advanced.end (Parser.Expecting "end")
---            |> map (\_ -> Done (DelimiterRow found))
---        ]
+chompSpaceCharacter : Parser ()
+chompSpaceCharacter =
+    chompWhile (\c -> c == ' ')
 
 
 bodyParser : Parser (List (List String))
@@ -159,7 +140,11 @@ bodyParser =
 bodyParserHelp : List (List String) -> Parser (Step (List (List String)) (List (List String)))
 bodyParserHelp revRows =
     oneOf
-        [ rowParser
+        [ tokenHelp "\n"
+            |> map (\_ -> Done (List.reverse revRows))
+        , Advanced.end (Parser.Expecting "end")
+            |> map (\_ -> Done (List.reverse revRows))
+        , rowParser
             |> andThen
                 (\row ->
                     if List.isEmpty row || List.all String.isEmpty row then
@@ -168,10 +153,6 @@ bodyParserHelp revRows =
                     else
                         Advanced.succeed (Loop (row :: revRows))
                 )
-        , tokenHelp "\n"
-            |> map (\_ -> Done (List.reverse revRows))
-        , Advanced.end (Parser.Expecting "end")
-            |> map (\_ -> Done (List.reverse revRows))
         ]
 
 

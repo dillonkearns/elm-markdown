@@ -208,13 +208,41 @@ Hey, I forgot to finish my table! Whoops!
                                 ]
                             )
                         )
+        , test "tables without surrounding pipes" <|
+            \() ->
+                """abc | def
+--- | ---
+foo | bar
+bar | baz
+"""
+                    |> Advanced.run parser
+                    |> Expect.equal
+                        (Ok
+                            (Markdown.Table.Table
+                                [ { label = "abc", alignment = Nothing }
+                                , { label = "def", alignment = Nothing }
+                                ]
+                                [ [ "foo", "bar" ]
+                                , [ "bar", "baz" ]
+                                ]
+                            )
+                        )
+        , test "tables without body and without surrounding pipes" <|
+            \() ->
+                """abc | def
+--- | ---
+"""
+                    |> Advanced.run parser
+                    |> Expect.equal
+                        (Ok
+                            (Markdown.Table.Table
+                                [ { label = "abc", alignment = Nothing }
+                                , { label = "def", alignment = Nothing }
+                                ]
+                                []
+                            )
+                        )
         ]
-
-
-
--- NOTABLE TODOS
--- handle \| appropriately
--- handle
 
 
 expectParserFail someParser input =
