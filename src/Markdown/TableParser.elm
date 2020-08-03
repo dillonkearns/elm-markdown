@@ -93,7 +93,7 @@ delimiterRowParser =
         |> andThen
             (\((DelimiterRow count delimiterText) as delimiterRow) ->
                 if count == 1 && not (String.startsWith "|" delimiterText && String.endsWith "|" delimiterText) then
-                    Advanced.problem (Parser.Problem ("Tables with a single column must have pipes at the start and end of the delimiter row to avoid ambiguity [" ++ delimiterText ++ "]"))
+                    Advanced.problem (Parser.Problem "Tables with a single column must have pipes at the start and end of the delimiter row to avoid ambiguity.")
 
                 else if count > 0 then
                     succeed delimiterRow
