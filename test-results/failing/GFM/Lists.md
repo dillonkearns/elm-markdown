@@ -268,7 +268,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<ul><li>a</li><li>b</li></ul><p>[ref]: /url</p><ul><li>d</li></ul>
+<ul><li>a</li><li>b</li></ul><ul><li>d</li></ul>
 ````````````
 ## [Example 288](https://spec.commonmark.org/0.29/#example-288)
 

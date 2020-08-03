@@ -181,18 +181,19 @@ renderer =
         Element.paragraph
             [ Element.spacing 15 ]
     , thematicBreak = Element.none
-    , text = Element.text
-    , strong = \content -> Element.row [ Font.bold ] content
-    , emphasis = \content -> Element.row [ Font.italic ] content
+    , text = \value -> Element.paragraph [] [ Element.text value ]
+    , strong = \content -> Element.paragraph [ Font.bold ] content
+    , emphasis = \content -> Element.paragraph [ Font.italic ] content
     , codeSpan = code
     , link =
         \{ title, destination } body ->
-            Element.newTabLink
-                [ Element.htmlAttribute (Html.Attributes.style "display" "inline-flex") ]
+            Element.newTabLink []
                 { url = destination
                 , label =
                     Element.paragraph
                         [ Font.color (Element.rgb255 0 0 255)
+                        , Element.htmlAttribute (Html.Attributes.style "overflow-wrap" "break-word")
+                        , Element.htmlAttribute (Html.Attributes.style "word-break" "break-word")
                         ]
                         body
                 }
@@ -207,7 +208,7 @@ renderer =
                     Element.image [ Element.width Element.fill ] { src = image.src, description = image.alt }
     , blockQuote =
         \children ->
-            Element.column
+            Element.paragraph
                 [ Element.Border.widthEach { top = 0, right = 0, bottom = 0, left = 10 }
                 , Element.padding 10
                 , Element.Border.color (Element.rgb255 145 145 145)
@@ -220,8 +221,8 @@ renderer =
                 (items
                     |> List.map
                         (\(ListItem task children) ->
-                            Element.row [ Element.spacing 5 ]
-                                [ Element.row
+                            Element.paragraph [ Element.spacing 5 ]
+                                [ Element.paragraph
                                     [ Element.alignTop ]
                                     ((case task of
                                         IncompleteTask ->
@@ -245,36 +246,29 @@ renderer =
                 (items
                     |> List.indexedMap
                         (\index itemBlocks ->
-                            Element.row [ Element.spacing 5 ]
-                                [ Element.row [ Element.alignTop ]
+                            Element.paragraph [ Element.spacing 5 ]
+                                [ Element.paragraph [ Element.alignTop ]
                                     (Element.text (String.fromInt (index + startingIndex) ++ " ") :: itemBlocks)
                                 ]
                         )
                 )
     , codeBlock = codeBlock
-    , html = Markdown.Html.oneOf []
     , table = Element.column []
     , tableHeader = Element.column []
     , tableBody = Element.column []
     , tableRow = Element.row []
-    , tableHeaderCell =
-        \maybeAlignment children ->
-            Element.paragraph [] children
+    , tableHeaderCell = \maybeAlignment children -> Element.paragraph [] children
     , tableCell = Element.paragraph []
+    , html = Markdown.Html.oneOf []
     }
 
 
+rawTextToId : String -> String
 rawTextToId rawText =
     rawText
         |> String.split " "
-        |> Debug.log "split"
         |> String.join "-"
-        |> Debug.log "joined"
         |> String.toLower
-
-
-
---|> String.replace " " ""
 
 
 heading : { level : Block.HeadingLevel, rawText : String, children : List (Element msg) } -> Element msg
@@ -321,9 +315,11 @@ code snippet =
 
 codeBlock : { body : String, language : Maybe String } -> Element msg
 codeBlock details =
-    Element.el
+    Element.paragraph
         [ Element.Background.color (Element.rgba 0 0 0 0.03)
         , Element.htmlAttribute (Html.Attributes.style "white-space" "pre")
+        , Element.htmlAttribute (Html.Attributes.style "overflow-wrap" "break-word")
+        , Element.htmlAttribute (Html.Attributes.style "word-break" "break-word")
         , Element.padding 20
         , Font.family
             [ Font.external
@@ -332,4 +328,4 @@ codeBlock details =
                 }
             ]
         ]
-        (Element.text details.body)
+        [ Element.text details.body ]

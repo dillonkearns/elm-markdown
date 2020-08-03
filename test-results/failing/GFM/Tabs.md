@@ -1,25 +1,5 @@
 # GFM - Tabs
 
-## [Example 2](https://spec.commonmark.org/0.29/#example-2)
-
-This markdown:
-
-````````````markdown
-  	foo	baz		bim
-
-````````````
-
-Should give output:
-
-````````````html
-<pre><code>foo baz bim</code></pre>
-````````````
-
-But instead was:
-
-````````````html
-<p>foo baz bim</p>
-````````````
 ## [Example 4](https://spec.commonmark.org/0.29/#example-4)
 
 This markdown:
@@ -82,7 +62,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<p>- foo</p>
+<ul><li>foo</li></ul>
 ````````````
 ## [Example 9](https://spec.commonmark.org/0.29/#example-9)
 
@@ -105,24 +85,4 @@ But instead was:
 
 ````````````html
 <p>- foo - bar - baz</p>
-````````````
-## [Example 11](https://spec.commonmark.org/0.29/#example-11)
-
-This markdown:
-
-````````````markdown
-*	*	*	
-
-````````````
-
-Should give output:
-
-````````````html
-<hr>
-````````````
-
-But instead was:
-
-````````````html
-<p>* * *</p>
 ````````````

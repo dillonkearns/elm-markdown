@@ -37,7 +37,7 @@ Markdown.Html.oneOf
 ```
 
 Note that it gets the rendered children as an argument. This is rendering the inner contents of the HTML tag using
-your HTML renderer, so you get all of your rendered lists, code blocks, links, etc. within your tag.
+your HTML renderer, so you get all of your rendered lists, code blocks, links, etc. within your tag. You can try a [live Ellie demo of this code snippet](https://ellie-app.com/8kHgbSLfhfha1).
 
 ## Live Code Demos
 
@@ -211,9 +211,6 @@ defaultHtmlRenderer =
     }
 ```
 
-### Custom HTML Blocks
-
-[Check out this example on Ellie](https://ellie-app.com/6QH7BxdcWxKa1) to tweak and take a look at the full code from the top of the README.
 
 ### Markdown Block Transformation
 
@@ -265,14 +262,23 @@ This library gives an error message here, and aims to do so in similar situation
 
 A **huge** thanks to [Pablo Hirafuji](https://github.com/pablohirafuji/), who was kind enough to allow me to use his InlineParser in this project. It turns out that Markdown inline parsing is a very specialized algorithm, and the `elm/parser` library isn't suited to solve that particular problem.
 
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
 <table>
   <tr>
     <td align="center"><a href="https://github.com/stephenreddek"><img src="https://avatars1.githubusercontent.com/u/1985939?v=4" width="100px;" alt=""/><br /><sub><b>Stephen Reddekopp</b></sub></a><br /><a href="https://github.com/dillonkearns/elm-markdown/commits?author=stephenreddek" title="Tests">⚠️</a> <a href="https://github.com/dillonkearns/elm-markdown/commits?author=stephenreddek" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/thomasin"><img src="https://avatars3.githubusercontent.com/u/25238976?v=4" width="100px;" alt=""/><br /><sub><b>thomasin</b></sub></a><br /><a href="https://github.com/dillonkearns/elm-markdown/commits?author=thomasin" title="Tests">⚠️</a> <a href="https://github.com/dillonkearns/elm-markdown/commits?author=thomasin" title="Code">💻</a></td>
     <td align="center"><a href="https://brianginsburg.com/"><img src="https://avatars0.githubusercontent.com/u/7957636?v=4" width="100px;" alt=""/><br /><sub><b>Brian Ginsburg</b></sub></a><br /><a href="https://github.com/dillonkearns/elm-markdown/commits?author=bgins" title="Tests">⚠️</a> <a href="https://github.com/dillonkearns/elm-markdown/commits?author=bgins" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/matheus23"><img src="https://avatars1.githubusercontent.com/u/1430958?v=4" width="100px;" alt=""/><br /><sub><b>Philipp Krüger</b></sub></a><br /><a href="https://github.com/dillonkearns/elm-markdown/commits?author=matheus23" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/folkertdev"><img src="https://avatars3.githubusercontent.com/u/7949978?v=4" width="100px;" alt=""/><br /><sub><b>Folkert de Vries</b></sub></a><br /><a href="https://github.com/dillonkearns/elm-markdown/commits?author=folkertdev" title="Code">💻</a></td>
   </tr>
 </table>
+
+<!-- markdownlint-enable -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
 
 Thank you [@jinjor](https://github.com/jinjor) for your
 [`elm-xml-parser`](https://package.elm-lang.org/packages/jinjor/elm-xml-parser/latest/XmlParser) package!

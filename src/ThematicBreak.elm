@@ -15,89 +15,71 @@ type ThematicBreak
 
 parser : Parser ThematicBreak
 parser =
-    succeed identity
-        |. oneOf [ chompIf (\c -> c == ' ') (Parser.Expecting "Space"), succeed () ]
-        |. oneOf [ chompIf (\c -> c == ' ') (Parser.Expecting "Space"), succeed () ]
-        |. oneOf [ chompIf (\c -> c == ' ') (Parser.Expecting "Space"), succeed () ]
-        |= Advanced.loop NoMatchYet statementsHelp
-
-
-type State
-    = Asterisk Int
-    | Hyphen Int
-    | Underscore Int
-    | NoMatchYet
-
-
-type ThematicToken
-    = Star
-    | Dash
-    | TokenUnderscore
-    | Finished
-    | Whitespace
-
-
-statementsHelp : State -> Parser (Advanced.Step State ThematicBreak)
-statementsHelp state =
+    -- a thematic break can be preceded by up to 3 spaces.
+    -- but in most documents it will be at the start of the line
+    -- so we optimize for that case
     oneOf
-        [ tokenHelp "-" |> map (\_ -> Dash)
-        , tokenHelp "*" |> map (\_ -> Star)
-        , tokenHelp "_" |> map (\_ -> TokenUnderscore)
-        , end (Parser.Expecting "end") |> map (\_ -> Finished)
-        , tokenHelp "\n" |> map (\_ -> Finished)
-        , chompIf (\c -> c == ' ') (Parser.Expecting "Space") |> map (\_ -> Whitespace)
+        [ succeed identity
+            |. singleSpace
+            |. oneOf [ singleSpace, succeed () ]
+            |. oneOf [ singleSpace, succeed () ]
+            |= parseThematicBreak
+        , parseThematicBreak
         ]
-        |> andThen
-            (\thematicToken ->
-                case ( thematicToken, state ) of
-                    ( Finished, NoMatchYet ) ->
-                        problem (Parser.Expecting "TODO")
-
-                    ( Finished, Asterisk occurrences ) ->
-                        succeedIfEnough occurrences
-
-                    ( Finished, Hyphen occurrences ) ->
-                        succeedIfEnough occurrences
-
-                    ( Finished, Underscore occurrences ) ->
-                        succeedIfEnough occurrences
-
-                    ( Star, Asterisk occurrences ) ->
-                        Advanced.Loop (Asterisk (occurrences + 1))
-                            |> succeed
-
-                    ( Dash, Hyphen occurrences ) ->
-                        Advanced.Loop (Hyphen (occurrences + 1))
-                            |> succeed
-
-                    ( TokenUnderscore, Underscore occurrences ) ->
-                        Advanced.Loop (Underscore (occurrences + 1))
-                            |> succeed
-
-                    ( TokenUnderscore, NoMatchYet ) ->
-                        Advanced.Loop (Underscore 1)
-                            |> succeed
-
-                    ( Star, NoMatchYet ) ->
-                        Advanced.Loop (Asterisk 1)
-                            |> succeed
-
-                    ( Dash, NoMatchYet ) ->
-                        Advanced.Loop (Hyphen 1)
-                            |> succeed
-
-                    ( Whitespace, _ ) ->
-                        Advanced.Loop state
-                            |> succeed
-
-                    _ ->
-                        problem (Parser.Expecting (Debug.toString state))
-            )
 
 
-succeedIfEnough occurences =
-    if occurences > 2 then
-        succeed (Done ThematicBreak)
+parseThematicBreak : Parser ThematicBreak
+parseThematicBreak =
+    oneOf
+        [ withChar '-'
+        , withChar '*'
+        , withChar '_'
+        ]
 
-    else
-        problem (Parser.Expecting "...?")
+
+{-| Per the commonmark spec:
+
+> a sequence of three or more matching -, \_, or \* characters,
+> each followed optionally by any number of spaces, forms a horizontal rule.
+
+-}
+withChar : Char -> Parser ThematicBreak
+withChar tchar =
+    let
+        token =
+            tokenHelp (String.fromChar tchar)
+    in
+    succeed ThematicBreak
+        |. token
+        |. whitespace
+        |. token
+        |. whitespace
+        |. token
+        |. chompWhile (\c -> c == tchar || isSpace c)
+        |. oneOf
+            [ tokenHelp "\n"
+            , end (Parser.Expecting "end")
+            ]
+
+
+isSpace : Char -> Bool
+isSpace c =
+    case c of
+        ' ' ->
+            True
+
+        '\t' ->
+            True
+
+        _ ->
+            False
+
+
+whitespace : Parser ()
+whitespace =
+    chompWhile isSpace
+
+
+singleSpace : Parser ()
+singleSpace =
+    chompIf isSpace (Parser.Expecting "Space")
