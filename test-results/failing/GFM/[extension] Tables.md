@@ -1,26 +1,5 @@
 # GFM - [extension] Tables
 
-## [Example 199](https://github.github.com/gfm/#example-199)
-
-This markdown:
-
-````````````markdown
-| abc | defghi |
-:-: | -----------:
-bar | baz
-````````````
-
-Should give output:
-
-````````````html
-<table><thead><tr><th align="center">abc</th><th align="right">defghi</th></tr></thead><tbody><tr><td align="center">bar</td><td align="right">baz</td></tr></tbody></table>
-````````````
-
-But instead was:
-
-````````````html
-<p>| abc | defghi | :-: | -----------: bar | baz</p>
-````````````
 ## [Example 200](https://github.github.com/gfm/#example-200)
 
 This markdown:
