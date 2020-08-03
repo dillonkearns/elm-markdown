@@ -22,7 +22,6 @@ import Markdown.TableParser as TableParser
 import Markdown.UnorderedList
 import Parser
 import Parser.Advanced as Advanced exposing ((|.), (|=), Nestable(..), Step(..), andThen, chompIf, chompWhile, getChompedString, loop, map, oneOf, problem, succeed, symbol, token)
-import Parser.Extra exposing (zeroOrMore)
 import Parser.Token as Token
 import ThematicBreak
 
@@ -312,7 +311,7 @@ parseInlines linkReferences rawBlock =
 
         Table (Markdown.Table.Table header rows) ->
             let
-                parsedHeader : Parser (List (Markdown.Table.HeaderCell (List Inline)))
+                parsedHeader : List (Markdown.Table.HeaderCell (List Inline))
                 parsedHeader =
                     header
                         |> List.map
@@ -326,10 +325,8 @@ parseInlines linkReferences rawBlock =
                                             }
                                         )
                             )
-                        --|> List.map (parseRawInline linkReferences identity)
-                        |> combine
 
-                parsedRows : Parser (List (List (List Inline)))
+                parsedRows : List (List (List Inline))
                 parsedRows =
                     rows
                         |> List.map
@@ -341,16 +338,10 @@ parseInlines linkReferences rawBlock =
                                             |> parseRawInline linkReferences identity
                                     )
                                     row
-                                    |> combine
                             )
-                        |> combine
             in
-            parsedHeader
-                |> andThen
-                    (\headerThing ->
-                        parsedRows
-                            |> andThen (\rowThing -> Block.Table headerThing rowThing |> just)
-                    )
+            Block.Table parsedHeader parsedRows
+                |> ParsedBlock
 
 
 parseRawInline : LinkReferenceDefinitions -> (List Inline -> a) -> UnparsedInlines -> a

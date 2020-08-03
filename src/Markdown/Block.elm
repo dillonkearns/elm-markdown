@@ -625,19 +625,7 @@ inlineParserValidateWalkBlock function block =
                             )
 
                 mappedRows =
-                    rows
-                        |> List.map
-                            (\row ->
-                                row
-                                    |> List.map
-                                        (\cell ->
-                                            cell
-                                                |> List.map (inlineParserValidateWalk function)
-                                                |> combine
-                                        )
-                                    |> combine
-                            )
-                        |> combine
+                    traverse (traverse (traverse (inlineParserValidateWalk function))) rows
             in
             Result.map2 Table mappedHeader mappedRows
 
