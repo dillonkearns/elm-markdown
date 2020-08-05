@@ -716,9 +716,7 @@ whenPreviousWasBody =
         , orderedListBlock True
         , heading |> Advanced.backtrackable
         , htmlParser
-
-        -- TODO re-enable this once the table parser handles rows
-        --, TableParser.parser |> Advanced.backtrackable |> map Table
+        , TableParser.parser |> Advanced.backtrackable |> map Table
         , plainLine
         ]
         |> map (\block revStmts -> Loop (possiblyMergeBlocks revStmts block))
