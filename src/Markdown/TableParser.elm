@@ -1,5 +1,6 @@
 module Markdown.TableParser exposing (..)
 
+import Helpers
 import Markdown.Block exposing (Alignment(..))
 import Markdown.Table
 import Parser
@@ -25,27 +26,31 @@ parser =
         |> Advanced.andThen
             (\( headers, DelimiterRow _ columnAlignments, body ) ->
                 if List.length headers == List.length columnAlignments then
-                    Advanced.succeed
-                        (Markdown.Table.Table
-                            (List.map2
-                                (\headerCell alignment ->
-                                    { label = headerCell
-                                    , alignment = alignment
-                                    }
-                                )
-                                headers
-                                columnAlignments
-                            )
-                            (standardizeRowLength (List.length headers) body)
-                        )
+                    Advanced.succeed (constructTable headers columnAlignments body)
 
                 else
                     Advanced.problem (Parser.Problem ("Tables must have the same number of header columns (" ++ String.fromInt (List.length headers) ++ ") as delimiter columns (" ++ String.fromInt (List.length columnAlignments) ++ ")"))
             )
 
 
+constructTable : List String -> List (Maybe Alignment) -> List (List String) -> Markdown.Table.Table String
+constructTable headers columnAlignments body =
+    let
+        headersWithAlignment =
+            List.map2
+                (\headerCell alignment ->
+                    { label = headerCell
+                    , alignment = alignment
+                    }
+                )
+                headers
+                columnAlignments
+    in
+    Markdown.Table.Table headersWithAlignment (standardizeRowLength (List.length headers) body)
+
+
 standardizeRowLength : Int -> List (List String) -> List (List String)
-standardizeRowLength expectedLength =
+standardizeRowLength expectedLength rows =
     List.map
         (\row ->
             let
@@ -62,15 +67,12 @@ standardizeRowLength expectedLength =
                 GT ->
                     row ++ List.repeat (expectedLength - rowLength) ""
         )
+        rows
 
 
 rowParser : Parser (List String)
 rowParser =
-    succeed
-        (\revCells ->
-            revCells
-                |> List.foldl (\cell acc -> formatCell cell :: acc) []
-        )
+    succeed identity
         |. oneOf
             [ tokenHelp "|"
             , succeed ()
@@ -78,14 +80,10 @@ rowParser =
         |= parseCells
 
 
-formatCell : String -> String
-formatCell =
-    String.trim
-
-
 parseCells : Parser (List String)
 parseCells =
     loop ( Nothing, [] ) parseCellHelper
+        |> Advanced.map (List.foldl (\cell acc -> String.trim cell :: acc) [])
 
 
 parseCellHelper : ( Maybe String, List String ) -> Parser (Step ( Maybe String, List String ) (List String))
@@ -178,20 +176,20 @@ delimiterRowHelp revDelimiterColumns =
         , backtrackable (succeed (Done revDelimiterColumns) |. tokenHelp "|" |. Advanced.end (Parser.Expecting "end"))
         , succeed (\column -> Loop (column :: revDelimiterColumns))
             |. requirePipeIfNotFirst revDelimiterColumns
-            |. chompSpaceCharacter
+            |. chompSinglelineWhitespace
             |= Advanced.getChompedString
                 (succeed ()
                     |. maybeChomp (\c -> c == ':')
                     |. oneOrMore (\c -> c == '-')
                     |. maybeChomp (\c -> c == ':')
                 )
-            |. chompSpaceCharacter
+            |. chompSinglelineWhitespace
         ]
 
 
-chompSpaceCharacter : Parser ()
-chompSpaceCharacter =
-    chompWhile (\c -> c == ' ')
+chompSinglelineWhitespace : Parser ()
+chompSinglelineWhitespace =
+    chompWhile Helpers.isSpaceOrTab
 
 
 bodyParser : Parser (List (List String))
