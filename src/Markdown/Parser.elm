@@ -310,38 +310,39 @@ parseInlines linkReferences rawBlock =
                 |> ParsedBlock
 
         Table (Markdown.Table.Table header rows) ->
-            let
-                parsedHeader : List (Markdown.Table.HeaderCell (List Inline))
-                parsedHeader =
-                    header
-                        |> List.map
-                            (\{ label, alignment } ->
-                                label
-                                    |> UnparsedInlines
-                                    |> parseRawInline linkReferences
-                                        (\parsedHeaderLabel ->
-                                            { label = parsedHeaderLabel
-                                            , alignment = alignment
-                                            }
-                                        )
-                            )
-
-                parsedRows : List (List (List Inline))
-                parsedRows =
-                    rows
-                        |> List.map
-                            (\row ->
-                                List.map
-                                    (\column ->
-                                        column
-                                            |> UnparsedInlines
-                                            |> parseRawInline linkReferences identity
-                                    )
-                                    row
-                            )
-            in
-            Block.Table parsedHeader parsedRows
+            Block.Table (parseHeaderInlines linkReferences header) (parseRowInlines linkReferences rows)
                 |> ParsedBlock
+
+
+parseHeaderInlines : LinkReferenceDefinitions -> List (Markdown.Table.HeaderCell String) -> List (Markdown.Table.HeaderCell (List Inline))
+parseHeaderInlines linkReferences header =
+    header
+        |> List.map
+            (\{ label, alignment } ->
+                label
+                    |> UnparsedInlines
+                    |> parseRawInline linkReferences
+                        (\parsedHeaderLabel ->
+                            { label = parsedHeaderLabel
+                            , alignment = alignment
+                            }
+                        )
+            )
+
+
+parseRowInlines : LinkReferenceDefinitions -> List (List String) -> List (List (List Inline))
+parseRowInlines linkReferences rows =
+    rows
+        |> List.map
+            (\row ->
+                List.map
+                    (\column ->
+                        column
+                            |> UnparsedInlines
+                            |> parseRawInline linkReferences identity
+                    )
+                    row
+            )
 
 
 parseRawInline : LinkReferenceDefinitions -> (List Inline -> a) -> UnparsedInlines -> a
@@ -659,6 +660,9 @@ possiblyMergeBlocks state newRawBlock =
                 Body (UnparsedInlines (joinRawStringsWith "\n" body2 body1))
                     :: rest
 
+            ( Table updatedTable, (Table _) :: rest ) ->
+                Table updatedTable :: rest
+
             _ ->
                 newRawBlock :: state.rawBlocks
     }
@@ -677,8 +681,7 @@ stepRawBlock revStmts =
                 |> map (\f -> f revStmts)
 
         _ ->
-            oneOf whenPreviousWasNotBody
-                |> map (\f -> f revStmts)
+            oneOf (whenPreviousWasNotBody revStmts)
 
 
 
@@ -712,26 +715,28 @@ whenPreviousWasBody =
         , ThematicBreak.parser |> Advanced.backtrackable |> map (\_ -> ThematicBreak)
         , unorderedListBlock
 
-        -- NOTE: the ordered list block changes its parsing rules when it's right after a Body
+        -- NOTE: the ordered dlist block changes its parsing rules when it's right after a Body
         , orderedListBlock True
         , heading |> Advanced.backtrackable
         , htmlParser
-        , TableParser.parser |> Advanced.backtrackable |> map Table
+
+        -- NOTE: We know that it cannot be a table body row since the previous would have to be a table header so we do not look for table body rows
+        , TableParser.headerParser |> Advanced.backtrackable |> map (\(Markdown.Table.TableHeader headers) -> Table (Markdown.Table.Table headers []))
         , plainLine
         ]
         |> map (\block revStmts -> Loop (possiblyMergeBlocks revStmts block))
     ]
 
 
-whenPreviousWasNotBody : List (Parser (State -> Step State State))
-whenPreviousWasNotBody =
+whenPreviousWasNotBody : State -> List (Parser (Step State State))
+whenPreviousWasNotBody revStmts =
     [ Helpers.endOfFile
-        |> map (\_ revStmts -> Done revStmts)
+        |> map (\_ -> Done revStmts)
     , parseAsParagraphInsteadOfHtmlBlock
-        |> map (\block revStmts -> Loop (possiblyMergeBlocks revStmts block))
+        |> map (\block -> Loop (possiblyMergeBlocks revStmts block))
     , LinkReferenceDefinition.parser
         |> Advanced.backtrackable
-        |> map (\reference revStmts -> Loop (addReference revStmts reference))
+        |> map (\reference -> Loop (addReference revStmts reference))
     , oneOf
         [ blankLine
         , blockQuote
@@ -746,11 +751,24 @@ whenPreviousWasNotBody =
         , orderedListBlock False
         , heading |> Advanced.backtrackable
         , htmlParser
-        , TableParser.parser |> Advanced.backtrackable |> map Table
+        , tableRowIfTableStarted revStmts.rawBlocks |> Advanced.backtrackable
+        , TableParser.headerParser |> Advanced.backtrackable |> map (\(Markdown.Table.TableHeader headers) -> Table (Markdown.Table.Table headers []))
         , plainLine
         ]
-        |> map (\block revStmts -> Loop (possiblyMergeBlocks revStmts block))
+        |> map (\block -> Loop (possiblyMergeBlocks revStmts block))
     ]
+
+
+tableRowIfTableStarted : List RawBlock -> Parser RawBlock
+tableRowIfTableStarted revStmts =
+    case revStmts of
+        (Table (Markdown.Table.Table headers body)) :: _ ->
+            TableParser.bodyRowParser (List.length headers)
+                -- We always fill in the whole table so that we don't have an impossible state of a table row without a table header
+                |> map (\row -> Table (Markdown.Table.Table headers (body ++ [ row ])))
+
+        _ ->
+            Advanced.problem (Parser.Problem "Cannot parse a table row without an open table.")
 
 
 {-| HTML parsing is intentionally strict in `dillonkearns/elm-markdown`. Paragraphs are supposed to be forgiving.

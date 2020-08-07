@@ -18,25 +18,18 @@ type alias Table =
 
 parser : Parser Table
 parser =
-    (Advanced.succeed (\headers delimiters body -> ( headers, delimiters, body ))
-        |= rowParser
-        |= delimiterRowParser
-        |= bodyParser
-    )
-        |> Advanced.andThen
-            (\( headers, DelimiterRow _ columnAlignments, body ) ->
-                if List.length headers == List.length columnAlignments then
-                    Advanced.succeed (constructTable headers columnAlignments body)
-
-                else
-                    Advanced.problem (Parser.Problem ("Tables must have the same number of header columns (" ++ String.fromInt (List.length headers) ++ ") as delimiter columns (" ++ String.fromInt (List.length columnAlignments) ++ ")"))
+    headerParser
+        |> andThen
+            (\(Markdown.Table.TableHeader headers) ->
+                Advanced.succeed (\body -> Markdown.Table.Table headers body)
+                    |= bodyParser (List.length headers)
             )
 
 
-constructTable : List String -> List (Maybe Alignment) -> List (List String) -> Markdown.Table.Table String
-constructTable headers columnAlignments body =
+headerParser : Parser (Markdown.Table.TableHeader String)
+headerParser =
     let
-        headersWithAlignment =
+        headersWithAlignment headers columnAlignments =
             List.map2
                 (\headerCell alignment ->
                     { label = headerCell
@@ -45,29 +38,19 @@ constructTable headers columnAlignments body =
                 )
                 headers
                 columnAlignments
+
+        validateHeader ( headers, DelimiterRow _ columnAlignments ) =
+            if List.length headers == List.length columnAlignments then
+                Advanced.succeed (Markdown.Table.TableHeader (headersWithAlignment headers columnAlignments))
+
+            else
+                Advanced.problem (Parser.Problem ("Tables must have the same number of header columns (" ++ String.fromInt (List.length headers) ++ ") as delimiter columns (" ++ String.fromInt (List.length columnAlignments) ++ ")"))
     in
-    Markdown.Table.Table headersWithAlignment (standardizeRowLength (List.length headers) body)
-
-
-standardizeRowLength : Int -> List (List String) -> List (List String)
-standardizeRowLength expectedLength rows =
-    List.map
-        (\row ->
-            let
-                rowLength =
-                    List.length row
-            in
-            case compare expectedLength rowLength of
-                LT ->
-                    List.take expectedLength row
-
-                EQ ->
-                    row
-
-                GT ->
-                    row ++ List.repeat (expectedLength - rowLength) ""
-        )
-        rows
+    (succeed Tuple.pair
+        |= rowParser
+        |= delimiterRowParser
+    )
+        |> andThen validateHeader
 
 
 rowParser : Parser (List String)
@@ -187,30 +170,53 @@ delimiterRowHelp revDelimiterColumns =
         ]
 
 
+bodyRowParser : Int -> Parser (List String)
+bodyRowParser expectedRowLength =
+    rowParser
+        |> andThen
+            (\row ->
+                if List.isEmpty row || List.all String.isEmpty row then
+                    Advanced.problem (Parser.Problem "A line must have at least one column")
+
+                else
+                    Advanced.succeed (standardizeRowLength expectedRowLength row)
+            )
+
+
+standardizeRowLength : Int -> List String -> List String
+standardizeRowLength expectedLength row =
+    let
+        rowLength =
+            List.length row
+    in
+    case compare expectedLength rowLength of
+        LT ->
+            List.take expectedLength row
+
+        EQ ->
+            row
+
+        GT ->
+            row ++ List.repeat (expectedLength - rowLength) ""
+
+
 chompSinglelineWhitespace : Parser ()
 chompSinglelineWhitespace =
     chompWhile Helpers.isSpaceOrTab
 
 
-bodyParser : Parser (List (List String))
-bodyParser =
-    loop [] bodyParserHelp
+bodyParser : Int -> Parser (List (List String))
+bodyParser expectedRowLength =
+    loop [] (bodyParserHelp expectedRowLength)
 
 
-bodyParserHelp : List (List String) -> Parser (Step (List (List String)) (List (List String)))
-bodyParserHelp revRows =
+bodyParserHelp : Int -> List (List String) -> Parser (Step (List (List String)) (List (List String)))
+bodyParserHelp expectedRowLength revRows =
     oneOf
         [ tokenHelp "\n"
             |> map (\_ -> Done (List.reverse revRows))
         , Advanced.end (Parser.Expecting "end")
             |> map (\_ -> Done (List.reverse revRows))
-        , rowParser
-            |> andThen
-                (\row ->
-                    if List.isEmpty row || List.all String.isEmpty row then
-                        Advanced.problem (Parser.Problem "A line must have at least one column")
-
-                    else
-                        Advanced.succeed (Loop (row :: revRows))
-                )
+        , bodyRowParser expectedRowLength
+            |> map (\row -> Loop (row :: revRows))
         ]

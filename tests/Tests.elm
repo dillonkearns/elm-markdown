@@ -295,6 +295,71 @@ Hello!
                                 ]
                             ]
                         )
+        , test "table with a cell that looks like a heading but isn't" <|
+            \() ->
+                """| abc | def |
+| --- | --- |
+| bar | baz |
+####### asdf
+"""
+                    |> parse
+                    |> Expect.equal
+                        (Ok
+                            [ Block.Table
+                                [ { label = [ Text "abc" ], alignment = Nothing }
+                                , { label = [ Text "def" ], alignment = Nothing }
+                                ]
+                                [ [ [ Text "bar" ], [ Text "baz" ] ]
+                                , [ [ Text "####### asdf" ], [] ]
+                                ]
+                            ]
+                        )
+        , test "table ended by a heading" <|
+            \() ->
+                """| abc | def |
+| --- | --- |
+| bar | baz |
+###### asdf
+"""
+                    |> parse
+                    |> Expect.equal
+                        (Ok
+                            [ Block.Table
+                                [ { label = [ Text "abc" ], alignment = Nothing }
+                                , { label = [ Text "def" ], alignment = Nothing }
+                                ]
+                                [ [ [ Text "bar" ], [ Text "baz" ] ]
+                                ]
+                            , Block.Heading Block.H6 [ Text "asdf" ]
+                            ]
+                        )
+        , test "tables separated by a blank line should be separate" <|
+            \() ->
+                """| abc | def |
+| --- | --- |
+| bar | baz |
+
+| abc | def |
+| --- | --- |
+| bar | baz |
+"""
+                    |> parse
+                    |> Expect.equal
+                        (Ok
+                            [ Block.Table
+                                [ { label = [ Text "abc" ], alignment = Nothing }
+                                , { label = [ Text "def" ], alignment = Nothing }
+                                ]
+                                [ [ [ Text "bar" ], [ Text "baz" ] ]
+                                ]
+                            , Block.Table
+                                [ { label = [ Text "abc" ], alignment = Nothing }
+                                , { label = [ Text "def" ], alignment = Nothing }
+                                ]
+                                [ [ [ Text "bar" ], [ Text "baz" ] ]
+                                ]
+                            ]
+                        )
         , test "multiple thematic breaks" <|
             \() ->
                 """***
