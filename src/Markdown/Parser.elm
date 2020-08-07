@@ -715,7 +715,7 @@ whenPreviousWasBody =
         , ThematicBreak.parser |> Advanced.backtrackable |> map (\_ -> ThematicBreak)
         , unorderedListBlock
 
-        -- NOTE: the ordered dlist block changes its parsing rules when it's right after a Body
+        -- NOTE: the ordered list block changes its parsing rules when it's right after a Body
         , orderedListBlock True
         , heading |> Advanced.backtrackable
         , htmlParser
