@@ -258,7 +258,7 @@ renderer =
     , tableBody = Element.column []
     , tableRow = Element.row []
     , tableHeaderCell = \maybeAlignment children -> Element.paragraph [] children
-    , tableCell = Element.paragraph []
+    , tableCell = \maybeAlignment children -> Element.paragraph [] children
     , html = Markdown.Html.oneOf []
     }
 
