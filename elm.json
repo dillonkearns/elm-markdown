@@ -3,7 +3,7 @@
     "name": "dillonkearns/elm-markdown",
     "summary": "Pure Elm markdown parser with customizable rendering.",
     "license": "BSD-3-Clause",
-    "version": "4.0.2",
+    "version": "5.0.0",
     "exposed-modules": [
         "Markdown.Parser",
         "Markdown.Renderer",
@@ -21,7 +21,7 @@
     },
     "test-dependencies": {
         "elm-explorations/benchmark": "1.0.1 <= v < 2.0.0",
-        "elm-explorations/test": "1.2.2 <= v < 2.0.0",
-        "elm-explorations/markdown": "1.0.0 <= v < 2.0.0"
+        "elm-explorations/markdown": "1.0.0 <= v < 2.0.0",
+        "elm-explorations/test": "1.2.2 <= v < 2.0.0"
     }
 }

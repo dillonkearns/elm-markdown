@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [5.0.0] - 2020-09-09
+
+### Added
+- GitHub-Flavored Markdown tables are now parsed! Thank you Stephen! (See [#52](https://github.com/dillonkearns/elm-markdown/pull/52)).
+
+### Changed
+- The type for GitHub tables has been fixed. It was missing an outer `List` type. `List (List (List Inline))` refers to
+    rows of columns, with a list of inlines in each cell. For example, a cell could have Hello *world*, which would be
+    two inlines (the plain text, followed by the italic text).
+
 ## [4.0.0] - 2020-03-17
 
 ### Changed
