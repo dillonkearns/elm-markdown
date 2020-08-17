@@ -73,19 +73,19 @@ parseCellHelper : ( Maybe String, List String ) -> Parser (Step ( Maybe String, 
 parseCellHelper ( curr, acc ) =
     let
         addToCurrent c =
-            c ++ Maybe.withDefault "" curr
+            Maybe.withDefault "" curr ++ c
 
         continueCell c =
             Loop ( Just (addToCurrent c), acc )
 
         finishCell =
             curr
-                |> Maybe.map (\cell -> Loop ( Nothing, String.reverse cell :: acc ))
+                |> Maybe.map (\cell -> Loop ( Nothing, cell :: acc ))
                 |> Maybe.withDefault (Loop ( Nothing, acc ))
 
         return =
             curr
-                |> Maybe.map (\cell -> Done (String.reverse cell :: acc))
+                |> Maybe.map (\cell -> Done (cell :: acc))
                 |> Maybe.withDefault (Done acc)
     in
     oneOf
