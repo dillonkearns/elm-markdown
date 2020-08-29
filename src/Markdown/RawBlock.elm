@@ -29,5 +29,6 @@ type RawBlock
     | IndentedCodeBlock String
     | ThematicBreak
     | Table (Markdown.Table.Table String)
+    | TableDelimiter Markdown.Table.TableDelimiterRow
     | BlankLine
     | BlockQuote String

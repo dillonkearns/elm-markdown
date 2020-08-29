@@ -313,6 +313,12 @@ parseInlines linkReferences rawBlock =
             Block.Table (parseHeaderInlines linkReferences header) (parseRowInlines linkReferences rows)
                 |> ParsedBlock
 
+        TableDelimiter (Markdown.Table.TableDelimiterRow text _) ->
+            UnparsedInlines text.raw
+                |> inlineParseHelper linkReferences
+                |> Block.Paragraph
+                |> ParsedBlock
+
 
 parseHeaderInlines : LinkReferenceDefinitions -> List (Markdown.Table.HeaderCell String) -> List (Markdown.Table.HeaderCell (List Inline))
 parseHeaderInlines linkReferences header =
@@ -660,6 +666,15 @@ possiblyMergeBlocks state newRawBlock =
                 Body (UnparsedInlines (joinRawStringsWith "\n" body2 body1))
                     :: rest
 
+            ( TableDelimiter (Markdown.Table.TableDelimiterRow text alignments), (Body (UnparsedInlines rawHeaders)) :: rest ) ->
+                case TableParser.validateHeader (Markdown.Table.TableDelimiterRow text alignments) rawHeaders of
+                    Ok (Markdown.Table.TableHeader headers) ->
+                        Table (Markdown.Table.Table headers []) :: rest
+
+                    Err _ ->
+                        Body (UnparsedInlines (joinRawStringsWith "\n" rawHeaders text.raw))
+                            :: rest
+
             ( Table updatedTable, (Table _) :: rest ) ->
                 Table updatedTable :: rest
 
@@ -677,11 +692,31 @@ stepRawBlock revStmts =
     -- Some blocks can't immediately follow a body
     case revStmts.rawBlocks of
         (Body _) :: _ ->
-            oneOf whenPreviousWasBody
-                |> map (\f -> f revStmts)
+            oneOf
+                [ oneOf whenPreviousWasBody
+                    |> map (\f -> f revStmts)
+                , plainLine
+                    |> map (\block -> Loop (possiblyMergeBlocks revStmts block))
+                ]
+
+        (Table table) :: _ ->
+            oneOf
+                [ oneOf whenPreviousWasNotBody
+                    |> map (\f -> f revStmts)
+                , tableRowIfTableStarted table
+                    |> Advanced.backtrackable
+                    |> map (\block -> Loop (possiblyMergeBlocks revStmts block))
+                , plainLine
+                    |> map (\block -> Loop (possiblyMergeBlocks revStmts block))
+                ]
 
         _ ->
-            oneOf (whenPreviousWasNotBody revStmts)
+            oneOf
+                [ oneOf whenPreviousWasNotBody
+                    |> map (\f -> f revStmts)
+                , plainLine
+                    |> map (\block -> Loop (possiblyMergeBlocks revStmts block))
+                ]
 
 
 
@@ -721,22 +756,21 @@ whenPreviousWasBody =
         , htmlParser
 
         -- NOTE: We know that it cannot be a table body row since the previous would have to be a table header so we do not look for table body rows
-        , TableParser.headerParser |> Advanced.backtrackable |> map (\(Markdown.Table.TableHeader headers) -> Table (Markdown.Table.Table headers []))
-        , plainLine
+        , tableDelimiterInOpenParagraph |> Advanced.backtrackable
         ]
         |> map (\block revStmts -> Loop (possiblyMergeBlocks revStmts block))
     ]
 
 
-whenPreviousWasNotBody : State -> List (Parser (Step State State))
-whenPreviousWasNotBody revStmts =
+whenPreviousWasNotBody : List (Parser (State -> Step State State))
+whenPreviousWasNotBody =
     [ Helpers.endOfFile
-        |> map (\_ -> Done revStmts)
+        |> map (\_ revStmts -> Done revStmts)
     , parseAsParagraphInsteadOfHtmlBlock
-        |> map (\block -> Loop (possiblyMergeBlocks revStmts block))
+        |> map (\block revStmts -> Loop (possiblyMergeBlocks revStmts block))
     , LinkReferenceDefinition.parser
         |> Advanced.backtrackable
-        |> map (\reference -> Loop (addReference revStmts reference))
+        |> map (\reference revStmts -> Loop (addReference revStmts reference))
     , oneOf
         [ blankLine
         , blockQuote
@@ -751,24 +785,24 @@ whenPreviousWasNotBody revStmts =
         , orderedListBlock False
         , heading |> Advanced.backtrackable
         , htmlParser
-        , tableRowIfTableStarted revStmts.rawBlocks |> Advanced.backtrackable
-        , TableParser.headerParser |> Advanced.backtrackable |> map (\(Markdown.Table.TableHeader headers) -> Table (Markdown.Table.Table headers []))
-        , plainLine
+
+        -- Note: we know that a table cannot be starting because we define a table as a delimiter row following a header row which gets parsed as a Body initially
         ]
-        |> map (\block -> Loop (possiblyMergeBlocks revStmts block))
+        |> map (\block revStmts -> Loop (possiblyMergeBlocks revStmts block))
     ]
 
 
-tableRowIfTableStarted : List RawBlock -> Parser RawBlock
-tableRowIfTableStarted revStmts =
-    case revStmts of
-        (Table (Markdown.Table.Table headers body)) :: _ ->
-            TableParser.bodyRowParser (List.length headers)
-                -- We always fill in the whole table so that we don't have an impossible state of a table row without a table header
-                |> map (\row -> Table (Markdown.Table.Table headers (body ++ [ row ])))
+tableDelimiterInOpenParagraph : Parser RawBlock
+tableDelimiterInOpenParagraph =
+    TableParser.delimiterRowParser
+        |> map TableDelimiter
 
-        _ ->
-            Advanced.problem (Parser.Problem "Cannot parse a table row without an open table.")
+
+tableRowIfTableStarted : Markdown.Table.Table String -> Parser RawBlock
+tableRowIfTableStarted (Markdown.Table.Table headers body) =
+    TableParser.bodyRowParser (List.length headers)
+        -- We always fill in the whole table so that we don't have an impossible state of a table row without a table header
+        |> map (\row -> Table (Markdown.Table.Table headers (body ++ [ row ])))
 
 
 {-| HTML parsing is intentionally strict in `dillonkearns/elm-markdown`. Paragraphs are supposed to be forgiving.

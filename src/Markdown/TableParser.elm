@@ -2,7 +2,7 @@ module Markdown.TableParser exposing (..)
 
 import Helpers
 import Markdown.Block exposing (Alignment(..))
-import Markdown.Table
+import Markdown.Table exposing (TableDelimiterRow(..))
 import Parser
 import Parser.Advanced as Advanced exposing (..)
 import Parser.Extra exposing (maybeChomp, oneOrMore, tokenHelp)
@@ -39,7 +39,7 @@ headerParser =
                 headers
                 columnAlignments
 
-        validateHeader ( headers, DelimiterRow _ columnAlignments ) =
+        validateHeaderMatchesDelimiter ( headers, TableDelimiterRow _ columnAlignments ) =
             if List.length headers == List.length columnAlignments then
                 Advanced.succeed (Markdown.Table.TableHeader (headersWithAlignment headers columnAlignments))
 
@@ -50,7 +50,35 @@ headerParser =
         |= rowParser
         |= delimiterRowParser
     )
-        |> andThen validateHeader
+        |> andThen validateHeaderMatchesDelimiter
+
+
+validateHeader : TableDelimiterRow -> String -> Result String (Markdown.Table.TableHeader String)
+validateHeader (TableDelimiterRow _ columnAlignments) headersRow =
+    let
+        headersWithAlignment headers =
+            List.map2
+                (\headerCell alignment ->
+                    { label = headerCell
+                    , alignment = alignment
+                    }
+                )
+                headers
+                columnAlignments
+
+        combineHeaderAndDelimiter headers =
+            if List.length headers == List.length columnAlignments then
+                Ok (Markdown.Table.TableHeader (headersWithAlignment headers))
+
+            else
+                Err ("Tables must have the same number of header columns (" ++ String.fromInt (List.length headers) ++ ") as delimiter columns (" ++ String.fromInt (List.length columnAlignments) ++ ")")
+    in
+    case Advanced.run rowParser headersRow of
+        Ok headers ->
+            combineHeaderAndDelimiter headers
+
+        Err _ ->
+            Err "Unable to parse previous line as a table header"
 
 
 rowParser : Parser (List String)
@@ -100,10 +128,6 @@ parseCellHelper ( curr, acc ) =
         ]
 
 
-type DelimiterRow
-    = DelimiterRow String (List (Maybe Alignment))
-
-
 delimiterToAlignment : String -> Maybe Alignment
 delimiterToAlignment cell =
     case ( String.startsWith ":" cell, String.endsWith ":" cell ) of
@@ -120,17 +144,17 @@ delimiterToAlignment cell =
             Nothing
 
 
-delimiterRowParser : Parser DelimiterRow
+delimiterRowParser : Parser TableDelimiterRow
 delimiterRowParser =
     mapChompedString
-        (\delimiterText revDelimiterColumns -> DelimiterRow (String.trim delimiterText) (List.map delimiterToAlignment (List.reverse revDelimiterColumns)))
+        (\delimiterText revDelimiterColumns -> TableDelimiterRow { raw = delimiterText, trimmed = String.trim delimiterText } (List.map delimiterToAlignment (List.reverse revDelimiterColumns)))
         (loop [] delimiterRowHelp)
         |> andThen
-            (\((DelimiterRow delimiterText headers) as delimiterRow) ->
+            (\((TableDelimiterRow { trimmed } headers) as delimiterRow) ->
                 if List.isEmpty headers then
                     problem (Parser.Expecting "Must have at least one column in delimiter row.")
 
-                else if List.length headers == 1 && not (String.startsWith "|" delimiterText && String.endsWith "|" delimiterText) then
+                else if List.length headers == 1 && not (String.startsWith "|" trimmed && String.endsWith "|" trimmed) then
                     problem (Parser.Problem "Tables with a single column must have pipes at the start and end of the delimiter row to avoid ambiguity.")
 
                 else

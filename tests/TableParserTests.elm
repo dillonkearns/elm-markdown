@@ -2,7 +2,7 @@ module TableParserTests exposing (delimiterParsingSuite, fullTableSuite, rowPars
 
 import Expect exposing (Expectation)
 import Markdown.Block exposing (Alignment(..))
-import Markdown.Table
+import Markdown.Table exposing (TableDelimiterRow(..))
 import Markdown.TableParser exposing (..)
 import Parser
 import Parser.Advanced as Advanced exposing (..)
@@ -18,7 +18,7 @@ expectDelimiterRowOk testString columns =
     testString
         |> Advanced.run delimiterRowParser
         |> Expect.equal
-            (Ok (DelimiterRow (String.trim testString) columns))
+            (Ok (TableDelimiterRow { raw = testString, trimmed = String.trim testString } columns))
 
 
 delimiterParsingSuite : Test
