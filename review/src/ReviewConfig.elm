@@ -18,6 +18,5 @@ import Review.Rule as Rule exposing (Rule)
 config : List Rule
 config =
     [ NoEmptyDocComments.rule
-
-    --|> Rule.ignoreErrorsForFiles [ "src/List/Helpers.elm" ]
+        |> Rule.ignoreErrorsForFiles [ "src/List/Helpers.elm" ]
     ]
