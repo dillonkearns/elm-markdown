@@ -240,7 +240,7 @@ parseInlines linkReferences rawBlock =
                 Err e ->
                     InlineProblem e
 
-        Body unparsedInlines ->
+        OpenBlockOrParagraph unparsedInlines ->
             unparsedInlines
                 |> inlineParseHelper linkReferences
                 |> Block.Paragraph
@@ -371,7 +371,7 @@ innerParagraphParser =
             (\rawLine _ ->
                 rawLine
                     |> UnparsedInlines
-                    |> Body
+                    |> OpenBlockOrParagraph
             )
 
 
@@ -446,7 +446,7 @@ xmlNodeToHtmlNode : Node -> Parser RawBlock
 xmlNodeToHtmlNode xmlNode =
     case xmlNode of
         HtmlParser.Text innerText ->
-            Body (UnparsedInlines innerText)
+            OpenBlockOrParagraph (UnparsedInlines innerText)
                 |> succeed
 
         HtmlParser.Element tag attributes children ->
@@ -634,8 +634,8 @@ parseAllInlinesHelp state rawBlocks parsedBlocks =
             Ok parsedBlocks
 
 
-possiblyMergeBlocks : State -> RawBlock -> State
-possiblyMergeBlocks state newRawBlock =
+completeOrMergeBlocks : State -> RawBlock -> State
+completeOrMergeBlocks state newRawBlock =
     { linkReferenceDefinitions = state.linkReferenceDefinitions
     , rawBlocks =
         case
@@ -654,7 +654,7 @@ possiblyMergeBlocks state newRawBlock =
                 IndentedCodeBlock (joinStringsPreserveAll block2 block1)
                     :: rest
 
-            ( Body (UnparsedInlines body1), (BlockQuote body2) :: rest ) ->
+            ( OpenBlockOrParagraph (UnparsedInlines body1), (BlockQuote body2) :: rest ) ->
                 BlockQuote (joinRawStringsWith "\n" body2 body1)
                     :: rest
 
@@ -662,17 +662,17 @@ possiblyMergeBlocks state newRawBlock =
                 BlockQuote (joinStringsPreserveAll body2 body1)
                     :: rest
 
-            ( Body (UnparsedInlines body1), (Body (UnparsedInlines body2)) :: rest ) ->
-                Body (UnparsedInlines (joinRawStringsWith "\n" body2 body1))
+            ( OpenBlockOrParagraph (UnparsedInlines body1), (OpenBlockOrParagraph (UnparsedInlines body2)) :: rest ) ->
+                OpenBlockOrParagraph (UnparsedInlines (joinRawStringsWith "\n" body2 body1))
                     :: rest
 
-            ( TableDelimiter (Markdown.Table.TableDelimiterRow text alignments), (Body (UnparsedInlines rawHeaders)) :: rest ) ->
-                case TableParser.validateHeader (Markdown.Table.TableDelimiterRow text alignments) rawHeaders of
+            ( TableDelimiter (Markdown.Table.TableDelimiterRow text alignments), (OpenBlockOrParagraph (UnparsedInlines rawHeaders)) :: rest ) ->
+                case TableParser.parseHeader (Markdown.Table.TableDelimiterRow text alignments) rawHeaders of
                     Ok (Markdown.Table.TableHeader headers) ->
                         Table (Markdown.Table.Table headers []) :: rest
 
                     Err _ ->
-                        Body (UnparsedInlines (joinRawStringsWith "\n" rawHeaders text.raw))
+                        OpenBlockOrParagraph (UnparsedInlines (joinRawStringsWith "\n" rawHeaders text.raw))
                             :: rest
 
             ( Table updatedTable, (Table _) :: rest ) ->
@@ -691,31 +691,31 @@ stepRawBlock : State -> Parser (Step State State)
 stepRawBlock revStmts =
     -- Some blocks can't immediately follow a body
     case revStmts.rawBlocks of
-        (Body _) :: _ ->
+        (OpenBlockOrParagraph _) :: _ ->
             oneOf
-                [ oneOf whenPreviousWasBody
+                [ oneOf whenPreviousWasOpenBlockOrParagraph
                     |> map (\f -> f revStmts)
                 , plainLine
-                    |> map (\block -> Loop (possiblyMergeBlocks revStmts block))
+                    |> map (\block -> Loop (completeOrMergeBlocks revStmts block))
                 ]
 
         (Table table) :: _ ->
             oneOf
-                [ oneOf whenPreviousWasNotBody
+                [ oneOf parseClosedBlock
                     |> map (\f -> f revStmts)
                 , tableRowIfTableStarted table
                     |> Advanced.backtrackable
-                    |> map (\block -> Loop (possiblyMergeBlocks revStmts block))
+                    |> map (\block -> Loop (completeOrMergeBlocks revStmts block))
                 , plainLine
-                    |> map (\block -> Loop (possiblyMergeBlocks revStmts block))
+                    |> map (\block -> Loop (completeOrMergeBlocks revStmts block))
                 ]
 
         _ ->
             oneOf
-                [ oneOf whenPreviousWasNotBody
+                [ oneOf parseClosedBlock
                     |> map (\f -> f revStmts)
                 , plainLine
-                    |> map (\block -> Loop (possiblyMergeBlocks revStmts block))
+                    |> map (\block -> Loop (completeOrMergeBlocks revStmts block))
                 ]
 
 
@@ -732,12 +732,12 @@ stepRawBlock revStmts =
 -- All my attempts so far to "DRY" this code below cause a degradation in performance.
 
 
-whenPreviousWasBody : List (Parser (State -> Step State State))
-whenPreviousWasBody =
+whenPreviousWasOpenBlockOrParagraph : List (Parser (State -> Step State State))
+whenPreviousWasOpenBlockOrParagraph =
     [ Helpers.endOfFile
         |> map (\_ revStmts -> Done revStmts)
     , parseAsParagraphInsteadOfHtmlBlock
-        |> map (\block revStmts -> Loop (possiblyMergeBlocks revStmts block))
+        |> map (\block revStmts -> Loop (completeOrMergeBlocks revStmts block))
     , LinkReferenceDefinition.parser
         |> Advanced.backtrackable
         |> map (\reference revStmts -> Loop (addReference revStmts reference))
@@ -758,16 +758,16 @@ whenPreviousWasBody =
         -- NOTE: We know that it cannot be a table body row since the previous would have to be a table header so we do not look for table body rows
         , tableDelimiterInOpenParagraph |> Advanced.backtrackable
         ]
-        |> map (\block revStmts -> Loop (possiblyMergeBlocks revStmts block))
+        |> map (\block revStmts -> Loop (completeOrMergeBlocks revStmts block))
     ]
 
 
-whenPreviousWasNotBody : List (Parser (State -> Step State State))
-whenPreviousWasNotBody =
+parseClosedBlock : List (Parser (State -> Step State State))
+parseClosedBlock =
     [ Helpers.endOfFile
         |> map (\_ revStmts -> Done revStmts)
     , parseAsParagraphInsteadOfHtmlBlock
-        |> map (\block revStmts -> Loop (possiblyMergeBlocks revStmts block))
+        |> map (\block revStmts -> Loop (completeOrMergeBlocks revStmts block))
     , LinkReferenceDefinition.parser
         |> Advanced.backtrackable
         |> map (\reference revStmts -> Loop (addReference revStmts reference))
@@ -788,7 +788,7 @@ whenPreviousWasNotBody =
 
         -- Note: we know that a table cannot be starting because we define a table as a delimiter row following a header row which gets parsed as a Body initially
         ]
-        |> map (\block revStmts -> Loop (possiblyMergeBlocks revStmts block))
+        |> map (\block revStmts -> Loop (completeOrMergeBlocks revStmts block))
     ]
 
 
@@ -817,7 +817,7 @@ parseAsParagraphInsteadOfHtmlBlock =
         |. thisIsDefinitelyNotAnHtmlTag
         |. Advanced.chompUntilEndOr "\n"
         |. endOfLineOrFile
-        |> Advanced.mapChompedString (\rawLine _ -> rawLine |> UnparsedInlines |> Body)
+        |> Advanced.mapChompedString (\rawLine _ -> rawLine |> UnparsedInlines |> OpenBlockOrParagraph)
         |> Advanced.backtrackable
 
 

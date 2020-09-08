@@ -53,8 +53,8 @@ headerParser =
         |> andThen validateHeaderMatchesDelimiter
 
 
-validateHeader : TableDelimiterRow -> String -> Result String (Markdown.Table.TableHeader String)
-validateHeader (TableDelimiterRow _ columnAlignments) headersRow =
+parseHeader : TableDelimiterRow -> String -> Result String (Markdown.Table.TableHeader String)
+parseHeader (TableDelimiterRow _ columnAlignments) headersRow =
     let
         headersWithAlignment headers =
             List.map2

@@ -16,7 +16,7 @@ type UnparsedInlines
 
 type RawBlock
     = Heading Int UnparsedInlines
-    | Body UnparsedInlines
+    | OpenBlockOrParagraph UnparsedInlines
     | Html (Markdown.Block.Html Block)
     | UnorderedListBlock
         (List
