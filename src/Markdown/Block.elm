@@ -6,7 +6,7 @@ module Markdown.Block exposing
     , Inline(..)
     , HtmlAttribute
     , extractInlineText
-    , walk, walkInlines, validateMapInlines, mapAndAccumulate, foldl
+    , walk, walkInlines, validateMapInlines, mapAndAccumulate, foldl, inlineFoldl
     )
 
 {-|
@@ -36,7 +36,7 @@ See [`Markdown.Html`](Markdown.Html) for more.
 
 ## Transformations
 
-@docs walk, walkInlines, validateMapInlines, mapAndAccumulate, foldl
+@docs walk, walkInlines, validateMapInlines, mapAndAccumulate, foldl, inlineFoldl
 
 -}
 
@@ -886,3 +886,103 @@ foldl function acc list =
 
                 ThematicBreak ->
                     foldl function (function block acc) remainingBlocks
+
+
+{-| Fold over all inlines within all blocks to yield a value.
+
+    import Markdown.Block as Block exposing (..)
+
+    inlineFoldl
+        (\inline links ->
+            case inline of
+                Block.Link str mbstr moreinlines ->
+                    str :: links
+
+                _ ->
+                    links
+        )
+        []
+        blocks
+
+    pullLinks : List Block -> List String
+    pullLinks blocks =
+        blocks
+            |> Block.inlineFoldl
+                    (\inline links ->
+                        case inline of
+                            Block.Link str mbstr moreinlines ->
+                                str :: links
+
+                            _ ->
+                                links
+                    )
+                    []
+                    blocks
+
+    [ Heading H1 [ Text "Document" ]
+    , Heading H2 [ Link "/note/50" "interesting document" ]
+    , Heading H3 [ Text "Subsection" ]
+    , Heading H2 [ Link "/note/51" "more interesting document" ]
+    ]
+        |>
+    -->  ["/note/50", "/note/51"]
+
+-}
+inlineFoldl : (Inline -> acc -> acc) -> acc -> List Block -> acc
+inlineFoldl function top_acc list =
+    let
+        bfn =
+            \block acc ->
+                case block of
+                    Block.HtmlBlock html ->
+                        acc
+
+                    Block.UnorderedList listItems ->
+                        List.foldl
+                            (\(ListItem _ inlines) liacc ->
+                                List.foldl function liacc inlines
+                            )
+                            acc
+                            listItems
+
+                    Block.OrderedList int lists ->
+                        List.foldl
+                            (\inlines lacc ->
+                                List.foldl function lacc inlines
+                            )
+                            acc
+                            lists
+
+                    Block.BlockQuote _ ->
+                        acc
+
+                    Block.Heading _ inlines ->
+                        List.foldl function acc inlines
+
+                    Block.Paragraph inlines ->
+                        List.foldl function acc inlines
+
+                    Block.Table labels lists ->
+                        let
+                            lacc =
+                                List.foldl
+                                    (\inlines iacc ->
+                                        List.foldl function iacc inlines
+                                    )
+                                    acc
+                                    (List.map .label labels)
+                        in
+                        List.foldl
+                            (\inlines iacc ->
+                                List.foldl function iacc inlines
+                            )
+                            lacc
+                            lists
+
+                    Block.CodeBlock _ ->
+                        acc
+
+                    Block.ThematicBreak ->
+                        acc
+    in
+    Block.foldl bfn top_acc list
