@@ -108,6 +108,16 @@ exanimi sermone; esse Iunonem paelicis mundi velit.
 sequantur praemia doleam pectusque fumantia hospes, cum silvaque caputque. Domat
 et annis corpus est aperire amoris. Concha non quae columbas, quae tenuem,
 pervia, euntis?
+
+## Here is a table
+
+| foo | bar |
+| --- | --- |
+| baz | bim |
+| abc | def |
+| longer cell here | shorter |
+| and this is a very very very very very very very long cell | and this is a very very very very very very very long cell, too |
+
 """
 
 
@@ -254,13 +264,39 @@ renderer =
                 )
     , codeBlock = codeBlock
     , table = Element.column []
-    , tableHeader = Element.column []
+    , tableHeader =
+        Element.column
+            [ Font.bold
+            , Element.width Element.fill
+            , Font.center
+            ]
     , tableBody = Element.column []
-    , tableRow = Element.row []
-    , tableHeaderCell = \maybeAlignment children -> Element.paragraph [] children
-    , tableCell = Element.paragraph []
+    , tableRow = Element.row [ Element.height Element.fill, Element.width Element.fill ]
+    , tableHeaderCell =
+        \maybeAlignment children ->
+            Element.paragraph
+                tableBorder
+                children
+    , tableCell =
+        \maybeAlignment children ->
+            Element.paragraph
+                tableBorder
+                children
     , html = Markdown.Html.oneOf []
     }
+
+
+alternateTableRowBackground =
+    Element.rgb255 245 247 249
+
+
+tableBorder =
+    [ Element.Border.color (Element.rgb255 223 226 229)
+    , Element.Border.width 1
+    , Element.Border.solid
+    , Element.paddingXY 6 13
+    , Element.height Element.fill
+    ]
 
 
 rawTextToId : String -> String

@@ -3,7 +3,6 @@ module Tests exposing (suite)
 import Expect exposing (Expectation)
 import Markdown.Block as Block exposing (..)
 import Markdown.Parser as Markdown exposing (..)
-import Markdown.Table
 import Parser
 import Parser.Advanced as Advanced exposing ((|.), (|=))
 import Test exposing (..)
@@ -241,23 +240,126 @@ Hello!
                             [ Block.ThematicBreak
                             ]
                         )
+        , test "simple table" <|
+            \() ->
+                """| abc | def |
+|---|---|
+"""
+                    |> parse
+                    |> Expect.equal
+                        (Ok
+                            [ Block.Table
+                                [ { label = [ Text "abc" ], alignment = Nothing }
+                                , { label = [ Text "def" ], alignment = Nothing }
+                                ]
+                                []
+                            ]
+                        )
+        , test "simple table with data" <|
+            \() ->
+                """| abc | def |
+|---|---|
+| foo | bar |
+| bar | baz |
+"""
+                    |> parse
+                    |> Expect.equal
+                        (Ok
+                            [ Block.Table
+                                [ { label = [ Text "abc" ], alignment = Nothing }
+                                , { label = [ Text "def" ], alignment = Nothing }
+                                ]
+                                [ [ [ Text "foo" ], [ Text "bar" ] ]
+                                , [ [ Text "bar" ], [ Text "baz" ] ]
+                                ]
+                            ]
+                        )
+        , test "table with alignment" <|
+            \() ->
+                """| abc | def | ghi | jkl
+|:---|:------:|--:|---|
+| foo | bar | baz | boo |
+| bar | baz | boo | foo |
+"""
+                    |> parse
+                    |> Expect.equal
+                        (Ok
+                            [ Block.Table
+                                [ { label = [ Text "abc" ], alignment = Just AlignLeft }
+                                , { label = [ Text "def" ], alignment = Just AlignCenter }
+                                , { label = [ Text "ghi" ], alignment = Just AlignRight }
+                                , { label = [ Text "jkl" ], alignment = Nothing }
+                                ]
+                                [ [ [ Text "foo" ], [ Text "bar" ], [ Text "baz" ], [ Text "boo" ] ]
+                                , [ [ Text "bar" ], [ Text "baz" ], [ Text "boo" ], [ Text "foo" ] ]
+                                ]
+                            ]
+                        )
+        , test "table with a cell that looks like a heading but isn't" <|
+            \() ->
+                """| abc | def |
+| --- | --- |
+| bar | baz |
+####### asdf
+"""
+                    |> parse
+                    |> Expect.equal
+                        (Ok
+                            [ Block.Table
+                                [ { label = [ Text "abc" ], alignment = Nothing }
+                                , { label = [ Text "def" ], alignment = Nothing }
+                                ]
+                                [ [ [ Text "bar" ], [ Text "baz" ] ]
+                                , [ [ Text "####### asdf" ], [] ]
+                                ]
+                            ]
+                        )
+        , test "table ended by a heading" <|
+            \() ->
+                """| abc | def |
+| --- | --- |
+| bar | baz |
+###### asdf
+"""
+                    |> parse
+                    |> Expect.equal
+                        (Ok
+                            [ Block.Table
+                                [ { label = [ Text "abc" ], alignment = Nothing }
+                                , { label = [ Text "def" ], alignment = Nothing }
+                                ]
+                                [ [ [ Text "bar" ], [ Text "baz" ] ]
+                                ]
+                            , Block.Heading Block.H6 [ Text "asdf" ]
+                            ]
+                        )
+        , test "tables separated by a blank line should be separate" <|
+            \() ->
+                """| abc | def |
+| --- | --- |
+| bar | baz |
 
-        -- TODO re-enable this test once table parsing is implemented
-        --        , test "simple table" <|
-        --            \() ->
-        --                """| abc | def |
-        --|---|---|
-        --"""
-        --                    |> parse
-        --                    |> Expect.equal
-        --                        (Ok
-        --                            [ Block.Table
-        --                                [ { label = [ Text "abc" ], alignment = Nothing }
-        --                                , { label = [ Text "def" ], alignment = Nothing }
-        --                                ]
-        --                                []
-        --                            ]
-        --                        )
+| abc | def |
+| --- | --- |
+| bar | baz |
+"""
+                    |> parse
+                    |> Expect.equal
+                        (Ok
+                            [ Block.Table
+                                [ { label = [ Text "abc" ], alignment = Nothing }
+                                , { label = [ Text "def" ], alignment = Nothing }
+                                ]
+                                [ [ [ Text "bar" ], [ Text "baz" ] ]
+                                ]
+                            , Block.Table
+                                [ { label = [ Text "abc" ], alignment = Nothing }
+                                , { label = [ Text "def" ], alignment = Nothing }
+                                ]
+                                [ [ [ Text "bar" ], [ Text "baz" ] ]
+                                ]
+                            ]
+                        )
         , test "multiple thematic breaks" <|
             \() ->
                 """***

@@ -9085,6 +9085,175 @@ Gives this correct output:
 
 ## [extension] Tables
 
+### [Example 198](https://github.github.com/gfm/#example-198)
+
+This markdown:
+
+
+````````````markdown
+| foo | bar |
+| --- | --- |
+| baz | bim |
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<table>
+<thead>
+<tr>
+<th>foo</th>
+<th>bar</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>baz</td>
+<td>bim</td>
+</tr>
+</tbody>
+</table>
+````````````
+
+### [Example 199](https://github.github.com/gfm/#example-199)
+
+This markdown:
+
+
+````````````markdown
+| abc | defghi |
+:-: | -----------:
+bar | baz
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<table>
+<thead>
+<tr>
+<th align="center">abc</th>
+<th align="right">defghi</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">bar</td>
+<td align="right">baz</td>
+</tr>
+</tbody>
+</table>
+````````````
+
+### [Example 200](https://github.github.com/gfm/#example-200)
+
+This markdown:
+
+
+````````````markdown
+| f\|oo  |
+| ------ |
+| b `\|` az |
+| b **\|** im |
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<table>
+<thead>
+<tr>
+<th>f|oo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>b <code>|</code> az</td>
+</tr>
+<tr>
+<td>b <strong>|</strong> im</td>
+</tr>
+</tbody>
+</table>
+````````````
+
+### [Example 201](https://github.github.com/gfm/#example-201)
+
+This markdown:
+
+
+````````````markdown
+| abc | def |
+| --- | --- |
+| bar | baz |
+> bar
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<table>
+<thead>
+<tr>
+<th>abc</th>
+<th>def</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>bar</td>
+<td>baz</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>bar</p>
+</blockquote>
+````````````
+
+### [Example 202](https://github.github.com/gfm/#example-202)
+
+This markdown:
+
+
+````````````markdown
+| abc | def |
+| --- | --- |
+| bar | baz |
+bar
+
+bar
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<table>
+<thead>
+<tr>
+<th>abc</th>
+<th>def</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>bar</td>
+<td>baz</td>
+</tr>
+<tr>
+<td>bar</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>bar</p>
+````````````
+
 ### [Example 203](https://github.github.com/gfm/#example-203)
 
 This markdown:
@@ -9103,6 +9272,66 @@ Gives this correct output:
 <p>| abc | def |
 | --- |
 | bar |</p>
+````````````
+
+### [Example 204](https://github.github.com/gfm/#example-204)
+
+This markdown:
+
+
+````````````markdown
+| abc | def |
+| --- | --- |
+| bar |
+| bar | baz | boo |
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<table>
+<thead>
+<tr>
+<th>abc</th>
+<th>def</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>bar</td>
+<td></td>
+</tr>
+<tr>
+<td>bar</td>
+<td>baz</td>
+</tr>
+</tbody>
+</table>
+````````````
+
+### [Example 205](https://github.github.com/gfm/#example-205)
+
+This markdown:
+
+
+````````````markdown
+| abc | def |
+| --- | --- |
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<table>
+<thead>
+<tr>
+<th>abc</th>
+<th>def</th>
+</tr>
+</thead>
+</table>
 ````````````
 
 ## [extension] Task list items

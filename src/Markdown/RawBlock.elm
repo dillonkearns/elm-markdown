@@ -16,7 +16,7 @@ type UnparsedInlines
 
 type RawBlock
     = Heading Int UnparsedInlines
-    | Body UnparsedInlines
+    | OpenBlockOrParagraph UnparsedInlines
     | Html (Markdown.Block.Html Block)
     | UnorderedListBlock
         (List
@@ -29,5 +29,6 @@ type RawBlock
     | IndentedCodeBlock String
     | ThematicBreak
     | Table (Markdown.Table.Table String)
+    | TableDelimiter Markdown.Table.TableDelimiterRow
     | BlankLine
     | BlockQuote String
