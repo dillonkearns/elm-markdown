@@ -908,14 +908,12 @@ foldl function acc list =
                 )
                 []
 
-    testPullLinks =
-        [ Heading H1 [ Text "Document" ]
-        , Heading H2 [ Link "/note/50" (Just "interesting document") [] ]
-        , Heading H3 [ Text "Subsection" ]
-        , Heading H2 [ Link "/note/51" (Just "more interesting document") [] ]
-        ]
-            |> pullLinks
-
+    [ Heading H1 [ Text "Document" ]
+    , Heading H2 [ Link "/note/50" (Just "interesting document") [] ]
+    , Heading H3 [ Text "Subsection" ]
+    , Heading H2 [ Link "/note/51" (Just "more interesting document") [] ]
+    ]
+        |> pullLinks
     -->  ["/note/50", "/note/51"]
 
 -}
