@@ -358,8 +358,8 @@ parseRawInline linkReferences wrap unparsedInlines =
         |> wrap
 
 
-plainLine : Parser RawBlock
-plainLine =
+openBlockOrParagraphParser : Parser RawBlock
+openBlockOrParagraphParser =
     innerParagraphParser
         |. endOfLineOrFile
 
@@ -698,21 +698,19 @@ stepRawBlock revStmts =
             |> map (\reference -> Loop (addReference revStmts reference))
         , (case revStmts.rawBlocks of
             (OpenBlockOrParagraph _) :: _ ->
-                addOrMerge
+                mergeableBlockAfterOpenBlockOrParagraphParser
 
             (Table table) :: _ ->
                 oneOf
-                    [ parseClosedBlock
+                    [ mergeableBlockNotAfterOpenBlockOrParagraphParser
                     , tableRowIfTableStarted table
-                    , plainLine
                     ]
 
             _ ->
-                oneOf
-                    [ parseClosedBlock
-                    , plainLine
-                    ]
+                mergeableBlockNotAfterOpenBlockOrParagraphParser
           )
+            |> map (\block -> Loop (completeOrMergeBlocks revStmts block))
+        , openBlockOrParagraphParser
             |> map (\block -> Loop (completeOrMergeBlocks revStmts block))
         ]
 
@@ -720,7 +718,7 @@ stepRawBlock revStmts =
 
 -- Note [Static Parser Structure]
 --
--- For performance reasons, it is VERY IMPORTANT that `addOrMerge` and `parseClosedBlock`
+-- For performance reasons, it is VERY IMPORTANT that `mergeableBlockAfterOpenBlockOrParagraphParser` and `mergeableBlockNotAfterOpenBlockOrParagraphParser`
 -- defined as `var` in javascript (and not as a function taking any, even zero, arguments).
 --
 -- A `var` is defined once, then re-used for every raw block we parse. If they were functions, the parser
@@ -730,8 +728,8 @@ stepRawBlock revStmts =
 -- All my attempts so far to "DRY" this code below cause a degradation in performance.
 
 
-addOrMerge : Parser RawBlock
-addOrMerge =
+mergeableBlockAfterOpenBlockOrParagraphParser : Parser RawBlock
+mergeableBlockAfterOpenBlockOrParagraphParser =
     oneOf
         [ parseAsParagraphInsteadOfHtmlBlock
         , blankLine
@@ -746,15 +744,12 @@ addOrMerge =
         , orderedListBlock True
         , heading |> Advanced.backtrackable
         , htmlParser
-
-        -- NOTE: We know that it cannot be a table body row since the previous would have to be a table header so we do not look for table body rows
         , tableDelimiterInOpenParagraph |> Advanced.backtrackable
-        , plainLine
         ]
 
 
-parseClosedBlock : Parser RawBlock
-parseClosedBlock =
+mergeableBlockNotAfterOpenBlockOrParagraphParser : Parser RawBlock
+mergeableBlockNotAfterOpenBlockOrParagraphParser =
     oneOf
         [ parseAsParagraphInsteadOfHtmlBlock
         , blankLine
