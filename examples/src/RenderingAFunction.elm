@@ -189,7 +189,9 @@ renderer zoomFactor =
     , tableHeaderCell =
         \maybeAlignment children ->
             Element.paragraph [] children
-    , tableCell = Element.paragraph []
+    , tableCell =
+        \maybeAlignment children ->
+            Element.paragraph [] children
     }
 
 

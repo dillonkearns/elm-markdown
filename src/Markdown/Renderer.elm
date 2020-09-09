@@ -58,7 +58,7 @@ type alias Renderer view =
     , tableHeader : List view -> view
     , tableBody : List view -> view
     , tableRow : List view -> view
-    , tableCell : List view -> view
+    , tableCell : Maybe Block.Alignment -> List view -> view
     , tableHeaderCell : Maybe Block.Alignment -> List view -> view
     }
 
@@ -213,7 +213,28 @@ defaultHtmlRenderer =
                         |> Maybe.withDefault []
             in
             Html.th attrs
-    , tableCell = Html.td []
+    , tableCell =
+        \maybeAlignment ->
+            let
+                attrs =
+                    maybeAlignment
+                        |> Maybe.map
+                            (\alignment ->
+                                case alignment of
+                                    Block.AlignLeft ->
+                                        "left"
+
+                                    Block.AlignCenter ->
+                                        "center"
+
+                                    Block.AlignRight ->
+                                        "right"
+                            )
+                        |> Maybe.map Attr.align
+                        |> Maybe.map List.singleton
+                        |> Maybe.withDefault []
+            in
+            Html.td attrs
     }
 
 
@@ -369,18 +390,49 @@ renderHelperSingle renderer =
                                     Result.map (Tuple.pair alignment) (renderStyled renderer label)
                                 )
                             |> combineResults
+
+                    renderedHeader : Result String view
+                    renderedHeader =
+                        renderedHeaderCells
+                            |> Result.map
+                                (\listListView ->
+                                    listListView
+                                        |> List.map (\( maybeAlignment, item ) -> renderer.tableHeaderCell maybeAlignment item)
+                                        |> renderer.tableRow
+                                        |> List.singleton
+                                        |> renderer.tableHeader
+                                )
+
+                    alignmentForColumn : Int -> Maybe Block.Alignment
+                    alignmentForColumn columnIndex =
+                        header
+                            |> List.drop columnIndex
+                            |> List.head
+                            |> Maybe.andThen .alignment
+
+                    renderRow : List (List Inline) -> Result String view
+                    renderRow cells =
+                        cells
+                            |> List.map (renderStyled renderer)
+                            |> combineResults
+                            |> Result.map (List.indexedMap (\index cell -> renderer.tableCell (alignmentForColumn index) cell))
+                            |> Result.map renderer.tableRow
+
+                    renderedRows : Result String (List view)
+                    renderedRows =
+                        rows
+                            |> List.map renderRow
+                            |> combineResults
+
+                    renderedBody : List view -> List view
+                    renderedBody r =
+                        if List.isEmpty r then
+                            []
+
+                        else
+                            [ renderer.tableBody r ]
                 in
-                renderedHeaderCells
-                    |> Result.map
-                        (\listListView ->
-                            listListView
-                                |> List.map (\( maybeAlignment, item ) -> renderer.tableHeaderCell maybeAlignment item)
-                                |> renderer.tableHeader
-                        )
-                    |> Result.map
-                        (\h ->
-                            renderer.table [ h ]
-                        )
+                Result.map2 (\h r -> renderer.table (h :: renderedBody r)) renderedHeader renderedRows
                     |> Just
 
 

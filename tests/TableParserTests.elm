@@ -1,8 +1,9 @@
-module TableParserTests exposing (suite)
+module TableParserTests exposing (delimiterParsingSuite, fullTableSuite, rowParsingSuite)
 
 import Expect exposing (Expectation)
-import Markdown.Table
-import Markdown.TableParser as TableParser exposing (..)
+import Markdown.Block exposing (Alignment(..))
+import Markdown.Table exposing (TableDelimiterRow(..))
+import Markdown.TableParser exposing (..)
 import Parser
 import Parser.Advanced as Advanced exposing (..)
 import Test exposing (..)
@@ -12,8 +13,138 @@ type alias Parser a =
     Advanced.Parser String Parser.Problem a
 
 
-suite : Test
-suite =
+expectDelimiterRowOk : String -> List (Maybe Alignment) -> Expectation
+expectDelimiterRowOk testString columns =
+    testString
+        |> Advanced.run delimiterRowParser
+        |> Expect.equal
+            (Ok (TableDelimiterRow { raw = testString, trimmed = String.trim testString } columns))
+
+
+delimiterParsingSuite : Test
+delimiterParsingSuite =
+    describe "delimiter row"
+        [ test "single column with pipes" <|
+            \() ->
+                expectDelimiterRowOk "|---|" [ Nothing ]
+        , test "two columns" <|
+            \() ->
+                expectDelimiterRowOk "|--|--|" [ Nothing, Nothing ]
+        , test "no leading" <|
+            \() ->
+                expectDelimiterRowOk "--|--|" [ Nothing, Nothing ]
+        , test "no trailing" <|
+            \() ->
+                expectDelimiterRowOk "|--|--" [ Nothing, Nothing ]
+        , test "no leading or trailing" <|
+            \() ->
+                expectDelimiterRowOk "--|--" [ Nothing, Nothing ]
+        , test "only a single hyphen per column" <|
+            \() ->
+                expectDelimiterRowOk "- | -" [ Nothing, Nothing ]
+        , test "delimiter row with no trailing or leading pipes" <|
+            \() ->
+                "--"
+                    |> expectParserFail delimiterRowParser
+        , test "delimiter row with space padding" <|
+            \() ->
+                expectDelimiterRowOk "| -- |-- | --   |" [ Nothing, Nothing, Nothing ]
+        , test "delimiter row with space padding and no leading" <|
+            \() ->
+                expectDelimiterRowOk "-- |-- | --   |" [ Nothing, Nothing, Nothing ]
+        , test "delimiter row with space padding and no trailing" <|
+            \() ->
+                expectDelimiterRowOk "| -- |-- | --   " [ Nothing, Nothing, Nothing ]
+        , test "delimiter rows cannot have spaces between the hyphens" <|
+            \() ->
+                "|---|- -|"
+                    |> expectParserFail delimiterRowParser
+        , test "delimiter row with alignment in columns" <|
+            \() ->
+                expectDelimiterRowOk "| :-- |-- | :-: | ---:   " [ Just AlignLeft, Nothing, Just AlignCenter, Just AlignRight ]
+        ]
+
+
+rowParsingSuite : Test
+rowParsingSuite =
+    describe "row parser"
+        [ test "simple row" <|
+            \() ->
+                "| abc | def |"
+                    |> Advanced.run rowParser
+                    |> Expect.equal
+                        (Ok
+                            [ "abc", "def" ]
+                        )
+        , test "single row" <|
+            \() ->
+                "| abc |"
+                    |> Advanced.run rowParser
+                    |> Expect.equal
+                        (Ok
+                            [ "abc" ]
+                        )
+        , test "row without trailing or leading pipes" <|
+            \() ->
+                "cell 1 | cell 2 | cell 3"
+                    |> Advanced.run rowParser
+                    |> Expect.equal
+                        (Ok
+                            [ "cell 1", "cell 2", "cell 3" ]
+                        )
+        , test "row with escaped pipes" <|
+            \() ->
+                "| abc | a \\| b |"
+                    |> Advanced.run rowParser
+                    |> Expect.equal
+                        (Ok
+                            [ "abc", "a | b" ]
+                        )
+        , test "row with escaped pipes at the end" <|
+            \() ->
+                "| abc | def\\|"
+                    |> Advanced.run rowParser
+                    |> Expect.equal
+                        (Ok
+                            [ "abc", "def|" ]
+                        )
+        , test "row with escaped pipes at the beginning" <|
+            \() ->
+                "\\|  abc | def |"
+                    |> Advanced.run rowParser
+                    |> Expect.equal
+                        (Ok
+                            [ "|  abc", "def" ]
+                        )
+        , test "row with empty cell contents" <|
+            \() ->
+                "| abc |  |"
+                    |> Advanced.run rowParser
+                    |> Expect.equal
+                        (Ok
+                            [ "abc", "" ]
+                        )
+        , test "with double escaped pipe character" <|
+            \() ->
+                "| abc \\\\|  |"
+                    |> Advanced.run rowParser
+                    |> Expect.equal
+                        (Ok
+                            [ "abc |" ]
+                        )
+        , test "with triple escaped pipe character" <|
+            \() ->
+                "| abc \\\\\\|  |"
+                    |> Advanced.run rowParser
+                    |> Expect.equal
+                        (Ok
+                            [ "abc \\|" ]
+                        )
+        ]
+
+
+fullTableSuite : Test
+fullTableSuite =
     describe "GFM tables"
         [ test "simple case" <|
             \() ->
@@ -23,13 +154,13 @@ suite =
                     |> Expect.equal
                         (Ok
                             (Markdown.Table.Table
-                                [ { label = " abc ", alignment = Nothing }
-                                , { label = " def ", alignment = Nothing }
+                                [ { label = "abc", alignment = Nothing }
+                                , { label = "def", alignment = Nothing }
                                 ]
                                 []
                             )
                         )
-        , test "simple case with training whitespace" <|
+        , test "simple case with trailing whitespace" <|
             \() ->
                 """| abc | def |
 |---|---|
@@ -38,12 +169,24 @@ suite =
                     |> Expect.equal
                         (Ok
                             (Markdown.Table.Table
-                                [ { label = " abc ", alignment = Nothing }
-                                , { label = " def ", alignment = Nothing }
+                                [ { label = "abc", alignment = Nothing }
+                                , { label = "def", alignment = Nothing }
                                 ]
                                 []
                             )
                         )
+        , test "The delimiter row cannot have fewer columns than the header" <|
+            \() ->
+                """| abc | def |
+|---|
+"""
+                    |> expectFail
+        , test "The delimiter row cannot have more columns than the header" <|
+            \() ->
+                """| abc | def |
+|---|--|--|
+"""
+                    |> expectFail
         , test "tables must have at least one delimiter" <|
             \() ->
                 """| abc | def |
@@ -56,87 +199,156 @@ suite =
 Hey, I forgot to finish my table! Whoops!
                            """
                     |> expectFail
-        , describe "delimiter row"
-            [ test "single with pipes" <|
-                \() ->
-                    "|---|"
-                        |> Advanced.run delimiterRowParser
-                        |> Expect.equal
-                            (Ok (DelimiterRow 1))
-            , test "two columns" <|
-                \() ->
-                    "|--|--|"
-                        |> Advanced.run delimiterRowParser
-                        |> Expect.equal
-                            (Ok (DelimiterRow 2))
-            , test "no leading" <|
-                \() ->
-                    "--|--|"
-                        |> Advanced.run delimiterRowParser
-                        |> Expect.equal
-                            (Ok (DelimiterRow 2))
-            , test "no trailing" <|
-                \() ->
-                    "|--|--"
-                        |> Advanced.run delimiterRowParser
-                        |> Expect.equal
-                            (Ok (DelimiterRow 2))
-            , test "no leading or trailing" <|
-                \() ->
-                    "--|--"
-                        |> Advanced.run delimiterRowParser
-                        |> Expect.equal
-                            (Ok (DelimiterRow 2))
-            , test "delimiter row with no trailing or leading pipes" <|
-                \() ->
-                    -- TODO should this be an error?
-                    "--"
-                        |> Advanced.run delimiterRowParser
-                        |> Expect.equal
-                            (Ok (DelimiterRow 1))
-            ]
-        , describe "row parser"
-            [ test "parse row" <|
-                \() ->
-                    "| abc | def |"
-                        |> Advanced.run rowParser
-                        |> Expect.equal
-                            (Ok
-                                [ " abc ", " def " ]
+        , test "table must have a delimiter row before body rows" <|
+            \() ->
+                """| abc | def |
+| foo | bar |
+| bar | baz |
+"""
+                    |> expectFail
+        , test "tables have data rows" <|
+            \() ->
+                """| abc | def |
+| --- | --- |
+| foo | bar |
+| bar | baz |
+"""
+                    |> Advanced.run parser
+                    |> Expect.equal
+                        (Ok
+                            (Markdown.Table.Table
+                                [ { label = "abc", alignment = Nothing }
+                                , { label = "def", alignment = Nothing }
+                                ]
+                                [ [ "foo", "bar" ]
+                                , [ "bar", "baz" ]
+                                ]
                             )
-            , test "single row" <|
-                \() ->
-                    "| abc |"
-                        |> Advanced.run rowParser
-                        |> Expect.equal
-                            (Ok
-                                [ " abc " ]
+                        )
+        , test "the data rows can have varying length but the result should be even" <|
+            \() ->
+                """| abc | def |
+| --- | --- |
+| bar |
+| bar | baz | boo |
+"""
+                    |> Advanced.run parser
+                    |> Expect.equal
+                        (Ok
+                            (Markdown.Table.Table
+                                [ { label = "abc", alignment = Nothing }
+                                , { label = "def", alignment = Nothing }
+                                ]
+                                [ [ "bar", "" ]
+                                , [ "bar", "baz" ]
+                                ]
                             )
-            , test "row without trailing or leading pipes" <|
-                \() ->
-                    "cell 1 | cell 2 | cell 3"
-                        |> Advanced.run rowParser
-                        |> Expect.equal
-                            (Ok
-                                [ "cell 1 ", " cell 2 ", " cell 3" ]
+                        )
+        , test "tables without surrounding pipes" <|
+            \() ->
+                """abc | def
+--- | ---
+foo | bar
+bar | baz
+"""
+                    |> Advanced.run parser
+                    |> Expect.equal
+                        (Ok
+                            (Markdown.Table.Table
+                                [ { label = "abc", alignment = Nothing }
+                                , { label = "def", alignment = Nothing }
+                                ]
+                                [ [ "foo", "bar" ]
+                                , [ "bar", "baz" ]
+                                ]
                             )
-            ]
+                        )
+        , test "tables without body and without surrounding pipes" <|
+            \() ->
+                """abc | def
+--- | ---
+"""
+                    |> Advanced.run parser
+                    |> Expect.equal
+                        (Ok
+                            (Markdown.Table.Table
+                                [ { label = "abc", alignment = Nothing }
+                                , { label = "def", alignment = Nothing }
+                                ]
+                                []
+                            )
+                        )
+        , test "tables with only a single column and the delimiter does NOT have surrounding pipes" <|
+            \() ->
+                """| abc |
+---
+bar
 
-        {-
+"""
+                    |> expectFail
+        , test "tables with only a single column and the delimiter has surrounding pipes" <|
+            \() ->
+                """| abc |
+| --- |
+bar
+"""
+                    |> Advanced.run parser
+                    |> Expect.equal
+                        (Ok
+                            (Markdown.Table.Table
+                                [ { label = "abc", alignment = Nothing }
+                                ]
+                                [ [ "bar" ] ]
+                            )
+                        )
+        , test "tables with only a single column and the delimiter has surrounding pipes but the header does not" <|
+            \() ->
+                """abc
+| --- |
+bar
+"""
+                    |> Advanced.run parser
+                    |> Expect.equal
+                        (Ok
+                            (Markdown.Table.Table
+                                [ { label = "abc", alignment = Nothing }
+                                ]
+                                [ [ "bar" ] ]
+                            )
+                        )
+        , test "table with many layers of escaping" <|
+            \() ->
+                """|abc|
+|---|
+|\\\\\\\\\\\\|
+|\\\\\\\\\\|
+|\\\\\\\\|
+|\\\\\\|
+|\\\\|
+|\\|
+|\\\\\\\\||
 
-           Possible strategies:
-           * Do a second pass to validate it
-           * During first pass, check
-
-               TODO test case to fail parser immediately if there aren't enough
-              | Col 1      | Col 2  | Col 3     |
-              | ---------- | ------ |
-              | **Cell 1** | Cell 2 | Extra col |
-        -}
+"""
+                    |> Advanced.run parser
+                    |> Expect.equal
+                        (Ok
+                            (Markdown.Table.Table
+                                [ { label = "abc", alignment = Nothing }
+                                ]
+                                [ [ "\\\\|" ]
+                                , [ "\\\\|" ]
+                                , [ "\\|" ]
+                                , [ "\\|" ]
+                                , [ "|" ]
+                                , [ "|" ]
+                                , [ "\\|" ]
+                                ]
+                            )
+                        )
         ]
 
 
-expectParserFail input someParser =
+expectParserFail someParser input =
     case Advanced.run someParser input of
         Ok _ ->
             Expect.fail "Expected a parser error."
