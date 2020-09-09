@@ -1,4 +1,4 @@
-module InlineTransformTests exposing (suite)
+module InlineFoldTests exposing (suite)
 
 import Dict
 import Expect
