@@ -698,18 +698,18 @@ stepRawBlock revStmts =
             |> map (\reference -> Loop (addReference revStmts reference))
         , (case revStmts.rawBlocks of
             (OpenBlockOrParagraph _) :: _ ->
-                oneOf addOrMerge
+                addOrMerge
 
             (Table table) :: _ ->
                 oneOf
-                    [ oneOf parseClosedBlock
+                    [ parseClosedBlock
                     , tableRowIfTableStarted table
                     , plainLine
                     ]
 
             _ ->
                 oneOf
-                    [ oneOf parseClosedBlock
+                    [ parseClosedBlock
                     , plainLine
                     ]
           )
@@ -730,47 +730,49 @@ stepRawBlock revStmts =
 -- All my attempts so far to "DRY" this code below cause a degradation in performance.
 
 
-addOrMerge : List (Parser RawBlock)
+addOrMerge : Parser RawBlock
 addOrMerge =
-    [ parseAsParagraphInsteadOfHtmlBlock
-    , blankLine
-    , blockQuote
-    , Markdown.CodeBlock.parser |> Advanced.backtrackable |> map CodeBlock
+    oneOf
+        [ parseAsParagraphInsteadOfHtmlBlock
+        , blankLine
+        , blockQuote
+        , Markdown.CodeBlock.parser |> Advanced.backtrackable |> map CodeBlock
 
-    -- NOTE: indented block is not an option immediately after a Body
-    , ThematicBreak.parser |> Advanced.backtrackable |> map (\_ -> ThematicBreak)
-    , unorderedListBlock
+        -- NOTE: indented block is not an option immediately after a Body
+        , ThematicBreak.parser |> Advanced.backtrackable |> map (\_ -> ThematicBreak)
+        , unorderedListBlock
 
-    -- NOTE: the ordered list block changes its parsing rules when it's right after a Body
-    , orderedListBlock True
-    , heading |> Advanced.backtrackable
-    , htmlParser
+        -- NOTE: the ordered list block changes its parsing rules when it's right after a Body
+        , orderedListBlock True
+        , heading |> Advanced.backtrackable
+        , htmlParser
 
-    -- NOTE: We know that it cannot be a table body row since the previous would have to be a table header so we do not look for table body rows
-    , tableDelimiterInOpenParagraph |> Advanced.backtrackable
-    , plainLine
-    ]
+        -- NOTE: We know that it cannot be a table body row since the previous would have to be a table header so we do not look for table body rows
+        , tableDelimiterInOpenParagraph |> Advanced.backtrackable
+        , plainLine
+        ]
 
 
-parseClosedBlock : List (Parser RawBlock)
+parseClosedBlock : Parser RawBlock
 parseClosedBlock =
-    [ parseAsParagraphInsteadOfHtmlBlock
-    , blankLine
-    , blockQuote
-    , Markdown.CodeBlock.parser |> Advanced.backtrackable |> map CodeBlock
+    oneOf
+        [ parseAsParagraphInsteadOfHtmlBlock
+        , blankLine
+        , blockQuote
+        , Markdown.CodeBlock.parser |> Advanced.backtrackable |> map CodeBlock
 
-    -- NOTE: indented block is an option after any non-Body block
-    , indentedCodeBlock
-    , ThematicBreak.parser |> Advanced.backtrackable |> map (\_ -> ThematicBreak)
-    , unorderedListBlock
+        -- NOTE: indented block is an option after any non-Body block
+        , indentedCodeBlock
+        , ThematicBreak.parser |> Advanced.backtrackable |> map (\_ -> ThematicBreak)
+        , unorderedListBlock
 
-    -- NOTE: the ordered list block changes its parsing rules when it's right after a Body
-    , orderedListBlock False
-    , heading |> Advanced.backtrackable
-    , htmlParser
+        -- NOTE: the ordered list block changes its parsing rules when it's right after a Body
+        , orderedListBlock False
+        , heading |> Advanced.backtrackable
+        , htmlParser
 
-    -- Note: we know that a table cannot be starting because we define a table as a delimiter row following a header row which gets parsed as a Body initially
-    ]
+        -- Note: we know that a table cannot be starting because we define a table as a delimiter row following a header row which gets parsed as a Body initially
+        ]
 
 
 tableDelimiterInOpenParagraph : Parser RawBlock
