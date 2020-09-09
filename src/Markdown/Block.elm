@@ -1014,9 +1014,9 @@ inlineFoldl ifunction top_acc list =
                     Paragraph inlines ->
                         List.foldl function acc inlines
 
-                    Table labels lists ->
+                    Table labels listlists ->
                         let
-                            lacc =
+                            llacc =
                                 List.foldl
                                     (\inlines iacc ->
                                         List.foldl function iacc inlines
@@ -1025,11 +1025,16 @@ inlineFoldl ifunction top_acc list =
                                     (List.map .label labels)
                         in
                         List.foldl
-                            (\inlines iacc ->
-                                List.foldl function iacc inlines
+                            (\lists lacc ->
+                                List.foldl
+                                    (\inlines iacc ->
+                                        List.foldl function iacc inlines
+                                    )
+                                    lacc
+                                    lists
                             )
-                            lacc
-                            lists
+                            llacc
+                            listlists
 
                     CodeBlock _ ->
                         acc

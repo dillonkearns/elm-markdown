@@ -28,7 +28,7 @@ allBlocks =
     , BlockQuote [ Paragraph allInlines ]
     , Heading H1 allInlines
     , Paragraph allInlines
-    , Table [ { label = allInlines, alignment = Nothing } ] [ allInlines ]
+    , Table [ { label = allInlines, alignment = Nothing } ] [ [ allInlines ] ]
     , CodeBlock { body = "", language = Nothing }
     , ThematicBreak
     ]
