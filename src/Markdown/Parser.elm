@@ -696,12 +696,12 @@ stepRawBlock revStmts =
         , case revStmts.rawBlocks of
             (OpenBlockOrParagraph _) :: _ ->
                 oneOf addOrMerge
-                    |> map (\f -> f revStmts)
+                    |> map (\f -> Loop (f revStmts))
 
             (Table table) :: _ ->
                 oneOf
                     [ oneOf parseClosedBlock
-                        |> map (\f -> f revStmts)
+                        |> map (\f -> Loop (f revStmts))
                     , tableRowIfTableStarted table
                         |> Advanced.backtrackable
                         |> map (\block -> Loop (completeOrMergeBlocks revStmts block))
@@ -712,7 +712,7 @@ stepRawBlock revStmts =
             _ ->
                 oneOf
                     [ oneOf parseClosedBlock
-                        |> map (\f -> f revStmts)
+                        |> map (\f -> Loop (f revStmts))
                     , plainLine
                         |> map (\block -> Loop (completeOrMergeBlocks revStmts block))
                     ]
@@ -732,13 +732,13 @@ stepRawBlock revStmts =
 -- All my attempts so far to "DRY" this code below cause a degradation in performance.
 
 
-addOrMerge : List (Parser (State -> Step State State))
+addOrMerge : List (Parser (State -> State))
 addOrMerge =
     [ parseAsParagraphInsteadOfHtmlBlock
-        |> map (\block revStmts -> Loop (completeOrMergeBlocks revStmts block))
+        |> map (\block revStmts -> completeOrMergeBlocks revStmts block)
     , LinkReferenceDefinition.parser
         |> Advanced.backtrackable
-        |> map (\reference revStmts -> Loop (addReference revStmts reference))
+        |> map (\reference revStmts -> addReference revStmts reference)
     , oneOf
         [ blankLine
         , blockQuote
@@ -757,17 +757,17 @@ addOrMerge =
         , tableDelimiterInOpenParagraph |> Advanced.backtrackable
         , plainLine
         ]
-        |> map (\block revStmts -> Loop (completeOrMergeBlocks revStmts block))
+        |> map (\block revStmts -> completeOrMergeBlocks revStmts block)
     ]
 
 
-parseClosedBlock : List (Parser (State -> Step State State))
+parseClosedBlock : List (Parser (State -> State))
 parseClosedBlock =
     [ parseAsParagraphInsteadOfHtmlBlock
-        |> map (\block revStmts -> Loop (completeOrMergeBlocks revStmts block))
+        |> map (\block revStmts -> completeOrMergeBlocks revStmts block)
     , LinkReferenceDefinition.parser
         |> Advanced.backtrackable
-        |> map (\reference revStmts -> Loop (addReference revStmts reference))
+        |> map (\reference revStmts -> addReference revStmts reference)
     , oneOf
         [ blankLine
         , blockQuote
@@ -785,7 +785,7 @@ parseClosedBlock =
 
         -- Note: we know that a table cannot be starting because we define a table as a delimiter row following a header row which gets parsed as a Body initially
         ]
-        |> map (\block revStmts -> Loop (completeOrMergeBlocks revStmts block))
+        |> map (\block revStmts -> completeOrMergeBlocks revStmts block)
     ]
 
 
