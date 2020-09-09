@@ -693,29 +693,27 @@ stepRawBlock revStmts =
     oneOf
         [ Helpers.endOfFile
             |> map (\_ -> Done revStmts)
-        , case revStmts.rawBlocks of
+        , LinkReferenceDefinition.parser
+            |> Advanced.backtrackable
+            |> map (\reference -> Loop (addReference revStmts reference))
+        , (case revStmts.rawBlocks of
             (OpenBlockOrParagraph _) :: _ ->
                 oneOf addOrMerge
-                    |> map (\f -> Loop (f revStmts))
 
             (Table table) :: _ ->
                 oneOf
                     [ oneOf parseClosedBlock
-                        |> map (\f -> Loop (f revStmts))
                     , tableRowIfTableStarted table
-                        |> Advanced.backtrackable
-                        |> map (\block -> Loop (completeOrMergeBlocks revStmts block))
                     , plainLine
-                        |> map (\block -> Loop (completeOrMergeBlocks revStmts block))
                     ]
 
             _ ->
                 oneOf
                     [ oneOf parseClosedBlock
-                        |> map (\f -> Loop (f revStmts))
                     , plainLine
-                        |> map (\block -> Loop (completeOrMergeBlocks revStmts block))
                     ]
+          )
+            |> map (\block -> Loop (completeOrMergeBlocks revStmts block))
         ]
 
 
@@ -732,60 +730,46 @@ stepRawBlock revStmts =
 -- All my attempts so far to "DRY" this code below cause a degradation in performance.
 
 
-addOrMerge : List (Parser (State -> State))
+addOrMerge : List (Parser RawBlock)
 addOrMerge =
     [ parseAsParagraphInsteadOfHtmlBlock
-        |> map (\block revStmts -> completeOrMergeBlocks revStmts block)
-    , LinkReferenceDefinition.parser
-        |> Advanced.backtrackable
-        |> map (\reference revStmts -> addReference revStmts reference)
-    , oneOf
-        [ blankLine
-        , blockQuote
-        , Markdown.CodeBlock.parser |> Advanced.backtrackable |> map CodeBlock
+    , blankLine
+    , blockQuote
+    , Markdown.CodeBlock.parser |> Advanced.backtrackable |> map CodeBlock
 
-        -- NOTE: indented block is not an option immediately after a Body
-        , ThematicBreak.parser |> Advanced.backtrackable |> map (\_ -> ThematicBreak)
-        , unorderedListBlock
+    -- NOTE: indented block is not an option immediately after a Body
+    , ThematicBreak.parser |> Advanced.backtrackable |> map (\_ -> ThematicBreak)
+    , unorderedListBlock
 
-        -- NOTE: the ordered list block changes its parsing rules when it's right after a Body
-        , orderedListBlock True
-        , heading |> Advanced.backtrackable
-        , htmlParser
+    -- NOTE: the ordered list block changes its parsing rules when it's right after a Body
+    , orderedListBlock True
+    , heading |> Advanced.backtrackable
+    , htmlParser
 
-        -- NOTE: We know that it cannot be a table body row since the previous would have to be a table header so we do not look for table body rows
-        , tableDelimiterInOpenParagraph |> Advanced.backtrackable
-        , plainLine
-        ]
-        |> map (\block revStmts -> completeOrMergeBlocks revStmts block)
+    -- NOTE: We know that it cannot be a table body row since the previous would have to be a table header so we do not look for table body rows
+    , tableDelimiterInOpenParagraph |> Advanced.backtrackable
+    , plainLine
     ]
 
 
-parseClosedBlock : List (Parser (State -> State))
+parseClosedBlock : List (Parser RawBlock)
 parseClosedBlock =
     [ parseAsParagraphInsteadOfHtmlBlock
-        |> map (\block revStmts -> completeOrMergeBlocks revStmts block)
-    , LinkReferenceDefinition.parser
-        |> Advanced.backtrackable
-        |> map (\reference revStmts -> addReference revStmts reference)
-    , oneOf
-        [ blankLine
-        , blockQuote
-        , Markdown.CodeBlock.parser |> Advanced.backtrackable |> map CodeBlock
+    , blankLine
+    , blockQuote
+    , Markdown.CodeBlock.parser |> Advanced.backtrackable |> map CodeBlock
 
-        -- NOTE: indented block is an option after any non-Body block
-        , indentedCodeBlock
-        , ThematicBreak.parser |> Advanced.backtrackable |> map (\_ -> ThematicBreak)
-        , unorderedListBlock
+    -- NOTE: indented block is an option after any non-Body block
+    , indentedCodeBlock
+    , ThematicBreak.parser |> Advanced.backtrackable |> map (\_ -> ThematicBreak)
+    , unorderedListBlock
 
-        -- NOTE: the ordered list block changes its parsing rules when it's right after a Body
-        , orderedListBlock False
-        , heading |> Advanced.backtrackable
-        , htmlParser
+    -- NOTE: the ordered list block changes its parsing rules when it's right after a Body
+    , orderedListBlock False
+    , heading |> Advanced.backtrackable
+    , htmlParser
 
-        -- Note: we know that a table cannot be starting because we define a table as a delimiter row following a header row which gets parsed as a Body initially
-        ]
-        |> map (\block revStmts -> completeOrMergeBlocks revStmts block)
+    -- Note: we know that a table cannot be starting because we define a table as a delimiter row following a header row which gets parsed as a Body initially
     ]
 
 
