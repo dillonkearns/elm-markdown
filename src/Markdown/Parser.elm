@@ -720,7 +720,7 @@ stepRawBlock revStmts =
 
 -- Note [Static Parser Structure]
 --
--- For performance reasons, it is VERY IMPORTANT that `whenPreviousWasBody` and `whenPreviousWasNotBody`
+-- For performance reasons, it is VERY IMPORTANT that `addOrMerge` and `parseClosedBlock`
 -- defined as `var` in javascript (and not as a function taking any, even zero, arguments).
 --
 -- A `var` is defined once, then re-used for every raw block we parse. If they were functions, the parser
