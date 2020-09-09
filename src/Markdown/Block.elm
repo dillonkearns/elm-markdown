@@ -891,53 +891,104 @@ foldl function acc list =
 {-| Fold over all inlines within all blocks to yield a value.
 
     import Markdown.Block as Block exposing (..)
-
-    inlineFoldl
-        (\inline links ->
-            case inline of
-                Block.Link str mbstr moreinlines ->
-                    str :: links
-
-                _ ->
-                    links
-        )
-        []
-        blocks
+    import Markdown.Inline exposing (..)
 
     pullLinks : List Block -> List String
     pullLinks blocks =
         blocks
-            |> Block.inlineFoldl
-                    (\inline links ->
-                        case inline of
-                            Block.Link str mbstr moreinlines ->
-                                str :: links
+            |> inlineFoldl
+                (\inline links ->
+                    case inline of
+                        Link str mbstr moreinlines ->
+                            str :: links
 
-                            _ ->
-                                links
-                    )
-                    []
-                    blocks
+                        _ ->
+                            links
+                )
+                []
 
-    [ Heading H1 [ Text "Document" ]
-    , Heading H2 [ Link "/note/50" "interesting document" ]
-    , Heading H3 [ Text "Subsection" ]
-    , Heading H2 [ Link "/note/51" "more interesting document" ]
-    ]
-        |>
+    testPullLinks =
+        [ Heading H1 [ Text "Document" ]
+        , Heading H2 [ Link "/note/50" (Just "interesting document") [] ]
+        , Heading H3 [ Text "Subsection" ]
+        , Heading H2 [ Link "/note/51" (Just "more interesting document") [] ]
+        ]
+            |> pullLinks
+
     -->  ["/note/50", "/note/51"]
 
 -}
 inlineFoldl : (Inline -> acc -> acc) -> acc -> List Block -> acc
-inlineFoldl function top_acc list =
+inlineFoldl ifunction top_acc list =
     let
+        function =
+            \inline acc ->
+                case inline of
+                    HtmlInline hblock ->
+                        let
+                            hiacc =
+                                ifunction inline acc
+                        in
+                        case hblock of
+                            HtmlElement _ _ blocks ->
+                                inlineFoldl ifunction hiacc blocks
+
+                            HtmlComment _ ->
+                                ifunction inline hiacc
+
+                            ProcessingInstruction _ ->
+                                ifunction inline hiacc
+
+                            HtmlDeclaration _ _ ->
+                                ifunction inline hiacc
+
+                            Cdata _ ->
+                                ifunction inline hiacc
+
+                    Link _ _ inlines ->
+                        let
+                            iacc =
+                                ifunction inline acc
+                        in
+                        List.foldl ifunction iacc inlines
+
+                    Image _ _ inlines ->
+                        let
+                            iacc =
+                                ifunction inline acc
+                        in
+                        List.foldl ifunction iacc inlines
+
+                    Emphasis inlines ->
+                        let
+                            iacc =
+                                ifunction inline acc
+                        in
+                        List.foldl ifunction iacc inlines
+
+                    Strong inlines ->
+                        let
+                            iacc =
+                                ifunction inline acc
+                        in
+                        List.foldl ifunction iacc inlines
+
+                    CodeSpan _ ->
+                        ifunction inline acc
+
+                    Text _ ->
+                        ifunction inline acc
+
+                    HardLineBreak ->
+                        ifunction inline acc
+
         bfn =
             \block acc ->
                 case block of
-                    Block.HtmlBlock html ->
+                    HtmlBlock html ->
                         acc
 
-                    Block.UnorderedList listItems ->
+                    UnorderedList listItems ->
                         List.foldl
                             (\(ListItem _ inlines) liacc ->
                                 List.foldl function liacc inlines
@@ -945,7 +996,7 @@ inlineFoldl function top_acc list =
                             acc
                             listItems
 
-                    Block.OrderedList int lists ->
+                    OrderedList int lists ->
                         List.foldl
                             (\inlines lacc ->
                                 List.foldl function lacc inlines
@@ -953,16 +1004,16 @@ inlineFoldl function top_acc list =
                             acc
                             lists
 
-                    Block.BlockQuote _ ->
+                    BlockQuote _ ->
                         acc
 
-                    Block.Heading _ inlines ->
+                    Heading _ inlines ->
                         List.foldl function acc inlines
 
-                    Block.Paragraph inlines ->
+                    Paragraph inlines ->
                         List.foldl function acc inlines
 
-                    Block.Table labels lists ->
+                    Table labels lists ->
                         let
                             lacc =
                                 List.foldl
@@ -979,10 +1030,10 @@ inlineFoldl function top_acc list =
                             lacc
                             lists
 
-                    Block.CodeBlock _ ->
+                    CodeBlock _ ->
                         acc
 
-                    Block.ThematicBreak ->
+                    ThematicBreak ->
                         acc
     in
-    Block.foldl bfn top_acc list
+    foldl bfn top_acc list
