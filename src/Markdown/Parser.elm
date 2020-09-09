@@ -690,33 +690,33 @@ completeOrMergeBlocks state newRawBlock =
 stepRawBlock : State -> Parser (Step State State)
 stepRawBlock revStmts =
     -- Some blocks can't immediately follow a body
-    case revStmts.rawBlocks of
-        (OpenBlockOrParagraph _) :: _ ->
-            oneOf
-                [ oneOf whenPreviousWasOpenBlockOrParagraph
+    oneOf
+        [ Helpers.endOfFile
+            |> map (\_ -> Done revStmts)
+        , case revStmts.rawBlocks of
+            (OpenBlockOrParagraph _) :: _ ->
+                oneOf addOrMerge
                     |> map (\f -> f revStmts)
-                , plainLine
-                    |> map (\block -> Loop (completeOrMergeBlocks revStmts block))
-                ]
 
-        (Table table) :: _ ->
-            oneOf
-                [ oneOf parseClosedBlock
-                    |> map (\f -> f revStmts)
-                , tableRowIfTableStarted table
-                    |> Advanced.backtrackable
-                    |> map (\block -> Loop (completeOrMergeBlocks revStmts block))
-                , plainLine
-                    |> map (\block -> Loop (completeOrMergeBlocks revStmts block))
-                ]
+            (Table table) :: _ ->
+                oneOf
+                    [ oneOf parseClosedBlock
+                        |> map (\f -> f revStmts)
+                    , tableRowIfTableStarted table
+                        |> Advanced.backtrackable
+                        |> map (\block -> Loop (completeOrMergeBlocks revStmts block))
+                    , plainLine
+                        |> map (\block -> Loop (completeOrMergeBlocks revStmts block))
+                    ]
 
-        _ ->
-            oneOf
-                [ oneOf parseClosedBlock
-                    |> map (\f -> f revStmts)
-                , plainLine
-                    |> map (\block -> Loop (completeOrMergeBlocks revStmts block))
-                ]
+            _ ->
+                oneOf
+                    [ oneOf parseClosedBlock
+                        |> map (\f -> f revStmts)
+                    , plainLine
+                        |> map (\block -> Loop (completeOrMergeBlocks revStmts block))
+                    ]
+        ]
 
 
 
@@ -732,11 +732,9 @@ stepRawBlock revStmts =
 -- All my attempts so far to "DRY" this code below cause a degradation in performance.
 
 
-whenPreviousWasOpenBlockOrParagraph : List (Parser (State -> Step State State))
-whenPreviousWasOpenBlockOrParagraph =
-    [ Helpers.endOfFile
-        |> map (\_ revStmts -> Done revStmts)
-    , parseAsParagraphInsteadOfHtmlBlock
+addOrMerge : List (Parser (State -> Step State State))
+addOrMerge =
+    [ parseAsParagraphInsteadOfHtmlBlock
         |> map (\block revStmts -> Loop (completeOrMergeBlocks revStmts block))
     , LinkReferenceDefinition.parser
         |> Advanced.backtrackable
@@ -757,6 +755,7 @@ whenPreviousWasOpenBlockOrParagraph =
 
         -- NOTE: We know that it cannot be a table body row since the previous would have to be a table header so we do not look for table body rows
         , tableDelimiterInOpenParagraph |> Advanced.backtrackable
+        , plainLine
         ]
         |> map (\block revStmts -> Loop (completeOrMergeBlocks revStmts block))
     ]
@@ -764,9 +763,7 @@ whenPreviousWasOpenBlockOrParagraph =
 
 parseClosedBlock : List (Parser (State -> Step State State))
 parseClosedBlock =
-    [ Helpers.endOfFile
-        |> map (\_ revStmts -> Done revStmts)
-    , parseAsParagraphInsteadOfHtmlBlock
+    [ parseAsParagraphInsteadOfHtmlBlock
         |> map (\block revStmts -> Loop (completeOrMergeBlocks revStmts block))
     , LinkReferenceDefinition.parser
         |> Advanced.backtrackable
