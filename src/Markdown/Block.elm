@@ -892,7 +892,6 @@ foldl function acc list =
 {-| Fold over all inlines within all blocks to yield a value.
 
     import Markdown.Block as Block exposing (..)
-    import Markdown.Inline exposing (..)
 
     pullLinks : List Block -> List String
     pullLinks blocks =
@@ -902,7 +901,6 @@ foldl function acc list =
                     case inline of
                         Link str mbstr moreinlines ->
                             str :: links
-
                         _ ->
                             links
                 )
@@ -914,7 +912,7 @@ foldl function acc list =
     , Heading H2 [ Link "/note/51" (Just "more interesting document") [] ]
     ]
         |> pullLinks
-    -->  ["/note/50", "/note/51"]
+    -->  ["/note/51", "/note/50"]
 
 -}
 inlineFoldl : (Inline -> acc -> acc) -> acc -> List Block -> acc
