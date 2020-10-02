@@ -148,12 +148,6 @@ inlineParseHelper referencesDict (UnparsedInlines unparsedInlines) =
             referencesDict
                 |> List.map (Tuple.mapSecond (\{ destination, title } -> ( destination, title )))
                 |> Dict.fromList
-
-        --
-        --myReferences =
-        --    Dict.fromList
-        --        [ ( "foo", { destination = "/url", title = Just "title" } )
-        --        ]
     in
     Markdown.InlineParser.parse referencesDict2 unparsedInlines
         |> List.map mapInline
