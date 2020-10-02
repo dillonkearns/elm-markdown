@@ -271,30 +271,6 @@ But instead was:
 ````````````html
 <p>foo</p><hr><pre><code>bar</code></pre><h1>baz</h1>
 ````````````
-## [Example 112](https://spec.commonmark.org/0.29/#example-112)
-
-This markdown:
-
-````````````markdown
-```ruby
-def foo(x)
-  return 3
-end
-```
-
-````````````
-
-Should give output:
-
-````````````html
-<pre><code class="language-ruby">def foo(x) return 3 end</code></pre>
-````````````
-
-But instead was:
-
-````````````html
-<pre><code>def foo(x) return 3 end</code></pre>
-````````````
 ## [Example 113](https://spec.commonmark.org/0.29/#example-113)
 
 This markdown:
@@ -317,7 +293,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<pre><code>def foo(x) return 3 end</code></pre>
+<pre><code class="$%@#$ language- ruby startline=3">def foo(x) return 3 end</code></pre>
 ````````````
 ## [Example 114](https://spec.commonmark.org/0.29/#example-114)
 
@@ -360,5 +336,5 @@ Should give output:
 But instead was:
 
 ````````````html
-<pre><code>foo</code></pre>
+<pre><code class="``` aa language- ~~~">foo</code></pre>
 ````````````

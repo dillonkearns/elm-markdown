@@ -246,7 +246,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<div></div><pre><code>int x = 33;</code></pre>
+<div></div><pre><code class="c language-">int x = 33;</code></pre>
 ````````````
 ## [Example 132](https://spec.commonmark.org/0.29/#example-132)
 

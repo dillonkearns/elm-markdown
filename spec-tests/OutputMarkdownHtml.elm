@@ -168,8 +168,17 @@ renderMarkdown markdown =
                 htmlRenderer
             , codeBlock =
                 \{ body, language } ->
+                    let
+                        classes =
+                            case language of
+                                Just actualLanguage ->
+                                    [ Attr.class <| "language-" ++ actualLanguage ]
+
+                                Nothing ->
+                                    []
+                    in
                     Html.pre []
-                        [ Html.code []
+                        [ Html.code classes
                             [ Html.text body
                             ]
                         ]
