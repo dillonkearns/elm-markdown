@@ -1,4 +1,4 @@
-module Markdown.RawBlock exposing (Attribute, RawBlock(..), UnparsedInlines(..))
+module Markdown.RawBlock exposing (Attribute, RawBlock(..), UnparsedInlines(..), SetextLevel(..))
 
 import Markdown.Block exposing (Block)
 import Markdown.CodeBlock exposing (CodeBlock)
@@ -12,6 +12,11 @@ type alias Attribute =
 
 type UnparsedInlines
     = UnparsedInlines String
+
+
+type SetextLevel
+    = LevelOne
+    | LevelTwo
 
 
 type RawBlock
@@ -32,3 +37,4 @@ type RawBlock
     | TableDelimiter Markdown.Table.TableDelimiterRow
     | BlankLine
     | BlockQuote String
+    | SetextLine { raw: String, level: SetextLevel }

@@ -115,28 +115,3 @@ But instead was:
 ````````````html
 <pre><code>chunk1</code></pre><pre><code>chunk2</code></pre>
 ````````````
-## [Example 85](https://spec.commonmark.org/0.29/#example-85)
-
-This markdown:
-
-````````````markdown
-# Heading
-    foo
-Heading
-------
-    foo
-----
-
-````````````
-
-Should give output:
-
-````````````html
-<h1>Heading</h1><pre><code>foo</code></pre><h2>Heading</h2><pre><code>foo</code></pre><hr>
-````````````
-
-But instead was:
-
-````````````html
-<h1>Heading</h1><pre><code>foo</code></pre><p>Heading</p><hr><pre><code>foo</code></pre><hr>
-````````````

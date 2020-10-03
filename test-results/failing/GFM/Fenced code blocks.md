@@ -246,31 +246,6 @@ But instead was:
 ````````````html
 <p>~~~~~~ aaa ~~~ ~~</p>
 ````````````
-## [Example 111](https://spec.commonmark.org/0.29/#example-111)
-
-This markdown:
-
-````````````markdown
-foo
----
-~~~
-bar
-~~~
-# baz
-
-````````````
-
-Should give output:
-
-````````````html
-<h2>foo</h2><pre><code>bar</code></pre><h1>baz</h1>
-````````````
-
-But instead was:
-
-````````````html
-<p>foo</p><hr><pre><code>bar</code></pre><h1>baz</h1>
-````````````
 ## [Example 112](https://spec.commonmark.org/0.29/#example-112)
 
 This markdown:

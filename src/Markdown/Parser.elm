@@ -16,7 +16,7 @@ import Markdown.InlineParser
 import Markdown.LinkReferenceDefinition as LinkReferenceDefinition exposing (LinkReferenceDefinition)
 import Markdown.ListItem as ListItem
 import Markdown.OrderedList
-import Markdown.RawBlock as RawBlock exposing (Attribute, RawBlock(..), UnparsedInlines(..))
+import Markdown.RawBlock as RawBlock exposing (Attribute, RawBlock(..), UnparsedInlines(..), SetextLevel(..))
 import Markdown.Table
 import Markdown.TableParser as TableParser
 import Markdown.UnorderedList
@@ -315,6 +315,12 @@ parseInlines linkReferences rawBlock =
 
         TableDelimiter (Markdown.Table.TableDelimiterRow text _) ->
             UnparsedInlines text.raw
+                |> inlineParseHelper linkReferences
+                |> Block.Paragraph
+                |> ParsedBlock
+
+        SetextLine { raw } ->
+            UnparsedInlines raw
                 |> inlineParseHelper linkReferences
                 |> Block.Paragraph
                 |> ParsedBlock
@@ -666,6 +672,16 @@ completeOrMergeBlocks state newRawBlock =
                 OpenBlockOrParagraph (UnparsedInlines (joinRawStringsWith "\n" body2 body1))
                     :: rest
 
+            ( SetextLine { level }, (OpenBlockOrParagraph unparsedInlines) :: rest ) ->
+                case level of
+                    LevelOne ->
+                        Heading 1 unparsedInlines
+                            :: rest
+
+                    LevelTwo ->
+                        Heading 2 unparsedInlines
+                            :: rest
+
             ( TableDelimiter (Markdown.Table.TableDelimiterRow text alignments), (OpenBlockOrParagraph (UnparsedInlines rawHeaders)) :: rest ) ->
                 case TableParser.parseHeader (Markdown.Table.TableDelimiterRow text alignments) rawHeaders of
                     Ok (Markdown.Table.TableHeader headers) ->
@@ -737,6 +753,7 @@ mergeableBlockAfterOpenBlockOrParagraphParser =
         , Markdown.CodeBlock.parser |> Advanced.backtrackable |> map CodeBlock
 
         -- NOTE: indented block is not an option immediately after a Body
+        , setextLineParser |> Advanced.backtrackable
         , ThematicBreak.parser |> Advanced.backtrackable |> map (\_ -> ThematicBreak)
         , unorderedListBlock
 
@@ -903,3 +920,23 @@ dropTrailingHashes headingString =
 
     else
         headingString
+
+
+setextLineParser : Parser RawBlock
+setextLineParser =
+    let
+        buildSetextLine raw level =
+            SetextLine { raw = raw, level = level }
+    in
+    succeed identity
+        |. Helpers.upToThreeSpaces
+        |= oneOf
+            [ succeed LevelOne
+                |. token Token.equals
+            , succeed LevelTwo
+                |.  token Token.minus
+            ]
+        |. chompWhile (\c -> c == '=' || c == '-')
+        |. chompWhile Helpers.isSpaceOrTab
+        |. endOfLineOrFile
+        |> Advanced.mapChompedString buildSetextLine

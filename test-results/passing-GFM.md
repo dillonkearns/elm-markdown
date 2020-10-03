@@ -4433,6 +4433,32 @@ Gives this correct output:
 
 ````````````
 
+### [Example 111](https://spec.commonmark.org/0.29/#example-111)
+
+This markdown:
+
+
+````````````markdown
+foo
+---
+~~~
+bar
+~~~
+# baz
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<h2>foo</h2>
+<pre><code>bar
+</code></pre>
+<h1>baz</h1>
+
+````````````
+
 ### [Example 115](https://spec.commonmark.org/0.29/#example-115)
 
 This markdown:
@@ -5408,6 +5434,35 @@ Gives this correct output:
 
 ````````````
 
+### [Example 85](https://spec.commonmark.org/0.29/#example-85)
+
+This markdown:
+
+
+````````````markdown
+# Heading
+    foo
+Heading
+------
+    foo
+----
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<h1>Heading</h1>
+<pre><code>foo
+</code></pre>
+<h2>Heading</h2>
+<pre><code>foo
+</code></pre>
+<hr />
+
+````````````
+
 ### [Example 86](https://spec.commonmark.org/0.29/#example-86)
 
 This markdown:
@@ -5893,6 +5948,28 @@ Gives this correct output:
 <blockquote>
 <p>bar</p>
 </blockquote>
+
+````````````
+
+### [Example 184](https://spec.commonmark.org/0.29/#example-184)
+
+This markdown:
+
+
+````````````markdown
+[foo]: /url
+bar
+===
+[foo]
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<h1>bar</h1>
+<p><a href="/url">foo</a></p>
 
 ````````````
 
@@ -8211,6 +8288,140 @@ Gives this correct output:
 
 ## Setext headings
 
+### [Example 50](https://spec.commonmark.org/0.29/#example-50)
+
+This markdown:
+
+
+````````````markdown
+Foo *bar*
+=========
+
+Foo *bar*
+---------
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<h1>Foo <em>bar</em></h1>
+<h2>Foo <em>bar</em></h2>
+
+````````````
+
+### [Example 51](https://spec.commonmark.org/0.29/#example-51)
+
+This markdown:
+
+
+````````````markdown
+Foo *bar
+baz*
+====
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<h1>Foo <em>bar
+baz</em></h1>
+
+````````````
+
+### [Example 52](https://spec.commonmark.org/0.29/#example-52)
+
+This markdown:
+
+
+````````````markdown
+  Foo *bar
+baz*	
+====
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<h1>Foo <em>bar
+baz</em></h1>
+
+````````````
+
+### [Example 53](https://spec.commonmark.org/0.29/#example-53)
+
+This markdown:
+
+
+````````````markdown
+Foo
+-------------------------
+
+Foo
+=
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<h2>Foo</h2>
+<h1>Foo</h1>
+
+````````````
+
+### [Example 54](https://spec.commonmark.org/0.29/#example-54)
+
+This markdown:
+
+
+````````````markdown
+   Foo
+---
+
+  Foo
+-----
+
+  Foo
+  ===
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<h2>Foo</h2>
+<h2>Foo</h2>
+<h1>Foo</h1>
+
+````````````
+
+### [Example 56](https://spec.commonmark.org/0.29/#example-56)
+
+This markdown:
+
+
+````````````markdown
+Foo
+   ----      
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<h2>Foo</h2>
+
+````````````
+
 ### [Example 57](https://spec.commonmark.org/0.29/#example-57)
 
 This markdown:
@@ -8256,6 +8467,44 @@ Gives this correct output:
 
 ````````````
 
+### [Example 59](https://spec.commonmark.org/0.29/#example-59)
+
+This markdown:
+
+
+````````````markdown
+Foo  
+-----
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<h2>Foo</h2>
+
+````````````
+
+### [Example 60](https://spec.commonmark.org/0.29/#example-60)
+
+This markdown:
+
+
+````````````markdown
+Foo\
+----
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<h2>Foo\</h2>
+
+````````````
+
 ### [Example 62](https://spec.commonmark.org/0.29/#example-62)
 
 This markdown:
@@ -8278,30 +8527,6 @@ Gives this correct output:
 
 ````````````
 
-### [Example 63](https://spec.commonmark.org/0.29/#example-63)
-
-This markdown:
-
-
-````````````markdown
-> foo
-bar
-===
-
-````````````
-
-Gives this correct output:
-
-
-````````````html
-<blockquote>
-<p>foo
-bar
-===</p>
-</blockquote>
-
-````````````
-
 ### [Example 64](https://spec.commonmark.org/0.29/#example-64)
 
 This markdown:
@@ -8321,6 +8546,53 @@ Gives this correct output:
 <li>Foo</li>
 </ul>
 <hr />
+
+````````````
+
+### [Example 65](https://spec.commonmark.org/0.29/#example-65)
+
+This markdown:
+
+
+````````````markdown
+Foo
+Bar
+---
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<h2>Foo
+Bar</h2>
+
+````````````
+
+### [Example 66](https://spec.commonmark.org/0.29/#example-66)
+
+This markdown:
+
+
+````````````markdown
+---
+Foo
+---
+Bar
+---
+Baz
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<hr />
+<h2>Foo</h2>
+<h2>Bar</h2>
+<p>Baz</p>
 
 ````````````
 
@@ -8425,6 +8697,49 @@ Gives this correct output:
 <p>foo</p>
 </blockquote>
 <hr />
+
+````````````
+
+### [Example 72](https://spec.commonmark.org/0.29/#example-72)
+
+This markdown:
+
+
+````````````markdown
+\> foo
+------
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<h2>&gt; foo</h2>
+
+````````````
+
+### [Example 73](https://spec.commonmark.org/0.29/#example-73)
+
+This markdown:
+
+
+````````````markdown
+Foo
+
+bar
+---
+baz
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p>Foo</p>
+<h2>bar</h2>
+<p>baz</p>
 
 ````````````
 
@@ -9058,6 +9373,27 @@ Gives this correct output:
 ````````````html
 <p>Foo</p>
 <hr />
+<p>bar</p>
+
+````````````
+
+### [Example 29](https://spec.commonmark.org/0.29/#example-29)
+
+This markdown:
+
+
+````````````markdown
+Foo
+---
+bar
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<h2>Foo</h2>
 <p>bar</p>
 
 ````````````
