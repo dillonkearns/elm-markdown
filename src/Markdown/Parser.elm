@@ -917,18 +917,18 @@ dropTrailingHashes headingString =
 setextLineParser : Parser RawBlock
 setextLineParser =
     let
-        buildSetextLine raw level =
-            SetextLine level raw
+        setextLevel level levelToken levelChar =
+            succeed level
+                |. token levelToken
+                |. chompWhile ((==) levelChar)
     in
     succeed identity
         |. Helpers.upToThreeSpaces
         |= oneOf
-            [ succeed LevelOne
-                |. token Token.equals
-            , succeed LevelTwo
-                |.  token Token.minus
+            [ setextLevel LevelOne Token.equals '='
+            , setextLevel LevelTwo Token.minus '-'
             ]
-        |. chompWhile (\c -> c == '=' || c == '-')
         |. chompWhile Helpers.isSpaceOrTab
         |. endOfLineOrFile
-        |> Advanced.mapChompedString buildSetextLine
+        |> Advanced.mapChompedString
+            (\raw level -> SetextLine level raw)

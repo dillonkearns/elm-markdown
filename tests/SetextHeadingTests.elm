@@ -47,6 +47,17 @@ Foo
                             [ Block.Heading H2 [Text "Foo"]
                             ]
                         )
+        , test "inconsistent setext line" <|
+            \() ->
+                """Foo
+--==
+"""
+                    |> parse
+                    |> Expect.equal
+                        (Ok
+                            [ Block.Paragraph [Text "Foo\n--=="]
+                            ]
+                        )
         ]
 
 
