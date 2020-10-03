@@ -37,4 +37,4 @@ type RawBlock
     | TableDelimiter Markdown.Table.TableDelimiterRow
     | BlankLine
     | BlockQuote String
-    | SetextLine { raw: String, level: SetextLevel }
+    | SetextLine SetextLevel String

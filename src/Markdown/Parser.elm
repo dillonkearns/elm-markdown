@@ -319,7 +319,7 @@ parseInlines linkReferences rawBlock =
                 |> Block.Paragraph
                 |> ParsedBlock
 
-        SetextLine { raw } ->
+        SetextLine _ raw ->
             UnparsedInlines raw
                 |> inlineParseHelper linkReferences
                 |> Block.Paragraph
@@ -672,15 +672,13 @@ completeOrMergeBlocks state newRawBlock =
                 OpenBlockOrParagraph (UnparsedInlines (joinRawStringsWith "\n" body2 body1))
                     :: rest
 
-            ( SetextLine { level }, (OpenBlockOrParagraph unparsedInlines) :: rest ) ->
-                case level of
-                    LevelOne ->
-                        Heading 1 unparsedInlines
-                            :: rest
+            ( SetextLine LevelOne _, (OpenBlockOrParagraph unparsedInlines) :: rest ) ->
+                Heading 1 unparsedInlines
+                    :: rest
 
-                    LevelTwo ->
-                        Heading 2 unparsedInlines
-                            :: rest
+            ( SetextLine LevelTwo _, (OpenBlockOrParagraph unparsedInlines) :: rest ) ->
+                Heading 2 unparsedInlines
+                    :: rest
 
             ( TableDelimiter (Markdown.Table.TableDelimiterRow text alignments), (OpenBlockOrParagraph (UnparsedInlines rawHeaders)) :: rest ) ->
                 case TableParser.parseHeader (Markdown.Table.TableDelimiterRow text alignments) rawHeaders of
@@ -926,7 +924,7 @@ setextLineParser : Parser RawBlock
 setextLineParser =
     let
         buildSetextLine raw level =
-            SetextLine { raw = raw, level = level }
+            SetextLine level raw
     in
     succeed identity
         |. Helpers.upToThreeSpaces
