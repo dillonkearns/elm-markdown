@@ -4459,6 +4459,31 @@ Gives this correct output:
 
 ````````````
 
+### [Example 112](https://spec.commonmark.org/0.29/#example-112)
+
+This markdown:
+
+
+````````````markdown
+```ruby
+def foo(x)
+  return 3
+end
+```
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<pre><code class="language-ruby">def foo(x)
+  return 3
+end
+</code></pre>
+
+````````````
+
 ### [Example 115](https://spec.commonmark.org/0.29/#example-115)
 
 This markdown:

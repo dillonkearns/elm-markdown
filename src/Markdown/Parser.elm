@@ -144,18 +144,12 @@ type alias Parser a =
 inlineParseHelper : LinkReferenceDefinitions -> UnparsedInlines -> List Block.Inline
 inlineParseHelper referencesDict (UnparsedInlines unparsedInlines) =
     let
-        referencesDict2 =
+        mappedReferencesDict =
             referencesDict
                 |> List.map (Tuple.mapSecond (\{ destination, title } -> ( destination, title )))
                 |> Dict.fromList
-
-        --
-        --myReferences =
-        --    Dict.fromList
-        --        [ ( "foo", { destination = "/url", title = Just "title" } )
-        --        ]
     in
-    Markdown.InlineParser.parse referencesDict2 unparsedInlines
+    Markdown.InlineParser.parse mappedReferencesDict unparsedInlines
         |> List.map mapInline
 
 
