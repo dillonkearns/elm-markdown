@@ -2,7 +2,7 @@ module Markdown.Heading exposing (..)
 
 import Markdown.RawBlock exposing (Attribute, RawBlock(..), UnparsedInlines(..))
 import Parser
-import Parser.Advanced as Advanced exposing ((|.), (|=), Nestable(..), Step(..), andThen, chompWhile, getChompedString, succeed, symbol)
+import Parser.Advanced as Advanced exposing ((|.), (|=), Nestable(..), Step(..), andThen, chompIf, chompWhile, getChompedString, spaces, succeed, symbol)
 import Parser.Token as Token
 
 
@@ -13,6 +13,20 @@ type alias Parser a =
 parser : Parser RawBlock
 parser =
     succeed Heading
+        |. (getChompedString spaces
+                |> andThen
+                    (\startingSpaces ->
+                        let
+                            startSpace =
+                                String.length startingSpaces
+                        in
+                        if startSpace >= 4 then
+                            Advanced.problem (Parser.Expecting "heading with < 4 spaces in front")
+
+                        else
+                            succeed startSpace
+                    )
+           )
         |. symbol Token.hash
         |= (getChompedString (chompWhile isHash)
                 |> andThen
@@ -37,6 +51,7 @@ parser =
                             |> UnparsedInlines
                     )
            )
+
 
 isHash : Char -> Bool
 isHash c =
