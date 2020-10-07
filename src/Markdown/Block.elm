@@ -36,7 +36,7 @@ See [`Markdown.Html`](Markdown.Html) for more.
 
 ## Transformations
 
-@docs walk, walkInlines, validateMapInlines, mapAndAccumulate, foldl, inlineFoldl
+@docs walk, walkInlines, validateMapInlines, mapAndAccumulate, foldl, inlineFoldl, inlineFoldF
 
 -}
 
@@ -889,95 +889,7 @@ foldl function acc list =
                     foldl function (function block acc) remainingBlocks
 
 
-{-| Fold over all inlines within an inline to yield a value.
-
-    import Markdown.Block as Block exposing (..)
-
-    pullLinks : List Block -> List String
-    pullLinks blocks =
-        blocks
-            |> inlineFoldl
-                (\inline links ->
-                    case inline of
-                        Link str mbstr moreinlines ->
-                            str :: links
-                        _ ->
-                            links
-                )
-                []
-
-    [ Heading H1 [ Text "Document" ]
-    , Heading H2 [ Link "/note/50" (Just "interesting document") [] ]
-    , Heading H3 [ Text "Subsection" ]
-    , Heading H2 [ Link "/note/51" (Just "more interesting document") [] ]
-    ]
-        |> pullLinks
-    -->  ["/note/51", "/note/50"]
-
--}
-inlineFoldF : (Inline -> acc -> acc) -> Inline -> acc -> acc
-inlineFoldF ifunction inline acc =
-    case inline of
-        HtmlInline hblock ->
-            let
-                hiacc =
-                    ifunction inline acc
-            in
-            case hblock of
-                HtmlElement _ _ blocks ->
-                    inlineFoldl ifunction hiacc blocks
-
-                HtmlComment _ ->
-                    ifunction inline hiacc
-
-                ProcessingInstruction _ ->
-                    ifunction inline hiacc
-
-                HtmlDeclaration _ _ ->
-                    ifunction inline hiacc
-
-                Cdata _ ->
-                    ifunction inline hiacc
-
-        Link _ _ inlines ->
-            let
-                iacc =
-                    ifunction inline acc
-            in
-            List.foldl ifunction iacc inlines
-
-        Image _ _ inlines ->
-            let
-                iacc =
-                    ifunction inline acc
-            in
-            List.foldl ifunction iacc inlines
-
-        Emphasis inlines ->
-            let
-                iacc =
-                    ifunction inline acc
-            in
-            List.foldl ifunction iacc inlines
-
-        Strong inlines ->
-            let
-                iacc =
-                    ifunction inline acc
-            in
-            List.foldl ifunction iacc inlines
-
-        CodeSpan _ ->
-            ifunction inline acc
-
-        Text _ ->
-            ifunction inline acc
-
-        HardLineBreak ->
-            ifunction inline acc
-
-
-{-| Fold over all inlines within all blocks to yield a value.
+{-| Fold over all inlines within a list of blocks to yield a value.
 
     import Markdown.Block as Block exposing (..)
 
@@ -1006,6 +918,70 @@ inlineFoldF ifunction inline acc =
 inlineFoldl : (Inline -> acc -> acc) -> acc -> List Block -> acc
 inlineFoldl ifunction top_acc list =
     let
+        -- change a simple inline accum function to one that will fold over
+        -- inlines contained within other inlines.
+        inlineFoldF : (Inline -> acc -> acc) -> Inline -> acc -> acc
+        inlineFoldF =
+            \ifn inline acc ->
+                case inline of
+                    HtmlInline hblock ->
+                        let
+                            hiacc =
+                                ifn inline acc
+                        in
+                        case hblock of
+                            HtmlElement _ _ blocks ->
+                                inlineFoldl ifn hiacc blocks
+
+                            HtmlComment _ ->
+                                ifn inline hiacc
+
+                            ProcessingInstruction _ ->
+                                ifn inline hiacc
+
+                            HtmlDeclaration _ _ ->
+                                ifn inline hiacc
+
+                            Cdata _ ->
+                                ifn inline hiacc
+
+                    Link _ _ inlines ->
+                        let
+                            iacc =
+                                ifn inline acc
+                        in
+                        List.foldl ifn iacc inlines
+
+                    Image _ _ inlines ->
+                        let
+                            iacc =
+                                ifn inline acc
+                        in
+                        List.foldl ifn iacc inlines
+
+                    Emphasis inlines ->
+                        let
+                            iacc =
+                                ifn inline acc
+                        in
+                        List.foldl ifn iacc inlines
+
+                    Strong inlines ->
+                        let
+                            iacc =
+                                ifn inline acc
+                        in
+                        List.foldl ifn iacc inlines
+
+                    CodeSpan _ ->
+                        ifn inline acc
+
+                    Text _ ->
+                        ifn inline acc
+
+                    HardLineBreak ->
+                        ifn inline acc
+
         function =
             inlineFoldF ifunction
 
