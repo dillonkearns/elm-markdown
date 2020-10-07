@@ -39,7 +39,7 @@ countInline inline totals =
     let
         increment =
             \dict str ->
-                case Dict.get str totals of
+                case Dict.get str dict of
                     Just t ->
                         Dict.insert str (t + 1) totals
 
