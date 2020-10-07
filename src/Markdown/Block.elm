@@ -36,7 +36,7 @@ See [`Markdown.Html`](Markdown.Html) for more.
 
 ## Transformations
 
-@docs walk, walkInlines, validateMapInlines, mapAndAccumulate, foldl, inlineFoldl, inlineFoldF
+@docs walk, walkInlines, validateMapInlines, mapAndAccumulate, foldl, inlineFoldl
 
 -}
 
