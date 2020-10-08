@@ -17,7 +17,7 @@ import Markdown.InlineParser
 import Markdown.LinkReferenceDefinition as LinkReferenceDefinition exposing (LinkReferenceDefinition)
 import Markdown.ListItem as ListItem
 import Markdown.OrderedList
-import Markdown.RawBlock as RawBlock exposing (Attribute, RawBlock(..), UnparsedInlines(..), SetextLevel(..))
+import Markdown.RawBlock as RawBlock exposing (Attribute, RawBlock(..), SetextLevel(..), UnparsedInlines(..))
 import Markdown.Table
 import Markdown.TableParser as TableParser
 import Markdown.UnorderedList
@@ -863,3 +863,23 @@ indentedCodeBlock =
         |. exactlyFourSpaces
         |= getChompedString (Advanced.chompUntilEndOr "\n")
         |. endOfLineOrFile
+
+
+setextLineParser : Parser RawBlock
+setextLineParser =
+    let
+        setextLevel level levelToken levelChar =
+            succeed level
+                |. token levelToken
+                |. chompWhile ((==) levelChar)
+    in
+    succeed identity
+        |. Helpers.upToThreeSpaces
+        |= oneOf
+            [ setextLevel LevelOne Token.equals '='
+            , setextLevel LevelTwo Token.minus '-'
+            ]
+        |. chompWhile Helpers.isSpaceOrTab
+        |. endOfLineOrFile
+        |> Advanced.mapChompedString
+            (\raw level -> SetextLine level raw)
