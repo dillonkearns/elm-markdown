@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [5.1.0] - 2020-10-08
+
+### Added
+
+- Inline fold function can do things like gather all links in the markdown. See [#53](https://github.com/dillonkearns/elm-markdown/pull/53) (thank you [@bburdette](bburdette)!).
+- Setext headers are now parsed. See [#65](https://github.com/dillonkearns/elm-markdown/pull/65) (thank you [@thomasin](thomasin)!).
+- Allow for leading spaces in front of heading hashes, as per markdown spec. See [#66](https://github.com/dillonkearns/elm-markdown/pull/66) (thank you [@pkeugine](pkeugine)!).
+
 ## [5.0.0] - 2020-09-09
 
 ### Added
