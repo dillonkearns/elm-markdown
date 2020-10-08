@@ -11,12 +11,13 @@ import Helpers exposing (endOfLineOrFile)
 import HtmlParser exposing (Node(..))
 import Markdown.Block as Block exposing (Block, Inline, ListItem, Task)
 import Markdown.CodeBlock
+import Markdown.Heading as Heading
 import Markdown.Inline as Inline
 import Markdown.InlineParser
 import Markdown.LinkReferenceDefinition as LinkReferenceDefinition exposing (LinkReferenceDefinition)
 import Markdown.ListItem as ListItem
 import Markdown.OrderedList
-import Markdown.RawBlock as RawBlock exposing (Attribute, RawBlock(..), UnparsedInlines(..), SetextLevel(..))
+import Markdown.RawBlock as RawBlock exposing (Attribute, RawBlock(..), SetextLevel(..), UnparsedInlines(..))
 import Markdown.Table
 import Markdown.TableParser as TableParser
 import Markdown.UnorderedList
@@ -751,7 +752,7 @@ mergeableBlockAfterOpenBlockOrParagraphParser =
 
         -- NOTE: the ordered list block changes its parsing rules when it's right after a Body
         , orderedListBlock True
-        , heading |> Advanced.backtrackable
+        , Heading.parser |> Advanced.backtrackable
         , htmlParser
         , tableDelimiterInOpenParagraph |> Advanced.backtrackable
         ]
@@ -772,7 +773,7 @@ mergeableBlockNotAfterOpenBlockOrParagraphParser =
 
         -- NOTE: the ordered list block changes its parsing rules when it's right after a Body
         , orderedListBlock False
-        , heading |> Advanced.backtrackable
+        , Heading.parser |> Advanced.backtrackable
         , htmlParser
 
         -- Note: we know that a table cannot be starting because we define a table as a delimiter row following a header row which gets parsed as a Body initially
@@ -862,56 +863,6 @@ indentedCodeBlock =
         |. exactlyFourSpaces
         |= getChompedString (Advanced.chompUntilEndOr "\n")
         |. endOfLineOrFile
-
-
-heading : Parser RawBlock
-heading =
-    succeed Heading
-        |. symbol Token.hash
-        |= (getChompedString (chompWhile isHash)
-                |> andThen
-                    (\additionalHashes ->
-                        let
-                            level =
-                                String.length additionalHashes + 1
-                        in
-                        if level >= 7 then
-                            Advanced.problem (Parser.Expecting "heading with < 7 #'s")
-
-                        else
-                            succeed level
-                    )
-           )
-        |= (Advanced.chompUntilEndOr "\n"
-                |> Advanced.mapChompedString
-                    (\headingText _ ->
-                        headingText
-                            |> String.trimLeft
-                            |> dropTrailingHashes
-                            |> UnparsedInlines
-                    )
-           )
-
-
-isHash : Char -> Bool
-isHash c =
-    case c of
-        '#' ->
-            True
-
-        _ ->
-            False
-
-
-dropTrailingHashes : String -> String
-dropTrailingHashes headingString =
-    if headingString |> String.endsWith "#" then
-        String.dropRight 1 headingString
-            |> String.trimRight
-            |> dropTrailingHashes
-
-    else
-        headingString
 
 
 setextLineParser : Parser RawBlock

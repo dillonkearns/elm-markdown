@@ -22,49 +22,6 @@ But instead was:
 ````````````html
 <h1>5 bolt</h1><h1>hashtag</h1>
 ````````````
-## [Example 38](https://spec.commonmark.org/0.29/#example-38)
-
-This markdown:
-
-````````````markdown
- ### foo
-  ## foo
-   # foo
-
-````````````
-
-Should give output:
-
-````````````html
-<h3>foo</h3><h2>foo</h2><h1>foo</h1>
-````````````
-
-But instead was:
-
-````````````html
-<p>### foo ## foo # foo</p>
-````````````
-## [Example 41](https://spec.commonmark.org/0.29/#example-41)
-
-This markdown:
-
-````````````markdown
-## foo ##
-  ###   bar    ###
-
-````````````
-
-Should give output:
-
-````````````html
-<h2>foo</h2><h3>bar</h3>
-````````````
-
-But instead was:
-
-````````````html
-<h2>foo</h2><p>### bar ###</p>
-````````````
 ## [Example 43](https://spec.commonmark.org/0.29/#example-43)
 
 This markdown:
