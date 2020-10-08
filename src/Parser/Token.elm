@@ -1,4 +1,4 @@
-module Parser.Token exposing (asterisk, carriageReturn, closingParen, closingSquareBracket, colon, dot, doubleQuote, greaterThan, hash, lessThan, minus, newline, openingSquareBracket, plus, singleQuote, space, tab)
+module Parser.Token exposing (asterisk, carriageReturn, closingParen, closingSquareBracket, colon, dot, doubleQuote, greaterThan, hash, lessThan, minus, newline, openingSquareBracket, plus, singleQuote, space, tab, equals)
 
 import Parser
 import Parser.Advanced exposing (Token(..))
@@ -87,3 +87,7 @@ plus =
 asterisk : Token Parser.Problem
 asterisk =
     Token "*" (Parser.Expecting "a `*`")
+
+equals : Token Parser.Problem
+equals =
+    Token "=" (Parser.Expecting "a `=`")

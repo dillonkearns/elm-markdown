@@ -17,7 +17,7 @@ import Markdown.InlineParser
 import Markdown.LinkReferenceDefinition as LinkReferenceDefinition exposing (LinkReferenceDefinition)
 import Markdown.ListItem as ListItem
 import Markdown.OrderedList
-import Markdown.RawBlock as RawBlock exposing (Attribute, RawBlock(..), UnparsedInlines(..))
+import Markdown.RawBlock as RawBlock exposing (Attribute, RawBlock(..), UnparsedInlines(..), SetextLevel(..))
 import Markdown.Table
 import Markdown.TableParser as TableParser
 import Markdown.UnorderedList
@@ -310,6 +310,12 @@ parseInlines linkReferences rawBlock =
 
         TableDelimiter (Markdown.Table.TableDelimiterRow text _) ->
             UnparsedInlines text.raw
+                |> inlineParseHelper linkReferences
+                |> Block.Paragraph
+                |> ParsedBlock
+
+        SetextLine _ raw ->
+            UnparsedInlines raw
                 |> inlineParseHelper linkReferences
                 |> Block.Paragraph
                 |> ParsedBlock
@@ -661,6 +667,14 @@ completeOrMergeBlocks state newRawBlock =
                 OpenBlockOrParagraph (UnparsedInlines (joinRawStringsWith "\n" body2 body1))
                     :: rest
 
+            ( SetextLine LevelOne _, (OpenBlockOrParagraph unparsedInlines) :: rest ) ->
+                Heading 1 unparsedInlines
+                    :: rest
+
+            ( SetextLine LevelTwo _, (OpenBlockOrParagraph unparsedInlines) :: rest ) ->
+                Heading 2 unparsedInlines
+                    :: rest
+
             ( TableDelimiter (Markdown.Table.TableDelimiterRow text alignments), (OpenBlockOrParagraph (UnparsedInlines rawHeaders)) :: rest ) ->
                 case TableParser.parseHeader (Markdown.Table.TableDelimiterRow text alignments) rawHeaders of
                     Ok (Markdown.Table.TableHeader headers) ->
@@ -732,6 +746,7 @@ mergeableBlockAfterOpenBlockOrParagraphParser =
         , Markdown.CodeBlock.parser |> Advanced.backtrackable |> map CodeBlock
 
         -- NOTE: indented block is not an option immediately after a Body
+        , setextLineParser |> Advanced.backtrackable
         , ThematicBreak.parser |> Advanced.backtrackable |> map (\_ -> ThematicBreak)
         , unorderedListBlock
 
