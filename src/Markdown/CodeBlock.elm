@@ -3,8 +3,8 @@ module Markdown.CodeBlock exposing (..)
 import Helpers
 import Parser
 import Parser.Advanced as Advanced exposing (..)
-import Parser.Extra as Extra exposing (tokenHelp)
 import Parser.Token as Token
+import Parser.Extra as Extra
 import Whitespace
 
 
@@ -62,14 +62,26 @@ parser =
 -- Indent has 1 subtracted as `getCol` starts from 1.
 openingFence : Parser Fence
 openingFence =
-    succeed (\indent ( character, length ) -> { character = character, length = length, indented = indent - 1 })
+    succeed (\indent ( character, length ) -> { character = character, length = length, indented = indent })
         |. Whitespace.upToThreeSpaces
         -- Indentation
-        |= getCol
+        |= ( getCol |> andThen colToIndentation )
         |= oneOf
             [ fenceOfAtLeast 3 backtick
             , fenceOfAtLeast 3 tilde
             ]
+
+
+-- In this case max three, as that's the max the opening fence can be indented.
+-- getCol always starts from 1, so 1 needs to be subtracted.
+colToIndentation : Int -> Parser Int
+colToIndentation int =
+    case int of
+        1 -> succeed 0
+        2 -> succeed 1
+        3 -> succeed 2
+        4 -> succeed 3
+        _ -> Advanced.problem (Parser.Expecting "Fenced code blocks should be indented no more than 3 spaces")
 
 
 -- Parses the closing fence, making sure it is the right length
