@@ -51,7 +51,7 @@ itemBody =
             |. backtrackable (oneOrMore Whitespace.isSpaceOrTab)
             |= ListItem.parser
         , succeed (ListItem.PlainItem "")
-            |. Advanced.symbol Token.newline
+            |. Whitespace.lineEnd
         ]
 
 

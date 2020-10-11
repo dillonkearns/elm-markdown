@@ -1,6 +1,7 @@
 module Markdown.LinkReferenceDefinition exposing (..)
 
 import Whitespace
+import Helpers
 import Markdown.Helpers
 import Parser
 import Parser.Advanced as Advanced exposing (..)
@@ -35,7 +36,7 @@ parser =
             -- whitespace that can contain up to 1 newline
             |. chompWhile Whitespace.isSpaceOrTab
             |. oneOf
-                [ symbol Token.newline
+                [ Whitespace.lineEnd
                 , succeed ()
                 ]
             |. chompWhile Whitespace.isSpaceOrTab
@@ -115,7 +116,4 @@ hasNoBlankLine str =
 onlyWhitespaceTillNewline : Parser ()
 onlyWhitespaceTillNewline =
     chompWhile (\c -> not (Whitespace.isLineEnd c) && Whitespace.isWhitespace c)
-        |. oneOf
-            [ symbol Token.newline
-            , Advanced.end (Parser.Expecting "end of file")
-            ]
+        |. Helpers.lineEndOrEnd

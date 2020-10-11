@@ -434,7 +434,7 @@ orderedListBlock previousWasBody =
 blankLine : Parser RawBlock
 blankLine =
     Advanced.backtrackable (chompWhile Whitespace.isSpaceOrTab)
-        |. symbol Token.newline
+        |. Whitespace.lineEnd
         |> map (\_ -> BlankLine)
 
 
