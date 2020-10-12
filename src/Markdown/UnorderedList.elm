@@ -4,7 +4,7 @@ import Whitespace
 import Markdown.ListItem as ListItem exposing (ListItem)
 import Parser
 import Parser.Advanced as Advanced exposing (..)
-import Parser.Extra exposing (oneOrMore)
+import Parser.Extra exposing (chompOneOrMore)
 import Parser.Token as Token
 
 
@@ -20,7 +20,7 @@ parser =
     in
     succeed parseSubsequentItems
         |= backtrackable listMarkerParser
-        |. oneOrMore Whitespace.isSpaceOrTab
+        |. chompOneOrMore Whitespace.isSpaceOrTab
         |= ListItem.parser
         |> andThen identity
 
@@ -48,7 +48,7 @@ itemBody : Parser ListItem
 itemBody =
     oneOf
         [ succeed identity
-            |. backtrackable (oneOrMore Whitespace.isSpaceOrTab)
+            |. backtrackable (chompOneOrMore Whitespace.isSpaceOrTab)
             |= ListItem.parser
         , succeed (ListItem.PlainItem "")
             |. Whitespace.lineEnd

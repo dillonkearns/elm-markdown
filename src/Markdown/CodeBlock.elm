@@ -184,26 +184,7 @@ remainingBlockHelp ( fence, body ) =
 codeBlockLine : Int -> Parser Int
 codeBlockLine indented =
     succeed identity
-        |. chompUpTo indented Whitespace.space
+        |. Extra.upTo indented Whitespace.space
         |= getOffset
         |. chompWhile Whitespace.isSpaceOrTab
         |. Helpers.chompUntilLineEndOrEnd
-
-
--- Chomp and ignore up to n parsers.
--- In practice, won't exceed 3.
-chompUpTo : Int -> Parser () -> Parser ()
-chompUpTo n parserToChomp =
-    case List.repeat n parserToChomp of
-        -- chompUpTo 0, so nothing to chomp
-        [] ->
-            succeed ()
-
-        -- Nests lots of oneOf [parser, succeed].
-        -- Based on Helpers.upToThree. If any of the oneOfs
-        -- fail, the whole chain is cut short;
-        firstParser :: remainingParsers ->
-            List.foldl
-                (\t p -> oneOf [ t |. p, succeed () ])
-                (oneOf [ firstParser, succeed () ])
-                remainingParsers

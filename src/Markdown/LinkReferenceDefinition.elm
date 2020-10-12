@@ -61,7 +61,7 @@ destinationParser =
                 |. symbol Token.lessThan
                 |= getChompedString (chompUntil Token.greaterThan)
                 |. symbol Token.greaterThan
-            , Parser.Extra.oneOrMore (not << Whitespace.isWhitespace)
+            , Parser.Extra.chompOneOrMore (not << Whitespace.isWhitespace)
                 |> getChompedString
             ]
 

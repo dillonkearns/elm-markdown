@@ -1,7 +1,17 @@
-module Parser.Token exposing (asterisk, carriageReturn, closingParen, closingSquareBracket, colon, dot, doubleQuote, greaterThan, hash, lessThan, minus, newline, openingSquareBracket, plus, singleQuote, space, tab, tilde, backtick, equals)
+module Parser.Token exposing (parseString, asterisk, carriageReturn, closingParen, closingSquareBracket, colon, dot, doubleQuote, greaterThan, hash, lessThan, minus, newline, openingSquareBracket, plus, singleQuote, space, tab, tilde, backtick, equals)
 
 import Parser
-import Parser.Advanced exposing (Token(..))
+import Parser.Advanced as Advanced exposing (Token(..))
+
+
+type alias Parser a =
+    Advanced.Parser String Parser.Problem a
+
+
+parseString : String -> Parser ()
+parseString str =
+    Advanced.Token str (Parser.Expecting str)
+        |> Advanced.token
 
 
 singleQuote : Token Parser.Problem

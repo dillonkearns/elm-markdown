@@ -10,31 +10,16 @@ type alias Parser a =
     Advanced.Parser String Parser.Problem a
 
 
-toToken : String -> Advanced.Token Parser.Problem
-toToken str =
-    Advanced.Token str (Parser.Expecting str)
-
-
-upToThree : Parser () -> Parser ()
-upToThree parser =
-    oneOf
-        [ parser
-            |. oneOf [ parser, succeed () ]
-            |. oneOf [ parser, succeed () ]
-        , succeed ()
-        ]
-
-
 endOfFile : Parser ()
 endOfFile =
-    Advanced.end (Parser.Expecting "end of input")
+    Advanced.end (Parser.Expecting "the end of the input")
 
 
 lineEndOrEnd : Parser ()
 lineEndOrEnd =
     oneOf
         [ Whitespace.lineEnd
-        , Advanced.end (Parser.Expecting "End of input")
+        , endOfFile
         ]
 
 
