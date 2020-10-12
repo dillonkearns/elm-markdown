@@ -59,7 +59,6 @@ parser =
 
 -- Parses the opening fence and with it information about
 -- indentation, and what the closing fence should look like.
--- Indent has 1 subtracted as `getCol` starts from 1.
 openingFence : Parser Fence
 openingFence =
     succeed (\indent ( character, length ) -> { character = character, length = length, indented = indent })

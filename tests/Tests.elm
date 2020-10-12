@@ -435,7 +435,7 @@ qwer
                     |> Expect.equal
                         (Ok
                             [ Block.CodeBlock
-                                { body = ".\n├── content/\n├── elm.json\n├── images/\n├── static/\n├── index.js\n├── package.json\n└── src/\n    └── Main.elm"
+                                { body = ".\n├── content/\n├── elm.json\n├── images/\n├── static/\n├── index.js\n├── package.json\n└── src/\n    └── Main.elm\n"
                                 , language = Just "shell"
                                 }
                             , Block.Paragraph (unstyledText "This is more stuff")
