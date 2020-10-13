@@ -173,7 +173,6 @@ remainingBlockHelp ( fence, body ) =
         -- equivalent to `mapChompedString` with a custom start value.
         , succeed (\start end source -> Loop ( fence, body ++ String.slice start end source ))
             |= codeBlockLine fence.indented
-            |. Helpers.lineEndOrEnd
             |= getOffset
             |= getSource
         ]
@@ -185,5 +184,5 @@ codeBlockLine indented =
     succeed identity
         |. Extra.upTo indented Whitespace.space
         |= getOffset
-        |. chompWhile Whitespace.isSpaceOrTab
         |. Helpers.chompUntilLineEndOrEnd
+        |. Helpers.lineEndOrEnd
