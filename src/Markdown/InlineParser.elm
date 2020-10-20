@@ -145,6 +145,7 @@ type Meaning
     | EmphasisToken Char { leftFringeRank : Int, rightFringeRank : Int }
     | SoftLineBreakToken
     | HardLineBreakToken
+    | WWWAutolink
 
 
 findToken : (Token -> Bool) -> List Token -> Maybe ( Token, List Token, List Token )
@@ -250,6 +251,7 @@ tokenize rawText =
         |> mergeByIndex (findHardBreakTokens rawText)
         |> mergeByIndex (findAngleBracketLTokens rawText)
         |> mergeByIndex (findAngleBracketRTokens rawText)
+        |> mergeByIndex (findWWWAutolinkTokens rawText)
 
 
 {-| Merges two sorted sequences into a sorted sequence
@@ -685,6 +687,32 @@ regMatchToLinkImageCloseToken regMatch =
 
 
 
+-- GFM Auto Link Tokens
+
+
+findWWWAutolinkTokens : String -> List Token
+findWWWAutolinkTokens str =
+    Regex.find wwwAutoLinkRegex str
+        |> List.filterMap regMatchToWWWAutolinkToken
+
+
+wwwAutoLinkRegex : Regex
+wwwAutoLinkRegex =
+    --add (?<=^|\\s|*|_|~|\\()
+    Regex.fromString "(www\\.[a-z0-9A-Z_-]+(\\.[a-z0-9A-Z_-]+)*(/[a-z0-9A-Z_-]+)?)"
+        |> Maybe.withDefault Regex.never
+
+
+regMatchToWWWAutolinkToken : Regex.Match -> Maybe Token
+regMatchToWWWAutolinkToken regMatch =
+    Just
+        { index = regMatch.index
+        , length = String.length regMatch.match
+        , meaning = WWWAutolink
+        }
+
+
+
 -- Angle Brackets Tokens
 
 
@@ -1041,6 +1069,14 @@ codeAutolinkTypeHtmlTagTTM remaining tokens matches references rawText =
                                 references
                                 rawText
 
+                WWWAutolink ->
+                    case wwwAutolinkToMatch rawText token of
+                        Just match ->
+                            codeAutolinkTypeHtmlTagTTM tokensTail tokens (match :: matches) references rawText
+
+                        Nothing ->
+                            codeAutolinkTypeHtmlTagTTM tokensTail (token :: tokens) matches references rawText
+
                 _ ->
                     codeAutolinkTypeHtmlTagTTM tokensTail (token :: tokens) matches references rawText
 
@@ -1140,6 +1176,37 @@ autolinkToMatch (Match match) =
 
     else
         Result.Err (Match match)
+
+
+wwwAutolinkToMatch : String -> Token -> Maybe Match
+wwwAutolinkToMatch rawText token =
+    let
+        start =
+            token.index
+
+        end =
+            token.index + token.length
+
+        text =
+            String.slice token.index end rawText
+
+        url =
+            withProtocol text
+    in
+    if Regex.contains urlRegex url then
+        { type_ = AutolinkType ( text, encodeUrl url )
+        , start = start
+        , end = end
+        , textStart = 0
+        , textEnd = 0
+        , text = ""
+        , matches = []
+        }
+            |> Match
+            |> Just
+
+    else
+        Nothing
 
 
 
@@ -1607,13 +1674,22 @@ refRegexToMatch matchModel references maybeRegexMatch =
                         _ ->
                             LinkType (prepareUrlAndTitle rawUrl maybeTitle)
             in
-            Just (
-                Match
+            Just
+                (Match
                     { matchModel
                         | type_ = type_
                         , end = matchModel.end + regexMatchLength
                     }
-                    )
+                )
+
+
+withProtocol : String -> String
+withProtocol url =
+    if String.startsWith "http" url then
+        url
+
+    else
+        "http://" ++ url
 
 
 encodeUrl : String -> String

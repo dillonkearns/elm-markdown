@@ -94,6 +94,20 @@ suite =
                 "<http://foo.bar.baz>\n"
                     |> expectInlines
                         [ Inlines.Link "http://foo.bar.baz" Nothing [ Inlines.Text "http://foo.bar.baz" ] ]
+        , describe "GFM extended autolinks"
+            [ describe "extended www autolinks"
+                [ test "basic www autolink" <|
+                    \() ->
+                        "www.bar.baz\n"
+                            |> expectInlines
+                                [ Inlines.Link "http://www.bar.baz" Nothing [ Inlines.Text "www.bar.baz" ] ]
+                , test "autolink with simple path" <|
+                    \() ->
+                        "www.bar.baz/help\n"
+                            |> expectInlines
+                                [ Inlines.Link "http://www.bar.baz/help" Nothing [ Inlines.Text "www.bar.baz/help" ] ]
+                ]
+            ]
 
         --, skip <|
         --    test "unlike GFM and commonmark, elm-markdown parses image alt as raw text" <|
