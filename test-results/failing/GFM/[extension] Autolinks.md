@@ -1,30 +1,5 @@
 # GFM - [extension] Autolinks
 
-## [Example 624](https://github.github.com/gfm/#example-624)
-
-This markdown:
-
-````````````markdown
-www.google.com/search?q=Markup+(business)
-
-www.google.com/search?q=Markup+(business)))
-
-(www.google.com/search?q=Markup+(business))
-
-(www.google.com/search?q=Markup+(business)
-````````````
-
-Should give output:
-
-````````````html
-<p><a href="http://www.google.com/search?q=Markup+(business)">www.google.com/search?q=Markup+(business)</a></p><p><a href="http://www.google.com/search?q=Markup+(business)">www.google.com/search?q=Markup+(business)</a>))</p><p>(<a href="http://www.google.com/search?q=Markup+(business)">www.google.com/search?q=Markup+(business)</a>)</p><p>(<a href="http://www.google.com/search?q=Markup+(business)">www.google.com/search?q=Markup+(business)</a></p>
-````````````
-
-But instead was:
-
-````````````html
-<p><a href="http://www.google.com/search?q=Markup+(business)">www.google.com/search?q=Markup+(business)</a></p><p><a href="http://www.google.com/search?q=Markup+(business))">www.google.com/search?q=Markup+(business))</a>)</p><p>(<a href="http://www.google.com/search?q=Markup+(business)">www.google.com/search?q=Markup+(business)</a>)</p><p>(<a href="http://www.google.com/search?q=Markup+(business)">www.google.com/search?q=Markup+(business)</a></p>
-````````````
 ## [Example 628](https://github.github.com/gfm/#example-628)
 
 This markdown:

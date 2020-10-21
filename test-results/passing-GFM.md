@@ -9518,6 +9518,31 @@ Gives this correct output:
 <p>Visit <a href="http://www.commonmark.org/a.b">www.commonmark.org/a.b</a>.</p>
 ````````````
 
+### [Example 624](https://github.github.com/gfm/#example-624)
+
+This markdown:
+
+
+````````````markdown
+www.google.com/search?q=Markup+(business)
+
+www.google.com/search?q=Markup+(business)))
+
+(www.google.com/search?q=Markup+(business))
+
+(www.google.com/search?q=Markup+(business)
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p><a href="http://www.google.com/search?q=Markup+(business)">www.google.com/search?q=Markup+(business)</a></p>
+<p><a href="http://www.google.com/search?q=Markup+(business)">www.google.com/search?q=Markup+(business)</a>))</p>
+<p>(<a href="http://www.google.com/search?q=Markup+(business)">www.google.com/search?q=Markup+(business)</a>)</p>
+<p>(<a href="http://www.google.com/search?q=Markup+(business)">www.google.com/search?q=Markup+(business)</a></p>
+````````````
+
 ### [Example 625](https://github.github.com/gfm/#example-625)
 
 This markdown:

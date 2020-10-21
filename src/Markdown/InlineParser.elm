@@ -725,16 +725,9 @@ regMatchToWWWAutolinkToken regMatch =
                 |> Maybe.map (.match >> String.length)
                 |> Maybe.withDefault 0
 
-        endsInUnmatchedParenthesis =
-            if String.endsWith ")" regMatch.match then
-                List.length (String.indexes ")" regMatch.match) > List.length (String.indexes "(" regMatch.match)
-
-            else
-                False
-
         lengthOfUnmatchedParenthesis =
-            if endsInUnmatchedParenthesis then
-                1
+            if String.endsWith ")" regMatch.match then
+                Basics.max 0 (List.length (String.indexes ")" regMatch.match) - List.length (String.indexes "(" regMatch.match))
 
             else
                 0

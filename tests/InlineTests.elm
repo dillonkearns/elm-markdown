@@ -123,6 +123,11 @@ suite =
                         "www.bar.baz/help?test=a.b)\n"
                             |> expectInlines
                                 [ Inlines.Link "http://www.bar.baz/help?test=a.b" Nothing [ Inlines.Text "www.bar.baz/help?test=a.b" ], Inlines.Text ")" ]
+                , test "with multiple trailing unmatched" <|
+                    \() ->
+                        "www.bar.baz/help?test=a.b))\n"
+                            |> expectInlines
+                                [ Inlines.Link "http://www.bar.baz/help?test=a.b" Nothing [ Inlines.Text "www.bar.baz/help?test=a.b" ], Inlines.Text "))" ]
                 , test "with trailing matched" <|
                     \() ->
                         "www.bar.baz/help?test=(a.b)\n"
