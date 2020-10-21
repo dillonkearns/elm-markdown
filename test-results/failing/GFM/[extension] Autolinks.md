@@ -1,43 +1,5 @@
 # GFM - [extension] Autolinks
 
-## [Example 621](https://github.github.com/gfm/#example-621)
-
-This markdown:
-
-````````````markdown
-www.commonmark.org
-````````````
-
-Should give output:
-
-````````````html
-<p><a href="http://www.commonmark.org">www.commonmark.org</a></p>
-````````````
-
-But instead was:
-
-````````````html
-<p>www.commonmark.org</p>
-````````````
-## [Example 622](https://github.github.com/gfm/#example-622)
-
-This markdown:
-
-````````````markdown
-Visit www.commonmark.org/help for more information.
-````````````
-
-Should give output:
-
-````````````html
-<p>Visit<a href="http://www.commonmark.org/help">www.commonmark.org/help</a>for more information.</p>
-````````````
-
-But instead was:
-
-````````````html
-<p>Visit www.commonmark.org/help for more information.</p>
-````````````
 ## [Example 623](https://github.github.com/gfm/#example-623)
 
 This markdown:
@@ -57,7 +19,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<p>Visit www.commonmark.org.</p><p>Visit www.commonmark.org/a.b.</p>
+<p>Visit<a href="http://www.commonmark.org">www.commonmark.org</a>.</p><p>Visit<a href="http://www.commonmark.org/a">www.commonmark.org/a</a>.b.</p>
 ````````````
 ## [Example 624](https://github.github.com/gfm/#example-624)
 
@@ -82,7 +44,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<p>www.google.com/search?q=Markup+(business)</p><p>www.google.com/search?q=Markup+(business)))</p><p>(www.google.com/search?q=Markup+(business))</p><p>(www.google.com/search?q=Markup+(business)</p>
+<p><a href="http://www.google.com/search">www.google.com/search</a>?q=Markup+(business)</p><p><a href="http://www.google.com/search">www.google.com/search</a>?q=Markup+(business)))</p><p>(<a href="http://www.google.com/search">www.google.com/search</a>?q=Markup+(business))</p><p>(<a href="http://www.google.com/search">www.google.com/search</a>?q=Markup+(business)</p>
 ````````````
 ## [Example 625](https://github.github.com/gfm/#example-625)
 
@@ -101,7 +63,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<p>www.google.com/search?q=(business))+ok</p>
+<p><a href="http://www.google.com/search">www.google.com/search</a>?q=(business))+ok</p>
 ````````````
 ## [Example 626](https://github.github.com/gfm/#example-626)
 
@@ -122,26 +84,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<p>www.google.com/search?q=commonmark&amp;hl=en</p><p>www.google.com/search?q=commonmark&amp;hl;</p>
-````````````
-## [Example 627](https://github.github.com/gfm/#example-627)
-
-This markdown:
-
-````````````markdown
-www.commonmark.org/he<lp
-````````````
-
-Should give output:
-
-````````````html
-<p><a href="http://www.commonmark.org/he">www.commonmark.org/he</a>&lt;lp</p>
-````````````
-
-But instead was:
-
-````````````html
-<p>www.commonmark.org/he&lt;lp</p>
+<p><a href="http://www.google.com/search">www.google.com/search</a>?q=commonmark&amp;hl=en</p><p><a href="http://www.google.com/search">www.google.com/search</a>?q=commonmark&amp;hl;</p>
 ````````````
 ## [Example 628](https://github.github.com/gfm/#example-628)
 

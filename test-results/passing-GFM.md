@@ -9465,6 +9465,56 @@ Gives this correct output:
 
 ````````````
 
+## [extension] Autolinks
+
+### [Example 621](https://github.github.com/gfm/#example-621)
+
+This markdown:
+
+
+````````````markdown
+www.commonmark.org
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p><a href="http://www.commonmark.org">www.commonmark.org</a></p>
+````````````
+
+### [Example 622](https://github.github.com/gfm/#example-622)
+
+This markdown:
+
+
+````````````markdown
+Visit www.commonmark.org/help for more information.
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p>Visit <a href="http://www.commonmark.org/help">www.commonmark.org/help</a> for more information.</p>
+````````````
+
+### [Example 627](https://github.github.com/gfm/#example-627)
+
+This markdown:
+
+
+````````````markdown
+www.commonmark.org/he<lp
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p><a href="http://www.commonmark.org/he">www.commonmark.org/he</a>&lt;lp</p>
+````````````
+
 ## [extension] Strikethrough
 
 ### [Example 492](https://github.github.com/gfm/#example-492)
