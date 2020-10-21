@@ -698,16 +698,57 @@ findWWWAutolinkTokens str =
 
 wwwAutoLinkRegex : Regex
 wwwAutoLinkRegex =
-    --add (?<=^|\\s|*|_|~|\\()
-    Regex.fromString "(www\\.[a-z0-9A-Z_-]+(\\.[a-z0-9A-Z_-]+)*(/[a-z0-9A-Z_-]+)?)"
+    --add (?<=^|\\s|*|_|~|\\() - what if we do this without the negative lookbehind and just make it a sub match?
+    Regex.fromString "www\\.[a-z0-9A-Z_-]+(?:\\.[a-z0-9A-Z_-]+)*(?:/([^\\s<]+))?"
+        |> Maybe.withDefault Regex.never
+
+
+wwwAutoLinkTrailingPunctuationRegex : Regex
+wwwAutoLinkTrailingPunctuationRegex =
+    Regex.fromString "[?!\\.,:*_~]+$"
+        |> Maybe.withDefault Regex.never
+
+
+wwwAutoLinkTrailingEntityReferenceRegex : Regex
+wwwAutoLinkTrailingEntityReferenceRegex =
+    Regex.fromString "(&[a-zA-Z0-9]+;)+$"
         |> Maybe.withDefault Regex.never
 
 
 regMatchToWWWAutolinkToken : Regex.Match -> Maybe Token
 regMatchToWWWAutolinkToken regMatch =
+    let
+        lengthOfTrailingPunctuation =
+            regMatch.match
+                |> Regex.find wwwAutoLinkTrailingPunctuationRegex
+                |> List.head
+                |> Maybe.map (.match >> String.length)
+                |> Maybe.withDefault 0
+
+        endsInUnmatchedParenthesis =
+            if String.endsWith ")" regMatch.match then
+                List.length (String.indexes ")" regMatch.match) > List.length (String.indexes "(" regMatch.match)
+
+            else
+                False
+
+        lengthOfUnmatchedParenthesis =
+            if endsInUnmatchedParenthesis then
+                1
+
+            else
+                0
+
+        lengthOfTrailingEntityReferences =
+            regMatch.match
+                |> Regex.find wwwAutoLinkTrailingEntityReferenceRegex
+                |> List.head
+                |> Maybe.map (.match >> String.length)
+                |> Maybe.withDefault 0
+    in
     Just
         { index = regMatch.index
-        , length = String.length regMatch.match
+        , length = String.length regMatch.match - lengthOfTrailingPunctuation - lengthOfUnmatchedParenthesis - lengthOfTrailingEntityReferences
         , meaning = WWWAutolink
         }
 

@@ -107,6 +107,48 @@ suite =
                             |> expectInlines
                                 [ Inlines.Link "http://www.bar.baz/help" Nothing [ Inlines.Text "www.bar.baz/help" ] ]
                 ]
+            , describe "extended autolink path validation"
+                [ test "with multiple trailing punctuation" <|
+                    \() ->
+                        "www.bar.baz/help?.~\n"
+                            |> expectInlines
+                                [ Inlines.Link "http://www.bar.baz/help" Nothing [ Inlines.Text "www.bar.baz/help" ], Inlines.Text "?.~" ]
+                , test "with multiple embedded punctuation" <|
+                    \() ->
+                        "www.bar.baz/help?test=a.b?.~\n"
+                            |> expectInlines
+                                [ Inlines.Link "http://www.bar.baz/help?test=a.b" Nothing [ Inlines.Text "www.bar.baz/help?test=a.b" ], Inlines.Text "?.~" ]
+                , test "with trailing unmatched" <|
+                    \() ->
+                        "www.bar.baz/help?test=a.b)\n"
+                            |> expectInlines
+                                [ Inlines.Link "http://www.bar.baz/help?test=a.b" Nothing [ Inlines.Text "www.bar.baz/help?test=a.b" ], Inlines.Text ")" ]
+                , test "with trailing matched" <|
+                    \() ->
+                        "www.bar.baz/help?test=(a.b)\n"
+                            |> expectInlines
+                                [ Inlines.Link "http://www.bar.baz/help?test=(a.b)" Nothing [ Inlines.Text "www.bar.baz/help?test=(a.b)" ] ]
+                , test "with embedded unmatched" <|
+                    \() ->
+                        "www.bar.baz/help?test=(a.b))+ok\n"
+                            |> expectInlines
+                                [ Inlines.Link "http://www.bar.baz/help?test=(a.b))+ok" Nothing [ Inlines.Text "www.bar.baz/help?test=(a.b))+ok" ] ]
+                , test "with trailing entity reference" <|
+                    \() ->
+                        "www.bar.baz/help?test=a&hl;\n"
+                            |> expectInlines
+                                [ Inlines.Link "http://www.bar.baz/help?test=a" Nothing [ Inlines.Text "www.bar.baz/help?test=a" ], Inlines.Text "&hl;" ]
+                , test "with multiple trailing entity references" <|
+                    \() ->
+                        "www.bar.baz/help?test=a&hl;&hl;\n"
+                            |> expectInlines
+                                [ Inlines.Link "http://www.bar.baz/help?test=a" Nothing [ Inlines.Text "www.bar.baz/help?test=a" ], Inlines.Text "&hl;&hl;" ]
+                , test "with embedded entity reference" <|
+                    \() ->
+                        "www.bar.baz/help?test=&hl;+ok\n"
+                            |> expectInlines
+                                [ Inlines.Link "http://www.bar.baz/help?test=&hl;+ok" Nothing [ Inlines.Text "www.bar.baz/help?test=&hl;+ok" ] ]
+                ]
             ]
 
         --, skip <|
