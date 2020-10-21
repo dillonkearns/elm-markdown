@@ -1,26 +1,5 @@
 # GFM - [extension] Autolinks
 
-## [Example 623](https://github.github.com/gfm/#example-623)
-
-This markdown:
-
-````````````markdown
-Visit www.commonmark.org.
-
-Visit www.commonmark.org/a.b.
-````````````
-
-Should give output:
-
-````````````html
-<p>Visit<a href="http://www.commonmark.org">www.commonmark.org</a>.</p><p>Visit<a href="http://www.commonmark.org/a.b">www.commonmark.org/a.b</a>.</p>
-````````````
-
-But instead was:
-
-````````````html
-<p>Visit<a href="http://www.commonmark.org">www.commonmark.org</a>.</p><p>Visit<a href="http://www.commonmark.org/a">www.commonmark.org/a</a>.b.</p>
-````````````
 ## [Example 624](https://github.github.com/gfm/#example-624)
 
 This markdown:
@@ -44,47 +23,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<p><a href="http://www.google.com/search">www.google.com/search</a>?q=Markup+(business)</p><p><a href="http://www.google.com/search">www.google.com/search</a>?q=Markup+(business)))</p><p>(<a href="http://www.google.com/search">www.google.com/search</a>?q=Markup+(business))</p><p>(<a href="http://www.google.com/search">www.google.com/search</a>?q=Markup+(business)</p>
-````````````
-## [Example 625](https://github.github.com/gfm/#example-625)
-
-This markdown:
-
-````````````markdown
-www.google.com/search?q=(business))+ok
-````````````
-
-Should give output:
-
-````````````html
-<p><a href="http://www.google.com/search?q=(business))+ok">www.google.com/search?q=(business))+ok</a></p>
-````````````
-
-But instead was:
-
-````````````html
-<p><a href="http://www.google.com/search">www.google.com/search</a>?q=(business))+ok</p>
-````````````
-## [Example 626](https://github.github.com/gfm/#example-626)
-
-This markdown:
-
-````````````markdown
-www.google.com/search?q=commonmark&hl=en
-
-www.google.com/search?q=commonmark&hl;
-````````````
-
-Should give output:
-
-````````````html
-<p><a href="http://www.google.com/search?q=commonmark&amp;hl=en">www.google.com/search?q=commonmark&amp;hl=en</a></p><p><a href="http://www.google.com/search?q=commonmark">www.google.com/search?q=commonmark</a>&amp;hl;</p>
-````````````
-
-But instead was:
-
-````````````html
-<p><a href="http://www.google.com/search">www.google.com/search</a>?q=commonmark&amp;hl=en</p><p><a href="http://www.google.com/search">www.google.com/search</a>?q=commonmark&amp;hl;</p>
+<p><a href="http://www.google.com/search?q=Markup+(business)">www.google.com/search?q=Markup+(business)</a></p><p><a href="http://www.google.com/search?q=Markup+(business))">www.google.com/search?q=Markup+(business))</a>)</p><p>(<a href="http://www.google.com/search?q=Markup+(business)">www.google.com/search?q=Markup+(business)</a>)</p><p>(<a href="http://www.google.com/search?q=Markup+(business)">www.google.com/search?q=Markup+(business)</a></p>
 ````````````
 ## [Example 628](https://github.github.com/gfm/#example-628)
 

@@ -9499,6 +9499,60 @@ Gives this correct output:
 <p>Visit <a href="http://www.commonmark.org/help">www.commonmark.org/help</a> for more information.</p>
 ````````````
 
+### [Example 623](https://github.github.com/gfm/#example-623)
+
+This markdown:
+
+
+````````````markdown
+Visit www.commonmark.org.
+
+Visit www.commonmark.org/a.b.
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p>Visit <a href="http://www.commonmark.org">www.commonmark.org</a>.</p>
+<p>Visit <a href="http://www.commonmark.org/a.b">www.commonmark.org/a.b</a>.</p>
+````````````
+
+### [Example 625](https://github.github.com/gfm/#example-625)
+
+This markdown:
+
+
+````````````markdown
+www.google.com/search?q=(business))+ok
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p><a href="http://www.google.com/search?q=(business))+ok">www.google.com/search?q=(business))+ok</a></p>
+````````````
+
+### [Example 626](https://github.github.com/gfm/#example-626)
+
+This markdown:
+
+
+````````````markdown
+www.google.com/search?q=commonmark&hl=en
+
+www.google.com/search?q=commonmark&hl;
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p><a href="http://www.google.com/search?q=commonmark&amp;hl=en">www.google.com/search?q=commonmark&amp;hl=en</a></p>
+<p><a href="http://www.google.com/search?q=commonmark">www.google.com/search?q=commonmark</a>&amp;hl;</p>
+````````````
+
 ### [Example 627](https://github.github.com/gfm/#example-627)
 
 This markdown:
