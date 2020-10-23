@@ -761,17 +761,29 @@ findEmailAutolinkTokens str =
 
 emailAutoLinkRegex : Regex
 emailAutoLinkRegex =
-    Regex.fromString "(?<=^|\\s|\\*|_|~|\\()[a-zA-Z0-9\\._+-]+@[a-zA-Z0-9_-]+(((\\.[a-zA-Z0-9_-]+)*)|\\.)[a-zA-Z0-9]+"
+    Regex.fromString "(?<=^|\\s|\\*|_|~|\\()[a-zA-Z0-9\\._+-]+@[a-zA-Z0-9_-]+((\\.[a-zA-Z0-9_-]+)+)"
         |> Maybe.withDefault Regex.never
 
 
 regMatchToEmailAutolinkToken : Regex.Match -> Maybe Token
 regMatchToEmailAutolinkToken regMatch =
-    Just
-        { index = regMatch.index
-        , length = String.length regMatch.match
-        , meaning = EmailAutolink
-        }
+    let
+        lastCharacter =
+            regMatch.match
+                |> String.right 1
+                |> String.uncons
+                |> Maybe.map Tuple.first
+    in
+    case Maybe.map Char.isAlphaNum lastCharacter of
+        Just True ->
+            Just
+                { index = regMatch.index
+                , length = String.length regMatch.match
+                , meaning = EmailAutolink
+                }
+
+        _ ->
+            Nothing
 
 
 

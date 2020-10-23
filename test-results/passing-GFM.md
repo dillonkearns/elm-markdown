@@ -9556,6 +9556,47 @@ Gives this correct output:
 <p><a href="mailto:foo@bar.baz">foo@bar.baz</a></p>
 ````````````
 
+### [Example 630](https://github.github.com/gfm/#example-630)
+
+This markdown:
+
+
+````````````markdown
+hello@mail+xyz.example isn't valid, but hello+xyz@mail.example is.
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p>hello@mail+xyz.example isn't valid, but <a href="mailto:hello+xyz@mail.example">hello+xyz@mail.example</a> is.</p>
+````````````
+
+### [Example 631](https://github.github.com/gfm/#example-631)
+
+This markdown:
+
+
+````````````markdown
+a.b-c_d@a.b
+
+a.b-c_d@a.b.
+
+a.b-c_d@a.b-
+
+a.b-c_d@a.b_
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p><a href="mailto:a.b-c_d@a.b">a.b-c_d@a.b</a></p>
+<p><a href="mailto:a.b-c_d@a.b">a.b-c_d@a.b</a>.</p>
+<p>a.b-c_d@a.b-</p>
+<p>a.b-c_d@a.b_</p>
+````````````
+
 ## [extension] Strikethrough
 
 ### [Example 492](https://github.github.com/gfm/#example-492)

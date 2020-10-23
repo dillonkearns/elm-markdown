@@ -197,6 +197,16 @@ suite =
                         "hello+xyz@mail.example"
                             |> expectInlines
                                 [ Inlines.Link "mailto:hello+xyz@mail.example" Nothing [ Inlines.Text "hello+xyz@mail.example" ] ]
+                , test "email autolinks must have a dot in the domain" <|
+                    \() ->
+                        "hello+xyz@mail"
+                            |> expectInlines
+                                [ Inlines.Text "hello+xyz@mail" ]
+                , test "email autolinks cannot end in a hyphen" <|
+                    \() ->
+                        "hello+xyz@mail.example-"
+                            |> expectInlines
+                                [ Inlines.Text "hello+xyz@mail.example-" ]
                 ]
             ]
 
