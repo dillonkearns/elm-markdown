@@ -146,6 +146,7 @@ type Meaning
     | SoftLineBreakToken
     | HardLineBreakToken
     | ExtendedAutolink
+    | EmailAutolink
 
 
 findToken : (Token -> Bool) -> List Token -> Maybe ( Token, List Token, List Token )
@@ -252,6 +253,7 @@ tokenize rawText =
         |> mergeByIndex (findAngleBracketLTokens rawText)
         |> mergeByIndex (findAngleBracketRTokens rawText)
         |> mergeByIndex (findExtendedAutolinkTokens rawText)
+        |> mergeByIndex (findEmailAutolinkTokens rawText)
 
 
 {-| Merges two sorted sequences into a sorted sequence
@@ -698,7 +700,7 @@ findExtendedAutolinkTokens str =
 
 extendedAutoLinkRegex : Regex
 extendedAutoLinkRegex =
-    --add (?<=^|\\s|*|_|~|\\() - what if we do this without the negative lookbehind and just make it a sub match?
+    -- what if we do this without the negative lookbehind and just make it a sub match?
     Regex.fromString "(?<=^|\\s|\\*|_|~|\\()(?:(?:https?://)|(?:www\\.))[a-z0-9A-Z_-]+(?:\\.[a-z0-9A-Z_-]+)*(?:/([^\\s<]+))?"
         |> Maybe.withDefault Regex.never
 
@@ -744,6 +746,31 @@ regMatchToExtendedAutolinkToken regMatch =
         { index = regMatch.index
         , length = String.length regMatch.match - lengthOfTrailingPunctuation - lengthOfUnmatchedParenthesis - lengthOfTrailingEntityReferences
         , meaning = ExtendedAutolink
+        }
+
+
+
+-- GFM Auto Link Tokens
+
+
+findEmailAutolinkTokens : String -> List Token
+findEmailAutolinkTokens str =
+    Regex.find emailAutoLinkRegex str
+        |> List.filterMap regMatchToEmailAutolinkToken
+
+
+emailAutoLinkRegex : Regex
+emailAutoLinkRegex =
+    Regex.fromString "(?<=^|\\s|\\*|_|~|\\()[a-zA-Z0-9\\._+-]+@[a-zA-Z0-9_-]+(((\\.[a-zA-Z0-9_-]+)*)|\\.)[a-zA-Z0-9]+"
+        |> Maybe.withDefault Regex.never
+
+
+regMatchToEmailAutolinkToken : Regex.Match -> Maybe Token
+regMatchToEmailAutolinkToken regMatch =
+    Just
+        { index = regMatch.index
+        , length = String.length regMatch.match
+        , meaning = EmailAutolink
         }
 
 
@@ -1219,6 +1246,37 @@ extendedAutolinkToMatch rawText token =
 
         url =
             withProtocol text
+    in
+    if Regex.contains urlRegex url then
+        { type_ = AutolinkType ( text, encodeUrl url )
+        , start = start
+        , end = end
+        , textStart = 0
+        , textEnd = 0
+        , text = ""
+        , matches = []
+        }
+            |> Match
+            |> Just
+
+    else
+        Nothing
+
+
+emailAutolinkToMatch : String -> Token -> Maybe Match
+emailAutolinkToMatch rawText token =
+    let
+        start =
+            token.index
+
+        end =
+            token.index + token.length
+
+        text =
+            String.slice token.index end rawText
+
+        url =
+            "mailto:" ++ text
     in
     if Regex.contains urlRegex url then
         { type_ = AutolinkType ( text, encodeUrl url )
@@ -1748,7 +1806,7 @@ extendedAutolinkTTM : List Token -> List Token -> List Match -> References -> St
 extendedAutolinkTTM remaining tokens matches references rawText =
     case remaining of
         [] ->
-            emphasisTTM (List.reverse tokens) [] matches references rawText
+            emailAutolinkTTM (List.reverse tokens) [] matches references rawText
 
         token :: tokensTail ->
             case token.meaning of
@@ -1762,6 +1820,30 @@ extendedAutolinkTTM remaining tokens matches references rawText =
 
                 _ ->
                     extendedAutolinkTTM tokensTail (token :: tokens) matches references rawText
+
+
+
+-- EmailAutolink Tokens To Matches
+
+
+emailAutolinkTTM : List Token -> List Token -> List Match -> References -> String -> List Match
+emailAutolinkTTM remaining tokens matches references rawText =
+    case remaining of
+        [] ->
+            emphasisTTM (List.reverse tokens) [] matches references rawText
+
+        token :: tokensTail ->
+            case token.meaning of
+                EmailAutolink ->
+                    case emailAutolinkToMatch rawText token of
+                        Just match ->
+                            emailAutolinkTTM tokensTail tokens (match :: matches) references rawText
+
+                        Nothing ->
+                            emailAutolinkTTM tokensTail (token :: tokens) matches references rawText
+
+                _ ->
+                    emailAutolinkTTM tokensTail (token :: tokens) matches references rawText
 
 
 

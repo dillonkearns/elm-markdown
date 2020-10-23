@@ -577,24 +577,6 @@ Gives this correct output:
 
 ````````````
 
-### [Example 608](https://spec.commonmark.org/0.29/#example-608)
-
-This markdown:
-
-
-````````````markdown
-foo@bar.example.com
-
-````````````
-
-Gives this correct output:
-
-
-````````````html
-<p>foo@bar.example.com</p>
-
-````````````
-
 ## Backslash escapes
 
 ### [Example 298](https://spec.commonmark.org/0.29/#example-298)

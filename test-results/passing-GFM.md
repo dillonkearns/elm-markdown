@@ -577,24 +577,6 @@ Gives this correct output:
 
 ````````````
 
-### [Example 608](https://spec.commonmark.org/0.29/#example-608)
-
-This markdown:
-
-
-````````````markdown
-foo@bar.example.com
-
-````````````
-
-Gives this correct output:
-
-
-````````````html
-<p>foo@bar.example.com</p>
-
-````````````
-
 ## Backslash escapes
 
 ### [Example 298](https://spec.commonmark.org/0.29/#example-298)
@@ -9556,6 +9538,22 @@ Gives this correct output:
 
 ````````````html
 <p><a href="http://www.commonmark.org/he">www.commonmark.org/he</a>&lt;lp</p>
+````````````
+
+### [Example 629](https://github.github.com/gfm/#example-629)
+
+This markdown:
+
+
+````````````markdown
+foo@bar.baz
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p><a href="mailto:foo@bar.baz">foo@bar.baz</a></p>
 ````````````
 
 ## [extension] Strikethrough

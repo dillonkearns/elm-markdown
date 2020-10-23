@@ -191,6 +191,13 @@ suite =
                             |> expectInlines
                                 [ Inlines.Text "(Visit ", Inlines.Link "https://encrypted.google.com/search?q=Markup+(business)" Nothing [ Inlines.Text "https://encrypted.google.com/search?q=Markup+(business)" ], Inlines.Text ")" ]
                 ]
+            , describe "extended email autolinks"
+                [ test "basic email autolink" <|
+                    \() ->
+                        "hello+xyz@mail.example"
+                            |> expectInlines
+                                [ Inlines.Link "mailto:hello+xyz@mail.example" Nothing [ Inlines.Text "hello+xyz@mail.example" ] ]
+                ]
             ]
 
         --, skip <|
