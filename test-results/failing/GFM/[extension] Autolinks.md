@@ -21,7 +21,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<p>http://commonmark.org</p><p>(Visit https://encrypted.google.com/search?q=Markup+(business))</p><p>Anonymous FTP is available at ftp://foo.bar.baz.</p>
+<p><a href="http://commonmark.org">http://commonmark.org</a></p><p>(Visit<a href="https://encrypted.google.com/search?q=Markup+(business)">https://encrypted.google.com/search?q=Markup+(business)</a>)</p><p>Anonymous FTP is available at ftp://foo.bar.baz.</p>
 ````````````
 ## [Example 629](https://github.github.com/gfm/#example-629)
 

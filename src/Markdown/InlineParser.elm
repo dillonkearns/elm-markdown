@@ -145,7 +145,7 @@ type Meaning
     | EmphasisToken Char { leftFringeRank : Int, rightFringeRank : Int }
     | SoftLineBreakToken
     | HardLineBreakToken
-    | WWWAutolink
+    | ExtendedAutolink
 
 
 findToken : (Token -> Bool) -> List Token -> Maybe ( Token, List Token, List Token )
@@ -251,7 +251,7 @@ tokenize rawText =
         |> mergeByIndex (findHardBreakTokens rawText)
         |> mergeByIndex (findAngleBracketLTokens rawText)
         |> mergeByIndex (findAngleBracketRTokens rawText)
-        |> mergeByIndex (findWWWAutolinkTokens rawText)
+        |> mergeByIndex (findExtendedAutolinkTokens rawText)
 
 
 {-| Merges two sorted sequences into a sorted sequence
@@ -690,37 +690,38 @@ regMatchToLinkImageCloseToken regMatch =
 -- GFM Auto Link Tokens
 
 
-findWWWAutolinkTokens : String -> List Token
-findWWWAutolinkTokens str =
-    Regex.find wwwAutoLinkRegex str
-        |> List.filterMap regMatchToWWWAutolinkToken
+findExtendedAutolinkTokens : String -> List Token
+findExtendedAutolinkTokens str =
+    Regex.find extendedAutoLinkRegex str
+        |> List.filterMap regMatchToExtendedAutolinkToken
 
 
-wwwAutoLinkRegex : Regex
-wwwAutoLinkRegex =
+extendedAutoLinkRegex : Regex
+extendedAutoLinkRegex =
     --add (?<=^|\\s|*|_|~|\\() - what if we do this without the negative lookbehind and just make it a sub match?
-    Regex.fromString "www\\.[a-z0-9A-Z_-]+(?:\\.[a-z0-9A-Z_-]+)*(?:/([^\\s<]+))?"
+    Regex.fromString "(?<=^|\\s|\\*|_|~|\\()(?:(?:https?://)|(?:www\\.))[a-z0-9A-Z_-]+(?:\\.[a-z0-9A-Z_-]+)*(?:/([^\\s<]+))?"
         |> Maybe.withDefault Regex.never
 
 
-wwwAutoLinkTrailingPunctuationRegex : Regex
-wwwAutoLinkTrailingPunctuationRegex =
+extendedAutoLinkTrailingPunctuationRegex : Regex
+extendedAutoLinkTrailingPunctuationRegex =
+    --should this use the isPunctuation helper?
     Regex.fromString "[?!\\.,:*_~]+$"
         |> Maybe.withDefault Regex.never
 
 
-wwwAutoLinkTrailingEntityReferenceRegex : Regex
-wwwAutoLinkTrailingEntityReferenceRegex =
+extendedAutoLinkTrailingEntityReferenceRegex : Regex
+extendedAutoLinkTrailingEntityReferenceRegex =
     Regex.fromString "(&[a-zA-Z0-9]+;)+$"
         |> Maybe.withDefault Regex.never
 
 
-regMatchToWWWAutolinkToken : Regex.Match -> Maybe Token
-regMatchToWWWAutolinkToken regMatch =
+regMatchToExtendedAutolinkToken : Regex.Match -> Maybe Token
+regMatchToExtendedAutolinkToken regMatch =
     let
         lengthOfTrailingPunctuation =
             regMatch.match
-                |> Regex.find wwwAutoLinkTrailingPunctuationRegex
+                |> Regex.find extendedAutoLinkTrailingPunctuationRegex
                 |> List.head
                 |> Maybe.map (.match >> String.length)
                 |> Maybe.withDefault 0
@@ -734,7 +735,7 @@ regMatchToWWWAutolinkToken regMatch =
 
         lengthOfTrailingEntityReferences =
             regMatch.match
-                |> Regex.find wwwAutoLinkTrailingEntityReferenceRegex
+                |> Regex.find extendedAutoLinkTrailingEntityReferenceRegex
                 |> List.head
                 |> Maybe.map (.match >> String.length)
                 |> Maybe.withDefault 0
@@ -742,7 +743,7 @@ regMatchToWWWAutolinkToken regMatch =
     Just
         { index = regMatch.index
         , length = String.length regMatch.match - lengthOfTrailingPunctuation - lengthOfUnmatchedParenthesis - lengthOfTrailingEntityReferences
-        , meaning = WWWAutolink
+        , meaning = ExtendedAutolink
         }
 
 
@@ -1103,14 +1104,6 @@ codeAutolinkTypeHtmlTagTTM remaining tokens matches references rawText =
                                 references
                                 rawText
 
-                WWWAutolink ->
-                    case wwwAutolinkToMatch rawText token of
-                        Just match ->
-                            codeAutolinkTypeHtmlTagTTM tokensTail tokens (match :: matches) references rawText
-
-                        Nothing ->
-                            codeAutolinkTypeHtmlTagTTM tokensTail (token :: tokens) matches references rawText
-
                 _ ->
                     codeAutolinkTypeHtmlTagTTM tokensTail (token :: tokens) matches references rawText
 
@@ -1212,8 +1205,8 @@ autolinkToMatch (Match match) =
         Result.Err (Match match)
 
 
-wwwAutolinkToMatch : String -> Token -> Maybe Match
-wwwAutolinkToMatch rawText token =
+extendedAutolinkToMatch : String -> Token -> Maybe Match
+extendedAutolinkToMatch rawText token =
     let
         start =
             token.index
@@ -1417,7 +1410,7 @@ linkImageTypeTTM : List Token -> List Token -> List Match -> References -> Strin
 linkImageTypeTTM remaining tokens matches references rawText =
     case remaining of
         [] ->
-            emphasisTTM (List.reverse tokens) [] matches references rawText
+            extendedAutolinkTTM (List.reverse tokens) [] matches references rawText
 
         token :: tokensTail ->
             case token.meaning of
@@ -1745,6 +1738,30 @@ decodeUrlRegex : Regex
 decodeUrlRegex =
     Regex.fromString "%(?:3B|2C|2F|3F|3A|40|26|3D|2B|24|23|25)"
         |> Maybe.withDefault Regex.never
+
+
+
+-- ExtendedAutolink Tokens To Matches
+
+
+extendedAutolinkTTM : List Token -> List Token -> List Match -> References -> String -> List Match
+extendedAutolinkTTM remaining tokens matches references rawText =
+    case remaining of
+        [] ->
+            emphasisTTM (List.reverse tokens) [] matches references rawText
+
+        token :: tokensTail ->
+            case token.meaning of
+                ExtendedAutolink ->
+                    case extendedAutolinkToMatch rawText token of
+                        Just match ->
+                            extendedAutolinkTTM tokensTail tokens (match :: matches) references rawText
+
+                        Nothing ->
+                            extendedAutolinkTTM tokensTail (token :: tokens) matches references rawText
+
+                _ ->
+                    extendedAutolinkTTM tokensTail (token :: tokens) matches references rawText
 
 
 

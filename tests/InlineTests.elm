@@ -58,6 +58,21 @@ suite =
                 """[Contact](/contact)"""
                     |> expectInlines
                         [ Inlines.Link "/contact" Nothing [ Inlines.Text "Contact" ] ]
+        , test "simple link with a full url" <|
+            \() ->
+                """[Contact](https://example.com/contact)"""
+                    |> expectInlines
+                        [ Inlines.Link "https://example.com/contact" Nothing [ Inlines.Text "Contact" ] ]
+        , test "multiple simple links with full urls" <|
+            \() ->
+                """[One](https://example.com/1) [Two](https://example.com/2) [Three](https://example.com/3)"""
+                    |> expectInlines
+                        [ Inlines.Link "https://example.com/1" Nothing [ Inlines.Text "One" ]
+                        , Inlines.Text " "
+                        , Inlines.Link "https://example.com/2" Nothing [ Inlines.Text "Two" ]
+                        , Inlines.Text " "
+                        , Inlines.Link "https://example.com/3" Nothing [ Inlines.Text "Three" ]
+                        ]
         , test "link with formatting" <|
             \() ->
                 """[This `code` is *really* awesome](/contact)"""
@@ -106,6 +121,11 @@ suite =
                         "www.bar.baz/help\n"
                             |> expectInlines
                                 [ Inlines.Link "http://www.bar.baz/help" Nothing [ Inlines.Text "www.bar.baz/help" ] ]
+                , test "autolink inside text" <|
+                    \() ->
+                        "visit www.bar.baz/help for more info\n"
+                            |> expectInlines
+                                [ Inlines.Text "visit ", Inlines.Link "http://www.bar.baz/help" Nothing [ Inlines.Text "www.bar.baz/help" ], Inlines.Text " for more info" ]
                 ]
             , describe "extended autolink path validation"
                 [ test "with multiple trailing punctuation" <|
@@ -153,6 +173,23 @@ suite =
                         "www.bar.baz/help?test=&hl;+ok\n"
                             |> expectInlines
                                 [ Inlines.Link "http://www.bar.baz/help?test=&hl;+ok" Nothing [ Inlines.Text "www.bar.baz/help?test=&hl;+ok" ] ]
+                ]
+            , describe "extended url autolinks"
+                [ test "basic http url" <|
+                    \() ->
+                        "http://www.bar.baz\n"
+                            |> expectInlines
+                                [ Inlines.Link "http://www.bar.baz" Nothing [ Inlines.Text "http://www.bar.baz" ] ]
+                , test "basic httpsurl" <|
+                    \() ->
+                        "https://www.bar.baz\n"
+                            |> expectInlines
+                                [ Inlines.Link "https://www.bar.baz" Nothing [ Inlines.Text "https://www.bar.baz" ] ]
+                , test "url with complicated path" <|
+                    \() ->
+                        "(Visit https://encrypted.google.com/search?q=Markup+(business))\n"
+                            |> expectInlines
+                                [ Inlines.Text "(Visit ", Inlines.Link "https://encrypted.google.com/search?q=Markup+(business)" Nothing [ Inlines.Text "https://encrypted.google.com/search?q=Markup+(business)" ], Inlines.Text ")" ]
                 ]
             ]
 

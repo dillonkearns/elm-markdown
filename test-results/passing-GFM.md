@@ -541,24 +541,6 @@ Gives this correct output:
 
 ````````````
 
-### [Example 604](https://spec.commonmark.org/0.29/#example-604)
-
-This markdown:
-
-
-````````````markdown
-< http://foo.bar >
-
-````````````
-
-Gives this correct output:
-
-
-````````````html
-<p>&lt; http://foo.bar &gt;</p>
-
-````````````
-
 ### [Example 605](https://spec.commonmark.org/0.29/#example-605)
 
 This markdown:
@@ -592,24 +574,6 @@ Gives this correct output:
 
 ````````````html
 <p>&lt;foo.bar.baz&gt;</p>
-
-````````````
-
-### [Example 607](https://spec.commonmark.org/0.29/#example-607)
-
-This markdown:
-
-
-````````````markdown
-http://example.com
-
-````````````
-
-Gives this correct output:
-
-
-````````````html
-<p>http://example.com</p>
 
 ````````````
 
