@@ -20,7 +20,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<blockquote><pre><code>foo</code></pre></blockquote>
+<blockquote><pre><code>foo</code></pre></blockquote><pre><code></code></pre>
 ````````````
 ## [Example 208](https://spec.commonmark.org/0.29/#example-208)
 

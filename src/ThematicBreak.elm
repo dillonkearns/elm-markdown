@@ -4,7 +4,7 @@ import Whitespace
 import Helpers
 import Parser
 import Parser.Advanced as Advanced exposing (..)
-import Parser.Extra as Extra exposing (tokenHelp)
+import Parser.Token as Token
 
 
 type alias Parser a =
@@ -49,7 +49,7 @@ withChar : Char -> Parser ThematicBreak
 withChar tchar =
     let
         token =
-            tokenHelp (String.fromChar tchar)
+            Token.parseString (String.fromChar tchar)
     in
     succeed ThematicBreak
         |. token

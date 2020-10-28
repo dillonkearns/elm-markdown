@@ -42,25 +42,3 @@ But instead was:
 ````````````html
 ERROR Problem at row 1 No entity named &quot;ö&quot; found.
 ````````````
-## [Example 320](https://spec.commonmark.org/0.29/#example-320)
-
-This markdown:
-
-````````````markdown
-``` f&ouml;&ouml;
-foo
-```
-
-````````````
-
-Should give output:
-
-````````````html
-<pre><code class="language-föö">foo</code></pre>
-````````````
-
-But instead was:
-
-````````````html
-<pre><code class="föö language-">foo</code></pre>
-````````````

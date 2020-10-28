@@ -68,5 +68,5 @@ Should give output:
 But instead was:
 
 ````````````html
-<pre><code class="foo\+bar language-">foo</code></pre>
+<pre><code class="language-foo\+bar">foo</code></pre>
 ````````````

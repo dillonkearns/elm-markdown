@@ -5,7 +5,7 @@ import Helpers
 import Markdown.RawBlock exposing (RawBlock(..))
 import Parser
 import Parser.Advanced as Advanced exposing (..)
-import Parser.Extra exposing (oneOrMore)
+import Parser.Extra exposing (chompOneOrMore)
 import Parser.Token as Token
 
 
@@ -37,7 +37,7 @@ parser previousWasBody =
                     |. Advanced.symbol Token.closingParen
                 ]
             )
-        |. oneOrMore Whitespace.isSpaceOrTab
+        |. chompOneOrMore Whitespace.isSpaceOrTab
         |= Advanced.getChompedString Helpers.chompUntilLineEndOrEnd
         |. Helpers.lineEndOrEnd
         |> andThen identity
@@ -88,7 +88,7 @@ itemBody : Parser ListItem
 itemBody =
     oneOf
         [ succeed identity
-            |. oneOrMore Whitespace.isSpaceOrTab
+            |. chompOneOrMore Whitespace.isSpaceOrTab
             |= Advanced.getChompedString Helpers.chompUntilLineEndOrEnd
             |. Helpers.lineEndOrEnd
         , succeed ""

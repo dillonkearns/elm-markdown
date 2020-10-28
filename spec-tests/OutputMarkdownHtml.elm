@@ -170,11 +170,12 @@ renderMarkdown markdown =
                 \{ body, language } ->
                     let
                         classes =
-                            case language of
-                                Just actualLanguage ->
+                            -- Only the first word is used in the class
+                            case Maybe.map String.words language of
+                                Just (actualLanguage::_) ->
                                     [ Attr.class <| "language-" ++ actualLanguage ]
 
-                                Nothing ->
+                                _ ->
                                     []
                     in
                     Html.pre []

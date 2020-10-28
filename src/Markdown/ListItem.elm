@@ -4,7 +4,6 @@ import Whitespace
 import Helpers
 import Parser
 import Parser.Advanced as Advanced exposing (..)
-import Parser.Extra exposing (zeroOrMore)
 
 
 type ListItem
@@ -26,7 +25,7 @@ parser =
     oneOf
         [ succeed TaskItem
             |= taskItemParser
-            |. zeroOrMore Whitespace.isSpaceOrTab
+            |. chompWhile Whitespace.isSpaceOrTab
         , succeed PlainItem
         ]
         |= Advanced.getChompedString Helpers.chompUntilLineEndOrEnd
