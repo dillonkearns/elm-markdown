@@ -1,6 +1,6 @@
 module Markdown.UnorderedList exposing (parser)
 
-import Helpers
+import Whitespace
 import Markdown.ListItem as ListItem exposing (ListItem)
 import Parser
 import Parser.Advanced as Advanced exposing (..)
@@ -20,7 +20,7 @@ parser =
     in
     succeed parseSubsequentItems
         |= backtrackable listMarkerParser
-        |. oneOrMore Helpers.isSpaceOrTab
+        |. oneOrMore Whitespace.isSpaceOrTab
         |= ListItem.parser
         |> andThen identity
 
@@ -48,10 +48,10 @@ itemBody : Parser ListItem
 itemBody =
     oneOf
         [ succeed identity
-            |. backtrackable (oneOrMore Helpers.isSpaceOrTab)
+            |. backtrackable (oneOrMore Whitespace.isSpaceOrTab)
             |= ListItem.parser
         , succeed (ListItem.PlainItem "")
-            |. Advanced.symbol Token.newline
+            |. Whitespace.lineEnd
         ]
 
 

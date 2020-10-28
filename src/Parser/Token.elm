@@ -31,7 +31,7 @@ newline =
 
 carriageReturn : Token Parser.Problem
 carriageReturn =
-    Token "\u{000D}" (Parser.Expecting "a carriage return")
+    Token "\r" (Parser.Expecting "a carriage return")
 
 
 hash : Token Parser.Problem

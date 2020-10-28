@@ -447,7 +447,7 @@ isWhitespace c =
         '\n' ->
             True
 
-        '\u{000D}' ->
+        '\r' ->
             True
 
         '\t' ->

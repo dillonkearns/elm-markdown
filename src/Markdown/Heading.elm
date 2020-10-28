@@ -1,5 +1,7 @@
 module Markdown.Heading exposing (..)
 
+import Whitespace
+import Helpers
 import Markdown.RawBlock exposing (Attribute, RawBlock(..), UnparsedInlines(..))
 import Parser
 import Parser.Advanced as Advanced exposing ((|.), (|=), Nestable(..), Step(..), andThen, chompIf, chompWhile, getChompedString, spaces, succeed, symbol)
@@ -42,7 +44,7 @@ parser =
                             succeed level
                     )
            )
-        |= (Advanced.chompUntilEndOr "\n"
+        |= (Helpers.chompUntilLineEndOrEnd
                 |> Advanced.mapChompedString
                     (\headingText _ ->
                         headingText

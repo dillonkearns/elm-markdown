@@ -1,5 +1,6 @@
 module Markdown.TableParser exposing (..)
 
+import Whitespace
 import Helpers
 import Markdown.Block exposing (Alignment(..))
 import Markdown.Table exposing (TableDelimiterRow(..))
@@ -226,7 +227,7 @@ standardizeRowLength expectedLength row =
 
 chompSinglelineWhitespace : Parser ()
 chompSinglelineWhitespace =
-    chompWhile Helpers.isSpaceOrTab
+    chompWhile Whitespace.isSpaceOrTab
 
 
 bodyParser : Int -> Parser (List (List String))
@@ -237,9 +238,7 @@ bodyParser expectedRowLength =
 bodyParserHelp : Int -> List (List String) -> Parser (Step (List (List String)) (List (List String)))
 bodyParserHelp expectedRowLength revRows =
     oneOf
-        [ tokenHelp "\n"
-            |> map (\_ -> Done (List.reverse revRows))
-        , Advanced.end (Parser.Expecting "end")
+        [ Helpers.lineEndOrEnd
             |> map (\_ -> Done (List.reverse revRows))
         , bodyRowParser expectedRowLength
             |> map (\row -> Loop (row :: revRows))

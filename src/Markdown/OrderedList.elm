@@ -1,5 +1,6 @@
 module Markdown.OrderedList exposing (parser)
 
+import Whitespace
 import Helpers
 import Markdown.RawBlock exposing (RawBlock(..))
 import Parser
@@ -36,9 +37,9 @@ parser previousWasBody =
                     |. Advanced.symbol Token.closingParen
                 ]
             )
-        |. oneOrMore Helpers.isSpaceOrTab
-        |= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
-        |. endOrNewline
+        |. oneOrMore Whitespace.isSpaceOrTab
+        |= Advanced.getChompedString Helpers.chompUntilLineEndOrEnd
+        |. Helpers.lineEndOrEnd
         |> andThen identity
 
 
@@ -87,19 +88,11 @@ itemBody : Parser ListItem
 itemBody =
     oneOf
         [ succeed identity
-            |. oneOrMore Helpers.isSpaceOrTab
-            |= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
-            |. endOrNewline
+            |. oneOrMore Whitespace.isSpaceOrTab
+            |= Advanced.getChompedString Helpers.chompUntilLineEndOrEnd
+            |. Helpers.lineEndOrEnd
         , succeed ""
-            |. endOrNewline
-        ]
-
-
-endOrNewline : Parser ()
-endOrNewline =
-    oneOf
-        [ Advanced.symbol Token.newline
-        , Advanced.end (Parser.Expecting "end of input")
+            |. Helpers.lineEndOrEnd
         ]
 
 
