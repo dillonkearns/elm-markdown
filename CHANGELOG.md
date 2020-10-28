@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [5.1.1] - 2020-10-28
+
+- Handle some new code fence parsing corner cases. Thank you for the fixes Thomasin! See https://github.com/dillonkearns/elm-markdown/pull/69).
+
 ## [5.1.0] - 2020-10-08
 
 ### Added
