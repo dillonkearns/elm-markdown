@@ -200,6 +200,11 @@ suite =
                         "(Visit https://encrypted.google.com/search?q=Markup+(business))\n"
                             |> expectInlines
                                 [ Inlines.Text "(Visit ", Inlines.Link "https://encrypted.google.com/search?q=Markup+(business)" Nothing [ Inlines.Text "https://encrypted.google.com/search?q=Markup+(business)" ], Inlines.Text ")" ]
+                , test "when they're inside an html anchor tag" <|
+                    \() ->
+                        "Already linked: <a href=\"http://example.com/\">http://example.com/</a>."
+                            |> expectInlines
+                                [ Inlines.Text "Already linked: ", Inlines.HtmlInline (HtmlParser.Element "a" [ { name = "href", value = "http://example.com/" } ] [ HtmlParser.Text "http://example.com/" ]), Inlines.Text "." ]
                 ]
             , describe "extended email autolinks"
                 [ test "basic email autolink" <|
