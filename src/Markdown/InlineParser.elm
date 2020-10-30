@@ -701,7 +701,7 @@ findExtendedAutolinkTokens str =
 extendedAutoLinkRegex : Regex
 extendedAutoLinkRegex =
     -- what if we do this without the negative lookbehind and just make it a sub match?
-    Regex.fromString "(?<=^|\\s|\\*|_|~|\\()(?:(?:https?://)|(?:www\\.))[a-z0-9A-Z_-]+(?:\\.[a-z0-9A-Z_-]+)*(?:/([^\\s<]+))?"
+    Regex.fromString "(?<=^|\\s|\\*|_|~|\\()(?:(?:https?://)|(?:www\\.))[a-z0-9A-Z_-]+(?:\\.[a-z0-9A-Z_-]+)*(?:/([^\\s<]*))?"
         |> Maybe.withDefault Regex.never
 
 

@@ -180,11 +180,21 @@ suite =
                         "http://www.bar.baz\n"
                             |> expectInlines
                                 [ Inlines.Link "http://www.bar.baz" Nothing [ Inlines.Text "http://www.bar.baz" ] ]
-                , test "basic httpsurl" <|
+                , test "basic https url" <|
                     \() ->
                         "https://www.bar.baz\n"
                             |> expectInlines
                                 [ Inlines.Link "https://www.bar.baz" Nothing [ Inlines.Text "https://www.bar.baz" ] ]
+                , test "url ending in a slash" <|
+                    \() ->
+                        "https://www.bar.baz/\n"
+                            |> expectInlines
+                                [ Inlines.Link "https://www.bar.baz/" Nothing [ Inlines.Text "https://www.bar.baz/" ] ]
+                , test "url with nested page" <|
+                    \() ->
+                        "https://www.bar.baz/foo1/foo2\n"
+                            |> expectInlines
+                                [ Inlines.Link "https://www.bar.baz/foo1/foo2" Nothing [ Inlines.Text "https://www.bar.baz/foo1/foo2" ] ]
                 , test "url with complicated path" <|
                     \() ->
                         "(Visit https://encrypted.google.com/search?q=Markup+(business))\n"
