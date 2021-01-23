@@ -2,7 +2,7 @@ module Benchmarks exposing (..)
 
 import Benchmark exposing (Benchmark, describe)
 import Dict
-import Helpers
+import Whitespace
 import Markdown
 import Markdown.InlineParser
 import Markdown.OrderedList
@@ -208,13 +208,13 @@ succeedOrMap =
     describe "succeed or map"
         [ let
             withMap =
-                Advanced.backtrackable (chompWhile Helpers.isSpaceOrTab)
+                Advanced.backtrackable (chompWhile Whitespace.isSpaceOrTab)
                     |. symbol Token.newline
                     |> Advanced.map (\_ -> BlankLine)
 
             withSucceed =
                 succeed BlankLine
-                    |. Advanced.backtrackable (chompWhile Helpers.isSpaceOrTab)
+                    |. Advanced.backtrackable (chompWhile Whitespace.isSpaceOrTab)
                     |. symbol Token.newline
           in
           Benchmark.compare "ignore argument"
