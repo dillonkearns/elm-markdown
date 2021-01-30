@@ -48,6 +48,8 @@ testRenderer htmlRenderer =
         \content -> Unexpected "String"
     , emphasis =
         \content -> Unexpected "String"
+    , strikethrough =
+        \content -> Unexpected "String"
     , hardLineBreak = Unexpected "String"
     , codeSpan =
         \content -> Unexpected "String"
