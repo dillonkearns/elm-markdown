@@ -82,6 +82,8 @@ renderMarkdown markdown =
                 \children -> Html.strong [] children
             , emphasis =
                 \children -> Html.em [] children
+            , strikethrough =
+                \children -> Html.del [] children
             , codeSpan =
                 \content -> Html.code [] [ Html.text content ]
             , link =

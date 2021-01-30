@@ -9798,6 +9798,22 @@ Gives this correct output:
 
 ## [extension] Strikethrough
 
+### [Example 491](https://github.github.com/gfm/#example-491)
+
+This markdown:
+
+
+````````````markdown
+~~Hi~~ Hello, world!
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p><del>Hi</del> Hello, world!</p>
+````````````
+
 ### [Example 492](https://github.github.com/gfm/#example-492)
 
 This markdown:

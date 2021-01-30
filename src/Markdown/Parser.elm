@@ -189,6 +189,8 @@ mapInline inline =
                 _ ->
                     -- TODO fix this
                     Block.Strong (inlines |> List.map mapInline)
+        Inline.Strikethrough inlines ->
+          Block.Strikethrough (inlines |> List.map mapInline)
 
 
 toHeading : Int -> Result Parser.Problem Block.HeadingLevel
