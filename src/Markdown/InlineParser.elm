@@ -145,7 +145,7 @@ type Meaning
     | EmphasisToken Char { leftFringeRank : Int, rightFringeRank : Int }
     | SoftLineBreakToken
     | HardLineBreakToken
-    | StrikethroughToken
+    | StrikethroughToken Escaped
 
 
 findToken : (Token -> Bool) -> List Token -> Maybe ( Token, List Token, List Token )
@@ -445,19 +445,30 @@ findStrikethroughTokens str =
 
 strikethroughTokenRegex : Regex
 strikethroughTokenRegex =
-    Regex.fromString "(~{2})([^~])?"
+    Regex.fromString "(\\\\*)(~{2,})([^~])?"
         |> Maybe.withDefault Regex.never
 
 
 regMatchToStrikethroughToken : Regex.Match -> Maybe Token
 regMatchToStrikethroughToken regMatch =
     case regMatch.submatches of
-        -- _ :: (Just content) :: _ ->
-        (Just content) :: _ ->
+        maybeBackslashes :: (Just tilde) :: _ ->
+            let
+                backslashesLength =
+                    Maybe.map String.length maybeBackslashes
+                        |> Maybe.withDefault 0
+
+                (length, meaning) =
+                  if isEven backslashesLength then
+                      (String.length tilde, StrikethroughToken NotEscaped)
+
+                  else
+                      (String.length tilde, StrikethroughToken Escaped)
+            in
             Just
-                { index = regMatch.index
-                , length = 2
-                , meaning = StrikethroughToken
+                { index = regMatch.index + backslashesLength
+                , length = length
+                , meaning = meaning
                 }
 
         _ ->
@@ -526,7 +537,7 @@ containSpace =
     String.foldl (\c accum -> accum || isWhitespace c) False
 
 
-{-| Punctuation as matched by the regex `[!-#%-\\*,-/:;\\?@\\[-\\]_\\{\\}]`
+{-| Punctuation as matched by the regex `[!-#%-\\*,-/:;\\?@\\[-\\]_\\{\\}~]`
 -}
 containPunctuation : String -> Bool
 containPunctuation =
@@ -610,6 +621,10 @@ isPunctuation c =
             True
 
         '}' ->
+            True
+
+        -- 126
+        '~' ->
             True
 
         _ ->
@@ -1841,23 +1856,42 @@ lineBreakTTM remaining tokens matches refs rawText =
 
 isStrikethroughTokenPair : Token -> Token -> Bool
 isStrikethroughTokenPair closeToken openToken =
-    case openToken.meaning of
-        StrikethroughToken ->
-            openToken.length == closeToken.length
+    let
+        (openTokenIsStrikethrough, openTokenLength) =
+            case openToken.meaning of
+                -- If open token is escaped, ignore first '~'
+                StrikethroughToken Escaped ->
+                    (True, openToken.length - 1)
+                StrikethroughToken NotEscaped ->
+                    (True, openToken.length)
 
-        _ ->
-            False
+                _ ->
+                    (False, 0)
+
+        (closeTokenIsStrikethrough, closeTokenLength) =
+            case closeToken.meaning of
+                -- If close token is escaped, ignore first '~'
+                StrikethroughToken Escaped ->
+                    (True, closeToken.length - 1)
+                StrikethroughToken NotEscaped ->
+                    (True, closeToken.length)
+
+                _ ->
+                    (False, 0)
+    in
+        closeTokenIsStrikethrough && openTokenIsStrikethrough && closeTokenLength == openTokenLength
 
 strikethroughToMatch : Token -> List Match -> References -> String -> ( Token, List Token, List Token ) -> ( List Token, List Match )
 strikethroughToMatch closeToken matches references rawText ( openToken, _, remainTokens ) =
     let
+        -- If open token is escaped, ignore first '~'
         updatedOpenToken : Token
         updatedOpenToken =
             case openToken.meaning of
-                StrikethroughToken ->
+                StrikethroughToken Escaped ->
                     { openToken
-                        | index = openToken.index
-                        , length = openToken.length
+                        | index = openToken.index + 1
+                        , length = openToken.length - 1
                     }
 
                 _ ->
@@ -1885,7 +1919,7 @@ strikethroughTTM remaining tokens matches references rawText =
 
         token :: tokensTail ->
             case token.meaning of
-                StrikethroughToken ->
+                StrikethroughToken isEscaped ->
                   case findToken (isStrikethroughTokenPair token) tokens of
                       Just content ->
                           let
