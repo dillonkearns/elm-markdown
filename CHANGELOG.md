@@ -9,6 +9,26 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [6.0.0] - 2021-02-09
+
+### Added
+
+- Now parses strikethroughs (~~like this~~). Thank you [@tadityar](https://github.com/tadityar) for the pull request! See [#75](https://github.com/dillonkearns/elm-markdown/pull/75).
+
+Breaking changes:
+
+`Markdown.Inline.Block` adds
+
+```elm
+            | Strikethrough (List.List Markdown.Block.Inline)
+```
+
+`Markdown.Renderer` now has a new field:
+
+```elm
+            , strikethrough : List.List view -> view
+```
+
 ## [5.1.1] - 2020-10-28
 
 - Handle some new code fence parsing corner cases. Thank you for the fixes Thomasin! See https://github.com/dillonkearns/elm-markdown/pull/69).
