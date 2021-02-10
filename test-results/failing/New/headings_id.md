@@ -30,5 +30,5 @@ Should give output:
 But instead was:
 
 ````````````html
-<h3>Heading with a<a href="http://github.com/">link</a></h3><h3>Heading with some<em>italic text</em></h3><h3>Or some<strong>strong</strong></h3><p>(which doesn&#39;t really make any difference, here)</p><h3>Or even<code>code</code></h3><h3>What about ~~strikethrough~~</h3><h2>And a ref<a href="/some/url" title="link to nowhere">link</a></h2>
+<h3>Heading with a<a href="http://github.com/">link</a></h3><h3>Heading with some<em>italic text</em></h3><h3>Or some<strong>strong</strong></h3><p>(which doesn&#39;t really make any difference, here)</p><h3>Or even<code>code</code></h3><h3>What about<del>strikethrough</del></h3><h2>And a ref<a href="/some/url" title="link to nowhere">link</a></h2>
 ````````````

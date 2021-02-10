@@ -47,6 +47,7 @@ type alias Renderer view =
     , codeSpan : String -> view
     , strong : List view -> view
     , emphasis : List view -> view
+    , strikethrough : List view -> view
     , hardLineBreak : view
     , link : { title : Maybe String, destination : String } -> List view -> view
     , image : { alt : String, src : String, title : Maybe String } -> view
@@ -95,6 +96,8 @@ defaultHtmlRenderer =
         \children -> Html.strong [] children
     , emphasis =
         \children -> Html.em [] children
+    , strikethrough =
+        \children -> Html.del [] children
     , codeSpan =
         \content -> Html.code [] [ Html.text content ]
     , link =
@@ -489,6 +492,12 @@ renderSingleInline renderer inline =
             innerInlines
                 |> renderStyled renderer
                 |> Result.map renderer.emphasis
+                |> Just
+
+        Block.Strikethrough innerInlines ->
+            innerInlines
+                |> renderStyled renderer
+                |> Result.map renderer.strikethrough
                 |> Just
 
         Block.Image src title children ->
