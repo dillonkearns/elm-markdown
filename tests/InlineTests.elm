@@ -205,6 +205,11 @@ suite =
                         "Already linked: <a href=\"http://example.com/\">http://example.com/</a>."
                             |> expectInlines
                                 [ Inlines.Text "Already linked: ", Inlines.HtmlInline (HtmlParser.Element "a" [ { name = "href", value = "http://example.com/" } ] [ HtmlParser.Text "http://example.com/" ]), Inlines.Text "." ]
+                , test "when they're inside an html anchor tag inside an html paragraph tag" <|
+                    \() ->
+                        "<p>Already linked: <a href=\"http://example.com/\">http://example.com/</a>.</p>"
+                            |> expectInlines
+                                [ Inlines.HtmlInline (HtmlParser.Element "p" [] [ HtmlParser.Text "Already linked: ", HtmlParser.Element "a" [ { name = "href", value = "http://example.com/" } ] [ HtmlParser.Text "http://example.com/" ], HtmlParser.Text "." ]) ]
                 ]
             , describe "extended email autolinks"
                 [ test "basic email autolink" <|

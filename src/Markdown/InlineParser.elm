@@ -1418,6 +1418,14 @@ htmlElementTTM remaining tokens matches references rawText =
 
                                 Just ( closeToken, innerTokens, newTail ) ->
                                     let
+                                        withoutInnerLinksIfAnchor =
+                                            case htmlModel of
+                                                HtmlParser.Element "a" _ _ ->
+                                                    List.filter (isExtendedAutoLink >> not) innerTokens
+
+                                                _ ->
+                                                    innerTokens
+
                                         newMatch =
                                             tokenPairToMatch
                                                 references
@@ -1426,7 +1434,7 @@ htmlElementTTM remaining tokens matches references rawText =
                                                 (HtmlType htmlModel)
                                                 token
                                                 closeToken
-                                                innerTokens
+                                                withoutInnerLinksIfAnchor
                                     in
                                     htmlElementTTM newTail tokens (newMatch :: matches) references rawText
 
@@ -1463,12 +1471,17 @@ voidHtmlTags =
 
 isCloseToken : HtmlModel -> Token -> Bool
 isCloseToken htmlModel token =
-    --case token.meaning of
-    --    HtmlToken False htmlModel_ ->
-    --        htmlModel.tag == htmlModel_.tag
-    --
-    --    _ ->
-    False
+    case token.meaning of
+        HtmlToken NotOpening htmlModel_ ->
+            case ( htmlModel, htmlModel_ ) of
+                ( HtmlParser.Element firstTag _ _, HtmlParser.Element secondTag _ _ ) ->
+                    firstTag == secondTag
+
+                _ ->
+                    False
+
+        _ ->
+            False
 
 
 
@@ -1812,6 +1825,19 @@ decodeUrlRegex =
 
 
 -- ExtendedAutolink Tokens To Matches
+
+
+isExtendedAutoLink : Token -> Bool
+isExtendedAutoLink token =
+    case token.meaning of
+        ExtendedAutolink ->
+            True
+
+        EmailAutolink ->
+            True
+
+        _ ->
+            False
 
 
 extendedAutolinkTTM : List Token -> List Token -> List Match -> References -> String -> List Match
