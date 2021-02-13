@@ -1469,14 +1469,6 @@ htmlElementTTM remaining tokens matches references rawText =
 
                                 Just ( closeToken, innerTokens, newTail ) ->
                                     let
-                                        withoutInnerLinksIfAnchor =
-                                            case htmlModel of
-                                                HtmlParser.Element "a" _ _ ->
-                                                    List.filter (isExtendedAutoLink >> not) innerTokens
-
-                                                _ ->
-                                                    innerTokens
-
                                         newMatch =
                                             tokenPairToMatch
                                                 references
@@ -1485,7 +1477,7 @@ htmlElementTTM remaining tokens matches references rawText =
                                                 (HtmlType htmlModel)
                                                 token
                                                 closeToken
-                                                withoutInnerLinksIfAnchor
+                                                innerTokens
                                     in
                                     htmlElementTTM newTail tokens (newMatch :: matches) references rawText
 
