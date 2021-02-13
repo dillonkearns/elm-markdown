@@ -180,7 +180,7 @@ mapInline inline =
 
         Inline.HtmlInline node ->
             node
-                |> nodeToRawBlock
+                |> nodeToRawBlock AllowAll
                 |> Block.HtmlInline
 
         Inline.Emphasis level inlines ->
@@ -511,27 +511,30 @@ xmlNodeToHtmlNode xmlNode =
                 |> succeed
 
 
-textNodeToBlocks : String -> List Block
-textNodeToBlocks textNodeValue =
-    parse textNodeValue
+textNodeToBlocks : AllowedInlines -> String -> List Block
+textNodeToBlocks allowedInlines textNodeValue =
+    parseHelper allowedInlines textNodeValue
         |> Result.withDefault []
 
 
-nodeToRawBlock : Node -> Block.Html Block
-nodeToRawBlock node =
+nodeToRawBlock : AllowedInlines -> Node -> Block.Html Block
+nodeToRawBlock allowedInlines node =
     case node of
         HtmlParser.Text innerText ->
             Block.HtmlComment "TODO this never happens, but use types to drop this case."
 
         HtmlParser.Element tag attributes children ->
             let
+                allowance =
+                    mostRestrictiveAllowance allowedInlines (allowAllInlinesUnlessInsideAnchor tag)
+
                 parseChild child =
                     case child of
                         HtmlParser.Text text ->
-                            textNodeToBlocks text
+                            textNodeToBlocks allowance text
 
                         _ ->
-                            [ nodeToRawBlock child |> Block.HtmlBlock ]
+                            [ nodeToRawBlock allowance child |> Block.HtmlBlock ]
             in
             Block.HtmlElement tag
                 attributes

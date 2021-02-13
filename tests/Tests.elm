@@ -510,25 +510,21 @@ qwer
                             )
             , test "inside html with inline styles on the link text" <|
                 \() ->
-                    "<p>Already linked:<a href=\"http://example.com/\">**http://example.com/**</a>.</p>\n\n"
+                    "Already linked:<a href=\"http://example.com/\">**http://example.com/**</a>.\n\n"
                         |> parse
                         |> Expect.equal
                             (Ok
-                                [ Block.HtmlBlock
-                                    (HtmlElement "p"
-                                        []
-                                        [ Block.Paragraph
-                                            [ Block.Text "Already linked:" ]
-                                        , Block.HtmlBlock
-                                            (HtmlElement "a"
-                                                [ { name = "href", value = "http://example.com/" } ]
-                                                [ Block.Paragraph
-                                                    [ Block.Strong [ Block.Text "http://example.com/" ] ]
-                                                ]
-                                            )
-                                        , Block.Paragraph [ Block.Text "." ]
-                                        ]
-                                    )
+                                [ Block.Paragraph
+                                    [ Block.Text "Already linked:"
+                                    , Block.HtmlInline
+                                        (HtmlElement "a"
+                                            [ { name = "href", value = "http://example.com/" } ]
+                                            [ Block.Paragraph
+                                                [ Block.Strong [ Block.Text "http://example.com/" ] ]
+                                            ]
+                                        )
+                                    , Block.Text "."
+                                    ]
                                 ]
                             )
             ]
