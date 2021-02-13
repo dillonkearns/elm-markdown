@@ -113,6 +113,7 @@ renderer zoomFactor =
     , text = \value -> Element.text value
     , strong = \content -> Element.row [ Font.bold ] content
     , emphasis = \content -> Element.row [ Font.italic ] content
+    , strikethrough = \content -> Element.row [ Font.strike ] content
     , hardLineBreak = Element.row [ Element.height (Element.px 15) ] []
     , codeSpan = code
     , link = link

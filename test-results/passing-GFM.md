@@ -4034,6 +4034,27 @@ Gives this correct output:
 
 ````````````
 
+### [Example 320](https://spec.commonmark.org/0.29/#example-320)
+
+This markdown:
+
+
+````````````markdown
+``` f&ouml;&ouml;
+foo
+```
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<pre><code class="language-föö">foo
+</code></pre>
+
+````````````
+
 ### [Example 321](https://spec.commonmark.org/0.29/#example-321)
 
 This markdown:
@@ -4330,6 +4351,73 @@ Gives this correct output:
 
 ````````````
 
+### [Example 96](https://spec.commonmark.org/0.29/#example-96)
+
+This markdown:
+
+
+````````````markdown
+```
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<pre><code></code></pre>
+
+````````````
+
+### [Example 97](https://spec.commonmark.org/0.29/#example-97)
+
+This markdown:
+
+
+````````````markdown
+`````
+
+```
+aaa
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<pre><code>
+```
+aaa
+</code></pre>
+
+````````````
+
+### [Example 98](https://spec.commonmark.org/0.29/#example-98)
+
+This markdown:
+
+
+````````````markdown
+> ```
+> aaa
+
+bbb
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<blockquote>
+<pre><code>aaa
+</code></pre>
+</blockquote>
+<p>bbb</p>
+
+````````````
+
 ### [Example 99](https://spec.commonmark.org/0.29/#example-99)
 
 This markdown:
@@ -4349,6 +4437,98 @@ Gives this correct output:
 ````````````html
 <pre><code>
   
+</code></pre>
+
+````````````
+
+### [Example 100](https://spec.commonmark.org/0.29/#example-100)
+
+This markdown:
+
+
+````````````markdown
+```
+```
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<pre><code></code></pre>
+
+````````````
+
+### [Example 101](https://spec.commonmark.org/0.29/#example-101)
+
+This markdown:
+
+
+````````````markdown
+ ```
+ aaa
+aaa
+```
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<pre><code>aaa
+aaa
+</code></pre>
+
+````````````
+
+### [Example 102](https://spec.commonmark.org/0.29/#example-102)
+
+This markdown:
+
+
+````````````markdown
+  ```
+aaa
+  aaa
+aaa
+  ```
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<pre><code>aaa
+aaa
+aaa
+</code></pre>
+
+````````````
+
+### [Example 103](https://spec.commonmark.org/0.29/#example-103)
+
+This markdown:
+
+
+````````````markdown
+   ```
+   aaa
+    aaa
+  aaa
+   ```
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<pre><code>aaa
+ aaa
+aaa
 </code></pre>
 
 ````````````
@@ -4376,6 +4556,70 @@ aaa
 
 ````````````
 
+### [Example 105](https://spec.commonmark.org/0.29/#example-105)
+
+This markdown:
+
+
+````````````markdown
+```
+aaa
+  ```
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<pre><code>aaa
+</code></pre>
+
+````````````
+
+### [Example 106](https://spec.commonmark.org/0.29/#example-106)
+
+This markdown:
+
+
+````````````markdown
+   ```
+aaa
+  ```
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<pre><code>aaa
+</code></pre>
+
+````````````
+
+### [Example 107](https://spec.commonmark.org/0.29/#example-107)
+
+This markdown:
+
+
+````````````markdown
+```
+aaa
+    ```
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<pre><code>aaa
+    ```
+</code></pre>
+
+````````````
+
 ### [Example 108](https://spec.commonmark.org/0.29/#example-108)
 
 This markdown:
@@ -4393,6 +4637,28 @@ Gives this correct output:
 ````````````html
 <p><code> </code>
 aaa</p>
+
+````````````
+
+### [Example 109](https://spec.commonmark.org/0.29/#example-109)
+
+This markdown:
+
+
+````````````markdown
+~~~~~~
+aaa
+~~~ ~~
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<pre><code>aaa
+~~~ ~~
+</code></pre>
 
 ````````````
 
@@ -4472,6 +4738,50 @@ end
 
 ````````````
 
+### [Example 113](https://spec.commonmark.org/0.29/#example-113)
+
+This markdown:
+
+
+````````````markdown
+~~~~    ruby startline=3 $%@#$
+def foo(x)
+  return 3
+end
+~~~~~~~
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<pre><code class="language-ruby">def foo(x)
+  return 3
+end
+</code></pre>
+
+````````````
+
+### [Example 114](https://spec.commonmark.org/0.29/#example-114)
+
+This markdown:
+
+
+````````````markdown
+````;
+````
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<pre><code class="language-;"></code></pre>
+
+````````````
+
 ### [Example 115](https://spec.commonmark.org/0.29/#example-115)
 
 This markdown:
@@ -4489,6 +4799,27 @@ Gives this correct output:
 ````````````html
 <p><code>aa</code>
 foo</p>
+
+````````````
+
+### [Example 116](https://spec.commonmark.org/0.29/#example-116)
+
+This markdown:
+
+
+````````````markdown
+~~~ aa ``` ~~~
+foo
+~~~
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<pre><code class="language-aa">foo
+</code></pre>
 
 ````````````
 
@@ -9598,6 +9929,22 @@ Gives this correct output:
 ````````````
 
 ## [extension] Strikethrough
+
+### [Example 491](https://github.github.com/gfm/#example-491)
+
+This markdown:
+
+
+````````````markdown
+~~Hi~~ Hello, world!
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p><del>Hi</del> Hello, world!</p>
+````````````
 
 ### [Example 492](https://github.github.com/gfm/#example-492)
 

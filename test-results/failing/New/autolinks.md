@@ -31,5 +31,5 @@ Should give output:
 But instead was:
 
 ````````````html
-<p>(See<a href="https://www.example.com/fhqwhgads">https://www.example.com/fhqwhgads</a>.)</p><p>((<a href="http://foo.com">http://foo.com</a>))</p><p>((<a href="http://foo.com">http://foo.com</a>.))</p><p>HTTP://FOO.COM</p><p>hTtP://fOo.CoM</p><p>~~<a href="mailto:hello@email.com">hello@email.com</a>~~</p><p><strong><a href="mailto:me@example.com">me@example.com</a></strong></p><p><strong>test@test.com</strong></p>
+<p>(See https://www.example.com/fhqwhgads.)</p><p>((http://foo.com))</p><p>((http://foo.com.))</p><p>HTTP://FOO.COM</p><p>hTtP://fOo.CoM</p><p>~~hello@email.com~~</p><p><strong>me@example.com</strong></p><p><strong>test@test.com</strong></p>
 ````````````

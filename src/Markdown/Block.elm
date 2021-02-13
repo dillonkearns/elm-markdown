@@ -134,7 +134,7 @@ type Inline
     | Image String (Maybe String) (List Inline)
     | Emphasis (List Inline)
     | Strong (List Inline)
-      -- Strikethrough TODO  https://github.github.com/gfm/#strikethrough-extension-
+    | Strikethrough (List Inline)
     | CodeSpan String
     | Text String
     | HardLineBreak
@@ -220,6 +220,9 @@ extractTextHelp inline text =
             text ++ extractInlineText inlines
 
         Emphasis inlines ->
+            text ++ extractInlineText inlines
+
+        Strikethrough inlines ->
             text ++ extractInlineText inlines
 
 
@@ -469,6 +472,11 @@ inlineParserWalk function inline =
                 |> Emphasis
                 |> function
 
+        Strikethrough inlines ->
+            List.map (inlineParserWalk function) inlines
+                |> Strikethrough
+                |> function
+
         HtmlInline html ->
             case html of
                 HtmlElement string htmlAttributes children ->
@@ -530,6 +538,16 @@ inlineParserValidateWalk function inline =
                             |> function
                             |> Result.mapError List.singleton
                     )
+
+        Strikethrough inlines ->
+            traverse (inlineParserValidateWalk function) inlines
+                |> Result.andThen
+                    (\transformedInlines ->
+                        Strikethrough transformedInlines
+                            |> function
+                            |> Result.mapError List.singleton
+                    )
+
 
         CodeSpan string ->
             function inline
@@ -967,6 +985,13 @@ inlineFoldl ifunction top_acc list =
                         List.foldl ifn iacc inlines
 
                     Strong inlines ->
+                        let
+                            iacc =
+                                ifn inline acc
+                        in
+                        List.foldl ifn iacc inlines
+
+                    Strikethrough inlines ->
                         let
                             iacc =
                                 ifn inline acc

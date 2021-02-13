@@ -82,6 +82,8 @@ renderMarkdown markdown =
                 \children -> Html.strong [] children
             , emphasis =
                 \children -> Html.em [] children
+            , strikethrough =
+                \children -> Html.del [] children
             , codeSpan =
                 \content -> Html.code [] [ Html.text content ]
             , link =
@@ -170,11 +172,12 @@ renderMarkdown markdown =
                 \{ body, language } ->
                     let
                         classes =
-                            case language of
-                                Just actualLanguage ->
+                            -- Only the first word is used in the class
+                            case Maybe.map String.words language of
+                                Just (actualLanguage::_) ->
                                     [ Attr.class <| "language-" ++ actualLanguage ]
 
-                                Nothing ->
+                                _ ->
                                     []
                     in
                     Html.pre []

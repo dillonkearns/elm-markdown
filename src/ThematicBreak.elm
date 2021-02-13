@@ -1,8 +1,10 @@
 module ThematicBreak exposing (ThematicBreak(..), parser)
 
+import Whitespace
+import Helpers
 import Parser
 import Parser.Advanced as Advanced exposing (..)
-import Parser.Extra as Extra exposing (tokenHelp)
+import Parser.Token as Token
 
 
 type alias Parser a =
@@ -20,9 +22,9 @@ parser =
     -- so we optimize for that case
     oneOf
         [ succeed identity
-            |. singleSpace
-            |. oneOf [ singleSpace, succeed () ]
-            |. oneOf [ singleSpace, succeed () ]
+            |. Whitespace.space
+            |. oneOf [ Whitespace.space, succeed () ]
+            |. oneOf [ Whitespace.space, succeed () ]
             |= parseThematicBreak
         , parseThematicBreak
         ]
@@ -47,7 +49,7 @@ withChar : Char -> Parser ThematicBreak
 withChar tchar =
     let
         token =
-            tokenHelp (String.fromChar tchar)
+            Token.parseString (String.fromChar tchar)
     in
     succeed ThematicBreak
         |. token
@@ -55,31 +57,10 @@ withChar tchar =
         |. token
         |. whitespace
         |. token
-        |. chompWhile (\c -> c == tchar || isSpace c)
-        |. oneOf
-            [ tokenHelp "\n"
-            , end (Parser.Expecting "end")
-            ]
-
-
-isSpace : Char -> Bool
-isSpace c =
-    case c of
-        ' ' ->
-            True
-
-        '\t' ->
-            True
-
-        _ ->
-            False
+        |. chompWhile (\c -> c == tchar || Whitespace.isSpaceOrTab c)
+        |. Helpers.lineEndOrEnd
 
 
 whitespace : Parser ()
 whitespace =
-    chompWhile isSpace
-
-
-singleSpace : Parser ()
-singleSpace =
-    chompIf isSpace (Parser.Expecting "Space")
+    chompWhile Whitespace.isSpaceOrTab

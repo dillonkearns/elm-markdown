@@ -1,5 +1,6 @@
 module Markdown.LinkReferenceDefinition exposing (..)
 
+import Whitespace
 import Helpers
 import Markdown.Helpers
 import Parser
@@ -30,15 +31,15 @@ parser =
                 , { destination = destination, title = title }
                 )
             )
-            |. Helpers.upToThreeSpaces
+            |. Whitespace.upToThreeSpaces
             |= labelParser
             -- whitespace that can contain up to 1 newline
-            |. chompWhile Helpers.isSpaceOrTab
+            |. chompWhile Whitespace.isSpaceOrTab
             |. oneOf
-                [ symbol Token.newline
+                [ Whitespace.lineEnd
                 , succeed ()
                 ]
-            |. chompWhile Helpers.isSpaceOrTab
+            |. chompWhile Whitespace.isSpaceOrTab
             -- rest
             |= destinationParser
             |= titleParser
@@ -60,7 +61,7 @@ destinationParser =
                 |. symbol Token.lessThan
                 |= getChompedString (chompUntil Token.greaterThan)
                 |. symbol Token.greaterThan
-            , Parser.Extra.oneOrMore (\c -> not <| Helpers.isGfmWhitespace c)
+            , Parser.Extra.chompOneOrMore (not << Whitespace.isWhitespace)
                 |> getChompedString
             ]
 
@@ -91,7 +92,7 @@ titleParser =
     inContext "title" <|
         oneOf
             [ succeed identity
-                |. Helpers.requiredWhitespace
+                |. Whitespace.requiredWhitespace
                 |= oneOf
                     [ inDoubleQuotes
                     , inSingleQuotes
@@ -114,8 +115,5 @@ hasNoBlankLine str =
 
 onlyWhitespaceTillNewline : Parser ()
 onlyWhitespaceTillNewline =
-    chompWhile (\c -> c /= '\n' && Helpers.isGfmWhitespace c)
-        |. oneOf
-            [ symbol Token.newline
-            , Advanced.end (Parser.Expecting "end of file")
-            ]
+    chompWhile (\c -> not (Whitespace.isLineEnd c) && Whitespace.isWhitespace c)
+        |. Helpers.lineEndOrEnd

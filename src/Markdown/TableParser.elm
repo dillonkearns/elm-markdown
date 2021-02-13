@@ -1,11 +1,13 @@
 module Markdown.TableParser exposing (..)
 
+import Whitespace
 import Helpers
 import Markdown.Block exposing (Alignment(..))
 import Markdown.Table exposing (TableDelimiterRow(..))
 import Parser
 import Parser.Advanced as Advanced exposing (..)
-import Parser.Extra exposing (maybeChomp, oneOrMore, tokenHelp)
+import Parser.Extra exposing (maybeChomp, chompOneOrMore)
+import Parser.Token as Token
 
 
 type alias Parser a =
@@ -85,7 +87,7 @@ rowParser : Parser (List String)
 rowParser =
     succeed identity
         |. oneOf
-            [ tokenHelp "|"
+            [ Token.parseString "|"
             , succeed ()
             ]
         |= parseCells
@@ -117,13 +119,13 @@ parseCellHelper ( curr, acc ) =
                 |> Maybe.withDefault (Done acc)
     in
     oneOf
-        [ tokenHelp "|\n" |> Advanced.map (\_ -> return)
-        , tokenHelp "\n" |> Advanced.map (\_ -> return)
+        [ Token.parseString "|\n" |> Advanced.map (\_ -> return)
+        , Token.parseString "\n" |> Advanced.map (\_ -> return)
         , Advanced.end (Parser.Expecting "end") |> Advanced.map (\_ -> return)
-        , backtrackable (succeed (continueCell "|")) |. tokenHelp "\\\\|"
-        , backtrackable (succeed (continueCell "\\")) |. tokenHelp "\\\\"
-        , backtrackable (succeed (continueCell "|")) |. tokenHelp "\\|"
-        , backtrackable (succeed finishCell) |. tokenHelp "|"
+        , backtrackable (succeed (continueCell "|")) |. Token.parseString "\\\\|"
+        , backtrackable (succeed (continueCell "\\")) |. Token.parseString "\\\\"
+        , backtrackable (succeed (continueCell "|")) |. Token.parseString "\\|"
+        , backtrackable (succeed finishCell) |. Token.parseString "|"
         , mapChompedString (\char _ -> continueCell char) (chompIf (always True) (Parser.Problem "No character found"))
         ]
 
@@ -166,28 +168,28 @@ requirePipeIfNotFirst : List a -> Parser ()
 requirePipeIfNotFirst columns =
     if List.isEmpty columns then
         oneOf
-            [ tokenHelp "|"
+            [ Token.parseString "|"
             , succeed ()
             ]
 
     else
-        tokenHelp "|"
+        Token.parseString "|"
 
 
 delimiterRowHelp : List String -> Parser (Step (List String) (List String))
 delimiterRowHelp revDelimiterColumns =
     oneOf
-        [ backtrackable (tokenHelp "|\n" |> Advanced.map (\_ -> Done revDelimiterColumns))
-        , tokenHelp "\n" |> Advanced.map (\_ -> Done revDelimiterColumns)
+        [ backtrackable (Token.parseString "|\n" |> Advanced.map (\_ -> Done revDelimiterColumns))
+        , Token.parseString "\n" |> Advanced.map (\_ -> Done revDelimiterColumns)
         , Advanced.end (Parser.Expecting "end") |> Advanced.map (\_ -> Done revDelimiterColumns)
-        , backtrackable (succeed (Done revDelimiterColumns) |. tokenHelp "|" |. Advanced.end (Parser.Expecting "end"))
+        , backtrackable (succeed (Done revDelimiterColumns) |. Token.parseString "|" |. Advanced.end (Parser.Expecting "end"))
         , succeed (\column -> Loop (column :: revDelimiterColumns))
             |. requirePipeIfNotFirst revDelimiterColumns
             |. chompSinglelineWhitespace
             |= Advanced.getChompedString
                 (succeed ()
                     |. maybeChomp (\c -> c == ':')
-                    |. oneOrMore (\c -> c == '-')
+                    |. chompOneOrMore (\c -> c == '-')
                     |. maybeChomp (\c -> c == ':')
                 )
             |. chompSinglelineWhitespace
@@ -226,7 +228,7 @@ standardizeRowLength expectedLength row =
 
 chompSinglelineWhitespace : Parser ()
 chompSinglelineWhitespace =
-    chompWhile Helpers.isSpaceOrTab
+    chompWhile Whitespace.isSpaceOrTab
 
 
 bodyParser : Int -> Parser (List (List String))
@@ -237,9 +239,7 @@ bodyParser expectedRowLength =
 bodyParserHelp : Int -> List (List String) -> Parser (Step (List (List String)) (List (List String)))
 bodyParserHelp expectedRowLength revRows =
     oneOf
-        [ tokenHelp "\n"
-            |> map (\_ -> Done (List.reverse revRows))
-        , Advanced.end (Parser.Expecting "end")
+        [ Helpers.lineEndOrEnd
             |> map (\_ -> Done (List.reverse revRows))
         , bodyRowParser expectedRowLength
             |> map (\row -> Loop (row :: revRows))

@@ -1,9 +1,9 @@
 module Markdown.ListItem exposing (Completion(..), ListItem(..), parser)
 
-import Helpers exposing (endOfLineOrFile)
+import Whitespace
+import Helpers
 import Parser
 import Parser.Advanced as Advanced exposing (..)
-import Parser.Extra exposing (zeroOrMore)
 
 
 type ListItem
@@ -25,11 +25,11 @@ parser =
     oneOf
         [ succeed TaskItem
             |= taskItemParser
-            |. zeroOrMore Helpers.isSpaceOrTab
+            |. chompWhile Whitespace.isSpaceOrTab
         , succeed PlainItem
         ]
-        |= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
-        |. endOfLineOrFile
+        |= Advanced.getChompedString Helpers.chompUntilLineEndOrEnd
+        |. Helpers.lineEndOrEnd
 
 
 taskItemParser : Parser Completion

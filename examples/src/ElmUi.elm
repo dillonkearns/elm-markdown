@@ -194,6 +194,7 @@ renderer =
     , text = \value -> Element.paragraph [] [ Element.text value ]
     , strong = \content -> Element.paragraph [ Font.bold ] content
     , emphasis = \content -> Element.paragraph [ Font.italic ] content
+    , strikethrough = \content -> Element.paragraph [ Font.strike ] content
     , codeSpan = code
     , link =
         \{ title, destination } body ->

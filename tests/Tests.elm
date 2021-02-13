@@ -435,7 +435,7 @@ qwer
                     |> Expect.equal
                         (Ok
                             [ Block.CodeBlock
-                                { body = ".\n├── content/\n├── elm.json\n├── images/\n├── static/\n├── index.js\n├── package.json\n└── src/\n    └── Main.elm"
+                                { body = ".\n├── content/\n├── elm.json\n├── images/\n├── static/\n├── index.js\n├── package.json\n└── src/\n    └── Main.elm\n"
                                 , language = Just "shell"
                                 }
                             , Block.Paragraph (unstyledText "This is more stuff")
@@ -810,6 +810,38 @@ I'm part of the block quote
                                 , Paragraph [ Text "[foo]" ]
                                 ]
                             )
+            ]
+        , describe "escaped strikethroughs"
+            [ test "escaped examples 1" <|
+                \() ->
+                    "\\~~~Hi~~ Hello, world!"
+                        |> parse
+                        |> Expect.equal
+                            (Ok [ Paragraph [ Text "~", Strikethrough [ Text "Hi" ], Text " Hello, world!" ] ])
+            , test "escaped example 2" <|
+                \() ->
+                    "~~Hi~~\\~ Hello, world!"
+                        |> parse
+                        |> Expect.equal
+                            (Ok [ Paragraph [ Strikethrough [ Text "Hi" ], Text "~ Hello, world!" ] ])
+            , test "escaped example 3" <|
+                \() ->
+                    "~~Hi\\~~ Hello, world!"
+                        |> parse
+                        |> Expect.equal
+                            (Ok [ Paragraph [ Text "~~Hi~~ Hello, world!" ] ])
+            , test "escaped example 4" <|
+                \() ->
+                    "\\~\\~Hi\\~\\~ Hello, world!"
+                        |> parse
+                        |> Expect.equal
+                            (Ok [ Paragraph [ Text "~~Hi~~ Hello, world!" ] ])
+            , test "escaped example 5" <|
+                \() ->
+                    "\\~~Hi~\\~ Hello, world!"
+                        |> parse
+                        |> Expect.equal
+                            (Ok [ Paragraph [ Text "~~Hi~~ Hello, world!" ] ])
             ]
         ]
 

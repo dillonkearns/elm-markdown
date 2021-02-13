@@ -30,6 +30,7 @@ import Markdown.Block as Block
   - **Image** | _Source_ | _Maybe Title_ | _Inlines_
   - **HtmlInline** | _Tag_ | _List ( Attribute, Maybe Value )_ | _Inlines_
   - **Emphasis** | _Delimiter Length_ | _Inlines_
+  - **Strikethrough** | _Inlines_
 
 -}
 type Inline
@@ -40,6 +41,7 @@ type Inline
     | Image String (Maybe String) (List Inline)
     | HtmlInline HtmlParser.Node
     | Emphasis Int (List Inline)
+    | Strikethrough (List Inline)
 
 
 type alias Attribute =
@@ -94,4 +96,7 @@ extractTextHelp inline text =
             text
 
         Emphasis _ inlines ->
+            text ++ extractText inlines
+
+        Strikethrough inlines ->
             text ++ extractText inlines

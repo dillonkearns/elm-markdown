@@ -6,8 +6,9 @@ module Markdown.Parser exposing (parse, deadEndToString)
 
 -}
 
+import Whitespace
+import Helpers
 import Dict exposing (Dict)
-import Helpers exposing (endOfLineOrFile)
 import HtmlParser exposing (Node(..))
 import Markdown.Block as Block exposing (Block, Inline, ListItem, Task)
 import Markdown.CodeBlock
@@ -188,6 +189,8 @@ mapInline inline =
                 _ ->
                     -- TODO fix this
                     Block.Strong (inlines |> List.map mapInline)
+        Inline.Strikethrough inlines ->
+          Block.Strikethrough (inlines |> List.map mapInline)
 
 
 toHeading : Int -> Result Parser.Problem Block.HeadingLevel
@@ -362,12 +365,12 @@ parseRawInline linkReferences wrap unparsedInlines =
 openBlockOrParagraphParser : Parser RawBlock
 openBlockOrParagraphParser =
     innerParagraphParser
-        |. endOfLineOrFile
+        |. Helpers.lineEndOrEnd
 
 
 innerParagraphParser : Parser RawBlock
 innerParagraphParser =
-    Advanced.chompUntilEndOr "\n"
+    Helpers.chompUntilLineEndOrEnd
         |> Advanced.mapChompedString
             (\rawLine _ ->
                 rawLine
@@ -393,8 +396,8 @@ blockQuote =
     succeed BlockQuote
         |. oneOf blockQuoteStarts
         |. oneOf [ symbol Token.space, succeed () ]
-        |= Advanced.getChompedString (Advanced.chompUntilEndOr "\n")
-        |. endOfLineOrFile
+        |= Advanced.getChompedString Helpers.chompUntilLineEndOrEnd
+        |. Helpers.lineEndOrEnd
 
 
 unorderedListBlock : Parser RawBlock
@@ -432,8 +435,8 @@ orderedListBlock previousWasBody =
 
 blankLine : Parser RawBlock
 blankLine =
-    Advanced.backtrackable (chompWhile Helpers.isSpaceOrTab)
-        |. symbol Token.newline
+    Advanced.backtrackable (chompWhile Whitespace.isSpaceOrTab)
+        |. Whitespace.lineEnd
         |> map (\_ -> BlankLine)
 
 
@@ -803,8 +806,8 @@ parseAsParagraphInsteadOfHtmlBlock =
     -- ^<[A-Za-z][A-Za-z0-9.+-]{1,31}:[^<>\x00-\x20]*>
     token (Advanced.Token "<" (Parser.Expecting "<"))
         |. thisIsDefinitelyNotAnHtmlTag
-        |. Advanced.chompUntilEndOr "\n"
-        |. endOfLineOrFile
+        |. Helpers.chompUntilLineEndOrEnd
+        |. Helpers.lineEndOrEnd
         |> Advanced.mapChompedString (\rawLine _ -> rawLine |> UnparsedInlines |> OpenBlockOrParagraph)
         |> Advanced.backtrackable
 
@@ -861,8 +864,8 @@ indentedCodeBlock : Parser RawBlock
 indentedCodeBlock =
     succeed IndentedCodeBlock
         |. exactlyFourSpaces
-        |= getChompedString (Advanced.chompUntilEndOr "\n")
-        |. endOfLineOrFile
+        |= getChompedString Helpers.chompUntilLineEndOrEnd
+        |. Helpers.lineEndOrEnd
 
 
 setextLineParser : Parser RawBlock
@@ -874,12 +877,12 @@ setextLineParser =
                 |. chompWhile ((==) levelChar)
     in
     succeed identity
-        |. Helpers.upToThreeSpaces
+        |. Whitespace.upToThreeSpaces
         |= oneOf
             [ setextLevel LevelOne Token.equals '='
             , setextLevel LevelTwo Token.minus '-'
             ]
-        |. chompWhile Helpers.isSpaceOrTab
-        |. endOfLineOrFile
+        |. chompWhile Whitespace.isSpaceOrTab
+        |. Helpers.lineEndOrEnd
         |> Advanced.mapChompedString
             (\raw level -> SetextLine level raw)

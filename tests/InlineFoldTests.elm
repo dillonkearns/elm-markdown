@@ -13,6 +13,7 @@ allInlines =
     , Link "" Nothing [ Text "LinkText" ]
     , Image "" Nothing [ Text "ImageText" ]
     , Emphasis [ Text "EmphasisText" ]
+    , Strikethrough [ Text "StrikethroughText" ]
     , Strong [ Text "StrongText" ]
     , CodeSpan ""
     , Text "TextText"
@@ -68,6 +69,9 @@ countInline inline totals =
         Emphasis _ ->
             increment totals "Emphasis"
 
+        Strikethrough _ ->
+            increment totals "Strikethrough"
+
         Strong _ ->
             increment totals "Strong"
 
@@ -95,6 +99,8 @@ suite =
                             , ( "Strong", occs )
                             , ( "ImageText", occs )
                             , ( "EmphasisText", occs )
+                            , ( "Strikethrough", occs )
+                            , ( "StrikethroughText", occs )
                             , ( "StrongText", occs )
                             , ( "TextText", occs )
                             , ( "LinkText", occs )

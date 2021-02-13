@@ -246,7 +246,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<div></div><pre><code class="c language-">int x = 33;</code></pre>
+<div></div><pre><code class="language-c">int x = 33;</code></pre>
 ````````````
 ## [Example 132](https://spec.commonmark.org/0.29/#example-132)
 
@@ -740,7 +740,7 @@ Should give output:
 But instead was:
 
 ````````````html
-ERROR Problem at row 5 Expecting symbol
+ERROR Problem at row 4 Expecting symbol
 ````````````
 ## [Example 158](https://spec.commonmark.org/0.29/#example-158)
 

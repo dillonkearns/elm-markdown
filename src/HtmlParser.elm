@@ -148,7 +148,7 @@ tagNameCharacter c =
         ' ' ->
             False
 
-        '\u{000D}' ->
+        '\r' ->
             False
 
         '\n' ->
@@ -424,7 +424,7 @@ isWhitespace c =
         ' ' ->
             True
 
-        '\u{000D}' ->
+        '\r' ->
             True
 
         '\n' ->
