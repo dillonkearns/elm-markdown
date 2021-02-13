@@ -207,12 +207,12 @@ suite =
                                 [ Inlines.Text "(Visit ", Inlines.Link "https://encrypted.google.com/search?q=Markup+(business)" Nothing [ Inlines.Text "https://encrypted.google.com/search?q=Markup+(business)" ], Inlines.Text ")" ]
                 , test "when they're inside an html anchor tag" <|
                     \() ->
-                        "Already linked: <a href=\"http://example.com/\">http://example.com/</a>."
+                        "Already linked: <a href=\"http://example.com/\">http://example.com/</a>.\n"
                             |> expectInlines
                                 [ Inlines.Text "Already linked: ", Inlines.HtmlInline (HtmlParser.Element "a" [ { name = "href", value = "http://example.com/" } ] [ HtmlParser.Text "http://example.com/" ]), Inlines.Text "." ]
                 , test "when they're inside an html anchor tag inside an html paragraph tag" <|
                     \() ->
-                        "<p>Already linked: <a href=\"http://example.com/\">http://example.com/</a>.</p>"
+                        "<p>Already linked: <a href=\"http://example.com/\">http://example.com/</a>.</p>\n"
                             |> expectInlines
                                 [ Inlines.HtmlInline (HtmlParser.Element "p" [] [ HtmlParser.Text "Already linked: ", HtmlParser.Element "a" [ { name = "href", value = "http://example.com/" } ] [ HtmlParser.Text "http://example.com/" ], HtmlParser.Text "." ]) ]
                 ]
