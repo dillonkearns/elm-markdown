@@ -474,18 +474,60 @@ qwer
                                 ]
                             ]
                         )
-
-        --, skip <|
-        --    test "autolink" <|
-        --        \() ->
-        --            "<http://foo.bar.baz>\n"
-        --                |> parse
-        --                |> Expect.equal
-        --                    (Ok
-        --                        [ Block.Paragraph
-        --                            [ Block.Link "http://foo.bar.baz" Nothing [ Block.Text "http://foo.bar.baz" ] ]
-        --                        ]
-        --                    )
+        , describe "autolink"
+            [ test "basic autolink" <|
+                \() ->
+                    "<http://foo.bar.baz>\n"
+                        |> parse
+                        |> Expect.equal
+                            (Ok
+                                [ Block.Paragraph
+                                    [ Block.Link "http://foo.bar.baz" Nothing [ Block.Text "http://foo.bar.baz" ] ]
+                                ]
+                            )
+            , test "inside html" <|
+                \() ->
+                    "<p>Already linked:<a href=\"http://example.com/\">http://example.com/</a>.</p>\n\n"
+                        |> parse
+                        |> Expect.equal
+                            (Ok
+                                [ Block.HtmlBlock
+                                    (HtmlElement "p"
+                                        []
+                                        [ Block.Paragraph
+                                            [ Block.Text "Already linked:" ]
+                                        , Block.HtmlBlock
+                                            (HtmlElement "a"
+                                                [ { name = "href", value = "http://example.com/" } ]
+                                                [ Block.Paragraph
+                                                    [ Block.Text "http://example.com/" ]
+                                                ]
+                                            )
+                                        , Block.Paragraph [ Block.Text "." ]
+                                        ]
+                                    )
+                                ]
+                            )
+            , test "inside html with inline styles on the link text" <|
+                \() ->
+                    "Already linked:<a href=\"http://example.com/\">**http://example.com/**</a>.\n\n"
+                        |> parse
+                        |> Expect.equal
+                            (Ok
+                                [ Block.Paragraph
+                                    [ Block.Text "Already linked:"
+                                    , Block.HtmlInline
+                                        (HtmlElement "a"
+                                            [ { name = "href", value = "http://example.com/" } ]
+                                            [ Block.Paragraph
+                                                [ Block.Strong [ Block.Text "http://example.com/" ] ]
+                                            ]
+                                        )
+                                    , Block.Text "."
+                                    ]
+                                ]
+                            )
+            ]
         , describe "blank line"
             [ test "even though paragraphs can start with blank lines, it is not a paragraph if there are only blanks" <|
                 \() ->

@@ -541,24 +541,6 @@ Gives this correct output:
 
 ````````````
 
-### [Example 604](https://spec.commonmark.org/0.29/#example-604)
-
-This markdown:
-
-
-````````````markdown
-< http://foo.bar >
-
-````````````
-
-Gives this correct output:
-
-
-````````````html
-<p>&lt; http://foo.bar &gt;</p>
-
-````````````
-
 ### [Example 605](https://spec.commonmark.org/0.29/#example-605)
 
 This markdown:
@@ -592,42 +574,6 @@ Gives this correct output:
 
 ````````````html
 <p>&lt;foo.bar.baz&gt;</p>
-
-````````````
-
-### [Example 607](https://spec.commonmark.org/0.29/#example-607)
-
-This markdown:
-
-
-````````````markdown
-http://example.com
-
-````````````
-
-Gives this correct output:
-
-
-````````````html
-<p>http://example.com</p>
-
-````````````
-
-### [Example 608](https://spec.commonmark.org/0.29/#example-608)
-
-This markdown:
-
-
-````````````markdown
-foo@bar.example.com
-
-````````````
-
-Gives this correct output:
-
-
-````````````html
-<p>foo@bar.example.com</p>
 
 ````````````
 
@@ -9794,6 +9740,192 @@ Gives this correct output:
 <h2>Foo</h2>
 <p>bar</p>
 
+````````````
+
+## [extension] Autolinks
+
+### [Example 621](https://github.github.com/gfm/#example-621)
+
+This markdown:
+
+
+````````````markdown
+www.commonmark.org
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p><a href="http://www.commonmark.org">www.commonmark.org</a></p>
+````````````
+
+### [Example 622](https://github.github.com/gfm/#example-622)
+
+This markdown:
+
+
+````````````markdown
+Visit www.commonmark.org/help for more information.
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p>Visit <a href="http://www.commonmark.org/help">www.commonmark.org/help</a> for more information.</p>
+````````````
+
+### [Example 623](https://github.github.com/gfm/#example-623)
+
+This markdown:
+
+
+````````````markdown
+Visit www.commonmark.org.
+
+Visit www.commonmark.org/a.b.
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p>Visit <a href="http://www.commonmark.org">www.commonmark.org</a>.</p>
+<p>Visit <a href="http://www.commonmark.org/a.b">www.commonmark.org/a.b</a>.</p>
+````````````
+
+### [Example 624](https://github.github.com/gfm/#example-624)
+
+This markdown:
+
+
+````````````markdown
+www.google.com/search?q=Markup+(business)
+
+www.google.com/search?q=Markup+(business)))
+
+(www.google.com/search?q=Markup+(business))
+
+(www.google.com/search?q=Markup+(business)
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p><a href="http://www.google.com/search?q=Markup+(business)">www.google.com/search?q=Markup+(business)</a></p>
+<p><a href="http://www.google.com/search?q=Markup+(business)">www.google.com/search?q=Markup+(business)</a>))</p>
+<p>(<a href="http://www.google.com/search?q=Markup+(business)">www.google.com/search?q=Markup+(business)</a>)</p>
+<p>(<a href="http://www.google.com/search?q=Markup+(business)">www.google.com/search?q=Markup+(business)</a></p>
+````````````
+
+### [Example 625](https://github.github.com/gfm/#example-625)
+
+This markdown:
+
+
+````````````markdown
+www.google.com/search?q=(business))+ok
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p><a href="http://www.google.com/search?q=(business))+ok">www.google.com/search?q=(business))+ok</a></p>
+````````````
+
+### [Example 626](https://github.github.com/gfm/#example-626)
+
+This markdown:
+
+
+````````````markdown
+www.google.com/search?q=commonmark&hl=en
+
+www.google.com/search?q=commonmark&hl;
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p><a href="http://www.google.com/search?q=commonmark&amp;hl=en">www.google.com/search?q=commonmark&amp;hl=en</a></p>
+<p><a href="http://www.google.com/search?q=commonmark">www.google.com/search?q=commonmark</a>&amp;hl;</p>
+````````````
+
+### [Example 627](https://github.github.com/gfm/#example-627)
+
+This markdown:
+
+
+````````````markdown
+www.commonmark.org/he<lp
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p><a href="http://www.commonmark.org/he">www.commonmark.org/he</a>&lt;lp</p>
+````````````
+
+### [Example 629](https://github.github.com/gfm/#example-629)
+
+This markdown:
+
+
+````````````markdown
+foo@bar.baz
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p><a href="mailto:foo@bar.baz">foo@bar.baz</a></p>
+````````````
+
+### [Example 630](https://github.github.com/gfm/#example-630)
+
+This markdown:
+
+
+````````````markdown
+hello@mail+xyz.example isn't valid, but hello+xyz@mail.example is.
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p>hello@mail+xyz.example isn't valid, but <a href="mailto:hello+xyz@mail.example">hello+xyz@mail.example</a> is.</p>
+````````````
+
+### [Example 631](https://github.github.com/gfm/#example-631)
+
+This markdown:
+
+
+````````````markdown
+a.b-c_d@a.b
+
+a.b-c_d@a.b.
+
+a.b-c_d@a.b-
+
+a.b-c_d@a.b_
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p><a href="mailto:a.b-c_d@a.b">a.b-c_d@a.b</a></p>
+<p><a href="mailto:a.b-c_d@a.b">a.b-c_d@a.b</a>.</p>
+<p>a.b-c_d@a.b-</p>
+<p>a.b-c_d@a.b_</p>
 ````````````
 
 ## [extension] Strikethrough

@@ -3,7 +3,7 @@ module InlineTests exposing (suite)
 import Dict
 import Expect exposing (Expectation)
 import HtmlParser
-import Markdown.Inline as Inlines
+import Markdown.Inline as Inlines exposing (AllowedInlines(..))
 import Markdown.InlineParser
 import Parser
 import Parser.Advanced as Advanced
@@ -37,12 +37,32 @@ suite =
                     |> expectInlines
                         [ Inlines.Text "Nothing interesting here!"
                         ]
-        , test "emphasis parsing" <|
-            \() ->
-                "*hello!*"
-                    |> expectInlines
-                        [ Inlines.Emphasis 1 [ Inlines.Text "hello!" ]
-                        ]
+        , describe "emphasis parsing" <|
+            [ test "single depth asterisk" <|
+                \() ->
+                    "*hello!*"
+                        |> expectInlines
+                            [ Inlines.Emphasis 1 [ Inlines.Text "hello!" ]
+                            ]
+            , test "double depth asterisk" <|
+                \() ->
+                    "**hello!**"
+                        |> expectInlines
+                            [ Inlines.Emphasis 2 [ Inlines.Text "hello!" ]
+                            ]
+            , test "single depth underscore" <|
+                \() ->
+                    "_hello!_"
+                        |> expectInlines
+                            [ Inlines.Emphasis 1 [ Inlines.Text "hello!" ]
+                            ]
+            , test "double depth underscore" <|
+                \() ->
+                    "__hello!__"
+                        |> expectInlines
+                            [ Inlines.Emphasis 2 [ Inlines.Text "hello!" ]
+                            ]
+            ]
         , test "No stripping occurs if the code span contains only spaces (example 344)" <|
             \() ->
                 """` `
@@ -58,6 +78,21 @@ suite =
                 """[Contact](/contact)"""
                     |> expectInlines
                         [ Inlines.Link "/contact" Nothing [ Inlines.Text "Contact" ] ]
+        , test "simple link with a full url" <|
+            \() ->
+                """[Contact](https://example.com/contact)"""
+                    |> expectInlines
+                        [ Inlines.Link "https://example.com/contact" Nothing [ Inlines.Text "Contact" ] ]
+        , test "multiple simple links with full urls" <|
+            \() ->
+                """[One](https://example.com/1) [Two](https://example.com/2) [Three](https://example.com/3)"""
+                    |> expectInlines
+                        [ Inlines.Link "https://example.com/1" Nothing [ Inlines.Text "One" ]
+                        , Inlines.Text " "
+                        , Inlines.Link "https://example.com/2" Nothing [ Inlines.Text "Two" ]
+                        , Inlines.Text " "
+                        , Inlines.Link "https://example.com/3" Nothing [ Inlines.Text "Three" ]
+                        ]
         , test "link with formatting" <|
             \() ->
                 """[This `code` is *really* awesome](/contact)"""
@@ -94,6 +129,153 @@ suite =
                 "<http://foo.bar.baz>\n"
                     |> expectInlines
                         [ Inlines.Link "http://foo.bar.baz" Nothing [ Inlines.Text "http://foo.bar.baz" ] ]
+        , describe "GFM extended autolinks"
+            [ describe "extended www autolinks"
+                [ test "basic www autolink" <|
+                    \() ->
+                        "www.bar.baz\n"
+                            |> expectInlines
+                                [ Inlines.Link "http://www.bar.baz" Nothing [ Inlines.Text "www.bar.baz" ] ]
+                , test "autolink with simple path" <|
+                    \() ->
+                        "www.bar.baz/help\n"
+                            |> expectInlines
+                                [ Inlines.Link "http://www.bar.baz/help" Nothing [ Inlines.Text "www.bar.baz/help" ] ]
+                , test "autolink inside text" <|
+                    \() ->
+                        "visit www.bar.baz/help for more info\n"
+                            |> expectInlines
+                                [ Inlines.Text "visit ", Inlines.Link "http://www.bar.baz/help" Nothing [ Inlines.Text "www.bar.baz/help" ], Inlines.Text " for more info" ]
+                , test "autolink with a period after the link text" <|
+                    \() ->
+                        "(visit www.bar.baz/help.)\n"
+                            |> expectInlines
+                                [ Inlines.Text "(visit ", Inlines.Link "http://www.bar.baz/help" Nothing [ Inlines.Text "www.bar.baz/help" ], Inlines.Text ".)" ]
+                ]
+            , describe "extended autolink path validation"
+                [ test "with multiple trailing punctuation" <|
+                    \() ->
+                        "www.bar.baz/help?.~\n"
+                            |> expectInlines
+                                [ Inlines.Link "http://www.bar.baz/help" Nothing [ Inlines.Text "www.bar.baz/help" ], Inlines.Text "?.~" ]
+                , test "with multiple embedded punctuation" <|
+                    \() ->
+                        "www.bar.baz/help?test=a.b?.~\n"
+                            |> expectInlines
+                                [ Inlines.Link "http://www.bar.baz/help?test=a.b" Nothing [ Inlines.Text "www.bar.baz/help?test=a.b" ], Inlines.Text "?.~" ]
+                , test "with trailing unmatched" <|
+                    \() ->
+                        "www.bar.baz/help?test=a.b)\n"
+                            |> expectInlines
+                                [ Inlines.Link "http://www.bar.baz/help?test=a.b" Nothing [ Inlines.Text "www.bar.baz/help?test=a.b" ], Inlines.Text ")" ]
+                , test "with multiple trailing unmatched" <|
+                    \() ->
+                        "www.bar.baz/help?test=a.b))\n"
+                            |> expectInlines
+                                [ Inlines.Link "http://www.bar.baz/help?test=a.b" Nothing [ Inlines.Text "www.bar.baz/help?test=a.b" ], Inlines.Text "))" ]
+                , test "with trailing matched" <|
+                    \() ->
+                        "www.bar.baz/help?test=(a.b)\n"
+                            |> expectInlines
+                                [ Inlines.Link "http://www.bar.baz/help?test=(a.b)" Nothing [ Inlines.Text "www.bar.baz/help?test=(a.b)" ] ]
+                , test "with embedded unmatched" <|
+                    \() ->
+                        "www.bar.baz/help?test=(a.b))+ok\n"
+                            |> expectInlines
+                                [ Inlines.Link "http://www.bar.baz/help?test=(a.b))+ok" Nothing [ Inlines.Text "www.bar.baz/help?test=(a.b))+ok" ] ]
+                , test "with trailing entity reference" <|
+                    \() ->
+                        "www.bar.baz/help?test=a&hl;\n"
+                            |> expectInlines
+                                [ Inlines.Link "http://www.bar.baz/help?test=a" Nothing [ Inlines.Text "www.bar.baz/help?test=a" ], Inlines.Text "&hl;" ]
+                , test "with multiple trailing entity references" <|
+                    \() ->
+                        "www.bar.baz/help?test=a&hl;&hl;\n"
+                            |> expectInlines
+                                [ Inlines.Link "http://www.bar.baz/help?test=a" Nothing [ Inlines.Text "www.bar.baz/help?test=a" ], Inlines.Text "&hl;&hl;" ]
+                , test "with embedded entity reference" <|
+                    \() ->
+                        "www.bar.baz/help?test=&hl;+ok\n"
+                            |> expectInlines
+                                [ Inlines.Link "http://www.bar.baz/help?test=&hl;+ok" Nothing [ Inlines.Text "www.bar.baz/help?test=&hl;+ok" ] ]
+                ]
+            , describe "extended url autolinks"
+                [ test "basic http url" <|
+                    \() ->
+                        "http://www.bar.baz\n"
+                            |> expectInlines
+                                [ Inlines.Link "http://www.bar.baz" Nothing [ Inlines.Text "http://www.bar.baz" ] ]
+                , test "basic https url" <|
+                    \() ->
+                        "https://www.bar.baz\n"
+                            |> expectInlines
+                                [ Inlines.Link "https://www.bar.baz" Nothing [ Inlines.Text "https://www.bar.baz" ] ]
+                , test "url ending in a slash" <|
+                    \() ->
+                        "https://www.bar.baz/\n"
+                            |> expectInlines
+                                [ Inlines.Link "https://www.bar.baz/" Nothing [ Inlines.Text "https://www.bar.baz/" ] ]
+                , test "url with nested page" <|
+                    \() ->
+                        "https://www.bar.baz/foo1/foo2\n"
+                            |> expectInlines
+                                [ Inlines.Link "https://www.bar.baz/foo1/foo2" Nothing [ Inlines.Text "https://www.bar.baz/foo1/foo2" ] ]
+                , test "url with complicated path" <|
+                    \() ->
+                        "(Visit https://encrypted.google.com/search?q=Markup+(business))\n"
+                            |> expectInlines
+                                [ Inlines.Text "(Visit ", Inlines.Link "https://encrypted.google.com/search?q=Markup+(business)" Nothing [ Inlines.Text "https://encrypted.google.com/search?q=Markup+(business)" ], Inlines.Text ")" ]
+                , test "when they're inside an html anchor tag" <|
+                    \() ->
+                        "Already linked: <a href=\"http://example.com/\">http://example.com/</a>.\n"
+                            |> expectInlines
+                                [ Inlines.Text "Already linked: ", Inlines.HtmlInline (HtmlParser.Element "a" [ { name = "href", value = "http://example.com/" } ] [ HtmlParser.Text "http://example.com/" ]), Inlines.Text "." ]
+                , test "when they're inside an html anchor tag inside an html paragraph tag" <|
+                    \() ->
+                        "<p>Already linked: <a href=\"http://example.com/\">http://example.com/</a>.</p>\n"
+                            |> expectInlines
+                                [ Inlines.HtmlInline (HtmlParser.Element "p" [] [ HtmlParser.Text "Already linked: ", HtmlParser.Element "a" [ { name = "href", value = "http://example.com/" } ] [ HtmlParser.Text "http://example.com/" ], HtmlParser.Text "." ]) ]
+                , describe "when we are not allowing autolinks"
+                    [ test "basic http url" <|
+                        \() ->
+                            "go here http://www.bar.baz next\n"
+                                |> expectInlinesWithoutAutolinks
+                                    [ Inlines.Text "go here ", Inlines.Text "http://www.bar.baz", Inlines.Text " next" ]
+                    ]
+                ]
+            , describe "extended email autolinks"
+                [ test "basic email autolink" <|
+                    \() ->
+                        "hello+xyz@mail.example"
+                            |> expectInlines
+                                [ Inlines.Link "mailto:hello+xyz@mail.example" Nothing [ Inlines.Text "hello+xyz@mail.example" ] ]
+                , test "basic email autolink with asterisk emphasis" <|
+                    \() ->
+                        "**hello@mail.example**"
+                            |> expectInlines
+                                [ Inlines.Emphasis 2 [ Inlines.Link "mailto:hello@mail.example" Nothing [ Inlines.Text "hello@mail.example" ] ] ]
+                , test "basic email autolink with single underscore emphasis" <|
+                    \() ->
+                        "_hello@mail.example_"
+                            |> expectInlines
+                                [ Inlines.Emphasis 1 [ Inlines.Link "mailto:hello@mail.example" Nothing [ Inlines.Text "hello@mail.example" ] ] ]
+                , test "basic email autolink with double underscore emphasis" <|
+                    \() ->
+                        "__hello@mail.example__"
+                            |> expectInlines
+                                [ Inlines.Emphasis 2 [ Inlines.Link "mailto:hello@mail.example" Nothing [ Inlines.Text "hello@mail.example" ] ] ]
+                , test "email autolinks must have a dot in the domain" <|
+                    \() ->
+                        "hello+xyz@mail"
+                            |> expectInlines
+                                [ Inlines.Text "hello+xyz@mail" ]
+                , test "email autolinks cannot end in a hyphen" <|
+                    \() ->
+                        "hello+xyz@mail.example-"
+                            |> expectInlines
+                                [ Inlines.Text "hello+xyz@mail.example-" ]
+                ]
+            ]
 
         --, skip <|
         --    test "unlike GFM and commonmark, elm-markdown parses image alt as raw text" <|
@@ -208,5 +390,12 @@ suite =
 expectInlines : List Inlines.Inline -> String -> Expectation
 expectInlines expected input =
     input
-        |> Markdown.InlineParser.parse Dict.empty
+        |> Markdown.InlineParser.parse AllowAll Dict.empty
+        |> Expect.equal expected
+
+
+expectInlinesWithoutAutolinks : List Inlines.Inline -> String -> Expectation
+expectInlinesWithoutAutolinks expected input =
+    input
+        |> Markdown.InlineParser.parse SkipAutolinks Dict.empty
         |> Expect.equal expected

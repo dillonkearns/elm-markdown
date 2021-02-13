@@ -3,7 +3,7 @@ module Markdown.InlineParser exposing (parse, query, tokenize, walk)
 import Dict
 import HtmlParser
 import Markdown.Helpers exposing (References, cleanWhitespaces, formatStr, ifError, insideSquareBracketRegex, isEven, lineEndChars, prepareRefLabel, returnFirstJust, titleRegex, whiteSpaceChars)
-import Markdown.Inline exposing (Inline(..))
+import Markdown.Inline exposing (AllowedInlines(..), Inline(..))
 import Parser.Advanced as Advanced exposing ((|=))
 import Regex exposing (Regex)
 import Url
@@ -13,8 +13,8 @@ import Url
 -- Parser
 
 
-parse : References -> String -> List Inline
-parse refs rawText_ =
+parse : AllowedInlines -> References -> String -> List Inline
+parse allowedInlines refs rawText_ =
     let
         rawText =
             String.trim rawText_
@@ -25,7 +25,7 @@ parse refs rawText_ =
     tokensToMatches tokens [] refs rawText
         |> organizeMatches
         |> parseTextMatches rawText []
-        |> matchesToInlines
+        |> matchesToInlines allowedInlines
 
 
 parseTextMatches : String -> List Match -> List Match -> List Match
@@ -145,6 +145,8 @@ type Meaning
     | EmphasisToken Char { leftFringeRank : Int, rightFringeRank : Int }
     | SoftLineBreakToken
     | HardLineBreakToken
+    | ExtendedAutolink
+    | EmailAutolink
     | StrikethroughToken Escaped
 
 
@@ -252,6 +254,8 @@ tokenize rawText =
         |> mergeByIndex (findHardBreakTokens rawText)
         |> mergeByIndex (findAngleBracketLTokens rawText)
         |> mergeByIndex (findAngleBracketRTokens rawText)
+        |> mergeByIndex (findExtendedAutolinkTokens rawText)
+        |> mergeByIndex (findEmailAutolinkTokens rawText)
 
 
 {-| Merges two sorted sequences into a sorted sequence
@@ -434,6 +438,8 @@ regMatchToEmphasisToken char rawText regMatch =
         _ ->
             Nothing
 
+
+
 -- Strikethrough Tokens
 
 
@@ -458,12 +464,12 @@ regMatchToStrikethroughToken regMatch =
                     Maybe.map String.length maybeBackslashes
                         |> Maybe.withDefault 0
 
-                (length, meaning) =
-                  if isEven backslashesLength then
-                      (String.length tilde, StrikethroughToken NotEscaped)
+                ( length, meaning ) =
+                    if isEven backslashesLength then
+                        ( String.length tilde, StrikethroughToken NotEscaped )
 
-                  else
-                      (String.length tilde, StrikethroughToken Escaped)
+                    else
+                        ( String.length tilde, StrikethroughToken Escaped )
             in
             Just
                 { index = regMatch.index + backslashesLength
@@ -473,9 +479,6 @@ regMatchToStrikethroughToken regMatch =
 
         _ ->
             Nothing
-
-
-
 
 
 {-| Whitespace characters matched by the `\\s` regex
@@ -492,7 +495,7 @@ isWhitespace c =
         '\n' ->
             True
 
-        '\r' ->
+        '\u{000D}' ->
             True
 
         '\t' ->
@@ -728,6 +731,106 @@ regMatchToLinkImageCloseToken regMatch =
 
             else
                 Nothing
+
+        _ ->
+            Nothing
+
+
+
+-- GFM Auto Link Tokens
+
+
+findExtendedAutolinkTokens : String -> List Token
+findExtendedAutolinkTokens str =
+    Regex.find extendedAutoLinkRegex str
+        |> List.filterMap regMatchToExtendedAutolinkToken
+
+
+extendedAutoLinkRegex : Regex
+extendedAutoLinkRegex =
+    -- what if we do this without the negative lookbehind and just make it a sub match?
+    Regex.fromString "(?<=^|\\s|\\*|_|~|\\()(?:(?:https?://)|(?:www\\.))[a-z0-9A-Z_-]+(?:\\.[a-z0-9A-Z_-]+)*(?:/([^\\s<]*))?"
+        |> Maybe.withDefault Regex.never
+
+
+extendedAutoLinkTrailingPunctuationRegex : Regex
+extendedAutoLinkTrailingPunctuationRegex =
+    --should this use the isPunctuation helper?
+    Regex.fromString "[?!\\.,:*_~]+$"
+        |> Maybe.withDefault Regex.never
+
+
+extendedAutoLinkTrailingEntityReferenceRegex : Regex
+extendedAutoLinkTrailingEntityReferenceRegex =
+    Regex.fromString "(&[a-zA-Z0-9]+;)+$"
+        |> Maybe.withDefault Regex.never
+
+
+regMatchToExtendedAutolinkToken : Regex.Match -> Maybe Token
+regMatchToExtendedAutolinkToken regMatch =
+    let
+        lengthOfUnmatchedParenthesis =
+            if String.endsWith ")" regMatch.match then
+                Basics.max 0 (List.length (String.indexes ")" regMatch.match) - List.length (String.indexes "(" regMatch.match))
+
+            else
+                0
+
+        -- Ensue we trim trailing punctuation even if there are unmatched parenthesis after
+        lengthOfTrailingPunctuation =
+            regMatch.match
+                |> String.dropRight lengthOfUnmatchedParenthesis
+                |> Regex.find extendedAutoLinkTrailingPunctuationRegex
+                |> List.head
+                |> Maybe.map (.match >> String.length)
+                |> Maybe.withDefault 0
+
+        lengthOfTrailingEntityReferences =
+            regMatch.match
+                |> Regex.find extendedAutoLinkTrailingEntityReferenceRegex
+                |> List.head
+                |> Maybe.map (.match >> String.length)
+                |> Maybe.withDefault 0
+    in
+    Just
+        { index = regMatch.index
+        , length = String.length regMatch.match - lengthOfTrailingPunctuation - lengthOfUnmatchedParenthesis - lengthOfTrailingEntityReferences
+        , meaning = ExtendedAutolink
+        }
+
+
+
+-- GFM Auto Link Tokens
+
+
+findEmailAutolinkTokens : String -> List Token
+findEmailAutolinkTokens str =
+    Regex.find emailAutoLinkRegex str
+        |> List.filterMap regMatchToEmailAutolinkToken
+
+
+emailAutoLinkRegex : Regex
+emailAutoLinkRegex =
+    Regex.fromString "(?<=^|\\s|\\*|_|~|\\()[a-zA-Z0-9\\._+-]+@[a-zA-Z0-9_-]+((\\.[a-zA-Z0-9_-]+)+)"
+        |> Maybe.withDefault Regex.never
+
+
+regMatchToEmailAutolinkToken : Regex.Match -> Maybe Token
+regMatchToEmailAutolinkToken regMatch =
+    let
+        lastCharacter =
+            regMatch.match
+                |> String.right 1
+                |> String.uncons
+                |> Maybe.map Tuple.first
+    in
+    case Maybe.map Char.isAlphaNum lastCharacter of
+        Just True ->
+            Just
+                { index = regMatch.index
+                , length = String.length regMatch.match
+                , meaning = EmailAutolink
+                }
 
         _ ->
             Nothing
@@ -1192,6 +1295,68 @@ autolinkToMatch (Match match) =
         Result.Err (Match match)
 
 
+extendedAutolinkToMatch : String -> Token -> Maybe Match
+extendedAutolinkToMatch rawText token =
+    let
+        start =
+            token.index
+
+        end =
+            token.index + token.length
+
+        text =
+            String.slice token.index end rawText
+
+        url =
+            withProtocol text
+    in
+    if Regex.contains urlRegex url then
+        { type_ = AutolinkType ( text, encodeUrl url )
+        , start = start
+        , end = end
+        , textStart = 0
+        , textEnd = 0
+        , text = ""
+        , matches = []
+        }
+            |> Match
+            |> Just
+
+    else
+        Nothing
+
+
+emailAutolinkToMatch : String -> Token -> Maybe Match
+emailAutolinkToMatch rawText token =
+    let
+        start =
+            token.index
+
+        end =
+            token.index + token.length
+
+        text =
+            String.slice token.index end rawText
+
+        url =
+            "mailto:" ++ text
+    in
+    if Regex.contains urlRegex url then
+        { type_ = AutolinkType ( text, encodeUrl url )
+        , start = start
+        , end = end
+        , textStart = 0
+        , textEnd = 0
+        , text = ""
+        , matches = []
+        }
+            |> Match
+            |> Just
+
+    else
+        Nothing
+
+
 
 -- From http://spec.commonmark.org/dingus/commonmark.js
 
@@ -1349,12 +1514,17 @@ voidHtmlTags =
 
 isCloseToken : HtmlModel -> Token -> Bool
 isCloseToken htmlModel token =
-    --case token.meaning of
-    --    HtmlToken False htmlModel_ ->
-    --        htmlModel.tag == htmlModel_.tag
-    --
-    --    _ ->
-    False
+    case token.meaning of
+        HtmlToken NotOpening htmlModel_ ->
+            case ( htmlModel, htmlModel_ ) of
+                ( HtmlParser.Element firstTag _ _, HtmlParser.Element secondTag _ _ ) ->
+                    firstTag == secondTag
+
+                _ ->
+                    False
+
+        _ ->
+            False
 
 
 
@@ -1366,7 +1536,7 @@ linkImageTypeTTM : List Token -> List Token -> List Match -> References -> Strin
 linkImageTypeTTM remaining tokens matches references rawText =
     case remaining of
         [] ->
-            emphasisTTM (List.reverse tokens) [] matches references rawText
+            extendedAutolinkTTM (List.reverse tokens) [] matches references rawText
 
         token :: tokensTail ->
             case token.meaning of
@@ -1657,13 +1827,22 @@ refRegexToMatch matchModel references maybeRegexMatch =
                         _ ->
                             LinkType (prepareUrlAndTitle rawUrl maybeTitle)
             in
-            Just (
-                Match
+            Just
+                (Match
                     { matchModel
                         | type_ = type_
                         , end = matchModel.end + regexMatchLength
                     }
-                    )
+                )
+
+
+withProtocol : String -> String
+withProtocol url =
+    if String.startsWith "http" url then
+        url
+
+    else
+        "http://" ++ url
 
 
 encodeUrl : String -> String
@@ -1685,6 +1864,67 @@ decodeUrlRegex : Regex
 decodeUrlRegex =
     Regex.fromString "%(?:3B|2C|2F|3F|3A|40|26|3D|2B|24|23|25)"
         |> Maybe.withDefault Regex.never
+
+
+
+-- ExtendedAutolink Tokens To Matches
+
+
+isExtendedAutoLink : Token -> Bool
+isExtendedAutoLink token =
+    case token.meaning of
+        ExtendedAutolink ->
+            True
+
+        EmailAutolink ->
+            True
+
+        _ ->
+            False
+
+
+extendedAutolinkTTM : List Token -> List Token -> List Match -> References -> String -> List Match
+extendedAutolinkTTM remaining tokens matches references rawText =
+    case remaining of
+        [] ->
+            emailAutolinkTTM (List.reverse tokens) [] matches references rawText
+
+        token :: tokensTail ->
+            case token.meaning of
+                ExtendedAutolink ->
+                    case extendedAutolinkToMatch rawText token of
+                        Just match ->
+                            extendedAutolinkTTM tokensTail tokens (match :: matches) references rawText
+
+                        Nothing ->
+                            extendedAutolinkTTM tokensTail (token :: tokens) matches references rawText
+
+                _ ->
+                    extendedAutolinkTTM tokensTail (token :: tokens) matches references rawText
+
+
+
+-- EmailAutolink Tokens To Matches
+
+
+emailAutolinkTTM : List Token -> List Token -> List Match -> References -> String -> List Match
+emailAutolinkTTM remaining tokens matches references rawText =
+    case remaining of
+        [] ->
+            emphasisTTM (List.reverse tokens) [] matches references rawText
+
+        token :: tokensTail ->
+            case token.meaning of
+                EmailAutolink ->
+                    case emailAutolinkToMatch rawText token of
+                        Just match ->
+                            emailAutolinkTTM tokensTail tokens (match :: matches) references rawText
+
+                        Nothing ->
+                            emailAutolinkTTM tokensTail (token :: tokens) matches references rawText
+
+                _ ->
+                    emailAutolinkTTM tokensTail (token :: tokens) matches references rawText
 
 
 
@@ -1852,34 +2092,39 @@ lineBreakTTM remaining tokens matches refs rawText =
                     lineBreakTTM tokensTail (token :: tokens) matches refs rawText
 
 
+
 -- StrikethroughType Tokens To Matches
+
 
 isStrikethroughTokenPair : Token -> Token -> Bool
 isStrikethroughTokenPair closeToken openToken =
     let
-        (openTokenIsStrikethrough, openTokenLength) =
+        ( openTokenIsStrikethrough, openTokenLength ) =
             case openToken.meaning of
                 -- If open token is escaped, ignore first '~'
                 StrikethroughToken Escaped ->
-                    (True, openToken.length - 1)
+                    ( True, openToken.length - 1 )
+
                 StrikethroughToken NotEscaped ->
-                    (True, openToken.length)
+                    ( True, openToken.length )
 
                 _ ->
-                    (False, 0)
+                    ( False, 0 )
 
-        (closeTokenIsStrikethrough, closeTokenLength) =
+        ( closeTokenIsStrikethrough, closeTokenLength ) =
             case closeToken.meaning of
                 -- If close token is escaped, ignore first '~'
                 StrikethroughToken Escaped ->
-                    (True, closeToken.length - 1)
+                    ( True, closeToken.length - 1 )
+
                 StrikethroughToken NotEscaped ->
-                    (True, closeToken.length)
+                    ( True, closeToken.length )
 
                 _ ->
-                    (False, 0)
+                    ( False, 0 )
     in
-        closeTokenIsStrikethrough && openTokenIsStrikethrough && closeTokenLength == openTokenLength
+    closeTokenIsStrikethrough && openTokenIsStrikethrough && closeTokenLength == openTokenLength
+
 
 strikethroughToMatch : Token -> List Match -> References -> String -> ( Token, List Token, List Token ) -> ( List Token, List Match )
 strikethroughToMatch closeToken matches references rawText ( openToken, _, remainTokens ) =
@@ -1911,6 +2156,7 @@ strikethroughToMatch closeToken matches references rawText ( openToken, _, remai
     , match :: matches
     )
 
+
 strikethroughTTM : List Token -> List Token -> List Match -> References -> String -> List Match
 strikethroughTTM remaining tokens matches references rawText =
     case remaining of
@@ -1920,34 +2166,32 @@ strikethroughTTM remaining tokens matches references rawText =
         token :: tokensTail ->
             case token.meaning of
                 StrikethroughToken isEscaped ->
-                  case findToken (isStrikethroughTokenPair token) tokens of
-                      Just content ->
-                          let
-                              ( newTokens, newMatches ) =
-                                  strikethroughToMatch token matches references rawText content
-                          in
-                          strikethroughTTM tokensTail newTokens newMatches references rawText
+                    case findToken (isStrikethroughTokenPair token) tokens of
+                        Just content ->
+                            let
+                                ( newTokens, newMatches ) =
+                                    strikethroughToMatch token matches references rawText content
+                            in
+                            strikethroughTTM tokensTail newTokens newMatches references rawText
 
-
-                      Nothing ->
-                          strikethroughTTM tokensTail (token :: tokens) matches references rawText
+                        Nothing ->
+                            strikethroughTTM tokensTail (token :: tokens) matches references rawText
 
                 _ ->
                     strikethroughTTM tokensTail (token :: tokens) matches references rawText
 
 
 
-
 -- Matches to Inline
 
 
-matchesToInlines : List Match -> List Inline
-matchesToInlines matches =
-    List.map matchToInline matches
+matchesToInlines : AllowedInlines -> List Match -> List Inline
+matchesToInlines allowedInlines matches =
+    List.map (matchToInline allowedInlines) matches
 
 
-matchToInline : Match -> Inline
-matchToInline (Match match) =
+matchToInline : AllowedInlines -> Match -> Inline
+matchToInline allowedInlines (Match match) =
     case match.type_ of
         NormalType ->
             Text match.text
@@ -1959,28 +2203,33 @@ matchToInline (Match match) =
             CodeInline match.text
 
         AutolinkType ( text, url ) ->
-            Link url Nothing [ Text text ]
+            case allowedInlines of
+                SkipAutolinks ->
+                    Text text
+
+                AllowAll ->
+                    Link url Nothing [ Text text ]
 
         LinkType ( url, maybeTitle ) ->
             Link url
                 maybeTitle
-                (matchesToInlines match.matches)
+                (matchesToInlines allowedInlines match.matches)
 
         ImageType ( url, maybeTitle ) ->
             Image url
                 maybeTitle
-                (matchesToInlines match.matches)
+                (matchesToInlines allowedInlines match.matches)
 
         HtmlType model ->
             HtmlInline model
 
         EmphasisType length ->
             Emphasis length
-                (matchesToInlines match.matches)
+                (matchesToInlines allowedInlines match.matches)
 
         StrikethroughType ->
             Strikethrough
-                (matchesToInlines match.matches)
+                (matchesToInlines allowedInlines match.matches)
 
 
 
