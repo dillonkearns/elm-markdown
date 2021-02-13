@@ -37,12 +37,32 @@ suite =
                     |> expectInlines
                         [ Inlines.Text "Nothing interesting here!"
                         ]
-        , test "emphasis parsing" <|
-            \() ->
-                "*hello!*"
-                    |> expectInlines
-                        [ Inlines.Emphasis 1 [ Inlines.Text "hello!" ]
-                        ]
+        , describe "emphasis parsing" <|
+            [ test "single depth asterisk" <|
+                \() ->
+                    "*hello!*"
+                        |> expectInlines
+                            [ Inlines.Emphasis 1 [ Inlines.Text "hello!" ]
+                            ]
+            , test "double depth asterisk" <|
+                \() ->
+                    "**hello!**"
+                        |> expectInlines
+                            [ Inlines.Emphasis 2 [ Inlines.Text "hello!" ]
+                            ]
+            , test "single depth underscore" <|
+                \() ->
+                    "_hello!_"
+                        |> expectInlines
+                            [ Inlines.Emphasis 1 [ Inlines.Text "hello!" ]
+                            ]
+            , test "double depth underscore" <|
+                \() ->
+                    "__hello!__"
+                        |> expectInlines
+                            [ Inlines.Emphasis 2 [ Inlines.Text "hello!" ]
+                            ]
+            ]
         , test "No stripping occurs if the code span contains only spaces (example 344)" <|
             \() ->
                 """` `
@@ -229,6 +249,21 @@ suite =
                         "hello+xyz@mail.example"
                             |> expectInlines
                                 [ Inlines.Link "mailto:hello+xyz@mail.example" Nothing [ Inlines.Text "hello+xyz@mail.example" ] ]
+                , test "basic email autolink with asterisk emphasis" <|
+                    \() ->
+                        "**hello@mail.example**"
+                            |> expectInlines
+                                [ Inlines.Emphasis 2 [ Inlines.Link "mailto:hello@mail.example" Nothing [ Inlines.Text "hello@mail.example" ] ] ]
+                , test "basic email autolink with single underscore emphasis" <|
+                    \() ->
+                        "_hello@mail.example_"
+                            |> expectInlines
+                                [ Inlines.Emphasis 1 [ Inlines.Link "mailto:hello@mail.example" Nothing [ Inlines.Text "hello@mail.example" ] ] ]
+                , test "basic email autolink with double underscore emphasis" <|
+                    \() ->
+                        "__hello@mail.example__"
+                            |> expectInlines
+                                [ Inlines.Emphasis 2 [ Inlines.Link "mailto:hello@mail.example" Nothing [ Inlines.Text "hello@mail.example" ] ] ]
                 , test "email autolinks must have a dot in the domain" <|
                     \() ->
                         "hello+xyz@mail"
