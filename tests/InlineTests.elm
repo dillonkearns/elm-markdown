@@ -126,6 +126,11 @@ suite =
                         "visit www.bar.baz/help for more info\n"
                             |> expectInlines
                                 [ Inlines.Text "visit ", Inlines.Link "http://www.bar.baz/help" Nothing [ Inlines.Text "www.bar.baz/help" ], Inlines.Text " for more info" ]
+                , test "autolink with a period after the link text" <|
+                    \() ->
+                        "(visit www.bar.baz/help.)\n"
+                            |> expectInlines
+                                [ Inlines.Text "(visit ", Inlines.Link "http://www.bar.baz/help" Nothing [ Inlines.Text "www.bar.baz/help" ], Inlines.Text ".)" ]
                 ]
             , describe "extended autolink path validation"
                 [ test "with multiple trailing punctuation" <|

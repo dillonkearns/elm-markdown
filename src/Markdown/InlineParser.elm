@@ -721,19 +721,21 @@ extendedAutoLinkTrailingEntityReferenceRegex =
 regMatchToExtendedAutolinkToken : Regex.Match -> Maybe Token
 regMatchToExtendedAutolinkToken regMatch =
     let
-        lengthOfTrailingPunctuation =
-            regMatch.match
-                |> Regex.find extendedAutoLinkTrailingPunctuationRegex
-                |> List.head
-                |> Maybe.map (.match >> String.length)
-                |> Maybe.withDefault 0
-
         lengthOfUnmatchedParenthesis =
             if String.endsWith ")" regMatch.match then
                 Basics.max 0 (List.length (String.indexes ")" regMatch.match) - List.length (String.indexes "(" regMatch.match))
 
             else
                 0
+
+        -- Ensue we trim trailing punctuation even if there are unmatched parenthesis after
+        lengthOfTrailingPunctuation =
+            regMatch.match
+                |> String.dropRight lengthOfUnmatchedParenthesis
+                |> Regex.find extendedAutoLinkTrailingPunctuationRegex
+                |> List.head
+                |> Maybe.map (.match >> String.length)
+                |> Maybe.withDefault 0
 
         lengthOfTrailingEntityReferences =
             regMatch.match
@@ -1486,7 +1488,7 @@ isCloseToken htmlModel token =
 
 
 -- LinkType and images Tokens To Matches
--- LinkType, reference link and images have precedence over emphasis
+-- LinkType, reference link a   nd images have precedence over emphasis
 
 
 linkImageTypeTTM : List Token -> List Token -> List Match -> References -> String -> List Match
