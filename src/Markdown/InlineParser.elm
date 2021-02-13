@@ -3,7 +3,7 @@ module Markdown.InlineParser exposing (parse, query, tokenize, walk)
 import Dict
 import HtmlParser
 import Markdown.Helpers exposing (References, cleanWhitespaces, formatStr, ifError, insideSquareBracketRegex, isEven, lineEndChars, prepareRefLabel, returnFirstJust, titleRegex, whiteSpaceChars)
-import Markdown.Inline exposing (Inline(..))
+import Markdown.Inline exposing (AllowedInlines(..), Inline(..))
 import Parser.Advanced as Advanced exposing ((|=))
 import Regex exposing (Regex)
 import Url
@@ -13,8 +13,8 @@ import Url
 -- Parser
 
 
-parse : References -> String -> List Inline
-parse refs rawText_ =
+parse : AllowedInlines -> References -> String -> List Inline
+parse allowedInlines refs rawText_ =
     let
         rawText =
             String.trim rawText_
@@ -25,7 +25,7 @@ parse refs rawText_ =
     tokensToMatches tokens [] refs rawText
         |> organizeMatches
         |> parseTextMatches rawText []
-        |> matchesToInlines
+        |> matchesToInlines allowedInlines
 
 
 parseTextMatches : String -> List Match -> List Match -> List Match
@@ -2185,13 +2185,13 @@ strikethroughTTM remaining tokens matches references rawText =
 -- Matches to Inline
 
 
-matchesToInlines : List Match -> List Inline
-matchesToInlines matches =
-    List.map matchToInline matches
+matchesToInlines : AllowedInlines -> List Match -> List Inline
+matchesToInlines allowedInlines matches =
+    List.map (matchToInline allowedInlines) matches
 
 
-matchToInline : Match -> Inline
-matchToInline (Match match) =
+matchToInline : AllowedInlines -> Match -> Inline
+matchToInline allowedInlines (Match match) =
     case match.type_ of
         NormalType ->
             Text match.text
@@ -2203,28 +2203,33 @@ matchToInline (Match match) =
             CodeInline match.text
 
         AutolinkType ( text, url ) ->
-            Link url Nothing [ Text text ]
+            case allowedInlines of
+                SkipAutolinks ->
+                    Text text
+
+                AllowAll ->
+                    Link url Nothing [ Text text ]
 
         LinkType ( url, maybeTitle ) ->
             Link url
                 maybeTitle
-                (matchesToInlines match.matches)
+                (matchesToInlines allowedInlines match.matches)
 
         ImageType ( url, maybeTitle ) ->
             Image url
                 maybeTitle
-                (matchesToInlines match.matches)
+                (matchesToInlines allowedInlines match.matches)
 
         HtmlType model ->
             HtmlInline model
 
         EmphasisType length ->
             Emphasis length
-                (matchesToInlines match.matches)
+                (matchesToInlines allowedInlines match.matches)
 
         StrikethroughType ->
             Strikethrough
-                (matchesToInlines match.matches)
+                (matchesToInlines allowedInlines match.matches)
 
 
 

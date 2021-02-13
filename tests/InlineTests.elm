@@ -3,7 +3,7 @@ module InlineTests exposing (suite)
 import Dict
 import Expect exposing (Expectation)
 import HtmlParser
-import Markdown.Inline as Inlines
+import Markdown.Inline as Inlines exposing (AllowedInlines(..))
 import Markdown.InlineParser
 import Parser
 import Parser.Advanced as Advanced
@@ -215,6 +215,13 @@ suite =
                         "<p>Already linked: <a href=\"http://example.com/\">http://example.com/</a>.</p>\n"
                             |> expectInlines
                                 [ Inlines.HtmlInline (HtmlParser.Element "p" [] [ HtmlParser.Text "Already linked: ", HtmlParser.Element "a" [ { name = "href", value = "http://example.com/" } ] [ HtmlParser.Text "http://example.com/" ], HtmlParser.Text "." ]) ]
+                , describe "when we are not allowing autolinks"
+                    [ test "basic http url" <|
+                        \() ->
+                            "go here http://www.bar.baz next\n"
+                                |> expectInlinesWithoutAutolinks
+                                    [ Inlines.Text "go here ", Inlines.Text "http://www.bar.baz", Inlines.Text " next" ]
+                    ]
                 ]
             , describe "extended email autolinks"
                 [ test "basic email autolink" <|
@@ -348,5 +355,12 @@ suite =
 expectInlines : List Inlines.Inline -> String -> Expectation
 expectInlines expected input =
     input
-        |> Markdown.InlineParser.parse Dict.empty
+        |> Markdown.InlineParser.parse AllowAll Dict.empty
+        |> Expect.equal expected
+
+
+expectInlinesWithoutAutolinks : List Inlines.Inline -> String -> Expectation
+expectInlinesWithoutAutolinks expected input =
+    input
+        |> Markdown.InlineParser.parse SkipAutolinks Dict.empty
         |> Expect.equal expected

@@ -6,14 +6,13 @@ module Markdown.Parser exposing (parse, deadEndToString)
 
 -}
 
-import Whitespace
-import Helpers
 import Dict exposing (Dict)
+import Helpers
 import HtmlParser exposing (Node(..))
 import Markdown.Block as Block exposing (Block, Inline, ListItem, Task)
 import Markdown.CodeBlock
 import Markdown.Heading as Heading
-import Markdown.Inline as Inline
+import Markdown.Inline as Inline exposing (AllowedInlines(..))
 import Markdown.InlineParser
 import Markdown.LinkReferenceDefinition as LinkReferenceDefinition exposing (LinkReferenceDefinition)
 import Markdown.ListItem as ListItem
@@ -26,6 +25,7 @@ import Parser
 import Parser.Advanced as Advanced exposing ((|.), (|=), Nestable(..), Step(..), andThen, chompIf, chompWhile, getChompedString, loop, map, oneOf, problem, succeed, symbol, token)
 import Parser.Token as Token
 import ThematicBreak
+import Whitespace
 
 
 {-| Try parsing a markdown String into `Markdown.Block.Block`s.
@@ -51,6 +51,11 @@ But you can also do a lot with the `Block`s before passing them through:
 -}
 parse : String -> Result (List (Advanced.DeadEnd String Parser.Problem)) (List Block)
 parse input =
+    parseHelper AllowAll input
+
+
+parseHelper : AllowedInlines -> String -> Result (List (Advanced.DeadEnd String Parser.Problem)) (List Block)
+parseHelper allowedInlines input =
     -- first parse the file as raw blocks
     case Advanced.run (rawBlockParser |. Helpers.endOfFile) input of
         Err e ->
@@ -58,7 +63,7 @@ parse input =
 
         Ok v ->
             -- then parse the inlines of each raw block
-            case parseAllInlines v of
+            case parseAllInlines allowedInlines v of
                 Err e ->
                     -- NOTE these messages get an incorrect location,
                     -- because they are parsed outside of the main (raw block) parser context.
@@ -143,15 +148,15 @@ type alias Parser a =
     Advanced.Parser String Parser.Problem a
 
 
-inlineParseHelper : LinkReferenceDefinitions -> UnparsedInlines -> List Block.Inline
-inlineParseHelper referencesDict (UnparsedInlines unparsedInlines) =
+inlineParseHelper : AllowedInlines -> LinkReferenceDefinitions -> UnparsedInlines -> List Block.Inline
+inlineParseHelper allowedInlines referencesDict (UnparsedInlines unparsedInlines) =
     let
         mappedReferencesDict =
             referencesDict
                 |> List.map (Tuple.mapSecond (\{ destination, title } -> ( destination, title )))
                 |> Dict.fromList
     in
-    Markdown.InlineParser.parse mappedReferencesDict unparsedInlines
+    Markdown.InlineParser.parse allowedInlines mappedReferencesDict unparsedInlines
         |> List.map mapInline
 
 
@@ -189,8 +194,9 @@ mapInline inline =
                 _ ->
                     -- TODO fix this
                     Block.Strong (inlines |> List.map mapInline)
+
         Inline.Strikethrough inlines ->
-          Block.Strikethrough (inlines |> List.map mapInline)
+            Block.Strikethrough (inlines |> List.map mapInline)
 
 
 toHeading : Int -> Result Parser.Problem Block.HeadingLevel
@@ -224,14 +230,14 @@ type InlineResult
     | InlineProblem Parser.Problem
 
 
-parseInlines : LinkReferenceDefinitions -> RawBlock -> InlineResult
-parseInlines linkReferences rawBlock =
+parseInlines : AllowedInlines -> LinkReferenceDefinitions -> RawBlock -> InlineResult
+parseInlines allowedInlines linkReferences rawBlock =
     case rawBlock of
         Heading level unparsedInlines ->
             case toHeading level of
                 Ok parsedLevel ->
                     unparsedInlines
-                        |> inlineParseHelper linkReferences
+                        |> inlineParseHelper allowedInlines linkReferences
                         |> Block.Heading parsedLevel
                         |> ParsedBlock
 
@@ -240,7 +246,7 @@ parseInlines linkReferences rawBlock =
 
         OpenBlockOrParagraph unparsedInlines ->
             unparsedInlines
-                |> inlineParseHelper linkReferences
+                |> inlineParseHelper allowedInlines linkReferences
                 |> Block.Paragraph
                 |> ParsedBlock
 
@@ -253,7 +259,7 @@ parseInlines linkReferences rawBlock =
                 parseItem unparsed =
                     let
                         parsedInlines =
-                            parseRawInline linkReferences identity unparsed.body
+                            parseRawInline allowedInlines linkReferences identity unparsed.body
 
                         task =
                             case unparsed.task of
@@ -275,7 +281,7 @@ parseInlines linkReferences rawBlock =
 
         OrderedListBlock startingIndex unparsedInlines ->
             unparsedInlines
-                |> List.map (parseRawInline linkReferences identity)
+                |> List.map (parseRawInline allowedInlines linkReferences identity)
                 |> Block.OrderedList startingIndex
                 |> ParsedBlock
 
@@ -292,7 +298,7 @@ parseInlines linkReferences rawBlock =
         BlockQuote rawBlocks ->
             case Advanced.run rawBlockParser rawBlocks of
                 Ok value ->
-                    case parseAllInlines value of
+                    case parseAllInlines allowedInlines value of
                         Ok parsedBlocks ->
                             Block.BlockQuote parsedBlocks
                                 |> ParsedBlock
@@ -308,30 +314,31 @@ parseInlines linkReferences rawBlock =
                 |> ParsedBlock
 
         Table (Markdown.Table.Table header rows) ->
-            Block.Table (parseHeaderInlines linkReferences header) (parseRowInlines linkReferences rows)
+            Block.Table (parseHeaderInlines allowedInlines linkReferences header) (parseRowInlines allowedInlines linkReferences rows)
                 |> ParsedBlock
 
         TableDelimiter (Markdown.Table.TableDelimiterRow text _) ->
             UnparsedInlines text.raw
-                |> inlineParseHelper linkReferences
+                |> inlineParseHelper allowedInlines linkReferences
                 |> Block.Paragraph
                 |> ParsedBlock
 
         SetextLine _ raw ->
             UnparsedInlines raw
-                |> inlineParseHelper linkReferences
+                |> inlineParseHelper allowedInlines linkReferences
                 |> Block.Paragraph
                 |> ParsedBlock
 
 
-parseHeaderInlines : LinkReferenceDefinitions -> List (Markdown.Table.HeaderCell String) -> List (Markdown.Table.HeaderCell (List Inline))
-parseHeaderInlines linkReferences header =
+parseHeaderInlines : AllowedInlines -> LinkReferenceDefinitions -> List (Markdown.Table.HeaderCell String) -> List (Markdown.Table.HeaderCell (List Inline))
+parseHeaderInlines allowedInlines linkReferences header =
     header
         |> List.map
             (\{ label, alignment } ->
                 label
                     |> UnparsedInlines
-                    |> parseRawInline linkReferences
+                    |> parseRawInline allowedInlines
+                        linkReferences
                         (\parsedHeaderLabel ->
                             { label = parsedHeaderLabel
                             , alignment = alignment
@@ -340,8 +347,8 @@ parseHeaderInlines linkReferences header =
             )
 
 
-parseRowInlines : LinkReferenceDefinitions -> List (List String) -> List (List (List Inline))
-parseRowInlines linkReferences rows =
+parseRowInlines : AllowedInlines -> LinkReferenceDefinitions -> List (List String) -> List (List (List Inline))
+parseRowInlines allowedInlines linkReferences rows =
     rows
         |> List.map
             (\row ->
@@ -349,16 +356,16 @@ parseRowInlines linkReferences rows =
                     (\column ->
                         column
                             |> UnparsedInlines
-                            |> parseRawInline linkReferences identity
+                            |> parseRawInline allowedInlines linkReferences identity
                     )
                     row
             )
 
 
-parseRawInline : LinkReferenceDefinitions -> (List Inline -> a) -> UnparsedInlines -> a
-parseRawInline linkReferences wrap unparsedInlines =
+parseRawInline : AllowedInlines -> LinkReferenceDefinitions -> (List Inline -> a) -> UnparsedInlines -> a
+parseRawInline allowedInlines linkReferences wrap unparsedInlines =
     unparsedInlines
-        |> inlineParseHelper linkReferences
+        |> inlineParseHelper allowedInlines linkReferences
         |> wrap
 
 
@@ -446,6 +453,26 @@ htmlParser =
         |> Advanced.andThen xmlNodeToHtmlNode
 
 
+allowAllInlinesUnlessInsideAnchor : String -> AllowedInlines
+allowAllInlinesUnlessInsideAnchor tag =
+    case tag of
+        "a" ->
+            SkipAutolinks
+
+        _ ->
+            AllowAll
+
+
+mostRestrictiveAllowance : AllowedInlines -> AllowedInlines -> AllowedInlines
+mostRestrictiveAllowance allowed1 allowed2 =
+    case ( allowed1, allowed2 ) of
+        ( AllowAll, AllowAll ) ->
+            AllowAll
+
+        _ ->
+            SkipAutolinks
+
+
 xmlNodeToHtmlNode : Node -> Parser RawBlock
 xmlNodeToHtmlNode xmlNode =
     case xmlNode of
@@ -454,7 +481,7 @@ xmlNodeToHtmlNode xmlNode =
                 |> succeed
 
         HtmlParser.Element tag attributes children ->
-            case nodesToBlocks children of
+            case nodesToBlocks (allowAllInlinesUnlessInsideAnchor tag) children of
                 Ok parsedChildren ->
                     Block.HtmlElement tag attributes parsedChildren
                         |> RawBlock.Html
@@ -523,18 +550,18 @@ nodeToRawBlock node =
             Block.HtmlDeclaration declarationType content
 
 
-nodesToBlocks : List Node -> Result Parser.Problem (List Block)
-nodesToBlocks children =
-    nodesToBlocksHelp children []
+nodesToBlocks : AllowedInlines -> List Node -> Result Parser.Problem (List Block)
+nodesToBlocks allowedInlines children =
+    nodesToBlocksHelp allowedInlines children []
 
 
-nodesToBlocksHelp : List Node -> List Block -> Result Parser.Problem (List Block)
-nodesToBlocksHelp remaining soFar =
+nodesToBlocksHelp : AllowedInlines -> List Node -> List Block -> Result Parser.Problem (List Block)
+nodesToBlocksHelp allowedInlines remaining soFar =
     case remaining of
         node :: rest ->
-            case childToBlocks node soFar of
+            case childToBlocks allowedInlines node soFar of
                 Ok newSoFar ->
-                    nodesToBlocksHelp rest newSoFar
+                    nodesToBlocksHelp allowedInlines rest newSoFar
 
                 Err e ->
                     Err e
@@ -545,11 +572,11 @@ nodesToBlocksHelp remaining soFar =
 
 {-| Add the blocks from this node to the passed-in list of blocks
 -}
-childToBlocks : Node -> List Block -> Result Parser.Problem (List Block)
-childToBlocks node blocks =
+childToBlocks : AllowedInlines -> Node -> List Block -> Result Parser.Problem (List Block)
+childToBlocks allowedInlines node blocks =
     case node of
         Element tag attributes children ->
-            case nodesToBlocks children of
+            case nodesToBlocks (mostRestrictiveAllowance allowedInlines (allowAllInlinesUnlessInsideAnchor tag)) children of
                 Ok childrenAsBlocks ->
                     let
                         block =
@@ -562,7 +589,7 @@ childToBlocks node blocks =
                     Err err
 
         Text innerText ->
-            case parse innerText of
+            case parseHelper allowedInlines innerText of
                 Ok value ->
                     Ok (List.reverse value ++ blocks)
 
@@ -614,22 +641,22 @@ rawBlockParser =
         stepRawBlock
 
 
-parseAllInlines : State -> Result Parser.Problem (List Block)
-parseAllInlines state =
-    parseAllInlinesHelp state state.rawBlocks []
+parseAllInlines : AllowedInlines -> State -> Result Parser.Problem (List Block)
+parseAllInlines allowedInlines state =
+    parseAllInlinesHelp allowedInlines state state.rawBlocks []
 
 
-parseAllInlinesHelp : State -> List RawBlock -> List Block -> Result Parser.Problem (List Block)
-parseAllInlinesHelp state rawBlocks parsedBlocks =
+parseAllInlinesHelp : AllowedInlines -> State -> List RawBlock -> List Block -> Result Parser.Problem (List Block)
+parseAllInlinesHelp allowedInlines state rawBlocks parsedBlocks =
     case rawBlocks of
         rawBlock :: rest ->
-            case parseInlines state.linkReferenceDefinitions rawBlock of
+            case parseInlines allowedInlines state.linkReferenceDefinitions rawBlock of
                 ParsedBlock newParsedBlock ->
-                    parseAllInlinesHelp state rest (newParsedBlock :: parsedBlocks)
+                    parseAllInlinesHelp allowedInlines state rest (newParsedBlock :: parsedBlocks)
 
                 EmptyBlock ->
                     -- ignore empty blocks
-                    parseAllInlinesHelp state rest parsedBlocks
+                    parseAllInlinesHelp allowedInlines state rest parsedBlocks
 
                 InlineProblem e ->
                     Err e

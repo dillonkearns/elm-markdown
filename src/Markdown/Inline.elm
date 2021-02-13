@@ -1,6 +1,7 @@
 module Markdown.Inline exposing
     ( Inline(..)
     , extractText
+    , AllowedInlines(..)
     )
 
 {-| Inline rendering and helpers.
@@ -42,6 +43,11 @@ type Inline
     | HtmlInline HtmlParser.Node
     | Emphasis Int (List Inline)
     | Strikethrough (List Inline)
+
+
+type AllowedInlines
+    = AllowAll
+    | SkipAutolinks
 
 
 type alias Attribute =
