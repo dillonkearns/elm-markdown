@@ -48,7 +48,9 @@ parser =
             [ succeed (UnparsedInlines "")
                 |. symbol Token.newline
             , succeed identity
-                |. symbol Token.space
+                |. oneOf
+                    [ symbol Token.space
+                    , symbol Token.tab]
                 |= (Helpers.chompUntilLineEndOrEnd
                         |> Advanced.mapChompedString
                             (\headingText _ ->
