@@ -23,5 +23,5 @@ Should give output:
 But instead was:
 
 ````````````html
-<p>paragraph before head with hash</p><h1>how are you</h1><h1>paragraph before head with equals how are you again</h1>
+<p>paragraph before head with hash #how are you</p><h1>paragraph before head with equals how are you again</h1>
 ````````````

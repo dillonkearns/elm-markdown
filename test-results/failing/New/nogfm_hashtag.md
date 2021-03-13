@@ -22,5 +22,5 @@ Should give output:
 But instead was:
 
 ````````````html
-<h1>header</h1><h1>header1</h1><h1>header2</h1>
+<p>#header</p><h1>header1</h1><h1>header2</h1>
 ````````````
