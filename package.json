@@ -11,7 +11,6 @@
     "test:ete": "cd spec-tests && npx elm make OutputMarkdownHtml.elm --output elm.js && cd .. && jasmine --config=jasmine.json spec-tests/specs/**/*-spec.js"
   },
   "author": "Dillon Kearns",
-  "dependencies": {},
   "devDependencies": {
     "@markedjs/html-differ": "^3.0.0",
     "elm": "latest-0.19.1",
