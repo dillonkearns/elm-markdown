@@ -4,7 +4,7 @@ import Whitespace
 import Helpers
 import Markdown.RawBlock exposing (Attribute, RawBlock(..), UnparsedInlines(..))
 import Parser
-import Parser.Advanced as Advanced exposing ((|.), (|=), Nestable(..), Step(..), andThen, chompIf, chompWhile, getChompedString, spaces, succeed, symbol)
+import Parser.Advanced as Advanced exposing ((|.), (|=), Nestable(..), Step(..), andThen, chompIf, chompWhile, getChompedString, spaces, succeed, symbol, oneOf)
 import Parser.Token as Token
 
 
@@ -44,15 +44,22 @@ parser =
                             succeed level
                     )
            )
-        |= (Helpers.chompUntilLineEndOrEnd
-                |> Advanced.mapChompedString
-                    (\headingText _ ->
-                        headingText
-                            |> String.trimLeft
-                            |> dropTrailingHashes
-                            |> UnparsedInlines
+        |= oneOf
+            [ succeed (UnparsedInlines "")
+                |. symbol Token.newline
+            , succeed identity
+                |. symbol Token.space
+                |= (Helpers.chompUntilLineEndOrEnd
+                        |> Advanced.mapChompedString
+                            (\headingText _ ->
+                                headingText
+                                    |> String.trimLeft
+                                    |> String.trimRight
+                                    |> dropClosingSequence
+                                    |> UnparsedInlines
+                        )
                     )
-           )
+            ]
 
 
 isHash : Char -> Bool
@@ -65,11 +72,24 @@ isHash c =
             False
 
 
+dropClosingSequence: String -> String
+dropClosingSequence headingString =
+    let
+        droppedTrailingHashesString = 
+            headingString 
+                |> dropTrailingHashes
+    in
+    if (droppedTrailingHashesString |> String.endsWith " ") || (droppedTrailingHashesString |> String.isEmpty) then
+        droppedTrailingHashesString |> String.trimRight
+        
+    else
+        headingString
+
+
 dropTrailingHashes : String -> String
 dropTrailingHashes headingString =
     if headingString |> String.endsWith "#" then
         String.dropRight 1 headingString
-            |> String.trimRight
             |> dropTrailingHashes
 
     else
