@@ -48,6 +48,27 @@ Gives this correct output:
 
 ````````````
 
+### [Example 34](https://spec.commonmark.org/0.29/#example-34)
+
+This markdown:
+
+
+````````````markdown
+#5 bolt
+
+#hashtag
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p>#5 bolt</p>
+<p>#hashtag</p>
+
+````````````
+
 ### [Example 35](https://spec.commonmark.org/0.29/#example-35)
 
 This markdown:
@@ -203,6 +224,24 @@ Gives this correct output:
 
 ````````````
 
+### [Example 43](https://spec.commonmark.org/0.29/#example-43)
+
+This markdown:
+
+
+````````````markdown
+### foo ###     
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<h3>foo</h3>
+
+````````````
+
 ### [Example 44](https://spec.commonmark.org/0.29/#example-44)
 
 This markdown:
@@ -218,6 +257,46 @@ Gives this correct output:
 
 ````````````html
 <h3>foo ### b</h3>
+
+````````````
+
+### [Example 45](https://spec.commonmark.org/0.29/#example-45)
+
+This markdown:
+
+
+````````````markdown
+# foo#
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<h1>foo#</h1>
+
+````````````
+
+### [Example 46](https://spec.commonmark.org/0.29/#example-46)
+
+This markdown:
+
+
+````````````markdown
+### foo \###
+## foo #\##
+# foo \#
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<h3>foo ###</h3>
+<h2>foo ###</h2>
+<h1>foo #</h1>
 
 ````````````
 
