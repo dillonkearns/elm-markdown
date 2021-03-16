@@ -55,8 +55,7 @@ parser =
                         |> Advanced.mapChompedString
                             (\headingText _ ->
                                 headingText
-                                    |> String.trimLeft
-                                    |> String.trimRight
+                                    |> String.trim
                                     |> dropClosingSequence
                                     |> UnparsedInlines
                         )
