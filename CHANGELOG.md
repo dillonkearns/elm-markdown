@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [6.0.1] - 2021-03-16
+
+### Fixed
+
+- Made some additional whitespace spec compliance around headings, see [#77](https://github.com/dillonkearns/elm-markdown/pull/77). Thank you [@LutSa](https://github.com/LutSa)!
+
 ## [6.0.0] - 2021-02-09
 
 ### Added
