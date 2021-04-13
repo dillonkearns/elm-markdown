@@ -229,8 +229,8 @@ You get full access to the parsed markdown blocks before passing it to a rendere
 This is evolving and I would like input on the direction of parsing. My current thinking is that this library should:
 
 - Do not add any new syntax, this library has a subset of the features of Github flavored markdown.
-- Only parse the [Github-flavored markdown style](https://github.github.com/gfm/) (not CommonMark or other variants)
-- (This breaks GFM compliance in favor of explicit errors) All markdown is valid in github-flavored markdown and other variants. This library aims to give explicit errors instead of falling back and silently continuing, see example below
+- Only parse the [Github-flavored markdown style](https://github.github.com/gfm/) (not CommonMark or other variants).
+- (This breaks GFM compliance in favor of explicit errors) All markdown is valid in github-flavored markdown and other variants. This library aims to give explicit errors instead of falling back and silently continuing, see example below.
 - Only deviate from Github-flavored markdown rules when it helps give better error feedback for "things you probably didn't mean to do." In all other cases, follow the Github-flavored markdown spec.
 
 ## Current Github-flavored markdown compliance
@@ -242,7 +242,7 @@ You can see the latest passing and failing tests from this test suite in the `te
 ### Examples of fallback behavior
 
 Github flavored markdown behavior:
-Links with missing closing parens are are rendered as raw text instead of links
+Links with missing closing parens are are rendered as raw text instead of links:
 
 ```markdown
 [My link](/home/ wait I forgot to close the link
