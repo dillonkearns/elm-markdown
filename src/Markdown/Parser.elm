@@ -27,6 +27,7 @@ import Parser.Advanced as Advanced exposing ((|.), (|=), Nestable(..), Step(..),
 import Parser.Token as Token
 import ThematicBreak
 
+import Markdown.Helpers exposing (isEven)
 
 {-| Try parsing a markdown String into `Markdown.Block.Block`s.
 
@@ -187,8 +188,11 @@ mapInline inline =
                     Block.Strong (inlines |> List.map mapInline)
 
                 _ ->
-                    -- TODO fix this
-                    Block.Strong (inlines |> List.map mapInline)
+                    if level |> isEven  then
+                        Block.Strong [Inline.Emphasis (level - 2) inlines |> mapInline]
+                    else
+                        Block.Emphasis [Inline.Emphasis (level - 1) inlines |> mapInline]
+
         Inline.Strikethrough inlines ->
           Block.Strikethrough (inlines |> List.map mapInline)
 
