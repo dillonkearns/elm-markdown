@@ -1,45 +1,5 @@
 # CommonMark - Emphasis and strong emphasis
 
-## [Example 415](https://spec.commonmark.org/0.29/#example-415)
-
-This markdown:
-
-````````````markdown
-foo***bar***baz
-
-````````````
-
-Should give output:
-
-````````````html
-<p>foo<em><strong>bar</strong></em>baz</p>
-````````````
-
-But instead was:
-
-````````````html
-<p>foo***bar***baz</p>
-````````````
-## [Example 416](https://spec.commonmark.org/0.29/#example-416)
-
-This markdown:
-
-````````````markdown
-foo******bar*********baz
-
-````````````
-
-Should give output:
-
-````````````html
-<p>foo<strong><strong><strong>bar</strong></strong></strong>***baz</p>
-````````````
-
-But instead was:
-
-````````````html
-<p>foo******bar*********baz</p>
-````````````
 ## [Example 474](https://spec.commonmark.org/0.29/#example-474)
 
 This markdown:

@@ -3019,6 +3019,42 @@ Gives this correct output:
 
 ````````````
 
+### [Example 415](https://spec.commonmark.org/0.29/#example-415)
+
+This markdown:
+
+
+````````````markdown
+foo***bar***baz
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p>foo<em><strong>bar</strong></em>baz</p>
+
+````````````
+
+### [Example 416](https://spec.commonmark.org/0.29/#example-416)
+
+This markdown:
+
+
+````````````markdown
+foo******bar*********baz
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p>foo<strong><strong><strong>bar</strong></strong></strong>***baz</p>
+
+````````````
+
 ### [Example 417](https://spec.commonmark.org/0.29/#example-417)
 
 This markdown:

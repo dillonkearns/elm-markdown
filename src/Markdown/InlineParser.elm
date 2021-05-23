@@ -1757,7 +1757,7 @@ isOpenEmphasisToken closeToken openToken =
                             -- is not multiple of 3
                             -- is Open emphasis
                             modBy 3 (closeToken.length + openToken.length) /= 0
-
+                         || (modBy 3 closeToken.length == 0 && modBy 3 openToken.length == 0)
                         else
                             True
 
