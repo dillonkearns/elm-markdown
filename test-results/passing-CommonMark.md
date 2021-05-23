@@ -3851,6 +3851,96 @@ Gives this correct output:
 
 ````````````
 
+### [Example 463](https://spec.commonmark.org/0.29/#example-463)
+
+This markdown:
+
+
+````````````markdown
+****foo****
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p><strong><strong>foo</strong></strong></p>
+
+````````````
+
+### [Example 464](https://spec.commonmark.org/0.29/#example-464)
+
+This markdown:
+
+
+````````````markdown
+____foo____
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p><strong><strong>foo</strong></strong></p>
+
+````````````
+
+### [Example 465](https://spec.commonmark.org/0.29/#example-465)
+
+This markdown:
+
+
+````````````markdown
+******foo******
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p><strong><strong><strong>foo</strong></strong></strong></p>
+
+````````````
+
+### [Example 466](https://spec.commonmark.org/0.29/#example-466)
+
+This markdown:
+
+
+````````````markdown
+***foo***
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p><em><strong>foo</strong></em></p>
+
+````````````
+
+### [Example 467](https://spec.commonmark.org/0.29/#example-467)
+
+This markdown:
+
+
+````````````markdown
+_____foo_____
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p><em><strong><strong>foo</strong></strong></em></p>
+
+````````````
+
 ### [Example 468](https://spec.commonmark.org/0.29/#example-468)
 
 This markdown:

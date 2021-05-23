@@ -24,5 +24,5 @@ Should give output:
 But instead was:
 
 ````````````html
-<p><strong>This is strong and em.</strong></p><p>So is<strong>this</strong>word.</p><p><strong>This is strong and em.</strong></p><p>So is<strong>this</strong>word.</p>
+<p><em><strong>This is strong and em.</strong></em></p><p>So is<em><strong>this</strong></em>word.</p><p><em><strong>This is strong and em.</strong></em></p><p>So is<em><strong>this</strong></em>word.</p>
 ````````````
