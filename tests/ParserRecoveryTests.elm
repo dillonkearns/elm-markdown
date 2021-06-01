@@ -3,6 +3,7 @@ module ParserRecoveryTests exposing (suite)
 import Expect exposing (Expectation)
 import Fuzz
 import Markdown.Block as Block exposing (..)
+import Markdown.Inline
 import Markdown.Parser as Markdown exposing (..)
 import Parser
 import Parser.Advanced as Advanced exposing ((|.), (|=))
@@ -27,6 +28,18 @@ suite =
                 randomString
                     |> Markdown.parse
                     |> Expect.ok
+        , test "recover from invalid html" <|
+            \() ->
+                "<no-closing-tag maybe this can just be rendered as a regular paragraph and not as HTML"
+                    |> Markdown.parse
+                    |> Expect.equal
+                        (Ok
+                            [ Block.Paragraph
+                                [ Block.Text
+                                    "<no-closing-tag maybe this can just be rendered as a regular paragraph and not as HTML"
+                                ]
+                            ]
+                        )
         ]
 
 
