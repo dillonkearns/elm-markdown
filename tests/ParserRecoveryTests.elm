@@ -40,6 +40,18 @@ suite =
                                 ]
                             ]
                         )
+        , test "<< is treated as regular text, not HTML" <|
+            \() ->
+                "In Elm, there are two ways to pipe: <| or <<"
+                    |> Markdown.parse
+                    |> Expect.equal
+                        (Ok
+                            [ Block.Paragraph
+                                [ Block.Text
+                                    "In Elm, there are two ways to pipe: <| or <<"
+                                ]
+                            ]
+                        )
         ]
 
 
