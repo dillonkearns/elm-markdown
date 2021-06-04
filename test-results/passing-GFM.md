@@ -6624,6 +6624,28 @@ Gives this correct output:
 
 ````````````
 
+### [Example 187](https://spec.commonmark.org/0.29/#example-187)
+
+This markdown:
+
+
+````````````markdown
+[foo]
+
+> [foo]: /url
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p><a href="/url">foo</a></p>
+<blockquote>
+</blockquote>
+
+````````````
+
 ### [Example 188](https://spec.commonmark.org/0.29/#example-188)
 
 This markdown:

@@ -59,7 +59,7 @@ parse input =
 
         Ok v ->
             -- then parse the inlines of each raw block
-            case parseAllInlines v of
+            case parseAllInlines (parseContainers v) of
                 Err e ->
                     -- NOTE these messages get an incorrect location,
                     -- because they are parsed outside of the main (raw block) parser context.
@@ -78,6 +78,35 @@ parse input =
                                     True
                     in
                     Ok (List.filter isNotEmptyParagraph blocks)
+
+
+parseContainers: State-> State
+parseContainers state =
+    parseContainersHelp state.rawBlocks {linkReferenceDefinitions=state.linkReferenceDefinitions, rawBlocks = []}
+
+
+parseContainersHelp : List RawBlock -> State -> State
+parseContainersHelp  unparsedRawBlocks parsedState =
+    case unparsedRawBlocks of
+        rawBlock :: rest ->
+            case rawBlock of
+                BlockQuote rawBlocks ->
+                    case Advanced.run rawBlockParser rawBlocks of
+                         Ok value ->
+                              parseContainersHelp rest
+                              { linkReferenceDefinitions = parsedState.linkReferenceDefinitions ++ (parseContainers value).linkReferenceDefinitions
+                              , rawBlocks = parsedState.rawBlocks ++[ (parseContainers value).rawBlocks|>ParsedBlockQuote]
+                              }
+                         Err e ->
+                              -- TODO return this error
+                              {linkReferenceDefinitions=[], rawBlocks= []}
+                _ ->
+                    parseContainersHelp rest
+                    { linkReferenceDefinitions = parsedState.linkReferenceDefinitions
+                    , rawBlocks = parsedState.rawBlocks ++ [rawBlock]
+                    }
+        [] ->
+            parsedState
 
 
 deadEndsToString : List (Advanced.DeadEnd String Parser.Problem) -> String
@@ -294,19 +323,16 @@ parseInlines linkReferences rawBlock =
             EmptyBlock
 
         BlockQuote rawBlocks ->
-            case Advanced.run rawBlockParser rawBlocks of
-                Ok value ->
-                    case parseAllInlines value of
-                        Ok parsedBlocks ->
-                            Block.BlockQuote parsedBlocks
-                                |> ParsedBlock
+            EmptyBlock
 
-                        Err e ->
-                            InlineProblem e
+        ParsedBlockQuote rawBlocks->
+            case parseAllInlines {linkReferenceDefinitions = linkReferences, rawBlocks = rawBlocks} of
+                Ok parsedBlocks ->
+                    Block.BlockQuote parsedBlocks
+                        |> ParsedBlock
 
-                Err error ->
-                    InlineProblem (Parser.Problem (deadEndsToString error))
-
+                Err e ->
+                     InlineProblem e
         IndentedCodeBlock codeBlockBody ->
             Block.CodeBlock { body = codeBlockBody, language = Nothing }
                 |> ParsedBlock
