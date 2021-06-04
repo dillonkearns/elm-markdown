@@ -498,7 +498,7 @@ Should give output:
 But instead was:
 
 ````````````html
-
+<p>bar</p>
 ````````````
 ## [Example 144](https://spec.commonmark.org/0.29/#example-144)
 

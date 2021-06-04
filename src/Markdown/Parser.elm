@@ -59,7 +59,7 @@ parse input =
 
         Ok v ->
             -- then parse the inlines of each raw block
-            case parseAllInlines (parseContainers v) of
+            case parseAllInlines v of
                 Err e ->
                     -- NOTE these messages get an incorrect location,
                     -- because they are parsed outside of the main (raw block) parser context.
@@ -78,35 +78,6 @@ parse input =
                                     True
                     in
                     Ok (List.filter isNotEmptyParagraph blocks)
-
-
-parseContainers: State-> State
-parseContainers state =
-    parseContainersHelp state.rawBlocks {linkReferenceDefinitions=state.linkReferenceDefinitions, rawBlocks = []}
-
-
-parseContainersHelp : List RawBlock -> State -> State
-parseContainersHelp  unparsedRawBlocks parsedState =
-    case unparsedRawBlocks of
-        rawBlock :: rest ->
-            case rawBlock of
-                BlockQuote rawBlocks ->
-                    case Advanced.run rawBlockParser rawBlocks of
-                         Ok value ->
-                              parseContainersHelp rest
-                              { linkReferenceDefinitions = parsedState.linkReferenceDefinitions ++ (parseContainers value).linkReferenceDefinitions
-                              , rawBlocks = parsedState.rawBlocks ++[ (parseContainers value).rawBlocks|>ParsedBlockQuote]
-                              }
-                         Err e ->
-                              -- TODO return this error
-                              {linkReferenceDefinitions=[], rawBlocks= []}
-                _ ->
-                    parseContainersHelp rest
-                    { linkReferenceDefinitions = parsedState.linkReferenceDefinitions
-                    , rawBlocks = parsedState.rawBlocks ++ [rawBlock]
-                    }
-        [] ->
-            parsedState
 
 
 deadEndsToString : List (Advanced.DeadEnd String Parser.Problem) -> String
@@ -670,71 +641,88 @@ parseAllInlinesHelp state rawBlocks parsedBlocks =
 
 completeOrMergeBlocks : State -> RawBlock -> State
 completeOrMergeBlocks state newRawBlock =
-    { linkReferenceDefinitions = state.linkReferenceDefinitions
-    , rawBlocks =
         case
             ( newRawBlock
             , state.rawBlocks
             )
         of
             ( CodeBlock block1, (CodeBlock block2) :: rest ) ->
-                CodeBlock
-                    { body = joinStringsPreserveAll block2.body block1.body
-                    , language = Nothing
-                    }
-                    :: rest
+                { linkReferenceDefinitions = state.linkReferenceDefinitions
+                , rawBlocks = CodeBlock
+                        { body = joinStringsPreserveAll block2.body block1.body
+                        , language = Nothing
+                        }
+                        :: rest}
 
             ( IndentedCodeBlock block1, (IndentedCodeBlock block2) :: rest ) ->
-                IndentedCodeBlock (joinStringsPreserveAll block2 block1)
-                    :: rest
+                { linkReferenceDefinitions = state.linkReferenceDefinitions
+                , rawBlocks = IndentedCodeBlock (joinStringsPreserveAll block2 block1)
+                        :: rest}
 
-            ( OpenBlockOrParagraph (UnparsedInlines body1), (BlockQuote body2) :: rest ) ->
-                BlockQuote (joinRawStringsWith "\n" body2 body1)
-                    :: rest
 
-            ( BlockQuote body1, (BlockQuote body2) :: rest ) ->
-                BlockQuote (joinStringsPreserveAll body2 body1)
-                    :: rest
+            ( _, (BlockQuote body2) :: rest ) ->
+                case newRawBlock of
+                    BlockQuote body1 ->
+                        { linkReferenceDefinitions = state.linkReferenceDefinitions
+                        , rawBlocks = BlockQuote (joinStringsPreserveAll body2 body1)
+                            :: rest}
+
+                    OpenBlockOrParagraph (UnparsedInlines body1) ->
+                        { linkReferenceDefinitions = state.linkReferenceDefinitions
+                                            , rawBlocks = BlockQuote (joinRawStringsWith "\n" body2 body1)
+                                                :: rest}
+
+                    _ ->
+                        case Advanced.run rawBlockParser body2 of
+                             Ok value ->
+                                { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
+                                , rawBlocks = newRawBlock :: (value.rawBlocks |> ParsedBlockQuote) :: rest
+                                }
+                             Err e ->
+                                -- TODO return this error
+                                {linkReferenceDefinitions=[], rawBlocks= []}
 
             ( OpenBlockOrParagraph (UnparsedInlines body1), (OpenBlockOrParagraph (UnparsedInlines body2)) :: rest ) ->
-                OpenBlockOrParagraph (UnparsedInlines (joinRawStringsWith "\n" body2 body1))
-                    :: rest
+                { linkReferenceDefinitions = state.linkReferenceDefinitions
+                , rawBlocks = OpenBlockOrParagraph (UnparsedInlines (joinRawStringsWith "\n" body2 body1))
+                    :: rest}
 
             ( SetextLine LevelOne _, (OpenBlockOrParagraph unparsedInlines) :: rest ) ->
-                Heading 1 unparsedInlines
-                    :: rest
+                { linkReferenceDefinitions = state.linkReferenceDefinitions
+                , rawBlocks =Heading 1 unparsedInlines
+                    :: rest}
 
             ( SetextLine LevelTwo _, (OpenBlockOrParagraph unparsedInlines) :: rest ) ->
-                Heading 2 unparsedInlines
-                    :: rest
+                { linkReferenceDefinitions = state.linkReferenceDefinitions
+                , rawBlocks =Heading 2 unparsedInlines
+                    :: rest}
 
             ( TableDelimiter (Markdown.Table.TableDelimiterRow text alignments), (OpenBlockOrParagraph (UnparsedInlines rawHeaders)) :: rest ) ->
                 case TableParser.parseHeader (Markdown.Table.TableDelimiterRow text alignments) rawHeaders of
                     Ok (Markdown.Table.TableHeader headers) ->
-                        Table (Markdown.Table.Table headers []) :: rest
+                        { linkReferenceDefinitions = state.linkReferenceDefinitions
+                        , rawBlocks =Table (Markdown.Table.Table headers []) :: rest}
 
                     Err _ ->
-                        OpenBlockOrParagraph (UnparsedInlines (joinRawStringsWith "\n" rawHeaders text.raw))
-                            :: rest
+                        { linkReferenceDefinitions = state.linkReferenceDefinitions
+                        , rawBlocks =OpenBlockOrParagraph (UnparsedInlines (joinRawStringsWith "\n" rawHeaders text.raw))
+                            :: rest}
 
             ( Table updatedTable, (Table _) :: rest ) ->
-                Table updatedTable :: rest
+                { linkReferenceDefinitions = state.linkReferenceDefinitions
+                    , rawBlocks = Table updatedTable :: rest}
 
             _ ->
-                newRawBlock :: state.rawBlocks
-    }
-
-
+                { linkReferenceDefinitions = state.linkReferenceDefinitions
+                    , rawBlocks = newRawBlock :: state.rawBlocks}
 
 -- RAW BLOCK PARSER
-
-
 stepRawBlock : State -> Parser (Step State State)
 stepRawBlock revStmts =
     -- Some blocks can't immediately follow a body
     oneOf
         [ Helpers.endOfFile
-            |> map (\_ -> Done revStmts)
+            |> map (\_ -> Done (completeBlocks revStmts))
         , LinkReferenceDefinition.parser
             |> Advanced.backtrackable
             |> map (\reference -> Loop (addReference revStmts reference))
@@ -756,6 +744,19 @@ stepRawBlock revStmts =
             |> map (\block -> Loop (completeOrMergeBlocks revStmts block))
         ]
 
+
+completeBlocks state=
+    case state.rawBlocks of
+        (BlockQuote body2) :: rest ->
+            case Advanced.run rawBlockParser body2 of
+                Ok value ->
+                                { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
+                                , rawBlocks = (value.rawBlocks |> ParsedBlockQuote) :: rest
+                                }
+                Err e ->
+                                -- TODO return this error
+                                state
+        _-> state
 
 
 -- Note [Static Parser Structure]
