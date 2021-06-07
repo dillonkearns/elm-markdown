@@ -498,7 +498,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<p>bar</p>
+ERROR Problem at row 4 Problem at row 2 Expecting symbol
 ````````````
 ## [Example 144](https://spec.commonmark.org/0.29/#example-144)
 
