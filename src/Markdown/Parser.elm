@@ -6,13 +6,13 @@ module Markdown.Parser exposing (parse, deadEndToString)
 
 -}
 
-import Whitespace
-import Helpers
 import Dict exposing (Dict)
+import Helpers
 import HtmlParser exposing (Node(..))
 import Markdown.Block as Block exposing (Block, Inline, ListItem, Task)
 import Markdown.CodeBlock
 import Markdown.Heading as Heading
+import Markdown.Helpers exposing (isEven)
 import Markdown.Inline as Inline
 import Markdown.InlineParser
 import Markdown.LinkReferenceDefinition as LinkReferenceDefinition exposing (LinkReferenceDefinition)
@@ -26,8 +26,8 @@ import Parser
 import Parser.Advanced as Advanced exposing ((|.), (|=), Nestable(..), Step(..), andThen, chompIf, chompWhile, getChompedString, loop, map, oneOf, problem, succeed, symbol, token)
 import Parser.Token as Token
 import ThematicBreak
+import Whitespace
 
-import Markdown.Helpers exposing (isEven)
 
 {-| Try parsing a markdown String into `Markdown.Block.Block`s.
 
@@ -188,13 +188,14 @@ mapInline inline =
                     Block.Strong (inlines |> List.map mapInline)
 
                 _ ->
-                    if level |> isEven  then
-                        Block.Strong [Inline.Emphasis (level - 2) inlines |> mapInline]
+                    if level |> isEven then
+                        Block.Strong [ Inline.Emphasis (level - 2) inlines |> mapInline ]
+
                     else
-                        Block.Emphasis [Inline.Emphasis (level - 1) inlines |> mapInline]
+                        Block.Emphasis [ Inline.Emphasis (level - 1) inlines |> mapInline ]
 
         Inline.Strikethrough inlines ->
-          Block.Strikethrough (inlines |> List.map mapInline)
+            Block.Strikethrough (inlines |> List.map mapInline)
 
 
 toHeading : Int -> Result Parser.Problem Block.HeadingLevel
@@ -296,14 +297,15 @@ parseInlines linkReferences rawBlock =
         BlockQuote rawBlocks ->
             EmptyBlock
 
-        ParsedBlockQuote rawBlocks->
-            case parseAllInlines {linkReferenceDefinitions = linkReferences, rawBlocks = rawBlocks} of
+        ParsedBlockQuote rawBlocks ->
+            case parseAllInlines { linkReferenceDefinitions = linkReferences, rawBlocks = rawBlocks } of
                 Ok parsedBlocks ->
                     Block.BlockQuote parsedBlocks
                         |> ParsedBlock
 
                 Err e ->
-                     InlineProblem e
+                    InlineProblem e
+
         IndentedCodeBlock codeBlockBody ->
             Block.CodeBlock { body = codeBlockBody, language = Nothing }
                 |> ParsedBlock
