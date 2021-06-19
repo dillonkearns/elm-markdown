@@ -22,12 +22,30 @@ type alias Parser a =
 parser : Bool -> Parser ( UnorderedListMarker, Int, ListItem )
 parser previousWasBody =
     let
-        parseSubsequentItems listmaker firstItem =
-            ( listmaker, 0, firstItem )
+        parseSubsequentItems start listmaker ( end, firstItem ) =
+            ( listmaker, end - start, firstItem )
     in
     succeed parseSubsequentItems
+        |= getCol
         |= backtrackable unorderedListMarkerParser
-        |= listItemParser previousWasBody
+        |= (if previousWasBody then
+                oneOf
+                    [ succeed Tuple.pair
+                        |. chompOneOrMore Whitespace.isSpaceOrTab
+                        |= getCol
+                        |= ListItem.parser
+                    ]
+
+            else
+                oneOf
+                    [ succeed ( 2, EmptyItem )
+                        |. Helpers.lineEndOrEnd
+                    , succeed Tuple.pair
+                        |. chompOneOrMore Whitespace.isSpaceOrTab
+                        |= getCol
+                        |= ListItem.parser
+                    ]
+           )
 
 
 unorderedListMarkerParser : Parser UnorderedListMarker

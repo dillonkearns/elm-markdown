@@ -23,7 +23,7 @@ import Markdown.Table
 import Markdown.TableParser as TableParser
 import Markdown.UnorderedList
 import Parser
-import Parser.Advanced as Advanced exposing ((|.), (|=), Nestable(..), Step(..), andThen, chompIf, chompWhile, getChompedString, getIndent, loop, map, oneOf, problem, succeed, symbol, token, withIndent)
+import Parser.Advanced as Advanced exposing ((|.), (|=), Nestable(..), Step(..), andThen, chompIf, chompWhile, getChompedString, loop, map, oneOf, problem, succeed, symbol, token)
 import Parser.Token as Token
 import ThematicBreak
 import Whitespace
@@ -276,11 +276,6 @@ parseInlines linkReferences rawBlock =
 
                                 Nothing ->
                                     Block.NoTask
-
-                        parser =
-                            succeed Tuple.pair
-                                |= withIndent 4 getIndent
-                                |= getIndent
                     in
                     Block.ListItem blocksTask blocks
             in
@@ -418,7 +413,7 @@ blockQuote =
 unorderedListBlock : Bool -> Parser RawBlock
 unorderedListBlock previousWasBody =
     let
-        parseListItem listmarker unparsedListItem =
+        parseListItem listmarker intended unparsedListItem =
             case unparsedListItem of
                 ListItem.TaskItem completion body ->
                     { body = body
@@ -451,7 +446,7 @@ unorderedListBlock previousWasBody =
             (\( listmarker, intended, unparsedListItem ) ->
                 UnorderedListBlock intended
                     []
-                    (parseListItem listmarker unparsedListItem)
+                    (parseListItem listmarker intended unparsedListItem)
             )
 
 
