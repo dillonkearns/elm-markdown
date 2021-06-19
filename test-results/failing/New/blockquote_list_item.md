@@ -21,5 +21,5 @@ Should give output:
 But instead was:
 
 ````````````html
-<p>This fails in markdown.pl and upskirt:</p><ul><li>hello</li></ul><blockquote><p>world</p></blockquote>
+<p>This fails in markdown.pl and upskirt:</p><ul><li><p>hello</p><blockquote><p>world</p></blockquote></li></ul>
 ````````````

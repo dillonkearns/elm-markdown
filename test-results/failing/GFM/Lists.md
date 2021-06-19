@@ -48,7 +48,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<ul><li>foo - bar</li></ul><pre><code>- baz</code></pre><pre><code>bim</code></pre>
+<ul><li><p>foo</p><ul><li><p>bar</p><ul><li><p>baz</p><p>bim</p></li></ul></li></ul></li></ul>
 ````````````
 ## [Example 279](https://spec.commonmark.org/0.29/#example-279)
 
@@ -76,7 +76,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<ul><li>foo</li></ul><pre><code>notcode</code></pre><ul><li>foo</li></ul><pre><code>code</code></pre>
+<ul><li><p>foo</p><p>notcode</p></li></ul><ul><li>foo</li></ul><pre><code>code</code></pre>
 ````````````
 ## [Example 280](https://spec.commonmark.org/0.29/#example-280)
 
@@ -102,7 +102,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<ul><li>a - b - c - d - e - f</li><li>g</li></ul>
+<ul><li><p>a - b</p><ul><li>c - d</li><li>e - f</li></ul></li><li>g</li></ul>
 ````````````
 ## [Example 281](https://spec.commonmark.org/0.29/#example-281)
 
@@ -150,7 +150,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<ul><li>a - b - c - d</li></ul><pre><code>- e</code></pre>
+<ul><li><p>a - b</p><ul><li><p>c - d</p><ul><li>e</li></ul></li></ul></li></ul>
 ````````````
 ## [Example 283](https://spec.commonmark.org/0.29/#example-283)
 
@@ -244,7 +244,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<ul><li>a</li><li>b</li></ul><p>c</p><ul><li>d</li></ul>
+<ul><li>a</li><li><p>b</p><p>c</p></li></ul><ul><li>d</li></ul>
 ````````````
 ## [Example 287](https://spec.commonmark.org/0.29/#example-287)
 
@@ -294,7 +294,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<ul><li>a</li><li><pre><code>b</code></pre></li></ul><pre><code>- c</code></pre>
+<ul><li>a</li><li><pre><code>b</code></pre></li></ul><ul><li>c</li></ul>
 ````````````
 ## [Example 289](https://spec.commonmark.org/0.29/#example-289)
 
@@ -318,7 +318,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<ul><li>a - b</li></ul><pre><code>c</code></pre><ul><li>d</li></ul>
+<ul><li><p>a</p><ul><li><p>b</p><p>c</p></li></ul></li></ul><ul><li>d</li></ul>
 ````````````
 ## [Example 290](https://spec.commonmark.org/0.29/#example-290)
 
@@ -341,7 +341,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<ul><li>a</li></ul><blockquote><p>b</p></blockquote><ul><li>c</li></ul>
+<ul><li><p>a</p><blockquote><p>b</p></blockquote></li><li>c</li></ul>
 ````````````
 ## [Example 291](https://spec.commonmark.org/0.29/#example-291)
 
@@ -366,7 +366,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<ul><li>a</li></ul><blockquote><p>b</p></blockquote><pre><code>c</code></pre><ul><li>d</li></ul>
+<ul><li><p>a</p><blockquote><p>b</p></blockquote><pre><code>c</code></pre></li><li>d</li></ul>
 ````````````
 ## [Example 293](https://spec.commonmark.org/0.29/#example-293)
 
@@ -387,7 +387,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<ul><li>a - b</li></ul>
+<ul><li><p>a</p><ul><li>b</li></ul></li></ul>
 ````````````
 ## [Example 294](https://spec.commonmark.org/0.29/#example-294)
 
@@ -413,29 +413,6 @@ But instead was:
 ````````````html
 <ol><li>```</li></ol><p>foo</p><pre><code>bar</code></pre>
 ````````````
-## [Example 295](https://spec.commonmark.org/0.29/#example-295)
-
-This markdown:
-
-````````````markdown
-* foo
-  * bar
-
-  baz
-
-````````````
-
-Should give output:
-
-````````````html
-<ul><li><p>foo</p><ul><li>bar</li></ul><p>baz</p></li></ul>
-````````````
-
-But instead was:
-
-````````````html
-<ul><li>foo * bar</li></ul><p>baz</p>
-````````````
 ## [Example 296](https://spec.commonmark.org/0.29/#example-296)
 
 This markdown:
@@ -460,5 +437,5 @@ Should give output:
 But instead was:
 
 ````````````html
-<ul><li>a - b - c</li></ul><ul><li>d - e - f</li></ul>
+<ul><li><p>a</p><ul><li>b</li><li>c</li></ul></li></ul><ul><li><p>d</p><ul><li>e</li><li>f</li></ul></li></ul>
 ````````````

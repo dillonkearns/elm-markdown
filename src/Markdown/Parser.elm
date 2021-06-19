@@ -23,8 +23,9 @@ import Markdown.Table
 import Markdown.TableParser as TableParser
 import Markdown.UnorderedList
 import Parser
-import Parser.Advanced as Advanced exposing ((|.), (|=), Nestable(..), Step(..), andThen, chompIf, chompWhile, getChompedString, loop, map, oneOf, problem, succeed, symbol, token)
+import Parser.Advanced as Advanced exposing ((|.), (|=), Nestable(..), Step(..), andThen, chompIf, chompWhile, getChompedString, getIndent, loop, map, oneOf, problem, succeed, symbol, token)
 import Parser.Token as Token
+import String exposing (repeat, trim)
 import ThematicBreak
 import Whitespace
 
@@ -436,7 +437,7 @@ unorderedListBlock previousWasBody =
                     }
 
                 ListItem.EmptyItem ->
-                    { body = ""
+                    { body = "" --++ Debug.toString (Advanced.run getIndent "     1   2")
                     , task = Nothing
                     , marker = listmarker
                     }
@@ -750,6 +751,15 @@ completeOrMergeBlocks state newRawBlock =
                                 :: rest
                         }
 
+                BlankLine ->
+                    succeed
+                        { linkReferenceDefinitions = state.linkReferenceDefinitions
+                        , rawBlocks =
+                            BlankLine
+                                :: UnorderedListBlock intended1 closeListItems2 { openListItem2 | body = joinRawStringsWith "\n" openListItem2.body "\n" }
+                                :: rest
+                        }
+
                 _ ->
                     case Advanced.run rawBlockParser openListItem2.body of
                         Ok value ->
@@ -807,6 +817,23 @@ completeOrMergeBlocks state newRawBlock =
                 , rawBlocks = Table updatedTable :: rest
                 }
 
+        ( BlankLine, BlankLine :: rest ) ->
+            succeed
+                { linkReferenceDefinitions = state.linkReferenceDefinitions
+                , rawBlocks = state.rawBlocks
+                }
+
+        ( _, BlankLine :: (UnorderedListBlock intended1 closeListItems2 openListItem2) :: rest ) ->
+            case Advanced.run rawBlockParser openListItem2.body of
+                Ok value ->
+                    succeed
+                        { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
+                        , rawBlocks = newRawBlock :: BlankLine :: UnorderedListBlock intended1 ({ task = openListItem2.task, body = value.rawBlocks } :: closeListItems2) openListItem2 :: rest
+                        }
+
+                Err e ->
+                    problem (Parser.Problem (deadEndsToString e))
+
         _ ->
             succeed
                 { linkReferenceDefinitions = state.linkReferenceDefinitions
@@ -827,21 +854,77 @@ stepRawBlock revStmts =
         , LinkReferenceDefinition.parser
             |> Advanced.backtrackable
             |> map (\reference -> Loop (addReference revStmts reference))
-        , (case revStmts.rawBlocks of
+        , case revStmts.rawBlocks of
             (OpenBlockOrParagraph _) :: _ ->
                 mergeableBlockAfterOpenBlockOrParagraphParser
+                    |> andThen (completeOrMergeBlocks revStmts)
+                    |> map (\block -> Loop block)
 
             (Table table) :: _ ->
                 oneOf
                     [ mergeableBlockNotAfterOpenBlockOrParagraphParser
                     , tableRowIfTableStarted table
                     ]
+                    |> andThen (completeOrMergeBlocks revStmts)
+                    |> map (\block -> Loop block)
+
+            (UnorderedListBlock intended closeListItems openListItem) :: rest ->
+                let
+                    completeOrMergeUnorderedListBlock state newString =
+                        { state
+                            | rawBlocks =
+                                ({ openListItem | body = joinRawStringsWith "\n" openListItem.body newString }
+                                    |> UnorderedListBlock intended closeListItems
+                                )
+                                    :: rest
+                        }
+                in
+                oneOf
+                    [ succeed identity
+                        |. Advanced.symbol (Advanced.Token (repeat intended " ") (Parser.ExpectingSymbol "Indentation"))
+                        |= getChompedString Helpers.chompUntilLineEndOrEnd
+                        |. Helpers.lineEndOrEnd
+                        |> map (completeOrMergeUnorderedListBlock revStmts)
+                        |> map (\block -> Loop block)
+                    , mergeableBlockNotAfterOpenBlockOrParagraphParser
+                        |> andThen (completeOrMergeBlocks revStmts)
+                        |> map (\block -> Loop block)
+                    ]
+
+            BlankLine :: (UnorderedListBlock intended closeListItems openListItem) :: rest ->
+                let
+                    completeOrMergeUnorderedListBlock state newString =
+                        { state
+                            | rawBlocks =
+                                BlankLine
+                                    :: ({ openListItem | body = joinRawStringsWith "\n" openListItem.body newString }
+                                            |> UnorderedListBlock intended closeListItems
+                                       )
+                                    :: rest
+                        }
+                in
+                if trim openListItem.body == "" then
+                    mergeableBlockNotAfterOpenBlockOrParagraphParser
+                        |> andThen (completeOrMergeBlocks revStmts)
+                        |> map (\block -> Loop block)
+
+                else
+                    oneOf
+                        [ succeed identity
+                            |. Advanced.symbol (Advanced.Token (repeat intended " ") (Parser.ExpectingSymbol "Indentation"))
+                            |= getChompedString Helpers.chompUntilLineEndOrEnd
+                            |. Helpers.lineEndOrEnd
+                            |> map (completeOrMergeUnorderedListBlock revStmts)
+                            |> map (\block -> Loop block)
+                        , mergeableBlockNotAfterOpenBlockOrParagraphParser
+                            |> andThen (completeOrMergeBlocks revStmts)
+                            |> map (\block -> Loop block)
+                        ]
 
             _ ->
                 mergeableBlockNotAfterOpenBlockOrParagraphParser
-          )
-            |> andThen (completeOrMergeBlocks revStmts)
-            |> map (\block -> Loop block)
+                    |> andThen (completeOrMergeBlocks revStmts)
+                    |> map (\block -> Loop block)
         , openBlockOrParagraphParser
             |> andThen (completeOrMergeBlocks revStmts)
             |> map (\block -> Loop block)
@@ -865,6 +948,17 @@ completeBlocks state =
                     problem (Parser.Problem (deadEndsToString error))
 
         (UnorderedListBlock intended closeListItems openListItem) :: rest ->
+            case Advanced.run rawBlockParser openListItem.body of
+                Ok value ->
+                    succeed
+                        { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
+                        , rawBlocks = UnorderedListBlock intended ({ task = openListItem.task, body = value.rawBlocks } :: closeListItems) openListItem :: rest
+                        }
+
+                Err e ->
+                    problem (Parser.Problem (deadEndsToString e))
+
+        BlankLine :: (UnorderedListBlock intended closeListItems openListItem) :: rest ->
             case Advanced.run rawBlockParser openListItem.body of
                 Ok value ->
                     succeed

@@ -25,28 +25,6 @@ But instead was:
 ````````````html
 <ol><li>A paragraph</li></ol><pre><code>with two lines.</code></pre><pre><code>indented code</code></pre><pre><code>&gt; A block quote.</code></pre>
 ````````````
-## [Example 226](https://spec.commonmark.org/0.29/#example-226)
-
-This markdown:
-
-````````````markdown
-- one
-
-  two
-
-````````````
-
-Should give output:
-
-````````````html
-<ul><li><p>one</p><p>two</p></li></ul>
-````````````
-
-But instead was:
-
-````````````html
-<ul><li>one</li></ul><p>two</p>
-````````````
 ## [Example 227](https://spec.commonmark.org/0.29/#example-227)
 
 This markdown:
@@ -113,29 +91,6 @@ But instead was:
 ````````````html
 <blockquote><blockquote><ol><li>one</li></ol><pre><code>two</code></pre></blockquote></blockquote>
 ````````````
-## [Example 232](https://spec.commonmark.org/0.29/#example-232)
-
-This markdown:
-
-````````````markdown
-- foo
-
-
-  bar
-
-````````````
-
-Should give output:
-
-````````````html
-<ul><li><p>foo</p><p>bar</p></li></ul>
-````````````
-
-But instead was:
-
-````````````html
-<ul><li>foo</li></ul><p>bar</p>
-````````````
 ## [Example 233](https://spec.commonmark.org/0.29/#example-233)
 
 This markdown:
@@ -163,53 +118,6 @@ But instead was:
 
 ````````````html
 <ol><li>foo</li></ol><pre><code>``` bar ```</code></pre><pre><code>baz</code></pre><pre><code>&gt; bam</code></pre>
-````````````
-## [Example 234](https://spec.commonmark.org/0.29/#example-234)
-
-This markdown:
-
-````````````markdown
-- Foo
-
-      bar
-
-
-      baz
-
-````````````
-
-Should give output:
-
-````````````html
-<ul><li><p>Foo</p><pre><code>bar baz</code></pre></li></ul>
-````````````
-
-But instead was:
-
-````````````html
-<ul><li>Foo</li></ul><pre><code>bar</code></pre><pre><code>baz</code></pre>
-````````````
-## [Example 240](https://spec.commonmark.org/0.29/#example-240)
-
-This markdown:
-
-````````````markdown
-- foo
-
-      bar
-
-````````````
-
-Should give output:
-
-````````````html
-<ul><li><p>foo</p><pre><code>bar</code></pre></li></ul>
-````````````
-
-But instead was:
-
-````````````html
-<ul><li>foo</li></ul><pre><code>bar</code></pre>
 ````````````
 ## [Example 241](https://spec.commonmark.org/0.29/#example-241)
 
@@ -280,55 +188,6 @@ But instead was:
 
 ````````````html
 <ol><li>indented code</li></ol><p>paragraph</p><pre><code>more code</code></pre>
-````````````
-## [Example 247](https://spec.commonmark.org/0.29/#example-247)
-
-This markdown:
-
-````````````markdown
--  foo
-
-   bar
-
-````````````
-
-Should give output:
-
-````````````html
-<ul><li><p>foo</p><p>bar</p></li></ul>
-````````````
-
-But instead was:
-
-````````````html
-<ul><li>foo</li></ul><p>bar</p>
-````````````
-## [Example 248](https://spec.commonmark.org/0.29/#example-248)
-
-This markdown:
-
-````````````markdown
--
-  foo
--
-  ```
-  bar
-  ```
--
-      baz
-
-````````````
-
-Should give output:
-
-````````````html
-<ul><li>foo</li><li><pre><code>bar</code></pre></li><li><pre><code>baz</code></pre></li></ul>
-````````````
-
-But instead was:
-
-````````````html
-<ul><li>foo</li><li></li></ul><pre><code>bar</code></pre><ul><li></li></ul><pre><code>baz</code></pre>
 ````````````
 ## [Example 256](https://spec.commonmark.org/0.29/#example-256)
 
@@ -539,7 +398,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<ul><li>foo - bar</li></ul><pre><code>- baz - boo</code></pre>
+<ul><li><p>foo</p><ul><li><p>bar</p><ul><li><p>baz</p><ul><li>boo</li></ul></li></ul></li></ul></li></ul>
 ````````````
 ## [Example 265](https://spec.commonmark.org/0.29/#example-265)
 
@@ -562,7 +421,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<ul><li>foo - bar - baz - boo</li></ul>
+<ul><li><p>foo - bar</p><ul><li>baz - boo</li></ul></li></ul>
 ````````````
 ## [Example 266](https://spec.commonmark.org/0.29/#example-266)
 
@@ -647,5 +506,5 @@ Should give output:
 But instead was:
 
 ````````````html
-<ul><li><h1>Foo</h1></li><li>Bar</li></ul><hr><p>baz</p>
+<ul><li><h1>Foo</h1></li><li><h2>Bar</h2><p>baz</p></li></ul>
 ````````````
