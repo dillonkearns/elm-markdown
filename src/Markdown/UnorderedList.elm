@@ -19,11 +19,11 @@ type alias Parser a =
     Advanced.Parser String Parser.Problem a
 
 
-parser : Bool -> Parser ( UnorderedListMarker, ListItem )
+parser : Bool -> Parser ( UnorderedListMarker, Int, ListItem )
 parser previousWasBody =
     let
         parseSubsequentItems listmaker firstItem =
-            ( listmaker, firstItem )
+            ( listmaker, 0, firstItem )
     in
     succeed parseSubsequentItems
         |= backtrackable unorderedListMarkerParser

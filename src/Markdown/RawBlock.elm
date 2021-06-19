@@ -1,4 +1,4 @@
-module Markdown.RawBlock exposing (Attribute, RawBlock(..), UnparsedInlines(..), SetextLevel(..))
+module Markdown.RawBlock exposing (Attribute, RawBlock(..), SetextLevel(..), UnparsedInlines(..))
 
 import Markdown.Block exposing (Block)
 import Markdown.CodeBlock exposing (CodeBlock)
@@ -37,7 +37,7 @@ type RawBlock
     = Heading Int UnparsedInlines
     | OpenBlockOrParagraph UnparsedInlines
     | Html (Markdown.Block.Html Block)
-    | UnorderedListBlock (List CloseListItem) OpenListItem
+    | UnorderedListBlock Int (List CloseListItem) OpenListItem
     | OrderedListBlock Int (List UnparsedInlines)
     | CodeBlock CodeBlock
     | IndentedCodeBlock String
