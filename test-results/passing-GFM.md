@@ -5995,6 +5995,31 @@ Gives this correct output:
 
 ````````````
 
+### [Example 78](https://spec.commonmark.org/0.29/#example-78)
+
+This markdown:
+
+
+````````````markdown
+  - foo
+
+    bar
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ul>
+<li>
+<p>foo</p>
+<p>bar</p>
+</li>
+</ul>
+
+````````````
+
 ### [Example 83](https://spec.commonmark.org/0.29/#example-83)
 
 This markdown:
@@ -8198,6 +8223,55 @@ Gives this correct output:
 
 ````````````
 
+### [Example 227](https://spec.commonmark.org/0.29/#example-227)
+
+This markdown:
+
+
+````````````markdown
+ -    one
+
+     two
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ul>
+<li>one</li>
+</ul>
+<pre><code> two
+</code></pre>
+
+````````````
+
+### [Example 228](https://spec.commonmark.org/0.29/#example-228)
+
+This markdown:
+
+
+````````````markdown
+ -    one
+
+      two
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ul>
+<li>
+<p>one</p>
+<p>two</p>
+</li>
+</ul>
+
+````````````
+
 ### [Example 230](https://spec.commonmark.org/0.29/#example-230)
 
 This markdown:
@@ -8714,6 +8788,30 @@ Gives this correct output:
 *</p>
 <p>foo
 1.</p>
+
+````````````
+
+### [Example 267](https://spec.commonmark.org/0.29/#example-267)
+
+This markdown:
+
+
+````````````markdown
+10) foo
+   - bar
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ol start="10">
+<li>foo</li>
+</ol>
+<ul>
+<li>bar</li>
+</ul>
 
 ````````````
 

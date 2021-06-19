@@ -1,27 +1,5 @@
 # CommonMark - Indented code blocks
 
-## [Example 78](https://spec.commonmark.org/0.29/#example-78)
-
-This markdown:
-
-````````````markdown
-  - foo
-
-    bar
-
-````````````
-
-Should give output:
-
-````````````html
-<ul><li><p>foo</p><p>bar</p></li></ul>
-````````````
-
-But instead was:
-
-````````````html
-<p>- foo</p><pre><code>bar</code></pre>
-````````````
 ## [Example 79](https://spec.commonmark.org/0.29/#example-79)
 
 This markdown:

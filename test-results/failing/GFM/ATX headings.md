@@ -1,86 +1,66 @@
 # GFM - ATX headings
 
-## [Example 34](https://spec.commonmark.org/0.29/#example-34)
+## [Example 38](https://spec.commonmark.org/0.29/#example-38)
 
 This markdown:
 
 ````````````markdown
-#5 bolt
-
-#hashtag
+ ### foo
+  ## foo
+   # foo
 
 ````````````
 
 Should give output:
 
 ````````````html
-<p>#5 bolt</p><p>#hashtag</p>
+<h3>foo</h3><h2>foo</h2><h1>foo</h1>
 ````````````
 
 But instead was:
 
 ````````````html
-<h1>5 bolt</h1><h1>hashtag</h1>
+ERROR Problem at row 1 Expecting symbol - Problem at row 1 Expecting symbol + Problem at row 1 Expecting symbol *
 ````````````
-## [Example 43](https://spec.commonmark.org/0.29/#example-43)
+## [Example 40](https://spec.commonmark.org/0.29/#example-40)
 
 This markdown:
 
 ````````````markdown
-### foo ###     
+foo
+    # bar
 
 ````````````
 
 Should give output:
 
 ````````````html
-<h3>foo</h3>
+<p>foo # bar</p>
 ````````````
 
 But instead was:
 
 ````````````html
-<h3>foo ###</h3>
+ERROR Problem at row 2 Expecting symbol - Problem at row 2 Expecting symbol + Problem at row 2 Expecting symbol *
 ````````````
-## [Example 45](https://spec.commonmark.org/0.29/#example-45)
+## [Example 41](https://spec.commonmark.org/0.29/#example-41)
 
 This markdown:
 
 ````````````markdown
-# foo#
+## foo ##
+  ###   bar    ###
 
 ````````````
 
 Should give output:
 
 ````````````html
-<h1>foo#</h1>
+<h2>foo</h2><h3>bar</h3>
 ````````````
 
 But instead was:
 
 ````````````html
-<h1>foo</h1>
-````````````
-## [Example 46](https://spec.commonmark.org/0.29/#example-46)
-
-This markdown:
-
-````````````markdown
-### foo \###
-## foo #\##
-# foo \#
-
-````````````
-
-Should give output:
-
-````````````html
-<h3>foo ###</h3><h2>foo ###</h2><h1>foo #</h1>
-````````````
-
-But instead was:
-
-````````````html
-<h3>foo \</h3><h2>foo #\</h2><h1>foo \</h1>
+ERROR Problem at row 2 Expecting symbol - Problem at row 2 Expecting symbol + Problem at row 2 Expecting symbol *
 ````````````

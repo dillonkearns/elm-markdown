@@ -102,7 +102,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<ul><li><p>a - b</p><ul><li>c - d</li><li>e - f</li></ul></li><li>g</li></ul>
+<ul><li>a</li><li><p>b</p><ul><li>c</li><li>d</li><li>e</li></ul></li><li>f</li><li>g</li></ul>
 ````````````
 ## [Example 281](https://spec.commonmark.org/0.29/#example-281)
 
@@ -150,7 +150,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<ul><li><p>a - b</p><ul><li><p>c - d</p><ul><li>e</li></ul></li></ul></li></ul>
+<ul><li>a</li><li><p>b</p><ul><li>c</li><li><p>d</p><ul><li>e</li></ul></li></ul></li></ul>
 ````````````
 ## [Example 283](https://spec.commonmark.org/0.29/#example-283)
 

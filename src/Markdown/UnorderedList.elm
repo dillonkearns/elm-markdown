@@ -52,6 +52,7 @@ unorderedListMarkerParser : Parser UnorderedListMarker
 unorderedListMarkerParser =
     oneOf
         [ succeed Minus
+            |. chompWhile (\c -> c == ' ')
             |. Advanced.symbol (Advanced.Token "-" (Parser.ExpectingSymbol "-"))
         , succeed Plus
             |. Advanced.symbol (Advanced.Token "+" (Parser.ExpectingSymbol "+"))
