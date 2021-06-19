@@ -77,7 +77,7 @@ In the simplest case, you can pass this directly to a renderer:
 type Block
     = -- Container Blocks
       HtmlBlock (Html Block)
-    | UnorderedList (List (ListItem Inline))
+    | UnorderedList (List (ListItem Block))
     | OrderedList Int (List (List Inline))
     | BlockQuote (List Block)
       -- Leaf Blocks With Inlines
@@ -248,8 +248,10 @@ extractInlineBlockText block =
         UnorderedList items ->
             items
                 |> List.map
-                    (\(ListItem task inlines) ->
-                        extractInlineText inlines
+                    (\(ListItem task blocks) ->
+                        blocks
+                            |> List.map extractInlineBlockText
+                            |> String.join "\n"
                     )
                 |> String.join "\n"
 
@@ -407,7 +409,7 @@ walkInlinesHelp function block =
         UnorderedList listItems ->
             List.map
                 (\(ListItem task children) ->
-                    ListItem task (List.map (inlineParserWalk function) children)
+                    ListItem task (List.map (\child -> walkInlinesHelp function child) children)
                 )
                 listItems
                 |> UnorderedList
@@ -599,9 +601,9 @@ inlineParserValidateWalkBlock function block =
         UnorderedList items ->
             items
                 |> traverse
-                    (\(ListItem task item) ->
-                        item
-                            |> traverse (inlineParserValidateWalk function)
+                    (\(ListItem task nestedBlocks) ->
+                        nestedBlocks
+                            |> traverse (inlineParserValidateWalkBlock function)
                             |> Result.map (ListItem task)
                     )
                 |> Result.map UnorderedList
@@ -1016,13 +1018,8 @@ inlineFoldl ifunction top_acc list =
                     HtmlBlock html ->
                         acc
 
-                    UnorderedList listItems ->
-                        List.foldl
-                            (\(ListItem _ inlines) liacc ->
-                                List.foldl function liacc inlines
-                            )
-                            acc
-                            listItems
+                    UnorderedList _ ->
+                        acc
 
                     OrderedList int lists ->
                         List.foldl

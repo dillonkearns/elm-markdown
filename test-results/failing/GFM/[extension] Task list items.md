@@ -20,5 +20,5 @@ Should give output:
 But instead was:
 
 ````````````html
-<ul><li><input checked="" disabled="" type="checkbox">foo</li></ul><p>- [ ] bar - [x] baz</p><ul><li><input disabled="" type="checkbox">bim</li></ul>
+<ul><li><input checked="" disabled="" type="checkbox">foo - [ ] bar - [x] baz</li><li><input disabled="" type="checkbox">bim</li></ul>
 ````````````

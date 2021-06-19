@@ -1,64 +1,61 @@
-module Markdown.UnorderedList exposing (parser)
+module Markdown.UnorderedList exposing (UnorderedListMarker, parser)
 
-import Whitespace
-import Markdown.ListItem as ListItem exposing (ListItem)
-import Parser
+import Helpers
+import Markdown.ListItem as ListItem exposing (ListItem(..))
+import Parser exposing (Problem)
 import Parser.Advanced as Advanced exposing (..)
 import Parser.Extra exposing (chompOneOrMore)
 import Parser.Token as Token
+import Whitespace
+
+
+type UnorderedListMarker
+    = Minus
+    | Plus
+    | Asterisk
 
 
 type alias Parser a =
     Advanced.Parser String Parser.Problem a
 
 
-parser : Parser (List ListItem)
-parser =
+parser : Bool -> Parser ( UnorderedListMarker, ListItem )
+parser previousWasBody =
     let
-        parseSubsequentItems listMarker firstItem =
-            loop [] (statementsHelp (singleItemParser listMarker) firstItem)
+        parseSubsequentItems listmaker firstItem =
+            ( listmaker, firstItem )
     in
     succeed parseSubsequentItems
-        |= backtrackable listMarkerParser
-        |. chompOneOrMore Whitespace.isSpaceOrTab
-        |= ListItem.parser
-        |> andThen identity
+        |= backtrackable unorderedListMarkerParser
+        |= listItemParser previousWasBody
 
 
-listMarkerParser : Parser (Token Parser.Problem)
-listMarkerParser =
-    Advanced.oneOf
-        [ succeed Token.minus
-            |. symbol Token.minus
-        , succeed Token.plus
-            |. symbol Token.plus
-        , succeed Token.asterisk
-            |. symbol Token.asterisk
-        ]
-
-
-singleItemParser : Token Parser.Problem -> Parser ListItem
-singleItemParser listMarker =
-    succeed identity
-        |. backtrackable (symbol listMarker)
-        |= itemBody
-
-
-itemBody : Parser ListItem
-itemBody =
+unorderedListMarkerParser : Parser UnorderedListMarker
+unorderedListMarkerParser =
     oneOf
-        [ succeed identity
-            |. backtrackable (chompOneOrMore Whitespace.isSpaceOrTab)
-            |= ListItem.parser
-        , succeed (ListItem.PlainItem "")
-            |. Whitespace.lineEnd
+        [ succeed Minus
+            |. Advanced.symbol (Advanced.Token "-" (Parser.ExpectingSymbol "-"))
+        , succeed Plus
+            |. Advanced.symbol (Advanced.Token "+" (Parser.ExpectingSymbol "+"))
+        , succeed Asterisk
+            |. Advanced.symbol (Advanced.Token "*" (Parser.ExpectingSymbol "*"))
         ]
 
 
-statementsHelp : Parser ListItem -> ListItem -> List ListItem -> Parser (Step (List ListItem) (List ListItem))
-statementsHelp itemParser firstItem revStmts =
-    oneOf
-        [ itemParser
-            |> Advanced.map (\stmt -> Loop (stmt :: revStmts))
-        , succeed (Done (firstItem :: List.reverse revStmts))
-        ]
+listItemParser : Bool -> Parser ListItem
+listItemParser previousWasBody =
+    if previousWasBody then
+        oneOf
+            [ succeed identity
+                |. chompOneOrMore Whitespace.isSpaceOrTab
+                |= ListItem.parser
+            ]
+
+    else
+        oneOf
+            [ succeed EmptyItem
+                |. Helpers.lineEndOrEnd
+            , succeed identity
+                |. chompOneOrMore Whitespace.isSpaceOrTab
+                |= ListItem.parser
+            ]

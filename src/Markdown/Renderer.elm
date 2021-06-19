@@ -361,10 +361,18 @@ renderHelperSingle renderer =
             Block.UnorderedList items ->
                 items
                     |> List.map
-                        (\(Block.ListItem task children) ->
-                            children
-                                |> renderStyled renderer
-                                |> Result.map (\renderedBody -> Block.ListItem task renderedBody)
+                        (\(Block.ListItem task nestedBlocks) ->
+                            case nestedBlocks of
+                                [ Block.Paragraph children ] ->
+                                    children
+                                        |> renderStyled renderer
+                                        |> Result.map (\renderedBody -> Block.ListItem task renderedBody)
+
+                                _ ->
+                                    nestedBlocks
+                                        |> renderHelper renderer
+                                        |> combineResults
+                                        |> Result.map (\renderedBody -> Block.ListItem task renderedBody)
                         )
                     |> combineResults
                     |> Result.map renderer.unorderedList

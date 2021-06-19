@@ -253,15 +253,21 @@ parseInlines linkReferences rawBlock =
             Block.HtmlBlock html
                 |> ParsedBlock
 
-        UnorderedListBlock unparsedItems ->
+        UnorderedListBlock unparsedItems _ ->
             let
-                parseItem unparsed =
+                parseItem rawBlockTask rawBlocks =
                     let
-                        parsedInlines =
-                            parseRawInline linkReferences identity unparsed.body
+                        blocks =
+                            case parseAllInlines { linkReferenceDefinitions = linkReferences, rawBlocks = rawBlocks } of
+                                Ok parsedBlocks ->
+                                    parsedBlocks
 
-                        task =
-                            case unparsed.task of
+                                --TODO: pass this Err e
+                                Err e ->
+                                    []
+
+                        blocksTask =
+                            case rawBlockTask of
                                 Just False ->
                                     Block.IncompleteTask
 
@@ -271,10 +277,11 @@ parseInlines linkReferences rawBlock =
                                 Nothing ->
                                     Block.NoTask
                     in
-                    Block.ListItem task parsedInlines
+                    Block.ListItem blocksTask blocks
             in
             unparsedItems
-                |> List.map parseItem
+                |> List.map (\item -> parseItem item.task item.body)
+                |> List.reverse
                 |> Block.UnorderedList
                 |> ParsedBlock
 
@@ -403,13 +410,13 @@ blockQuote =
         |. Helpers.lineEndOrEnd
 
 
-unorderedListBlock : Parser RawBlock
-unorderedListBlock =
+unorderedListBlock : Bool -> Parser RawBlock
+unorderedListBlock previousWasBody =
     let
-        parseListItem unparsedListItem =
+        parseListItem listmarker unparsedListItem =
             case unparsedListItem of
                 ListItem.TaskItem completion body ->
-                    { body = UnparsedInlines body
+                    { body = body
                     , task =
                         (case completion of
                             ListItem.Complete ->
@@ -419,15 +426,27 @@ unorderedListBlock =
                                 False
                         )
                             |> Just
+                    , marker = listmarker
                     }
 
                 ListItem.PlainItem body ->
-                    { body = UnparsedInlines body
+                    { body = body
                     , task = Nothing
+                    , marker = listmarker
+                    }
+
+                ListItem.EmptyItem ->
+                    { body = ""
+                    , task = Nothing
+                    , marker = listmarker
                     }
     in
-    Markdown.UnorderedList.parser
-        |> map (List.map parseListItem >> UnorderedListBlock)
+    Markdown.UnorderedList.parser previousWasBody
+        |> map
+            (\( listmarker, unparsedListItem ) ->
+                UnorderedListBlock []
+                    (parseListItem listmarker unparsedListItem)
+            )
 
 
 orderedListBlock : Bool -> Parser RawBlock
@@ -697,6 +716,50 @@ completeOrMergeBlocks state newRawBlock =
                         Err e ->
                             problem (Parser.Problem (deadEndsToString e))
 
+        ( _, (UnorderedListBlock closeListItems2 openListItem2) :: rest ) ->
+            case newRawBlock of
+                UnorderedListBlock closeListItems1 openListItem1 ->
+                    if openListItem2.marker == openListItem1.marker then
+                        case Advanced.run rawBlockParser openListItem2.body of
+                            Ok value ->
+                                succeed
+                                    { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
+                                    , rawBlocks = UnorderedListBlock ({ task = openListItem2.task, body = value.rawBlocks } :: closeListItems2) openListItem1 :: rest
+                                    }
+
+                            Err e ->
+                                problem (Parser.Problem (deadEndsToString e))
+
+                    else
+                        case Advanced.run rawBlockParser openListItem2.body of
+                            Ok value ->
+                                succeed
+                                    { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
+                                    , rawBlocks = newRawBlock :: UnorderedListBlock ({ task = openListItem2.task, body = value.rawBlocks } :: closeListItems2) openListItem1 :: rest
+                                    }
+
+                            Err e ->
+                                problem (Parser.Problem (deadEndsToString e))
+
+                OpenBlockOrParagraph (UnparsedInlines body1) ->
+                    succeed
+                        { linkReferenceDefinitions = state.linkReferenceDefinitions
+                        , rawBlocks =
+                            UnorderedListBlock closeListItems2 { openListItem2 | body = joinRawStringsWith "\n" openListItem2.body body1 }
+                                :: rest
+                        }
+
+                _ ->
+                    case Advanced.run rawBlockParser openListItem2.body of
+                        Ok value ->
+                            succeed
+                                { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
+                                , rawBlocks = newRawBlock :: UnorderedListBlock ({ task = openListItem2.task, body = value.rawBlocks } :: closeListItems2) openListItem2 :: rest
+                                }
+
+                        Err e ->
+                            problem (Parser.Problem (deadEndsToString e))
+
         ( OpenBlockOrParagraph (UnparsedInlines body1), (OpenBlockOrParagraph (UnparsedInlines body2)) :: rest ) ->
             succeed
                 { linkReferenceDefinitions = state.linkReferenceDefinitions
@@ -800,6 +863,17 @@ completeBlocks state =
                 Err error ->
                     problem (Parser.Problem (deadEndsToString error))
 
+        (UnorderedListBlock closeListItems openListItem) :: rest ->
+            case Advanced.run rawBlockParser openListItem.body of
+                Ok value ->
+                    succeed
+                        { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
+                        , rawBlocks = UnorderedListBlock ({ task = openListItem.task, body = value.rawBlocks } :: closeListItems) openListItem :: rest
+                        }
+
+                Err e ->
+                    problem (Parser.Problem (deadEndsToString e))
+
         _ ->
             succeed state
 
@@ -828,7 +902,7 @@ mergeableBlockAfterOpenBlockOrParagraphParser =
         -- NOTE: indented block is not an option immediately after a Body
         , setextLineParser |> Advanced.backtrackable
         , ThematicBreak.parser |> Advanced.backtrackable |> map (\_ -> ThematicBreak)
-        , unorderedListBlock
+        , unorderedListBlock True
 
         -- NOTE: the ordered list block changes its parsing rules when it's right after a Body
         , orderedListBlock True
@@ -849,9 +923,9 @@ mergeableBlockNotAfterOpenBlockOrParagraphParser =
         -- NOTE: indented block is an option after any non-Body block
         , indentedCodeBlock
         , ThematicBreak.parser |> Advanced.backtrackable |> map (\_ -> ThematicBreak)
-        , unorderedListBlock
 
-        -- NOTE: the ordered list block changes its parsing rules when it's right after a Body
+        -- NOTE: both the unordered and ordered lists block changes its parsing rules when it's right after a Body
+        , unorderedListBlock False
         , orderedListBlock False
         , Heading.parser |> Advanced.backtrackable
         , htmlParser

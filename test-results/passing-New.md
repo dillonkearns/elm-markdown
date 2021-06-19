@@ -137,6 +137,40 @@ Gives this correct output:
 
 ````````````
 
+## hr_list_break
+
+### Example undefined
+
+This markdown:
+
+
+````````````markdown
+* hello
+world
+* how
+are
+* * *
+you today?
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ul>
+<li>hello
+world</li>
+<li>how
+are</li>
+</ul>
+
+<hr>
+
+<p>you today?</p>
+
+````````````
+
 ## lazy_blockquotes
 
 ### Example undefined

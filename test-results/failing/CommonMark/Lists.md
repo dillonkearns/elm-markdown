@@ -48,7 +48,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<ul><li>foo</li></ul><p>- bar - baz</p><pre><code>bim</code></pre>
+<ul><li>foo - bar</li></ul><pre><code>- baz</code></pre><pre><code>bim</code></pre>
 ````````````
 ## [Example 279](https://spec.commonmark.org/0.29/#example-279)
 
@@ -102,7 +102,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<ul><li>a</li></ul><p>- b - c - d - e - f</p><ul><li>g</li></ul>
+<ul><li>a - b - c - d - e - f</li><li>g</li></ul>
 ````````````
 ## [Example 281](https://spec.commonmark.org/0.29/#example-281)
 
@@ -150,7 +150,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<ul><li>a</li></ul><p>- b - c - d - e</p>
+<ul><li>a - b - c - d</li></ul><pre><code>- e</code></pre>
 ````````````
 ## [Example 283](https://spec.commonmark.org/0.29/#example-283)
 
@@ -294,7 +294,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<ul><li>a</li><li>```</li></ul><p>b</p><pre><code>- c</code></pre>
+<ul><li>a</li><li><pre><code>b</code></pre></li></ul><pre><code>- c</code></pre>
 ````````````
 ## [Example 289](https://spec.commonmark.org/0.29/#example-289)
 
@@ -318,7 +318,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<ul><li>a</li></ul><p>- b</p><pre><code>c</code></pre><ul><li>d</li></ul>
+<ul><li>a - b</li></ul><pre><code>c</code></pre><ul><li>d</li></ul>
 ````````````
 ## [Example 290](https://spec.commonmark.org/0.29/#example-290)
 
@@ -387,7 +387,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<ul><li>a</li></ul><p>- b</p>
+<ul><li>a - b</li></ul>
 ````````````
 ## [Example 294](https://spec.commonmark.org/0.29/#example-294)
 
@@ -434,7 +434,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<ul><li>foo</li></ul><p>* bar</p><p>baz</p>
+<ul><li>foo * bar</li></ul><p>baz</p>
 ````````````
 ## [Example 296](https://spec.commonmark.org/0.29/#example-296)
 
@@ -460,5 +460,5 @@ Should give output:
 But instead was:
 
 ````````````html
-<ul><li>a</li></ul><p>- b - c</p><ul><li>d</li></ul><p>- e - f</p>
+<ul><li>a - b - c</li></ul><ul><li>d - e - f</li></ul>
 ````````````
