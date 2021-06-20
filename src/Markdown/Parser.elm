@@ -826,10 +826,18 @@ completeOrMergeBlocks state newRawBlock =
         ( _, BlankLine :: (UnorderedListBlock intended1 closeListItems2 openListItem2) :: rest ) ->
             case Advanced.run rawBlockParser openListItem2.body of
                 Ok value ->
-                    succeed
-                        { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
-                        , rawBlocks = newRawBlock :: BlankLine :: UnorderedListBlock intended1 ({ task = openListItem2.task, body = value.rawBlocks } :: closeListItems2) openListItem2 :: rest
-                        }
+                    case newRawBlock of
+                        UnorderedListBlock _ _ openListItem ->
+                            succeed
+                                { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
+                                , rawBlocks = UnorderedListBlock intended1 ({ task = openListItem2.task, body = value.rawBlocks } :: closeListItems2) openListItem :: rest
+                                }
+
+                        _ ->
+                            succeed
+                                { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
+                                , rawBlocks = newRawBlock :: BlankLine :: UnorderedListBlock intended1 ({ task = openListItem2.task, body = value.rawBlocks } :: closeListItems2) openListItem2 :: rest
+                                }
 
                 Err e ->
                     problem (Parser.Problem (deadEndsToString e))

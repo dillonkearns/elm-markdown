@@ -349,6 +349,81 @@ Gives this correct output:
 
 ````````````
 
+## list_table
+
+### Example undefined
+
+This markdown:
+
+
+````````````markdown
+* Table in list:
+
+  | column1 | column2 |
+  |---------|---------|
+  | value1  | value2  |
+  | value3  | value4  |
+
+* No leading pipe table in list:
+
+  column1 | column2
+  --------|--------
+  value1  | value2
+  value3  | value4
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ul>
+	<li>
+		<p>Table in list:</p>
+		<table>
+			<thead>
+				<tr>
+					<th>column1</th>
+					<th>column2</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>value1</td>
+					<td>value2</td>
+				</tr>
+				<tr>
+					<td>value3</td>
+					<td>value4</td>
+				</tr>
+			</tbody>
+		</table>
+	</li>
+	<li>
+		<p>No leading pipe table in list:</p>
+		<table>
+			<thead>
+				<tr>
+					<th>column1</th>
+					<th>column2</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>value1</td>
+					<td>value2</td>
+				</tr>
+				<tr>
+					<td>value3</td>
+					<td>value4</td>
+				</tr>
+			</tbody>
+		</table>
+	</li>
+</ul>
+
+````````````
+
 ## nested_code
 
 ### Example undefined

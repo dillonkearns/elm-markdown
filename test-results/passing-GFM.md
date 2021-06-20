@@ -8991,6 +8991,39 @@ Gives this correct output:
 
 ````````````
 
+### [Example 288](https://spec.commonmark.org/0.29/#example-288)
+
+This markdown:
+
+
+````````````markdown
+- a
+- ```
+  b
+
+
+  ```
+- c
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ul>
+<li>a</li>
+<li>
+<pre><code>b
+
+
+</code></pre>
+</li>
+<li>c</li>
+</ul>
+
+````````````
+
 ### [Example 292](https://spec.commonmark.org/0.29/#example-292)
 
 This markdown:
@@ -9035,6 +9068,45 @@ Gives this correct output:
 <li>bar</li>
 </ul>
 <p>baz</p>
+</li>
+</ul>
+
+````````````
+
+### [Example 296](https://spec.commonmark.org/0.29/#example-296)
+
+This markdown:
+
+
+````````````markdown
+- a
+  - b
+  - c
+
+- d
+  - e
+  - f
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ul>
+<li>
+<p>a</p>
+<ul>
+<li>b</li>
+<li>c</li>
+</ul>
+</li>
+<li>
+<p>d</p>
+<ul>
+<li>e</li>
+<li>f</li>
+</ul>
 </li>
 </ul>
 
