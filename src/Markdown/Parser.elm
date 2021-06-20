@@ -689,6 +689,14 @@ completeOrMergeBlocks state newRawBlock =
                         :: rest
                 }
 
+        ( BlankLine, (IndentedCodeBlock block) :: rest ) ->
+            succeed
+                { linkReferenceDefinitions = state.linkReferenceDefinitions
+                , rawBlocks =
+                    IndentedCodeBlock (joinStringsPreserveAll block "\n")
+                        :: rest
+                }
+
         ( _, (BlockQuote body2) :: rest ) ->
             case newRawBlock of
                 BlockQuote body1 ->
@@ -751,15 +759,6 @@ completeOrMergeBlocks state newRawBlock =
                                 :: rest
                         }
 
-                BlankLine ->
-                    succeed
-                        { linkReferenceDefinitions = state.linkReferenceDefinitions
-                        , rawBlocks =
-                            BlankLine
-                                :: UnorderedListBlock intended1 closeListItems2 { openListItem2 | body = joinRawStringsWith "\n" openListItem2.body "\n" }
-                                :: rest
-                        }
-
                 _ ->
                     case Advanced.run rawBlockParser openListItem2.body of
                         Ok value ->
@@ -815,12 +814,6 @@ completeOrMergeBlocks state newRawBlock =
             succeed
                 { linkReferenceDefinitions = state.linkReferenceDefinitions
                 , rawBlocks = Table updatedTable :: rest
-                }
-
-        ( BlankLine, BlankLine :: rest ) ->
-            succeed
-                { linkReferenceDefinitions = state.linkReferenceDefinitions
-                , rawBlocks = state.rawBlocks
                 }
 
         ( _, BlankLine :: (UnorderedListBlock intended1 closeListItems2 openListItem2) :: rest ) ->
@@ -886,9 +879,22 @@ stepRawBlock revStmts =
                                 )
                                     :: rest
                         }
+
+                    completeOrMergeUnorderedListBlockBlankLine state newString =
+                        { state
+                            | rawBlocks =
+                                BlankLine
+                                    :: ({ openListItem | body = joinRawStringsWith "" openListItem.body newString }
+                                            |> UnorderedListBlock intended closeListItems
+                                       )
+                                    :: rest
+                        }
                 in
                 oneOf
-                    [ succeed identity
+                    [ blankLine
+                        |> map (\_ -> completeOrMergeUnorderedListBlockBlankLine revStmts "\n")
+                        |> map (\block -> Loop block)
+                    , succeed identity
                         |. Advanced.symbol (Advanced.Token (repeat intended " ") (Parser.ExpectingSymbol "Indentation"))
                         |= getChompedString Helpers.chompUntilLineEndOrEnd
                         |. Helpers.lineEndOrEnd
@@ -904,8 +910,17 @@ stepRawBlock revStmts =
                     completeOrMergeUnorderedListBlock state newString =
                         { state
                             | rawBlocks =
+                                ({ openListItem | body = joinRawStringsWith "\n" openListItem.body newString }
+                                    |> UnorderedListBlock intended closeListItems
+                                )
+                                    :: rest
+                        }
+
+                    completeOrMergeUnorderedListBlockBlankLine state newString =
+                        { state
+                            | rawBlocks =
                                 BlankLine
-                                    :: ({ openListItem | body = joinRawStringsWith "\n" openListItem.body newString }
+                                    :: ({ openListItem | body = joinRawStringsWith "" openListItem.body newString }
                                             |> UnorderedListBlock intended closeListItems
                                        )
                                     :: rest
@@ -918,7 +933,10 @@ stepRawBlock revStmts =
 
                 else
                     oneOf
-                        [ succeed identity
+                        [ blankLine
+                            |> map (\_ -> completeOrMergeUnorderedListBlockBlankLine revStmts "\n")
+                            |> map (\block -> Loop block)
+                        , succeed identity
                             |. Advanced.symbol (Advanced.Token (repeat intended " ") (Parser.ExpectingSymbol "Indentation"))
                             |= getChompedString Helpers.chompUntilLineEndOrEnd
                             |. Helpers.lineEndOrEnd

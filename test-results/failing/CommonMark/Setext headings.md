@@ -1,29 +1,5 @@
 # CommonMark - Setext headings
 
-## [Example 55](https://spec.commonmark.org/0.29/#example-55)
-
-This markdown:
-
-````````````markdown
-    Foo
-    ---
-
-    Foo
----
-
-````````````
-
-Should give output:
-
-````````````html
-<pre><code>Foo --- Foo</code></pre><hr>
-````````````
-
-But instead was:
-
-````````````html
-<pre><code>Foo ---</code></pre><pre><code>Foo</code></pre><hr>
-````````````
 ## [Example 61](https://spec.commonmark.org/0.29/#example-61)
 
 This markdown:

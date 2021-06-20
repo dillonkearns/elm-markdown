@@ -23,7 +23,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<ol><li>A paragraph</li></ol><pre><code>with two lines.</code></pre><pre><code>indented code</code></pre><pre><code>&gt; A block quote.</code></pre>
+<ol><li>A paragraph</li></ol><pre><code>with two lines. indented code &gt; A block quote.</code></pre>
 ````````````
 ## [Example 229](https://spec.commonmark.org/0.29/#example-229)
 
@@ -73,7 +73,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<ol><li>foo</li></ol><pre><code>``` bar ```</code></pre><pre><code>baz</code></pre><pre><code>&gt; bam</code></pre>
+<ol><li>foo</li></ol><pre><code>``` bar ``` baz &gt; bam</code></pre>
 ````````````
 ## [Example 241](https://spec.commonmark.org/0.29/#example-241)
 
@@ -168,7 +168,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<p>1. A paragraph with two lines.</p><pre><code>indented code</code></pre><pre><code>&gt; A block quote.</code></pre>
+<p>1. A paragraph with two lines.</p><pre><code>indented code &gt; A block quote.</code></pre>
 ````````````
 ## [Example 257](https://spec.commonmark.org/0.29/#example-257)
 
@@ -193,7 +193,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<p>1. A paragraph with two lines.</p><pre><code>indented code</code></pre><pre><code>&gt; A block quote.</code></pre>
+<p>1. A paragraph with two lines.</p><pre><code>indented code &gt; A block quote.</code></pre>
 ````````````
 ## [Example 258](https://spec.commonmark.org/0.29/#example-258)
 
@@ -218,32 +218,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<p>1. A paragraph with two lines.</p><pre><code>indented code</code></pre><pre><code>&gt; A block quote.</code></pre>
-````````````
-## [Example 259](https://spec.commonmark.org/0.29/#example-259)
-
-This markdown:
-
-````````````markdown
-    1.  A paragraph
-        with two lines.
-
-            indented code
-
-        > A block quote.
-
-````````````
-
-Should give output:
-
-````````````html
-<pre><code>1. A paragraph with two lines. indented code &gt; A block quote.</code></pre>
-````````````
-
-But instead was:
-
-````````````html
-<pre><code>1. A paragraph with two lines.</code></pre><pre><code>indented code</code></pre><pre><code>&gt; A block quote.</code></pre>
+<p>1. A paragraph with two lines.</p><pre><code>indented code &gt; A block quote.</code></pre>
 ````````````
 ## [Example 260](https://spec.commonmark.org/0.29/#example-260)
 
@@ -268,7 +243,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<p>1. A paragraph with two lines.</p><pre><code>indented code</code></pre><pre><code>&gt; A block quote.</code></pre>
+<p>1. A paragraph with two lines.</p><pre><code>indented code &gt; A block quote.</code></pre>
 ````````````
 ## [Example 261](https://spec.commonmark.org/0.29/#example-261)
 

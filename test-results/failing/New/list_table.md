@@ -30,5 +30,5 @@ Should give output:
 But instead was:
 
 ````````````html
-<ul><li><p>Table in list:</p><table><thead><tr><th>column1</th><th>column2</th></tr></thead><tbody><tr><td>value1</td><td>value2</td></tr><tr><td>value3</td><td>value4</td></tr></tbody></table></li></ul><ul><li><p>No leading pipe table in list:</p><table><thead><tr><th>column1</th><th>column2</th></tr></thead><tbody><tr><td>value1</td><td>value2</td></tr><tr><td>value3</td><td>value4</td></tr></tbody></table></li></ul>
+<ul></ul><ul><li><p>No leading pipe table in list:</p><table><thead><tr><th>column1</th><th>column2</th></tr></thead><tbody><tr><td>value1</td><td>value2</td></tr><tr><td>value3</td><td>value4</td></tr></tbody></table></li></ul>
 ````````````

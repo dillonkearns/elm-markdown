@@ -6020,6 +6020,85 @@ Gives this correct output:
 
 ````````````
 
+### [Example 80](https://spec.commonmark.org/0.29/#example-80)
+
+This markdown:
+
+
+````````````markdown
+    <a/>
+    *hi*
+
+    - one
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<pre><code>&lt;a/&gt;
+*hi*
+
+- one
+</code></pre>
+
+````````````
+
+### [Example 81](https://spec.commonmark.org/0.29/#example-81)
+
+This markdown:
+
+
+````````````markdown
+    chunk1
+
+    chunk2
+  
+ 
+ 
+    chunk3
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<pre><code>chunk1
+
+chunk2
+
+
+
+chunk3
+</code></pre>
+
+````````````
+
+### [Example 82](https://spec.commonmark.org/0.29/#example-82)
+
+This markdown:
+
+
+````````````markdown
+    chunk1
+      
+      chunk2
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<pre><code>chunk1
+  
+  chunk2
+</code></pre>
+
+````````````
+
 ### [Example 83](https://spec.commonmark.org/0.29/#example-83)
 
 This markdown:
@@ -8791,6 +8870,35 @@ Gives this correct output:
 
 ````````````
 
+### [Example 259](https://spec.commonmark.org/0.29/#example-259)
+
+This markdown:
+
+
+````````````markdown
+    1.  A paragraph
+        with two lines.
+
+            indented code
+
+        > A block quote.
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<pre><code>1.  A paragraph
+    with two lines.
+
+        indented code
+
+    &gt; A block quote.
+</code></pre>
+
+````````````
+
 ### [Example 267](https://spec.commonmark.org/0.29/#example-267)
 
 This markdown:
@@ -9481,6 +9589,33 @@ Gives this correct output:
 <h2>Foo</h2>
 <h2>Foo</h2>
 <h1>Foo</h1>
+
+````````````
+
+### [Example 55](https://spec.commonmark.org/0.29/#example-55)
+
+This markdown:
+
+
+````````````markdown
+    Foo
+    ---
+
+    Foo
+---
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<pre><code>Foo
+---
+
+Foo
+</code></pre>
+<hr />
 
 ````````````
 
