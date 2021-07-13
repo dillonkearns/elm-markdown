@@ -89,25 +89,3 @@ But instead was:
 ````````````html
 <p>Foo<a href="/baz">bar</a></p>
 ````````````
-## [Example 187](https://spec.commonmark.org/0.29/#example-187)
-
-This markdown:
-
-````````````markdown
-[foo]
-
-> [foo]: /url
-
-````````````
-
-Should give output:
-
-````````````html
-<p><a href="/url">foo</a></p><blockquote></blockquote>
-````````````
-
-But instead was:
-
-````````````html
-<p>[foo]</p><blockquote></blockquote>
-````````````

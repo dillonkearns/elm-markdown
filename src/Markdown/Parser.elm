@@ -6,13 +6,13 @@ module Markdown.Parser exposing (parse, deadEndToString)
 
 -}
 
-import Whitespace
-import Helpers
 import Dict exposing (Dict)
+import Helpers
 import HtmlParser exposing (Node(..))
 import Markdown.Block as Block exposing (Block, Inline, ListItem, Task)
 import Markdown.CodeBlock
 import Markdown.Heading as Heading
+import Markdown.Helpers exposing (isEven)
 import Markdown.Inline as Inline
 import Markdown.InlineParser
 import Markdown.LinkReferenceDefinition as LinkReferenceDefinition exposing (LinkReferenceDefinition)
@@ -26,8 +26,8 @@ import Parser
 import Parser.Advanced as Advanced exposing ((|.), (|=), Nestable(..), Step(..), andThen, chompIf, chompWhile, getChompedString, loop, map, oneOf, problem, succeed, symbol, token)
 import Parser.Token as Token
 import ThematicBreak
+import Whitespace
 
-import Markdown.Helpers exposing (isEven)
 
 {-| Try parsing a markdown String into `Markdown.Block.Block`s.
 
@@ -188,13 +188,14 @@ mapInline inline =
                     Block.Strong (inlines |> List.map mapInline)
 
                 _ ->
-                    if level |> isEven  then
-                        Block.Strong [Inline.Emphasis (level - 2) inlines |> mapInline]
+                    if level |> isEven then
+                        Block.Strong [ Inline.Emphasis (level - 2) inlines |> mapInline ]
+
                     else
-                        Block.Emphasis [Inline.Emphasis (level - 1) inlines |> mapInline]
+                        Block.Emphasis [ Inline.Emphasis (level - 1) inlines |> mapInline ]
 
         Inline.Strikethrough inlines ->
-          Block.Strikethrough (inlines |> List.map mapInline)
+            Block.Strikethrough (inlines |> List.map mapInline)
 
 
 toHeading : Int -> Result Parser.Problem Block.HeadingLevel
@@ -294,18 +295,16 @@ parseInlines linkReferences rawBlock =
             EmptyBlock
 
         BlockQuote rawBlocks ->
-            case Advanced.run rawBlockParser rawBlocks of
-                Ok value ->
-                    case parseAllInlines value of
-                        Ok parsedBlocks ->
-                            Block.BlockQuote parsedBlocks
-                                |> ParsedBlock
+            EmptyBlock
 
-                        Err e ->
-                            InlineProblem e
+        ParsedBlockQuote rawBlocks ->
+            case parseAllInlines { linkReferenceDefinitions = linkReferences, rawBlocks = rawBlocks } of
+                Ok parsedBlocks ->
+                    Block.BlockQuote parsedBlocks
+                        |> ParsedBlock
 
-                Err error ->
-                    InlineProblem (Parser.Problem (deadEndsToString error))
+                Err e ->
+                    InlineProblem e
 
         IndentedCodeBlock codeBlockBody ->
             Block.CodeBlock { body = codeBlockBody, language = Nothing }
@@ -616,6 +615,7 @@ rawBlockParser =
         , rawBlocks = []
         }
         stepRawBlock
+        |> andThen completeBlocks
 
 
 parseAllInlines : State -> Result Parser.Problem (List Block)
@@ -642,61 +642,112 @@ parseAllInlinesHelp state rawBlocks parsedBlocks =
             Ok parsedBlocks
 
 
-completeOrMergeBlocks : State -> RawBlock -> State
+completeOrMergeBlocks : State -> RawBlock -> Parser State
 completeOrMergeBlocks state newRawBlock =
-    { linkReferenceDefinitions = state.linkReferenceDefinitions
-    , rawBlocks =
-        case
-            ( newRawBlock
-            , state.rawBlocks
-            )
-        of
-            ( CodeBlock block1, (CodeBlock block2) :: rest ) ->
-                CodeBlock
-                    { body = joinStringsPreserveAll block2.body block1.body
-                    , language = Nothing
-                    }
-                    :: rest
+    case
+        ( newRawBlock
+        , state.rawBlocks
+        )
+    of
+        ( CodeBlock block1, (CodeBlock block2) :: rest ) ->
+            succeed
+                { linkReferenceDefinitions = state.linkReferenceDefinitions
+                , rawBlocks =
+                    CodeBlock
+                        { body = joinStringsPreserveAll block2.body block1.body
+                        , language = Nothing
+                        }
+                        :: rest
+                }
 
-            ( IndentedCodeBlock block1, (IndentedCodeBlock block2) :: rest ) ->
-                IndentedCodeBlock (joinStringsPreserveAll block2 block1)
-                    :: rest
+        ( IndentedCodeBlock block1, (IndentedCodeBlock block2) :: rest ) ->
+            succeed
+                { linkReferenceDefinitions = state.linkReferenceDefinitions
+                , rawBlocks =
+                    IndentedCodeBlock (joinStringsPreserveAll block2 block1)
+                        :: rest
+                }
 
-            ( OpenBlockOrParagraph (UnparsedInlines body1), (BlockQuote body2) :: rest ) ->
-                BlockQuote (joinRawStringsWith "\n" body2 body1)
-                    :: rest
+        ( _, (BlockQuote body2) :: rest ) ->
+            case newRawBlock of
+                BlockQuote body1 ->
+                    succeed
+                        { linkReferenceDefinitions = state.linkReferenceDefinitions
+                        , rawBlocks =
+                            BlockQuote (joinStringsPreserveAll body2 body1)
+                                :: rest
+                        }
 
-            ( BlockQuote body1, (BlockQuote body2) :: rest ) ->
-                BlockQuote (joinStringsPreserveAll body2 body1)
-                    :: rest
+                OpenBlockOrParagraph (UnparsedInlines body1) ->
+                    succeed
+                        { linkReferenceDefinitions = state.linkReferenceDefinitions
+                        , rawBlocks =
+                            BlockQuote (joinRawStringsWith "\n" body2 body1)
+                                :: rest
+                        }
 
-            ( OpenBlockOrParagraph (UnparsedInlines body1), (OpenBlockOrParagraph (UnparsedInlines body2)) :: rest ) ->
-                OpenBlockOrParagraph (UnparsedInlines (joinRawStringsWith "\n" body2 body1))
-                    :: rest
+                _ ->
+                    case Advanced.run rawBlockParser body2 of
+                        Ok value ->
+                            succeed
+                                { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
+                                , rawBlocks = newRawBlock :: (value.rawBlocks |> ParsedBlockQuote) :: rest
+                                }
 
-            ( SetextLine LevelOne _, (OpenBlockOrParagraph unparsedInlines) :: rest ) ->
-                Heading 1 unparsedInlines
-                    :: rest
+                        Err e ->
+                            problem (Parser.Problem (deadEndsToString e))
 
-            ( SetextLine LevelTwo _, (OpenBlockOrParagraph unparsedInlines) :: rest ) ->
-                Heading 2 unparsedInlines
-                    :: rest
+        ( OpenBlockOrParagraph (UnparsedInlines body1), (OpenBlockOrParagraph (UnparsedInlines body2)) :: rest ) ->
+            succeed
+                { linkReferenceDefinitions = state.linkReferenceDefinitions
+                , rawBlocks =
+                    OpenBlockOrParagraph (UnparsedInlines (joinRawStringsWith "\n" body2 body1))
+                        :: rest
+                }
 
-            ( TableDelimiter (Markdown.Table.TableDelimiterRow text alignments), (OpenBlockOrParagraph (UnparsedInlines rawHeaders)) :: rest ) ->
-                case TableParser.parseHeader (Markdown.Table.TableDelimiterRow text alignments) rawHeaders of
-                    Ok (Markdown.Table.TableHeader headers) ->
-                        Table (Markdown.Table.Table headers []) :: rest
+        ( SetextLine LevelOne _, (OpenBlockOrParagraph unparsedInlines) :: rest ) ->
+            succeed
+                { linkReferenceDefinitions = state.linkReferenceDefinitions
+                , rawBlocks =
+                    Heading 1 unparsedInlines
+                        :: rest
+                }
 
-                    Err _ ->
-                        OpenBlockOrParagraph (UnparsedInlines (joinRawStringsWith "\n" rawHeaders text.raw))
-                            :: rest
+        ( SetextLine LevelTwo _, (OpenBlockOrParagraph unparsedInlines) :: rest ) ->
+            succeed
+                { linkReferenceDefinitions = state.linkReferenceDefinitions
+                , rawBlocks =
+                    Heading 2 unparsedInlines
+                        :: rest
+                }
 
-            ( Table updatedTable, (Table _) :: rest ) ->
-                Table updatedTable :: rest
+        ( TableDelimiter (Markdown.Table.TableDelimiterRow text alignments), (OpenBlockOrParagraph (UnparsedInlines rawHeaders)) :: rest ) ->
+            case TableParser.parseHeader (Markdown.Table.TableDelimiterRow text alignments) rawHeaders of
+                Ok (Markdown.Table.TableHeader headers) ->
+                    succeed
+                        { linkReferenceDefinitions = state.linkReferenceDefinitions
+                        , rawBlocks = Table (Markdown.Table.Table headers []) :: rest
+                        }
 
-            _ ->
-                newRawBlock :: state.rawBlocks
-    }
+                Err _ ->
+                    succeed
+                        { linkReferenceDefinitions = state.linkReferenceDefinitions
+                        , rawBlocks =
+                            OpenBlockOrParagraph (UnparsedInlines (joinRawStringsWith "\n" rawHeaders text.raw))
+                                :: rest
+                        }
+
+        ( Table updatedTable, (Table _) :: rest ) ->
+            succeed
+                { linkReferenceDefinitions = state.linkReferenceDefinitions
+                , rawBlocks = Table updatedTable :: rest
+                }
+
+        _ ->
+            succeed
+                { linkReferenceDefinitions = state.linkReferenceDefinitions
+                , rawBlocks = newRawBlock :: state.rawBlocks
+                }
 
 
 
@@ -725,10 +776,32 @@ stepRawBlock revStmts =
             _ ->
                 mergeableBlockNotAfterOpenBlockOrParagraphParser
           )
-            |> map (\block -> Loop (completeOrMergeBlocks revStmts block))
+            |> andThen (completeOrMergeBlocks revStmts)
+            |> map (\block -> Loop block)
         , openBlockOrParagraphParser
-            |> map (\block -> Loop (completeOrMergeBlocks revStmts block))
+            |> andThen (completeOrMergeBlocks revStmts)
+            |> map (\block -> Loop block)
         ]
+
+
+completeBlocks :
+    State
+    -> Parser State --Result Parser.Problem (List Block)
+completeBlocks state =
+    case state.rawBlocks of
+        (BlockQuote body2) :: rest ->
+            case Advanced.run rawBlockParser body2 of
+                Ok value ->
+                    succeed
+                        { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
+                        , rawBlocks = (value.rawBlocks |> ParsedBlockQuote) :: rest
+                        }
+
+                Err error ->
+                    problem (Parser.Problem (deadEndsToString error))
+
+        _ ->
+            succeed state
 
 
 
