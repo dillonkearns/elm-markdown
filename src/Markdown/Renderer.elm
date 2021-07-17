@@ -381,7 +381,6 @@ renderHelperSingle renderer =
                                 |> Result.map (Block.ListItem task)
                         )
                     |> combineResults
-                    --|> Result.map (renderer.unorderedList isLoose)
                     |> Result.map
                         (\listItems ->
                             listItems
@@ -393,11 +392,36 @@ renderHelperSingle renderer =
                         )
                     |> Just
 
-            Block.OrderedList startingIndex items ->
+            Block.OrderedList tight startingIndex items ->
                 items
-                    |> List.map (renderStyled renderer)
+                    |> List.map
+                        (\itemsblocks ->
+                            itemsblocks
+                                |> (\blocks ->
+                                        List.filterMap
+                                            (\listItemBlock ->
+                                                case ( tight, listItemBlock ) of
+                                                    ( True, Block.Paragraph content ) ->
+                                                        renderStyled renderer content |> Just
+
+                                                    _ ->
+                                                        renderHelperSingle renderer listItemBlock
+                                                            |> Maybe.map (Result.map List.singleton)
+                                            )
+                                            blocks
+                                   )
+                                |> combineResults
+                        )
                     |> combineResults
-                    |> Result.map (renderer.orderedList startingIndex)
+                    |> Result.map
+                        (\listItems ->
+                            listItems
+                                |> List.map
+                                    (\children ->
+                                        List.concat children
+                                    )
+                                |> renderer.orderedList startingIndex
+                        )
                     |> Just
 
             Block.CodeBlock codeBlock ->

@@ -22,5 +22,5 @@ Should give output:
 But instead was:
 
 ````````````html
-<ul><li>This should be</li><li>An unordered list</li></ul><ol><li>This should be</li></ol><ol start="2"><li>An unordered list</li></ol>
+<ul><li>This should be</li><li>An unordered list</li></ul><ol></ol><ol start="2"></ol>
 ````````````

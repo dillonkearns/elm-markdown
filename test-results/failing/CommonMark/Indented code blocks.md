@@ -20,5 +20,5 @@ Should give output:
 But instead was:
 
 ````````````html
-<ol><li>foo</li></ol><pre><code>- bar</code></pre>
+<ol></ol><pre><code>- bar</code></pre>
 ````````````

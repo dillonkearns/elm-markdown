@@ -78,7 +78,7 @@ type Block
     = -- Container Blocks
       HtmlBlock (Html Block)
     | UnorderedList Bool (List (ListItem Block))
-    | OrderedList Int (List (List Inline))
+    | OrderedList Bool Int (List (List Block))
     | BlockQuote (List Block)
       -- Leaf Blocks With Inlines
     | Heading HeadingLevel (List Inline)
@@ -255,9 +255,14 @@ extractInlineBlockText block =
                     )
                 |> String.join "\n"
 
-        OrderedList int items ->
+        OrderedList tight int items ->
             items
-                |> List.map extractInlineText
+                |> List.map
+                    (\blocks ->
+                        blocks
+                            |> List.map extractInlineBlockText
+                            |> String.join "\n"
+                    )
                 |> String.join "\n"
 
         BlockQuote blocks ->
@@ -414,11 +419,12 @@ walkInlinesHelp function block =
                 listItems
                 |> UnorderedList tight
 
-        OrderedList startingIndex listItems ->
+        OrderedList tight startIndex listItems ->
             List.map
-                (List.map (inlineParserWalk function))
+                (\(blocks) ->
+                    List.map (\child -> walkInlinesHelp function child) blocks)
                 listItems
-                |> OrderedList startingIndex
+                |> OrderedList tight startIndex
 
         BlockQuote children ->
             BlockQuote (List.map (walkInlinesHelp function) children)
@@ -607,10 +613,15 @@ inlineParserValidateWalkBlock function block =
                     )
                 |> Result.map (UnorderedList tight)
 
-        OrderedList startingIndex lists ->
-            lists
-                |> traverse (traverse (inlineParserValidateWalk function))
-                |> Result.map (OrderedList startingIndex)
+
+        OrderedList tight startingIndex items ->
+            items
+                |> traverse
+                    (\nestedBlocks ->
+                        nestedBlocks
+                            |> traverse (inlineParserValidateWalkBlock function)
+                    )
+                |> Result.map (OrderedList tight startingIndex)
 
         BlockQuote nestedBlocks ->
             nestedBlocks
@@ -717,7 +728,7 @@ walk function block =
         UnorderedList tight _ ->
             function block
 
-        OrderedList _ _ ->
+        OrderedList _ _ _ ->
             function block
 
         -- These cases don't have nested blocks
@@ -884,7 +895,7 @@ foldl function acc list =
                 UnorderedList tight listItems ->
                     foldl function (function block acc) remainingBlocks
 
-                OrderedList int lists ->
+                OrderedList _ int lists ->
                     foldl function (function block acc) remainingBlocks
 
                 BlockQuote blocks ->
@@ -1020,13 +1031,8 @@ inlineFoldl ifunction top_acc list =
                     UnorderedList tight _ ->
                         acc
 
-                    OrderedList int lists ->
-                        List.foldl
-                            (\inlines lacc ->
-                                List.foldl function lacc inlines
-                            )
-                            acc
-                            lists
+                    OrderedList _ int lists ->
+                        acc
 
                     BlockQuote _ ->
                         acc

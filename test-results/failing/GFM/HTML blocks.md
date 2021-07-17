@@ -583,7 +583,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<script>&lt;p&gt;foo&lt;/p&gt;</script><ol><li><em>bar</em></li></ol>
+<script>&lt;p&gt;foo&lt;/p&gt;</script><ol></ol>
 ````````````
 ## [Example 149](https://spec.commonmark.org/0.29/#example-149)
 

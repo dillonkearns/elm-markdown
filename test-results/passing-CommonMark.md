@@ -8457,26 +8457,6 @@ baz
 
 ````````````
 
-### [Example 235](https://spec.commonmark.org/0.29/#example-235)
-
-This markdown:
-
-
-````````````markdown
-123456789. ok
-
-````````````
-
-Gives this correct output:
-
-
-````````````html
-<ol start="123456789">
-<li>ok</li>
-</ol>
-
-````````````
-
 ### [Example 236](https://spec.commonmark.org/0.29/#example-236)
 
 This markdown:
@@ -8492,46 +8472,6 @@ Gives this correct output:
 
 ````````````html
 <p>1234567890. not ok</p>
-
-````````````
-
-### [Example 237](https://spec.commonmark.org/0.29/#example-237)
-
-This markdown:
-
-
-````````````markdown
-0. ok
-
-````````````
-
-Gives this correct output:
-
-
-````````````html
-<ol start="0">
-<li>ok</li>
-</ol>
-
-````````````
-
-### [Example 238](https://spec.commonmark.org/0.29/#example-238)
-
-This markdown:
-
-
-````````````markdown
-003. ok
-
-````````````
-
-Gives this correct output:
-
-
-````````````html
-<ol start="3">
-<li>ok</li>
-</ol>
 
 ````````````
 
@@ -8936,30 +8876,6 @@ Gives this correct output:
 
 ````````````
 
-### [Example 267](https://spec.commonmark.org/0.29/#example-267)
-
-This markdown:
-
-
-````````````markdown
-10) foo
-   - bar
-
-````````````
-
-Gives this correct output:
-
-
-````````````html
-<ol start="10">
-<li>foo</li>
-</ol>
-<ul>
-<li>bar</li>
-</ul>
-
-````````````
-
 ### [Example 268](https://spec.commonmark.org/0.29/#example-268)
 
 This markdown:
@@ -9081,28 +8997,6 @@ Gives this correct output:
 ````````````html
 <p>The number of windows in my house is
 14.  The number of doors is 6.</p>
-
-````````````
-
-### [Example 275](https://spec.commonmark.org/0.29/#example-275)
-
-This markdown:
-
-
-````````````markdown
-The number of windows in my house is
-1.  The number of doors is 6.
-
-````````````
-
-Gives this correct output:
-
-
-````````````html
-<p>The number of windows in my house is</p>
-<ol>
-<li>The number of doors is 6.</li>
-</ol>
 
 ````````````
 

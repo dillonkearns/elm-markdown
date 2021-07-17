@@ -20,7 +20,28 @@ Should give output:
 But instead was:
 
 ````````````html
-<ol><li>foo</li></ol><ol start="2"><li>bar</li></ol><ol start="3"><li>baz</li></ol>
+<ol></ol><ol start="2"></ol><ol start="3"></ol>
+````````````
+## [Example 275](https://spec.commonmark.org/0.29/#example-275)
+
+This markdown:
+
+````````````markdown
+The number of windows in my house is
+1.  The number of doors is 6.
+
+````````````
+
+Should give output:
+
+````````````html
+<p>The number of windows in my house is</p><ol><li>The number of doors is 6.</li></ol>
+````````````
+
+But instead was:
+
+````````````html
+<p>The number of windows in my house is</p><ol></ol>
 ````````````
 ## [Example 281](https://spec.commonmark.org/0.29/#example-281)
 
@@ -44,7 +65,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<ol><li>a</li></ol><p>2. b</p><p>3. c</p>
+<ol></ol><p>2. b</p><p>3. c</p>
 ````````````
 ## [Example 283](https://spec.commonmark.org/0.29/#example-283)
 
@@ -68,7 +89,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<ol><li>a</li></ol><p>2. b</p><pre><code>3. c</code></pre>
+<ol></ol><p>2. b</p><pre><code>3. c</code></pre>
 ````````````
 ## [Example 294](https://spec.commonmark.org/0.29/#example-294)
 
@@ -92,5 +113,5 @@ Should give output:
 But instead was:
 
 ````````````html
-<ol><li>```</li></ol><p>foo</p><pre><code>bar</code></pre>
+<ol></ol><p>foo</p><pre><code>bar</code></pre>
 ````````````

@@ -286,23 +286,35 @@ parseInlines linkReferences rawBlock =
                 |> Block.UnorderedList tight
                 |> ParsedBlock
 
-        OrderedListBlock startingIndex unparsedInlines ->
-            unparsedInlines
-                |> List.map (parseRawInline linkReferences identity)
-                |> Block.OrderedList startingIndex
+        OrderedListBlock tight _ _ startingIndex unparsedItems _ ->
+                let
+                        parseItem: List RawBlock -> List Block
+                        parseItem rawBlocks =
+                            case parseAllInlines { linkReferenceDefinitions = linkReferences, rawBlocks = rawBlocks } of
+                                Ok parsedBlocks ->
+                                    parsedBlocks
+
+                                --TODO: pass this Err e
+                                Err e ->
+                                    []
+                in
+            unparsedItems
+                |> List.map parseItem
+                |> List.reverse
+                |> Block.OrderedList tight startingIndex
                 |> ParsedBlock
 
-        CodeBlock codeBlock ->
+        RawBlock.CodeBlock codeBlock ->
             Block.CodeBlock codeBlock
                 |> ParsedBlock
 
-        ThematicBreak ->
+        RawBlock.ThematicBreak ->
             ParsedBlock Block.ThematicBreak
 
         BlankLine ->
             EmptyBlock
 
-        BlockQuote rawBlocks ->
+        RawBlock.BlockQuote rawBlocks ->
             EmptyBlock
 
         ParsedBlockQuote rawBlocks ->
@@ -318,7 +330,7 @@ parseInlines linkReferences rawBlock =
             Block.CodeBlock { body = codeBlockBody, language = Nothing }
                 |> ParsedBlock
 
-        Table (Markdown.Table.Table header rows) ->
+        RawBlock.Table (Markdown.Table.Table header rows) ->
             Block.Table (parseHeaderInlines linkReferences header) (parseRowInlines linkReferences rows)
                 |> ParsedBlock
 
@@ -455,7 +467,7 @@ unorderedListBlock previousWasBody =
 orderedListBlock : Bool -> Parser RawBlock
 orderedListBlock previousWasBody =
     Markdown.OrderedList.parser previousWasBody
-        |> map (\item  -> OrderedListBlock item.order [UnparsedInlines item.body])
+        |> map (\item  -> OrderedListBlock True item.intended item.marker item.order [] item.body)
 
 
 blankLine : Parser RawBlock

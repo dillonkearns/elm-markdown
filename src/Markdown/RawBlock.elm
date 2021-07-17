@@ -39,7 +39,7 @@ type RawBlock
     | OpenBlockOrParagraph UnparsedInlines
     | Html (Markdown.Block.Html Block)
     | UnorderedListBlock Bool Int (List CloseListItem) OpenListItem
-    | OrderedListBlock Int (List UnparsedInlines)
+    | OrderedListBlock Bool Int OrderedListMarker Int (List (List RawBlock)) String
     | CodeBlock CodeBlock
     | IndentedCodeBlock String
     | ThematicBreak
