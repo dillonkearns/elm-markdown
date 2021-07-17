@@ -5,6 +5,7 @@ import Markdown.CodeBlock exposing (CodeBlock)
 import Markdown.Table
 import Markdown.TableParser as TableParser
 import Markdown.UnorderedList exposing (UnorderedListMarker)
+import Markdown.OrderedList exposing (OrderedListMarker)
 
 
 type alias Attribute =

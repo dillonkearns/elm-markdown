@@ -8801,30 +8801,6 @@ Gives this correct output:
 
 ````````````
 
-### [Example 253](https://spec.commonmark.org/0.29/#example-253)
-
-This markdown:
-
-
-````````````markdown
-1. foo
-2.
-3. bar
-
-````````````
-
-Gives this correct output:
-
-
-````````````html
-<ol>
-<li>foo</li>
-<li></li>
-<li>bar</li>
-</ol>
-
-````````````
-
 ### [Example 254](https://spec.commonmark.org/0.29/#example-254)
 
 This markdown:
@@ -9061,32 +9037,6 @@ Gives this correct output:
 <ul>
 <li>baz</li>
 </ul>
-
-````````````
-
-### [Example 272](https://spec.commonmark.org/0.29/#example-272)
-
-This markdown:
-
-
-````````````markdown
-1. foo
-2. bar
-3) baz
-
-````````````
-
-Gives this correct output:
-
-
-````````````html
-<ol>
-<li>foo</li>
-<li>bar</li>
-</ol>
-<ol start="3">
-<li>baz</li>
-</ol>
 
 ````````````
 

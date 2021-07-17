@@ -1,5 +1,27 @@
 # CommonMark - Lists
 
+## [Example 272](https://spec.commonmark.org/0.29/#example-272)
+
+This markdown:
+
+````````````markdown
+1. foo
+2. bar
+3) baz
+
+````````````
+
+Should give output:
+
+````````````html
+<ol><li>foo</li><li>bar</li></ol><ol start="3"><li>baz</li></ol>
+````````````
+
+But instead was:
+
+````````````html
+<ol><li>foo</li></ol><ol start="2"><li>bar</li></ol><ol start="3"><li>baz</li></ol>
+````````````
 ## [Example 281](https://spec.commonmark.org/0.29/#example-281)
 
 This markdown:

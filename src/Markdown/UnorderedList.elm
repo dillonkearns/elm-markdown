@@ -59,22 +59,3 @@ unorderedListMarkerParser =
         , succeed Asterisk
             |. Advanced.symbol (Advanced.Token "*" (Parser.ExpectingSymbol "*"))
         ]
-
-
-listItemParser : Bool -> Parser ListItem
-listItemParser previousWasBody =
-    if previousWasBody then
-        oneOf
-            [ succeed identity
-                |. chompOneOrMore Whitespace.isSpaceOrTab
-                |= ListItem.parser
-            ]
-
-    else
-        oneOf
-            [ succeed EmptyItem
-                |. Helpers.lineEndOrEnd
-            , succeed identity
-                |. chompOneOrMore Whitespace.isSpaceOrTab
-                |= ListItem.parser
-            ]

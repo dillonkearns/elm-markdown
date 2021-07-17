@@ -455,7 +455,7 @@ unorderedListBlock previousWasBody =
 orderedListBlock : Bool -> Parser RawBlock
 orderedListBlock previousWasBody =
     Markdown.OrderedList.parser previousWasBody
-        |> map (\( startingIndex, unparsedLines ) -> OrderedListBlock startingIndex (List.map UnparsedInlines unparsedLines))
+        |> map (\item  -> OrderedListBlock item.order [UnparsedInlines item.body])
 
 
 blankLine : Parser RawBlock
