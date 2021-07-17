@@ -24,30 +24,6 @@ But instead was:
 ````````````html
 <ol><li>a</li></ol><p>2. b</p><p>3. c</p>
 ````````````
-## [Example 282](https://spec.commonmark.org/0.29/#example-282)
-
-This markdown:
-
-````````````markdown
-- a
- - b
-  - c
-   - d
-    - e
-
-````````````
-
-Should give output:
-
-````````````html
-<ul><li>a</li><li>b</li><li>c</li><li>d - e</li></ul>
-````````````
-
-But instead was:
-
-````````````html
-<ul><li>a</li><li>b</li><li>c</li><li>d</li></ul><pre><code>- e</code></pre>
-````````````
 ## [Example 283](https://spec.commonmark.org/0.29/#example-283)
 
 This markdown:

@@ -924,7 +924,7 @@ stepRawBlock revStmts =
                         |. Helpers.lineEndOrEnd
                         |> map (completeOrMergeUnorderedListBlock revStmts)
                         |> map (\block -> Loop block)
-                    , mergeableBlockNotAfterOpenBlockOrParagraphParser
+                    , mergeableBlockAfterList
                         |> andThen (completeOrMergeBlocks revStmts)
                         |> map (\block -> Loop block)
                     ]
@@ -1070,6 +1070,27 @@ mergeableBlockAfterOpenBlockOrParagraphParser =
         , Heading.parser |> Advanced.backtrackable
         , htmlParser
         , tableDelimiterInOpenParagraph |> Advanced.backtrackable
+        ]
+
+
+mergeableBlockAfterList : Parser RawBlock
+mergeableBlockAfterList =
+    oneOf
+        [ parseAsParagraphInsteadOfHtmlBlock
+        , blankLine
+        , blockQuote
+        , Markdown.CodeBlock.parser |> Advanced.backtrackable |> map CodeBlock
+
+        -- NOTE: indented block is an option after any non-Body block
+        , ThematicBreak.parser |> Advanced.backtrackable |> map (\_ -> ThematicBreak)
+
+        -- NOTE: both the unordered and ordered lists block changes its parsing rules when it's right after a Body
+        , unorderedListBlock False
+        , orderedListBlock False
+        , Heading.parser |> Advanced.backtrackable
+        , htmlParser
+
+        -- Note: we know that a table cannot be starting because we define a table as a delimiter row following a header row which gets parsed as a Body initially
         ]
 
 

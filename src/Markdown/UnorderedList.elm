@@ -4,7 +4,7 @@ import Helpers
 import Markdown.ListItem as ListItem exposing (ListItem(..))
 import Parser exposing (Problem)
 import Parser.Advanced as Advanced exposing (..)
-import Parser.Extra exposing (chompOneOrMore)
+import Parser.Extra as Extra exposing (chompOneOrMore)
 import Parser.Token as Token
 import Whitespace
 
@@ -52,7 +52,7 @@ unorderedListMarkerParser : Parser UnorderedListMarker
 unorderedListMarkerParser =
     oneOf
         [ succeed Minus
-            |. chompWhile (\c -> c == ' ')
+            |. Extra.upTo 3 Whitespace.space
             |. Advanced.symbol (Advanced.Token "-" (Parser.ExpectingSymbol "-"))
         , succeed Plus
             |. Advanced.symbol (Advanced.Token "+" (Parser.ExpectingSymbol "+"))

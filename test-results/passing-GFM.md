@@ -9326,6 +9326,34 @@ Gives this correct output:
 
 ````````````
 
+### [Example 282](https://spec.commonmark.org/0.29/#example-282)
+
+This markdown:
+
+
+````````````markdown
+- a
+ - b
+  - c
+   - d
+    - e
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ul>
+<li>a</li>
+<li>b</li>
+<li>c</li>
+<li>d
+- e</li>
+</ul>
+
+````````````
+
 ### [Example 284](https://spec.commonmark.org/0.29/#example-284)
 
 This markdown:

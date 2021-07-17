@@ -84,5 +84,5 @@ Should give output:
 But instead was:
 
 ````````````html
-<ul><li>foo<ul><li>bar</li></ul></li></ul><pre><code>- baz</code></pre>
+<ul><li>foo<ul><li>bar - baz</li></ul></li></ul>
 ````````````
