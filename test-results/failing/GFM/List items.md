@@ -308,52 +308,6 @@ But instead was:
 ````````````html
 <blockquote><ol><li>&gt; Blockquote</li></ol><p>continued here.</p></blockquote>
 ````````````
-## [Example 264](https://spec.commonmark.org/0.29/#example-264)
-
-This markdown:
-
-````````````markdown
-- foo
-  - bar
-    - baz
-      - boo
-
-````````````
-
-Should give output:
-
-````````````html
-<ul><li>foo<ul><li>bar<ul><li>baz<ul><li>boo</li></ul></li></ul></li></ul></li></ul>
-````````````
-
-But instead was:
-
-````````````html
-<ul><li><p>foo</p><ul><li><p>bar</p><ul><li><p>baz</p><ul><li>boo</li></ul></li></ul></li></ul></li></ul>
-````````````
-## [Example 265](https://spec.commonmark.org/0.29/#example-265)
-
-This markdown:
-
-````````````markdown
-- foo
- - bar
-  - baz
-   - boo
-
-````````````
-
-Should give output:
-
-````````````html
-<ul><li>foo</li><li>bar</li><li>baz</li><li>boo</li></ul>
-````````````
-
-But instead was:
-
-````````````html
-<ul><li>foo</li><li><p>bar</p><ul><li>baz</li><li>boo</li></ul></li></ul>
-````````````
 ## [Example 266](https://spec.commonmark.org/0.29/#example-266)
 
 This markdown:
@@ -394,27 +348,4 @@ But instead was:
 
 ````````````html
 <ol><li>- 2. foo</li></ol>
-````````````
-## [Example 270](https://spec.commonmark.org/0.29/#example-270)
-
-This markdown:
-
-````````````markdown
-- # Foo
-- Bar
-  ---
-  baz
-
-````````````
-
-Should give output:
-
-````````````html
-<ul><li><h1>Foo</h1></li><li><h2>Bar</h2>baz</li></ul>
-````````````
-
-But instead was:
-
-````````````html
-<ul><li><h1>Foo</h1></li><li><h2>Bar</h2><p>baz</p></li></ul>
 ````````````

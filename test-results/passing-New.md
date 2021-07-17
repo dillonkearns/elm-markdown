@@ -55,6 +55,31 @@ Gives this correct output:
 
 ````````````
 
+## blockquote_list_item
+
+### Example undefined
+
+This markdown:
+
+
+````````````markdown
+This fails in markdown.pl and upskirt:
+
+* hello
+  > world
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p>This fails in markdown.pl and upskirt:</p>
+
+<ul><li>hello<blockquote><p>world</p></blockquote></li></ul>
+
+````````````
+
 ## case_insensitive_refs
 
 ### Example undefined

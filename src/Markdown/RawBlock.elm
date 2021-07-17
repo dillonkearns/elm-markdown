@@ -37,7 +37,7 @@ type RawBlock
     = Heading Int UnparsedInlines
     | OpenBlockOrParagraph UnparsedInlines
     | Html (Markdown.Block.Html Block)
-    | UnorderedListBlock Int (List CloseListItem) OpenListItem
+    | UnorderedListBlock Bool Int (List CloseListItem) OpenListItem
     | OrderedListBlock Int (List UnparsedInlines)
     | CodeBlock CodeBlock
     | IndentedCodeBlock String

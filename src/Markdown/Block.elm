@@ -77,7 +77,7 @@ In the simplest case, you can pass this directly to a renderer:
 type Block
     = -- Container Blocks
       HtmlBlock (Html Block)
-    | UnorderedList (List (ListItem Block))
+    | UnorderedList Bool (List (ListItem Block))
     | OrderedList Int (List (List Inline))
     | BlockQuote (List Block)
       -- Leaf Blocks With Inlines
@@ -245,7 +245,7 @@ extractInlineBlockText block =
                 _ ->
                     ""
 
-        UnorderedList items ->
+        UnorderedList tight items ->
             items
                 |> List.map
                     (\(ListItem task blocks) ->
@@ -406,13 +406,13 @@ walkInlinesHelp function block =
             List.map (inlineParserWalk function) inlines
                 |> Paragraph
 
-        UnorderedList listItems ->
+        UnorderedList tight listItems ->
             List.map
                 (\(ListItem task children) ->
                     ListItem task (List.map (\child -> walkInlinesHelp function child) children)
                 )
                 listItems
-                |> UnorderedList
+                |> UnorderedList tight
 
         OrderedList startingIndex listItems ->
             List.map
@@ -550,7 +550,6 @@ inlineParserValidateWalk function inline =
                             |> Result.mapError List.singleton
                     )
 
-
         CodeSpan string ->
             function inline
                 |> Result.mapError List.singleton
@@ -598,7 +597,7 @@ inlineParserValidateWalkBlock function block =
                 _ ->
                     Ok block
 
-        UnorderedList items ->
+        UnorderedList tight items ->
             items
                 |> traverse
                     (\(ListItem task nestedBlocks) ->
@@ -606,7 +605,7 @@ inlineParserValidateWalkBlock function block =
                             |> traverse (inlineParserValidateWalkBlock function)
                             |> Result.map (ListItem task)
                     )
-                |> Result.map UnorderedList
+                |> Result.map (UnorderedList tight)
 
         OrderedList startingIndex lists ->
             lists
@@ -715,7 +714,7 @@ walk function block =
                 _ ->
                     function block
 
-        UnorderedList _ ->
+        UnorderedList tight _ ->
             function block
 
         OrderedList _ _ ->
@@ -882,7 +881,7 @@ foldl function acc list =
                         _ ->
                             foldl function (function block acc) remainingBlocks
 
-                UnorderedList listItems ->
+                UnorderedList tight listItems ->
                     foldl function (function block acc) remainingBlocks
 
                 OrderedList int lists ->
@@ -1018,7 +1017,7 @@ inlineFoldl ifunction top_acc list =
                     HtmlBlock html ->
                         acc
 
-                    UnorderedList _ ->
+                    UnorderedList tight _ ->
                         acc
 
                     OrderedList int lists ->

@@ -188,7 +188,7 @@ defaultHtmlRenderer =
                 classes =
                     -- Only the first word is used in the class
                     case Maybe.map String.words language of
-                        Just (actualLanguage::_) ->
+                        Just (actualLanguage :: _) ->
                             [ Attr.class <| "language-" ++ actualLanguage ]
 
                         _ ->
@@ -358,24 +358,39 @@ renderHelperSingle renderer =
                     _ ->
                         Nothing
 
-            Block.UnorderedList items ->
+            Block.UnorderedList tight items ->
                 items
                     |> List.map
-                        (\(Block.ListItem task nestedBlocks) ->
-                            case nestedBlocks of
-                                [ Block.Paragraph children ] ->
-                                    children
-                                        |> renderStyled renderer
-                                        |> Result.map (\renderedBody -> Block.ListItem task renderedBody)
+                        (\(Block.ListItem task children) ->
+                            children
+                                --|> renderHelper renderer
+                                |> (\blocks ->
+                                        List.filterMap
+                                            (\listItemBlock ->
+                                                case ( tight, listItemBlock ) of
+                                                    ( True, Block.Paragraph content ) ->
+                                                        renderStyled renderer content |> Just
 
-                                _ ->
-                                    nestedBlocks
-                                        |> renderHelper renderer
-                                        |> combineResults
-                                        |> Result.map (\renderedBody -> Block.ListItem task renderedBody)
+                                                    _ ->
+                                                        renderHelperSingle renderer listItemBlock
+                                                            |> Maybe.map (Result.map List.singleton)
+                                            )
+                                            blocks
+                                   )
+                                |> combineResults
+                                |> Result.map (Block.ListItem task)
                         )
                     |> combineResults
-                    |> Result.map renderer.unorderedList
+                    --|> Result.map (renderer.unorderedList isLoose)
+                    |> Result.map
+                        (\listItems ->
+                            listItems
+                                |> List.map
+                                    (\(Block.ListItem task children) ->
+                                        Block.ListItem task (List.concat children)
+                                    )
+                                |> renderer.unorderedList
+                        )
                     |> Just
 
             Block.OrderedList startingIndex items ->
