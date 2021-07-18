@@ -926,10 +926,10 @@ completeOrMergeBlocks state newRawBlock =
             case Advanced.run rawBlockParser openListItem2 of
                 Ok value ->
                     case newRawBlock of
-                        OrderedListBlock _ _ _ _ _ openListItem ->
+                        OrderedListBlock _ intended2 _ _ _ openListItem ->
                             succeed
                                 { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
-                                , rawBlocks = OrderedListBlock False intended1 marker order (value.rawBlocks :: closeListItems2) openListItem :: rest
+                                , rawBlocks = OrderedListBlock False intended2 marker order (value.rawBlocks :: closeListItems2) openListItem :: rest
                                 }
 
                         _ ->

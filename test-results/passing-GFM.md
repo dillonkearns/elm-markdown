@@ -9740,6 +9740,38 @@ Gives this correct output:
 
 ````````````
 
+### [Example 281](https://spec.commonmark.org/0.29/#example-281)
+
+This markdown:
+
+
+````````````markdown
+1. a
+
+  2. b
+
+   3. c
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ol>
+<li>
+<p>a</p>
+</li>
+<li>
+<p>b</p>
+</li>
+<li>
+<p>c</p>
+</li>
+</ol>
+
+````````````
+
 ### [Example 282](https://spec.commonmark.org/0.29/#example-282)
 
 This markdown:
@@ -9765,6 +9797,37 @@ Gives this correct output:
 <li>d
 - e</li>
 </ul>
+
+````````````
+
+### [Example 283](https://spec.commonmark.org/0.29/#example-283)
+
+This markdown:
+
+
+````````````markdown
+1. a
+
+  2. b
+
+    3. c
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ol>
+<li>
+<p>a</p>
+</li>
+<li>
+<p>b</p>
+</li>
+</ol>
+<pre><code>3. c
+</code></pre>
 
 ````````````
 
