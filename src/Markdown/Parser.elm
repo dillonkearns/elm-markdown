@@ -287,17 +287,17 @@ parseInlines linkReferences rawBlock =
                 |> ParsedBlock
 
         OrderedListBlock tight _ _ startingIndex unparsedItems _ ->
-                let
-                        parseItem: List RawBlock -> List Block
-                        parseItem rawBlocks =
-                            case parseAllInlines { linkReferenceDefinitions = linkReferences, rawBlocks = rawBlocks } of
-                                Ok parsedBlocks ->
-                                    parsedBlocks
+            let
+                parseItem : List RawBlock -> List Block
+                parseItem rawBlocks =
+                    case parseAllInlines { linkReferenceDefinitions = linkReferences, rawBlocks = rawBlocks } of
+                        Ok parsedBlocks ->
+                            parsedBlocks
 
-                                --TODO: pass this Err e
-                                Err e ->
-                                    []
-                in
+                        --TODO: pass this Err e
+                        Err e ->
+                            []
+            in
             unparsedItems
                 |> List.map parseItem
                 |> List.reverse
@@ -467,7 +467,7 @@ unorderedListBlock previousWasBody =
 orderedListBlock : Bool -> Parser RawBlock
 orderedListBlock previousWasBody =
     Markdown.OrderedList.parser previousWasBody
-        |> map (\item  -> OrderedListBlock True item.intended item.marker item.order [] item.body)
+        |> map (\item -> OrderedListBlock True item.intended item.marker item.order [] item.body)
 
 
 blankLine : Parser RawBlock
@@ -806,6 +806,76 @@ completeOrMergeBlocks state newRawBlock =
                         Err e ->
                             problem (Parser.Problem (deadEndsToString e))
 
+        -- OrderedListBlock Bool Int OrderedListMarker Int (List (List RawBlock)) String
+        -- (\item -> OrderedListBlock True item.intended item.marker item.order [] item.body)
+        ( _, (OrderedListBlock tight intended1 marker order closeListItems2 openListItem2) :: rest ) ->
+            case newRawBlock of
+                OrderedListBlock _ intended2 marker2 _ closeListItems1 openListItem1 ->
+                    if marker == marker2 then
+                        case Advanced.run rawBlockParser openListItem2 of
+                            Ok value ->
+                                let
+                                    tight2 =
+                                        if List.member BlankLine value.rawBlocks then
+                                            False
+
+                                        else
+                                            tight
+                                in
+                                succeed
+                                    { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
+                                    , rawBlocks = OrderedListBlock tight2 intended2 marker order (value.rawBlocks :: closeListItems2) openListItem1 :: rest
+                                    }
+
+                            Err e ->
+                                problem (Parser.Problem (deadEndsToString e))
+
+                    else
+                        case Advanced.run rawBlockParser openListItem2 of
+                            Ok value ->
+                                let
+                                    tight2 =
+                                        if List.member BlankLine value.rawBlocks then
+                                            False
+
+                                        else
+                                            tight
+                                in
+                                succeed
+                                    { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
+                                    , rawBlocks = newRawBlock :: OrderedListBlock tight2 intended1 marker order (value.rawBlocks :: closeListItems2) openListItem2 :: rest
+                                    }
+
+                            Err e ->
+                                problem (Parser.Problem (deadEndsToString e))
+
+                OpenBlockOrParagraph (UnparsedInlines body1) ->
+                    succeed
+                        { linkReferenceDefinitions = state.linkReferenceDefinitions
+                        , rawBlocks =
+                            OrderedListBlock tight intended1 marker order closeListItems2 (openListItem2 ++ "\n" ++ body1)
+                                :: rest
+                        }
+
+                _ ->
+                    case Advanced.run rawBlockParser openListItem2 of
+                        Ok value ->
+                            let
+                                tight2 =
+                                    if List.member BlankLine value.rawBlocks then
+                                        False
+
+                                    else
+                                        tight
+                            in
+                            succeed
+                                { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
+                                , rawBlocks = newRawBlock :: OrderedListBlock tight2 intended1 marker order (value.rawBlocks :: closeListItems2) openListItem2 :: rest
+                                }
+
+                        Err e ->
+                            problem (Parser.Problem (deadEndsToString e))
+
         ( OpenBlockOrParagraph (UnparsedInlines body1), (OpenBlockOrParagraph (UnparsedInlines body2)) :: rest ) ->
             succeed
                 { linkReferenceDefinitions = state.linkReferenceDefinitions
@@ -851,6 +921,25 @@ completeOrMergeBlocks state newRawBlock =
                 { linkReferenceDefinitions = state.linkReferenceDefinitions
                 , rawBlocks = Table updatedTable :: rest
                 }
+
+        ( _, BlankLine :: (OrderedListBlock tight intended1 marker order closeListItems2 openListItem2) :: rest ) ->
+            case Advanced.run rawBlockParser openListItem2 of
+                Ok value ->
+                    case newRawBlock of
+                        OrderedListBlock _ _ _ _ _ openListItem ->
+                            succeed
+                                { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
+                                , rawBlocks = OrderedListBlock False intended1 marker order (value.rawBlocks :: closeListItems2) openListItem :: rest
+                                }
+
+                        _ ->
+                            succeed
+                                { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
+                                , rawBlocks = newRawBlock :: BlankLine :: OrderedListBlock tight intended1 marker order (value.rawBlocks :: closeListItems2) openListItem2 :: rest
+                                }
+
+                Err e ->
+                    problem (Parser.Problem (deadEndsToString e))
 
         ( _, BlankLine :: (UnorderedListBlock tight intended1 closeListItems2 openListItem2) :: rest ) ->
             case Advanced.run rawBlockParser openListItem2.body of
@@ -983,6 +1072,76 @@ stepRawBlock revStmts =
                             |> map (\block -> Loop block)
                         ]
 
+            (OrderedListBlock tight intended marker order closeListItems openListItem) :: rest ->
+                let
+                    completeOrMergeUnorderedListBlock state newString =
+                        { state
+                            | rawBlocks =
+                                OrderedListBlock tight intended marker order closeListItems (openListItem ++ "\n" ++ newString)
+                                    :: rest
+                        }
+
+                    completeOrMergeUnorderedListBlockBlankLine state newString =
+                        { state
+                            | rawBlocks =
+                                BlankLine
+                                    :: OrderedListBlock tight intended marker order closeListItems (openListItem ++ "\n" ++ newString)
+                                    :: rest
+                        }
+                in
+                oneOf
+                    [ blankLine
+                        |> map (\_ -> completeOrMergeUnorderedListBlockBlankLine revStmts "\n")
+                        |> map (\block -> Loop block)
+                    , succeed identity
+                        |. Advanced.symbol (Advanced.Token (repeat intended " ") (Parser.ExpectingSymbol "Indentation"))
+                        |= getChompedString Helpers.chompUntilLineEndOrEnd
+                        |. Helpers.lineEndOrEnd
+                        |> map (completeOrMergeUnorderedListBlock revStmts)
+                        |> map (\block -> Loop block)
+                    , mergeableBlockAfterList
+                        |> andThen (completeOrMergeBlocks revStmts)
+                        |> map (\block -> Loop block)
+                    ]
+
+            BlankLine :: (OrderedListBlock tight intended marker order closeListItems openListItem) :: rest ->
+                let
+                    completeOrMergeUnorderedListBlock state newString =
+                        { state
+                            | rawBlocks =
+                                OrderedListBlock tight intended marker order closeListItems (openListItem ++ "\n" ++ newString)
+                                    :: rest
+                        }
+
+                    completeOrMergeUnorderedListBlockBlankLine state newString =
+                        { state
+                            | rawBlocks =
+                                BlankLine
+                                    :: OrderedListBlock tight intended marker order closeListItems (openListItem ++ "\n" ++ newString)
+                                    :: rest
+                        }
+                in
+                if trim openListItem == "" then
+                    mergeableBlockNotAfterOpenBlockOrParagraphParser
+                        |> andThen (completeOrMergeBlocks revStmts)
+                        |> map (\block -> Loop block)
+
+                else
+                    oneOf
+                        [ blankLine
+                            |> map (\_ -> completeOrMergeUnorderedListBlockBlankLine revStmts "\n")
+                            |> map (\block -> Loop block)
+                        , succeed identity
+                            |. Advanced.symbol (Advanced.Token (repeat intended " ") (Parser.ExpectingSymbol "Indentation"))
+                            |= getChompedString Helpers.chompUntilLineEndOrEnd
+                            |. Helpers.lineEndOrEnd
+                            |> map (completeOrMergeUnorderedListBlock revStmts)
+                            |> map (\block -> Loop block)
+                        , mergeableBlockNotAfterOpenBlockOrParagraphParser
+                            |> andThen (completeOrMergeBlocks revStmts)
+                            |> map (\block -> Loop block)
+                        ]
+
             _ ->
                 mergeableBlockNotAfterOpenBlockOrParagraphParser
                     |> andThen (completeOrMergeBlocks revStmts)
@@ -1042,6 +1201,44 @@ completeBlocks state =
                     succeed
                         { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
                         , rawBlocks = UnorderedListBlock tight2 intended ({ task = openListItem.task, body = value.rawBlocks } :: closeListItems) openListItem :: rest
+                        }
+
+                Err e ->
+                    problem (Parser.Problem (deadEndsToString e))
+
+        (OrderedListBlock tight intended marker order closeListItems openListItem) :: rest ->
+            case Advanced.run rawBlockParser openListItem of
+                Ok value ->
+                    let
+                        tight2 =
+                            if List.member BlankLine value.rawBlocks then
+                                False
+
+                            else
+                                tight
+                    in
+                    succeed
+                        { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
+                        , rawBlocks = OrderedListBlock tight2 intended marker order (value.rawBlocks :: closeListItems) openListItem :: rest
+                        }
+
+                Err e ->
+                    problem (Parser.Problem (deadEndsToString e))
+
+        BlankLine :: (OrderedListBlock tight intended marker order closeListItems openListItem) :: rest ->
+            case Advanced.run rawBlockParser openListItem of
+                Ok value ->
+                    let
+                        tight2 =
+                            if List.member BlankLine value.rawBlocks then
+                                False
+
+                            else
+                                tight
+                    in
+                    succeed
+                        { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
+                        , rawBlocks = OrderedListBlock tight2 intended marker order (value.rawBlocks :: closeListItems) openListItem :: rest
                         }
 
                 Err e ->

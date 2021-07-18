@@ -6020,6 +6020,33 @@ Gives this correct output:
 
 ````````````
 
+### [Example 79](https://spec.commonmark.org/0.29/#example-79)
+
+This markdown:
+
+
+````````````markdown
+1.  foo
+
+    - bar
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ol>
+<li>
+<p>foo</p>
+<ul>
+<li>bar</li>
+</ul>
+</li>
+</ol>
+
+````````````
+
 ### [Example 80](https://spec.commonmark.org/0.29/#example-80)
 
 This markdown:
@@ -8254,6 +8281,39 @@ with two lines.</p>
 
 ````````````
 
+### [Example 224](https://spec.commonmark.org/0.29/#example-224)
+
+This markdown:
+
+
+````````````markdown
+1.  A paragraph
+    with two lines.
+
+        indented code
+
+    > A block quote.
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ol>
+<li>
+<p>A paragraph
+with two lines.</p>
+<pre><code>indented code
+</code></pre>
+<blockquote>
+<p>A block quote.</p>
+</blockquote>
+</li>
+</ol>
+
+````````````
+
 ### [Example 225](https://spec.commonmark.org/0.29/#example-225)
 
 This markdown:
@@ -8351,6 +8411,35 @@ Gives this correct output:
 
 ````````````
 
+### [Example 229](https://spec.commonmark.org/0.29/#example-229)
+
+This markdown:
+
+
+````````````markdown
+   > > 1.  one
+>>
+>>     two
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<blockquote>
+<blockquote>
+<ol>
+<li>
+<p>one</p>
+<p>two</p>
+</li>
+</ol>
+</blockquote>
+</blockquote>
+
+````````````
+
 ### [Example 230](https://spec.commonmark.org/0.29/#example-230)
 
 This markdown:
@@ -8425,6 +8514,42 @@ Gives this correct output:
 
 ````````````
 
+### [Example 233](https://spec.commonmark.org/0.29/#example-233)
+
+This markdown:
+
+
+````````````markdown
+1.  foo
+
+    ```
+    bar
+    ```
+
+    baz
+
+    > bam
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ol>
+<li>
+<p>foo</p>
+<pre><code>bar
+</code></pre>
+<p>baz</p>
+<blockquote>
+<p>bam</p>
+</blockquote>
+</li>
+</ol>
+
+````````````
+
 ### [Example 234](https://spec.commonmark.org/0.29/#example-234)
 
 This markdown:
@@ -8457,6 +8582,26 @@ baz
 
 ````````````
 
+### [Example 235](https://spec.commonmark.org/0.29/#example-235)
+
+This markdown:
+
+
+````````````markdown
+123456789. ok
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ol start="123456789">
+<li>ok</li>
+</ol>
+
+````````````
+
 ### [Example 236](https://spec.commonmark.org/0.29/#example-236)
 
 This markdown:
@@ -8472,6 +8617,46 @@ Gives this correct output:
 
 ````````````html
 <p>1234567890. not ok</p>
+
+````````````
+
+### [Example 237](https://spec.commonmark.org/0.29/#example-237)
+
+This markdown:
+
+
+````````````markdown
+0. ok
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ol start="0">
+<li>ok</li>
+</ol>
+
+````````````
+
+### [Example 238](https://spec.commonmark.org/0.29/#example-238)
+
+This markdown:
+
+
+````````````markdown
+003. ok
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ol start="3">
+<li>ok</li>
+</ol>
 
 ````````````
 
@@ -8815,6 +9000,62 @@ Gives this correct output:
 
 ````````````
 
+### [Example 262](https://spec.commonmark.org/0.29/#example-262)
+
+This markdown:
+
+
+````````````markdown
+> 1. > Blockquote
+continued here.
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<blockquote>
+<ol>
+<li>
+<blockquote>
+<p>Blockquote
+continued here.</p>
+</blockquote>
+</li>
+</ol>
+</blockquote>
+
+````````````
+
+### [Example 263](https://spec.commonmark.org/0.29/#example-263)
+
+This markdown:
+
+
+````````````markdown
+> 1. > Blockquote
+> continued here.
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<blockquote>
+<ol>
+<li>
+<blockquote>
+<p>Blockquote
+continued here.</p>
+</blockquote>
+</li>
+</ol>
+</blockquote>
+
+````````````
+
 ### [Example 264](https://spec.commonmark.org/0.29/#example-264)
 
 This markdown:
@@ -8876,6 +9117,55 @@ Gives this correct output:
 
 ````````````
 
+### [Example 266](https://spec.commonmark.org/0.29/#example-266)
+
+This markdown:
+
+
+````````````markdown
+10) foo
+    - bar
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ol start="10">
+<li>foo
+<ul>
+<li>bar</li>
+</ul>
+</li>
+</ol>
+
+````````````
+
+### [Example 267](https://spec.commonmark.org/0.29/#example-267)
+
+This markdown:
+
+
+````````````markdown
+10) foo
+   - bar
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ol start="10">
+<li>foo</li>
+</ol>
+<ul>
+<li>bar</li>
+</ul>
+
+````````````
+
 ### [Example 268](https://spec.commonmark.org/0.29/#example-268)
 
 This markdown:
@@ -8897,6 +9187,34 @@ Gives this correct output:
 </ul>
 </li>
 </ul>
+
+````````````
+
+### [Example 269](https://spec.commonmark.org/0.29/#example-269)
+
+This markdown:
+
+
+````````````markdown
+1. - 2. foo
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ol>
+<li>
+<ul>
+<li>
+<ol start="2">
+<li>foo</li>
+</ol>
+</li>
+</ul>
+</li>
+</ol>
 
 ````````````
 
@@ -8956,6 +9274,32 @@ Gives this correct output:
 
 ````````````
 
+### [Example 272](https://spec.commonmark.org/0.29/#example-272)
+
+This markdown:
+
+
+````````````markdown
+1. foo
+2. bar
+3) baz
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ol>
+<li>foo</li>
+<li>bar</li>
+</ol>
+<ol start="3">
+<li>baz</li>
+</ol>
+
+````````````
+
 ### [Example 273](https://spec.commonmark.org/0.29/#example-273)
 
 This markdown:
@@ -8997,6 +9341,28 @@ Gives this correct output:
 ````````````html
 <p>The number of windows in my house is
 14.  The number of doors is 6.</p>
+
+````````````
+
+### [Example 275](https://spec.commonmark.org/0.29/#example-275)
+
+This markdown:
+
+
+````````````markdown
+The number of windows in my house is
+1.  The number of doors is 6.
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p>The number of windows in my house is</p>
+<ol>
+<li>The number of doors is 6.</li>
+</ol>
 
 ````````````
 
@@ -9490,6 +9856,34 @@ Gives this correct output:
 </ul>
 </li>
 </ul>
+
+````````````
+
+### [Example 294](https://spec.commonmark.org/0.29/#example-294)
+
+This markdown:
+
+
+````````````markdown
+1. ```
+   foo
+   ```
+
+   bar
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ol>
+<li>
+<pre><code>foo
+</code></pre>
+<p>bar</p>
+</li>
+</ol>
 
 ````````````
 

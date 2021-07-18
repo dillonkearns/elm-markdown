@@ -1,140 +1,5 @@
 # GFM - List items
 
-## [Example 224](https://spec.commonmark.org/0.29/#example-224)
-
-This markdown:
-
-````````````markdown
-1.  A paragraph
-    with two lines.
-
-        indented code
-
-    > A block quote.
-
-````````````
-
-Should give output:
-
-````````````html
-<ol><li><p>A paragraph with two lines.</p><pre><code>indented code</code></pre><blockquote><p>A block quote.</p></blockquote></li></ol>
-````````````
-
-But instead was:
-
-````````````html
-<ol></ol><pre><code>with two lines. indented code &gt; A block quote.</code></pre>
-````````````
-## [Example 229](https://spec.commonmark.org/0.29/#example-229)
-
-This markdown:
-
-````````````markdown
-   > > 1.  one
->>
->>     two
-
-````````````
-
-Should give output:
-
-````````````html
-<blockquote><blockquote><ol><li><p>one</p><p>two</p></li></ol></blockquote></blockquote>
-````````````
-
-But instead was:
-
-````````````html
-<blockquote><blockquote><ol></ol><pre><code>two</code></pre></blockquote></blockquote>
-````````````
-## [Example 233](https://spec.commonmark.org/0.29/#example-233)
-
-This markdown:
-
-````````````markdown
-1.  foo
-
-    ```
-    bar
-    ```
-
-    baz
-
-    > bam
-
-````````````
-
-Should give output:
-
-````````````html
-<ol><li><p>foo</p><pre><code>bar</code></pre><p>baz</p><blockquote><p>bam</p></blockquote></li></ol>
-````````````
-
-But instead was:
-
-````````````html
-<ol></ol><pre><code>``` bar ``` baz &gt; bam</code></pre>
-````````````
-## [Example 235](https://spec.commonmark.org/0.29/#example-235)
-
-This markdown:
-
-````````````markdown
-123456789. ok
-
-````````````
-
-Should give output:
-
-````````````html
-<ol start="123456789"><li>ok</li></ol>
-````````````
-
-But instead was:
-
-````````````html
-<ol start="123456789"></ol>
-````````````
-## [Example 237](https://spec.commonmark.org/0.29/#example-237)
-
-This markdown:
-
-````````````markdown
-0. ok
-
-````````````
-
-Should give output:
-
-````````````html
-<ol start="0"><li>ok</li></ol>
-````````````
-
-But instead was:
-
-````````````html
-<ol start="0"></ol>
-````````````
-## [Example 238](https://spec.commonmark.org/0.29/#example-238)
-
-This markdown:
-
-````````````markdown
-003. ok
-
-````````````
-
-Should give output:
-
-````````````html
-<ol start="3"><li>ok</li></ol>
-````````````
-
-But instead was:
-
-````````````html
-<ol start="3"></ol>
-````````````
 ## [Example 241](https://spec.commonmark.org/0.29/#example-241)
 
 This markdown:
@@ -179,7 +44,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<ol></ol><p>paragraph</p><pre><code>more code</code></pre>
+<ol><li>indented code</li></ol><p>paragraph</p><pre><code>more code</code></pre>
 ````````````
 ## [Example 244](https://spec.commonmark.org/0.29/#example-244)
 
@@ -203,7 +68,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<ol></ol><p>paragraph</p><pre><code>more code</code></pre>
+<ol><li>indented code</li></ol><p>paragraph</p><pre><code>more code</code></pre>
 ````````````
 ## [Example 253](https://spec.commonmark.org/0.29/#example-253)
 
@@ -225,7 +90,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<ol></ol><p>2. 3. bar</p>
+<ol><li>foo 2.</li><li>bar</li></ol>
 ````````````
 ## [Example 256](https://spec.commonmark.org/0.29/#example-256)
 
@@ -347,108 +212,4 @@ But instead was:
 
 ````````````html
 <p>1. A paragraph with two lines.</p>
-````````````
-## [Example 262](https://spec.commonmark.org/0.29/#example-262)
-
-This markdown:
-
-````````````markdown
-> 1. > Blockquote
-continued here.
-
-````````````
-
-Should give output:
-
-````````````html
-<blockquote><ol><li><blockquote><p>Blockquote continued here.</p></blockquote></li></ol></blockquote>
-````````````
-
-But instead was:
-
-````````````html
-<blockquote><ol></ol><p>continued here.</p></blockquote>
-````````````
-## [Example 263](https://spec.commonmark.org/0.29/#example-263)
-
-This markdown:
-
-````````````markdown
-> 1. > Blockquote
-> continued here.
-
-````````````
-
-Should give output:
-
-````````````html
-<blockquote><ol><li><blockquote><p>Blockquote continued here.</p></blockquote></li></ol></blockquote>
-````````````
-
-But instead was:
-
-````````````html
-<blockquote><ol></ol><p>continued here.</p></blockquote>
-````````````
-## [Example 266](https://spec.commonmark.org/0.29/#example-266)
-
-This markdown:
-
-````````````markdown
-10) foo
-    - bar
-
-````````````
-
-Should give output:
-
-````````````html
-<ol start="10"><li>foo<ul><li>bar</li></ul></li></ol>
-````````````
-
-But instead was:
-
-````````````html
-<ol start="10"></ol><pre><code>- bar</code></pre>
-````````````
-## [Example 267](https://spec.commonmark.org/0.29/#example-267)
-
-This markdown:
-
-````````````markdown
-10) foo
-   - bar
-
-````````````
-
-Should give output:
-
-````````````html
-<ol start="10"><li>foo</li></ol><ul><li>bar</li></ul>
-````````````
-
-But instead was:
-
-````````````html
-<ol start="10"></ol><ul><li>bar</li></ul>
-````````````
-## [Example 269](https://spec.commonmark.org/0.29/#example-269)
-
-This markdown:
-
-````````````markdown
-1. - 2. foo
-
-````````````
-
-Should give output:
-
-````````````html
-<ol><li><ul><li><ol start="2"><li>foo</li></ol></li></ul></li></ol>
-````````````
-
-But instead was:
-
-````````````html
-<ol></ol>
 ````````````
