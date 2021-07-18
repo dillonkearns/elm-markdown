@@ -8756,6 +8756,66 @@ Gives this correct output:
 
 ````````````
 
+### [Example 243](https://spec.commonmark.org/0.29/#example-243)
+
+This markdown:
+
+
+````````````markdown
+1.     indented code
+
+   paragraph
+
+       more code
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ol>
+<li>
+<pre><code>indented code
+</code></pre>
+<p>paragraph</p>
+<pre><code>more code
+</code></pre>
+</li>
+</ol>
+
+````````````
+
+### [Example 244](https://spec.commonmark.org/0.29/#example-244)
+
+This markdown:
+
+
+````````````markdown
+1.      indented code
+
+   paragraph
+
+       more code
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ol>
+<li>
+<pre><code> indented code
+</code></pre>
+<p>paragraph</p>
+<pre><code>more code
+</code></pre>
+</li>
+</ol>
+
+````````````
+
 ### [Example 245](https://spec.commonmark.org/0.29/#example-245)
 
 This markdown:

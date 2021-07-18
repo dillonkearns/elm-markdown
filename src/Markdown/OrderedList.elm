@@ -28,8 +28,12 @@ type alias ListItem =
 parser : Bool -> Parser ListItem
 parser previousWasBody =
     let
-        parseSubsequentItem start order marker ( end, body ) =
-            ListItem order (end - start) marker body
+        parseSubsequentItem start order marker mid ( end, body ) =
+            if (end - mid) <= 4 then
+                ListItem order (end - start) marker body
+
+            else
+                ListItem order (mid - start + 1) marker (String.repeat (end - mid - 1) " " ++ body)
     in
     succeed parseSubsequentItem
         |= getCol
@@ -46,6 +50,7 @@ parser previousWasBody =
                     |= positiveIntegerMaxOf9Digits
             )
         |= backtrackable orderedListMarkerParser
+        |= getCol
         |= (if previousWasBody then
                 oneOf
                     [ succeed Tuple.pair

@@ -22,12 +22,29 @@ type alias Parser a =
 parser : Bool -> Parser ( UnorderedListMarker, Int, ListItem )
 parser previousWasBody =
     let
-        parseSubsequentItems start listmaker ( end, firstItem ) =
-            ( listmaker, end - start, firstItem )
+        parseSubsequentItems start listmaker mid ( end, firstItem ) =
+            if (end - mid) <= 4 then
+                ( listmaker, end - start, firstItem )
+
+            else
+                let
+                    intendedCodeItem =
+                        case firstItem of
+                            TaskItem completion string ->
+                                TaskItem completion (String.repeat (end - mid - 1) " " ++ string)
+
+                            PlainItem string ->
+                                PlainItem (String.repeat (end - mid - 1) " " ++ string)
+
+                            EmptyItem ->
+                                EmptyItem
+                in
+                ( listmaker, mid - start + 1, intendedCodeItem )
     in
     succeed parseSubsequentItems
         |= getCol
         |= backtrackable unorderedListMarkerParser
+        |= getCol
         |= (if previousWasBody then
                 oneOf
                     [ succeed Tuple.pair
