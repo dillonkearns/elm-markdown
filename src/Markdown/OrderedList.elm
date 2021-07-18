@@ -28,7 +28,7 @@ type alias ListItem =
 parser : Bool -> Parser ListItem
 parser previousWasBody =
     let
-        parseSubsequentItem start order marker end body =
+        parseSubsequentItem start order marker ( end, body ) =
             ListItem order (end - start) marker body
     in
     succeed parseSubsequentItem
@@ -46,10 +46,26 @@ parser previousWasBody =
                     |= positiveIntegerMaxOf9Digits
             )
         |= backtrackable orderedListMarkerParser
-        |. chompOneOrMore Whitespace.isSpaceOrTab
-        |= getCol
-        |= Advanced.getChompedString Helpers.chompUntilLineEndOrEnd
-        |. Helpers.lineEndOrEnd
+        |= (if previousWasBody then
+                oneOf
+                    [ succeed Tuple.pair
+                        |. chompOneOrMore Whitespace.isSpaceOrTab
+                        |= getCol
+                        |= Advanced.getChompedString Helpers.chompUntilLineEndOrEnd
+                        |. Helpers.lineEndOrEnd
+                    ]
+
+            else
+                oneOf
+                    [ succeed ( 2, "" )
+                        |. Helpers.lineEndOrEnd
+                    , succeed Tuple.pair
+                        |. chompOneOrMore Whitespace.isSpaceOrTab
+                        |= getCol
+                        |= Advanced.getChompedString Helpers.chompUntilLineEndOrEnd
+                        |. Helpers.lineEndOrEnd
+                    ]
+           )
 
 
 positiveIntegerMaxOf9Digits : Parser Int

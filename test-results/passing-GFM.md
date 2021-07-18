@@ -8952,6 +8952,30 @@ Gives this correct output:
 
 ````````````
 
+### [Example 253](https://spec.commonmark.org/0.29/#example-253)
+
+This markdown:
+
+
+````````````markdown
+1. foo
+2.
+3. bar
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ol>
+<li>foo</li>
+<li></li>
+<li>bar</li>
+</ol>
+
+````````````
+
 ### [Example 254](https://spec.commonmark.org/0.29/#example-254)
 
 This markdown:
