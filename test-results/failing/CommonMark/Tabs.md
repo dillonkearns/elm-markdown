@@ -20,7 +20,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<p>- foo</p><pre><code>bar</code></pre>
+<ul><li>foo</li></ul><pre><code>bar</code></pre>
 ````````````
 ## [Example 5](https://spec.commonmark.org/0.29/#example-5)
 
@@ -84,5 +84,5 @@ Should give output:
 But instead was:
 
 ````````````html
-<p>- foo - bar - baz</p>
+<ul><li>foo<ul><li>bar - baz</li></ul></li></ul>
 ````````````

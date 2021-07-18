@@ -1,64 +1,78 @@
-module Markdown.UnorderedList exposing (parser)
+module Markdown.UnorderedList exposing (UnorderedListMarker, parser)
 
-import Whitespace
-import Markdown.ListItem as ListItem exposing (ListItem)
-import Parser
+import Helpers
+import Markdown.ListItem as ListItem exposing (ListItem(..))
+import Parser exposing (Problem)
 import Parser.Advanced as Advanced exposing (..)
-import Parser.Extra exposing (chompOneOrMore)
+import Parser.Extra as Extra exposing (chompOneOrMore)
 import Parser.Token as Token
+import Whitespace
+
+
+type UnorderedListMarker
+    = Minus
+    | Plus
+    | Asterisk
 
 
 type alias Parser a =
     Advanced.Parser String Parser.Problem a
 
 
-parser : Parser (List ListItem)
-parser =
+parser : Bool -> Parser ( UnorderedListMarker, Int, ListItem )
+parser previousWasBody =
     let
-        parseSubsequentItems listMarker firstItem =
-            loop [] (statementsHelp (singleItemParser listMarker) firstItem)
+        parseSubsequentItems start listmaker mid ( end, firstItem ) =
+            if (end - mid) <= 4 then
+                ( listmaker, end - start, firstItem )
+
+            else
+                let
+                    intendedCodeItem =
+                        case firstItem of
+                            TaskItem completion string ->
+                                TaskItem completion (String.repeat (end - mid - 1) " " ++ string)
+
+                            PlainItem string ->
+                                PlainItem (String.repeat (end - mid - 1) " " ++ string)
+
+                            EmptyItem ->
+                                EmptyItem
+                in
+                ( listmaker, mid - start + 1, intendedCodeItem )
     in
     succeed parseSubsequentItems
-        |= backtrackable listMarkerParser
-        |. chompOneOrMore Whitespace.isSpaceOrTab
-        |= ListItem.parser
-        |> andThen identity
+        |= getCol
+        |= backtrackable unorderedListMarkerParser
+        |= getCol
+        |= (if previousWasBody then
+                oneOf
+                    [ succeed Tuple.pair
+                        |. chompOneOrMore Whitespace.isSpaceOrTab
+                        |= getCol
+                        |= ListItem.parser
+                    ]
+
+            else
+                oneOf
+                    [ succeed ( 2, EmptyItem )
+                        |. Helpers.lineEndOrEnd
+                    , succeed Tuple.pair
+                        |. chompOneOrMore Whitespace.isSpaceOrTab
+                        |= getCol
+                        |= ListItem.parser
+                    ]
+           )
 
 
-listMarkerParser : Parser (Token Parser.Problem)
-listMarkerParser =
-    Advanced.oneOf
-        [ succeed Token.minus
-            |. symbol Token.minus
-        , succeed Token.plus
-            |. symbol Token.plus
-        , succeed Token.asterisk
-            |. symbol Token.asterisk
-        ]
-
-
-singleItemParser : Token Parser.Problem -> Parser ListItem
-singleItemParser listMarker =
-    succeed identity
-        |. backtrackable (symbol listMarker)
-        |= itemBody
-
-
-itemBody : Parser ListItem
-itemBody =
+unorderedListMarkerParser : Parser UnorderedListMarker
+unorderedListMarkerParser =
     oneOf
-        [ succeed identity
-            |. backtrackable (chompOneOrMore Whitespace.isSpaceOrTab)
-            |= ListItem.parser
-        , succeed (ListItem.PlainItem "")
-            |. Whitespace.lineEnd
-        ]
-
-
-statementsHelp : Parser ListItem -> ListItem -> List ListItem -> Parser (Step (List ListItem) (List ListItem))
-statementsHelp itemParser firstItem revStmts =
-    oneOf
-        [ itemParser
-            |> Advanced.map (\stmt -> Loop (stmt :: revStmts))
-        , succeed (Done (firstItem :: List.reverse revStmts))
+        [ succeed Minus
+            |. Extra.upTo 3 Whitespace.space
+            |. Advanced.symbol (Advanced.Token "-" (Parser.ExpectingSymbol "-"))
+        , succeed Plus
+            |. Advanced.symbol (Advanced.Token "+" (Parser.ExpectingSymbol "+"))
+        , succeed Asterisk
+            |. Advanced.symbol (Advanced.Token "*" (Parser.ExpectingSymbol "*"))
         ]

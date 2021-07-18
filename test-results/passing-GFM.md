@@ -5995,6 +5995,137 @@ Gives this correct output:
 
 ````````````
 
+### [Example 78](https://spec.commonmark.org/0.29/#example-78)
+
+This markdown:
+
+
+````````````markdown
+  - foo
+
+    bar
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ul>
+<li>
+<p>foo</p>
+<p>bar</p>
+</li>
+</ul>
+
+````````````
+
+### [Example 79](https://spec.commonmark.org/0.29/#example-79)
+
+This markdown:
+
+
+````````````markdown
+1.  foo
+
+    - bar
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ol>
+<li>
+<p>foo</p>
+<ul>
+<li>bar</li>
+</ul>
+</li>
+</ol>
+
+````````````
+
+### [Example 80](https://spec.commonmark.org/0.29/#example-80)
+
+This markdown:
+
+
+````````````markdown
+    <a/>
+    *hi*
+
+    - one
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<pre><code>&lt;a/&gt;
+*hi*
+
+- one
+</code></pre>
+
+````````````
+
+### [Example 81](https://spec.commonmark.org/0.29/#example-81)
+
+This markdown:
+
+
+````````````markdown
+    chunk1
+
+    chunk2
+  
+ 
+ 
+    chunk3
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<pre><code>chunk1
+
+chunk2
+
+
+
+chunk3
+</code></pre>
+
+````````````
+
+### [Example 82](https://spec.commonmark.org/0.29/#example-82)
+
+This markdown:
+
+
+````````````markdown
+    chunk1
+      
+      chunk2
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<pre><code>chunk1
+  
+  chunk2
+</code></pre>
+
+````````````
+
 ### [Example 83](https://spec.commonmark.org/0.29/#example-83)
 
 This markdown:
@@ -8150,6 +8281,39 @@ with two lines.</p>
 
 ````````````
 
+### [Example 224](https://spec.commonmark.org/0.29/#example-224)
+
+This markdown:
+
+
+````````````markdown
+1.  A paragraph
+    with two lines.
+
+        indented code
+
+    > A block quote.
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ol>
+<li>
+<p>A paragraph
+with two lines.</p>
+<pre><code>indented code
+</code></pre>
+<blockquote>
+<p>A block quote.</p>
+</blockquote>
+</li>
+</ol>
+
+````````````
+
 ### [Example 225](https://spec.commonmark.org/0.29/#example-225)
 
 This markdown:
@@ -8170,6 +8334,109 @@ Gives this correct output:
 <li>one</li>
 </ul>
 <p>two</p>
+
+````````````
+
+### [Example 226](https://spec.commonmark.org/0.29/#example-226)
+
+This markdown:
+
+
+````````````markdown
+- one
+
+  two
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ul>
+<li>
+<p>one</p>
+<p>two</p>
+</li>
+</ul>
+
+````````````
+
+### [Example 227](https://spec.commonmark.org/0.29/#example-227)
+
+This markdown:
+
+
+````````````markdown
+ -    one
+
+     two
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ul>
+<li>one</li>
+</ul>
+<pre><code> two
+</code></pre>
+
+````````````
+
+### [Example 228](https://spec.commonmark.org/0.29/#example-228)
+
+This markdown:
+
+
+````````````markdown
+ -    one
+
+      two
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ul>
+<li>
+<p>one</p>
+<p>two</p>
+</li>
+</ul>
+
+````````````
+
+### [Example 229](https://spec.commonmark.org/0.29/#example-229)
+
+This markdown:
+
+
+````````````markdown
+   > > 1.  one
+>>
+>>     two
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<blockquote>
+<blockquote>
+<ol>
+<li>
+<p>one</p>
+<p>two</p>
+</li>
+</ol>
+</blockquote>
+</blockquote>
 
 ````````````
 
@@ -8218,6 +8485,100 @@ Gives this correct output:
 ````````````html
 <p>-one</p>
 <p>2.two</p>
+
+````````````
+
+### [Example 232](https://spec.commonmark.org/0.29/#example-232)
+
+This markdown:
+
+
+````````````markdown
+- foo
+
+
+  bar
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ul>
+<li>
+<p>foo</p>
+<p>bar</p>
+</li>
+</ul>
+
+````````````
+
+### [Example 233](https://spec.commonmark.org/0.29/#example-233)
+
+This markdown:
+
+
+````````````markdown
+1.  foo
+
+    ```
+    bar
+    ```
+
+    baz
+
+    > bam
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ol>
+<li>
+<p>foo</p>
+<pre><code>bar
+</code></pre>
+<p>baz</p>
+<blockquote>
+<p>bam</p>
+</blockquote>
+</li>
+</ol>
+
+````````````
+
+### [Example 234](https://spec.commonmark.org/0.29/#example-234)
+
+This markdown:
+
+
+````````````markdown
+- Foo
+
+      bar
+
+
+      baz
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ul>
+<li>
+<p>Foo</p>
+<pre><code>bar
+
+
+baz
+</code></pre>
+</li>
+</ul>
 
 ````````````
 
@@ -8317,6 +8678,58 @@ Gives this correct output:
 
 ````````````
 
+### [Example 240](https://spec.commonmark.org/0.29/#example-240)
+
+This markdown:
+
+
+````````````markdown
+- foo
+
+      bar
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ul>
+<li>
+<p>foo</p>
+<pre><code>bar
+</code></pre>
+</li>
+</ul>
+
+````````````
+
+### [Example 241](https://spec.commonmark.org/0.29/#example-241)
+
+This markdown:
+
+
+````````````markdown
+  10.  foo
+
+           bar
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ol start="10">
+<li>
+<p>foo</p>
+<pre><code>bar
+</code></pre>
+</li>
+</ol>
+
+````````````
+
 ### [Example 242](https://spec.commonmark.org/0.29/#example-242)
 
 This markdown:
@@ -8340,6 +8753,66 @@ Gives this correct output:
 <p>paragraph</p>
 <pre><code>more code
 </code></pre>
+
+````````````
+
+### [Example 243](https://spec.commonmark.org/0.29/#example-243)
+
+This markdown:
+
+
+````````````markdown
+1.     indented code
+
+   paragraph
+
+       more code
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ol>
+<li>
+<pre><code>indented code
+</code></pre>
+<p>paragraph</p>
+<pre><code>more code
+</code></pre>
+</li>
+</ol>
+
+````````````
+
+### [Example 244](https://spec.commonmark.org/0.29/#example-244)
+
+This markdown:
+
+
+````````````markdown
+1.      indented code
+
+   paragraph
+
+       more code
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ol>
+<li>
+<pre><code> indented code
+</code></pre>
+<p>paragraph</p>
+<pre><code>more code
+</code></pre>
+</li>
+</ol>
 
 ````````````
 
@@ -8384,6 +8857,110 @@ Gives this correct output:
 <li>foo</li>
 </ul>
 <p>bar</p>
+
+````````````
+
+### [Example 247](https://spec.commonmark.org/0.29/#example-247)
+
+This markdown:
+
+
+````````````markdown
+-  foo
+
+   bar
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ul>
+<li>
+<p>foo</p>
+<p>bar</p>
+</li>
+</ul>
+
+````````````
+
+### [Example 248](https://spec.commonmark.org/0.29/#example-248)
+
+This markdown:
+
+
+````````````markdown
+-
+  foo
+-
+  ```
+  bar
+  ```
+-
+      baz
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ul>
+<li>foo</li>
+<li>
+<pre><code>bar
+</code></pre>
+</li>
+<li>
+<pre><code>baz
+</code></pre>
+</li>
+</ul>
+
+````````````
+
+### [Example 249](https://spec.commonmark.org/0.29/#example-249)
+
+This markdown:
+
+
+````````````markdown
+-   
+  foo
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ul>
+<li>foo</li>
+</ul>
+
+````````````
+
+### [Example 250](https://spec.commonmark.org/0.29/#example-250)
+
+This markdown:
+
+
+````````````markdown
+-
+
+  foo
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ul>
+<li></li>
+</ul>
+<p>foo</p>
 
 ````````````
 
@@ -8459,6 +9036,26 @@ Gives this correct output:
 
 ````````````
 
+### [Example 254](https://spec.commonmark.org/0.29/#example-254)
+
+This markdown:
+
+
+````````````markdown
+*
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ul>
+<li></li>
+</ul>
+
+````````````
+
 ### [Example 255](https://spec.commonmark.org/0.29/#example-255)
 
 This markdown:
@@ -8481,6 +9078,435 @@ Gives this correct output:
 *</p>
 <p>foo
 1.</p>
+
+````````````
+
+### [Example 256](https://spec.commonmark.org/0.29/#example-256)
+
+This markdown:
+
+
+````````````markdown
+ 1.  A paragraph
+     with two lines.
+
+         indented code
+
+     > A block quote.
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ol>
+<li>
+<p>A paragraph
+with two lines.</p>
+<pre><code>indented code
+</code></pre>
+<blockquote>
+<p>A block quote.</p>
+</blockquote>
+</li>
+</ol>
+
+````````````
+
+### [Example 257](https://spec.commonmark.org/0.29/#example-257)
+
+This markdown:
+
+
+````````````markdown
+  1.  A paragraph
+      with two lines.
+
+          indented code
+
+      > A block quote.
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ol>
+<li>
+<p>A paragraph
+with two lines.</p>
+<pre><code>indented code
+</code></pre>
+<blockquote>
+<p>A block quote.</p>
+</blockquote>
+</li>
+</ol>
+
+````````````
+
+### [Example 258](https://spec.commonmark.org/0.29/#example-258)
+
+This markdown:
+
+
+````````````markdown
+   1.  A paragraph
+       with two lines.
+
+           indented code
+
+       > A block quote.
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ol>
+<li>
+<p>A paragraph
+with two lines.</p>
+<pre><code>indented code
+</code></pre>
+<blockquote>
+<p>A block quote.</p>
+</blockquote>
+</li>
+</ol>
+
+````````````
+
+### [Example 259](https://spec.commonmark.org/0.29/#example-259)
+
+This markdown:
+
+
+````````````markdown
+    1.  A paragraph
+        with two lines.
+
+            indented code
+
+        > A block quote.
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<pre><code>1.  A paragraph
+    with two lines.
+
+        indented code
+
+    &gt; A block quote.
+</code></pre>
+
+````````````
+
+### [Example 260](https://spec.commonmark.org/0.29/#example-260)
+
+This markdown:
+
+
+````````````markdown
+  1.  A paragraph
+with two lines.
+
+          indented code
+
+      > A block quote.
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ol>
+<li>
+<p>A paragraph
+with two lines.</p>
+<pre><code>indented code
+</code></pre>
+<blockquote>
+<p>A block quote.</p>
+</blockquote>
+</li>
+</ol>
+
+````````````
+
+### [Example 261](https://spec.commonmark.org/0.29/#example-261)
+
+This markdown:
+
+
+````````````markdown
+  1.  A paragraph
+    with two lines.
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ol>
+<li>A paragraph
+with two lines.</li>
+</ol>
+
+````````````
+
+### [Example 262](https://spec.commonmark.org/0.29/#example-262)
+
+This markdown:
+
+
+````````````markdown
+> 1. > Blockquote
+continued here.
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<blockquote>
+<ol>
+<li>
+<blockquote>
+<p>Blockquote
+continued here.</p>
+</blockquote>
+</li>
+</ol>
+</blockquote>
+
+````````````
+
+### [Example 263](https://spec.commonmark.org/0.29/#example-263)
+
+This markdown:
+
+
+````````````markdown
+> 1. > Blockquote
+> continued here.
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<blockquote>
+<ol>
+<li>
+<blockquote>
+<p>Blockquote
+continued here.</p>
+</blockquote>
+</li>
+</ol>
+</blockquote>
+
+````````````
+
+### [Example 264](https://spec.commonmark.org/0.29/#example-264)
+
+This markdown:
+
+
+````````````markdown
+- foo
+  - bar
+    - baz
+      - boo
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ul>
+<li>foo
+<ul>
+<li>bar
+<ul>
+<li>baz
+<ul>
+<li>boo</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+````````````
+
+### [Example 265](https://spec.commonmark.org/0.29/#example-265)
+
+This markdown:
+
+
+````````````markdown
+- foo
+ - bar
+  - baz
+   - boo
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ul>
+<li>foo</li>
+<li>bar</li>
+<li>baz</li>
+<li>boo</li>
+</ul>
+
+````````````
+
+### [Example 266](https://spec.commonmark.org/0.29/#example-266)
+
+This markdown:
+
+
+````````````markdown
+10) foo
+    - bar
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ol start="10">
+<li>foo
+<ul>
+<li>bar</li>
+</ul>
+</li>
+</ol>
+
+````````````
+
+### [Example 267](https://spec.commonmark.org/0.29/#example-267)
+
+This markdown:
+
+
+````````````markdown
+10) foo
+   - bar
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ol start="10">
+<li>foo</li>
+</ol>
+<ul>
+<li>bar</li>
+</ul>
+
+````````````
+
+### [Example 268](https://spec.commonmark.org/0.29/#example-268)
+
+This markdown:
+
+
+````````````markdown
+- - foo
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ul>
+<li>
+<ul>
+<li>foo</li>
+</ul>
+</li>
+</ul>
+
+````````````
+
+### [Example 269](https://spec.commonmark.org/0.29/#example-269)
+
+This markdown:
+
+
+````````````markdown
+1. - 2. foo
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ol>
+<li>
+<ul>
+<li>
+<ol start="2">
+<li>foo</li>
+</ol>
+</li>
+</ul>
+</li>
+</ol>
+
+````````````
+
+### [Example 270](https://spec.commonmark.org/0.29/#example-270)
+
+This markdown:
+
+
+````````````markdown
+- # Foo
+- Bar
+  ---
+  baz
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ul>
+<li>
+<h1>Foo</h1>
+</li>
+<li>
+<h2>Bar</h2>
+baz</li>
+</ul>
 
 ````````````
 
@@ -8604,6 +9630,75 @@ Gives this correct output:
 
 ````````````
 
+### [Example 276](https://spec.commonmark.org/0.29/#example-276)
+
+This markdown:
+
+
+````````````markdown
+- foo
+
+- bar
+
+
+- baz
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ul>
+<li>
+<p>foo</p>
+</li>
+<li>
+<p>bar</p>
+</li>
+<li>
+<p>baz</p>
+</li>
+</ul>
+
+````````````
+
+### [Example 277](https://spec.commonmark.org/0.29/#example-277)
+
+This markdown:
+
+
+````````````markdown
+- foo
+  - bar
+    - baz
+
+
+      bim
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ul>
+<li>foo
+<ul>
+<li>bar
+<ul>
+<li>
+<p>baz</p>
+<p>bim</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+````````````
+
 ### [Example 278](https://spec.commonmark.org/0.29/#example-278)
 
 This markdown:
@@ -8636,6 +9731,416 @@ Gives this correct output:
 
 ````````````
 
+### [Example 279](https://spec.commonmark.org/0.29/#example-279)
+
+This markdown:
+
+
+````````````markdown
+-   foo
+
+    notcode
+
+-   foo
+
+<!-- -->
+
+    code
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ul>
+<li>
+<p>foo</p>
+<p>notcode</p>
+</li>
+<li>
+<p>foo</p>
+</li>
+</ul>
+<!-- -->
+<pre><code>code
+</code></pre>
+
+````````````
+
+### [Example 280](https://spec.commonmark.org/0.29/#example-280)
+
+This markdown:
+
+
+````````````markdown
+- a
+ - b
+  - c
+   - d
+  - e
+ - f
+- g
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ul>
+<li>a</li>
+<li>b</li>
+<li>c</li>
+<li>d</li>
+<li>e</li>
+<li>f</li>
+<li>g</li>
+</ul>
+
+````````````
+
+### [Example 281](https://spec.commonmark.org/0.29/#example-281)
+
+This markdown:
+
+
+````````````markdown
+1. a
+
+  2. b
+
+   3. c
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ol>
+<li>
+<p>a</p>
+</li>
+<li>
+<p>b</p>
+</li>
+<li>
+<p>c</p>
+</li>
+</ol>
+
+````````````
+
+### [Example 282](https://spec.commonmark.org/0.29/#example-282)
+
+This markdown:
+
+
+````````````markdown
+- a
+ - b
+  - c
+   - d
+    - e
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ul>
+<li>a</li>
+<li>b</li>
+<li>c</li>
+<li>d
+- e</li>
+</ul>
+
+````````````
+
+### [Example 283](https://spec.commonmark.org/0.29/#example-283)
+
+This markdown:
+
+
+````````````markdown
+1. a
+
+  2. b
+
+    3. c
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ol>
+<li>
+<p>a</p>
+</li>
+<li>
+<p>b</p>
+</li>
+</ol>
+<pre><code>3. c
+</code></pre>
+
+````````````
+
+### [Example 284](https://spec.commonmark.org/0.29/#example-284)
+
+This markdown:
+
+
+````````````markdown
+- a
+- b
+
+- c
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ul>
+<li>
+<p>a</p>
+</li>
+<li>
+<p>b</p>
+</li>
+<li>
+<p>c</p>
+</li>
+</ul>
+
+````````````
+
+### [Example 285](https://spec.commonmark.org/0.29/#example-285)
+
+This markdown:
+
+
+````````````markdown
+* a
+*
+
+* c
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ul>
+<li>
+<p>a</p>
+</li>
+<li></li>
+<li>
+<p>c</p>
+</li>
+</ul>
+
+````````````
+
+### [Example 286](https://spec.commonmark.org/0.29/#example-286)
+
+This markdown:
+
+
+````````````markdown
+- a
+- b
+
+  c
+- d
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ul>
+<li>
+<p>a</p>
+</li>
+<li>
+<p>b</p>
+<p>c</p>
+</li>
+<li>
+<p>d</p>
+</li>
+</ul>
+
+````````````
+
+### [Example 287](https://spec.commonmark.org/0.29/#example-287)
+
+This markdown:
+
+
+````````````markdown
+- a
+- b
+
+  [ref]: /url
+- d
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ul>
+<li>
+<p>a</p>
+</li>
+<li>
+<p>b</p>
+</li>
+<li>
+<p>d</p>
+</li>
+</ul>
+
+````````````
+
+### [Example 288](https://spec.commonmark.org/0.29/#example-288)
+
+This markdown:
+
+
+````````````markdown
+- a
+- ```
+  b
+
+
+  ```
+- c
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ul>
+<li>a</li>
+<li>
+<pre><code>b
+
+
+</code></pre>
+</li>
+<li>c</li>
+</ul>
+
+````````````
+
+### [Example 289](https://spec.commonmark.org/0.29/#example-289)
+
+This markdown:
+
+
+````````````markdown
+- a
+  - b
+
+    c
+- d
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ul>
+<li>a
+<ul>
+<li>
+<p>b</p>
+<p>c</p>
+</li>
+</ul>
+</li>
+<li>d</li>
+</ul>
+
+````````````
+
+### [Example 290](https://spec.commonmark.org/0.29/#example-290)
+
+This markdown:
+
+
+````````````markdown
+* a
+  > b
+  >
+* c
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ul>
+<li>a
+<blockquote>
+<p>b</p>
+</blockquote>
+</li>
+<li>c</li>
+</ul>
+
+````````````
+
+### [Example 291](https://spec.commonmark.org/0.29/#example-291)
+
+This markdown:
+
+
+````````````markdown
+- a
+  > b
+  ```
+  c
+  ```
+- d
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ul>
+<li>a
+<blockquote>
+<p>b</p>
+</blockquote>
+<pre><code>c
+</code></pre>
+</li>
+<li>d</li>
+</ul>
+
+````````````
+
 ### [Example 292](https://spec.commonmark.org/0.29/#example-292)
 
 This markdown:
@@ -8652,6 +10157,127 @@ Gives this correct output:
 ````````````html
 <ul>
 <li>a</li>
+</ul>
+
+````````````
+
+### [Example 293](https://spec.commonmark.org/0.29/#example-293)
+
+This markdown:
+
+
+````````````markdown
+- a
+  - b
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ul>
+<li>a
+<ul>
+<li>b</li>
+</ul>
+</li>
+</ul>
+
+````````````
+
+### [Example 294](https://spec.commonmark.org/0.29/#example-294)
+
+This markdown:
+
+
+````````````markdown
+1. ```
+   foo
+   ```
+
+   bar
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ol>
+<li>
+<pre><code>foo
+</code></pre>
+<p>bar</p>
+</li>
+</ol>
+
+````````````
+
+### [Example 295](https://spec.commonmark.org/0.29/#example-295)
+
+This markdown:
+
+
+````````````markdown
+* foo
+  * bar
+
+  baz
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ul>
+<li>
+<p>foo</p>
+<ul>
+<li>bar</li>
+</ul>
+<p>baz</p>
+</li>
+</ul>
+
+````````````
+
+### [Example 296](https://spec.commonmark.org/0.29/#example-296)
+
+This markdown:
+
+
+````````````markdown
+- a
+  - b
+  - c
+
+- d
+  - e
+  - f
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ul>
+<li>
+<p>a</p>
+<ul>
+<li>b</li>
+<li>c</li>
+</ul>
+</li>
+<li>
+<p>d</p>
+<ul>
+<li>e</li>
+<li>f</li>
+</ul>
+</li>
 </ul>
 
 ````````````
@@ -9025,6 +10651,33 @@ Gives this correct output:
 <h2>Foo</h2>
 <h2>Foo</h2>
 <h1>Foo</h1>
+
+````````````
+
+### [Example 55](https://spec.commonmark.org/0.29/#example-55)
+
+This markdown:
+
+
+````````````markdown
+    Foo
+    ---
+
+    Foo
+---
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<pre><code>Foo
+---
+
+Foo
+</code></pre>
+<hr />
 
 ````````````
 
@@ -10023,6 +11676,56 @@ Gives this correct output:
 
 ````````````
 
+### [Example 30](https://spec.commonmark.org/0.29/#example-30)
+
+This markdown:
+
+
+````````````markdown
+* Foo
+* * *
+* Bar
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ul>
+<li>Foo</li>
+</ul>
+<hr />
+<ul>
+<li>Bar</li>
+</ul>
+
+````````````
+
+### [Example 31](https://spec.commonmark.org/0.29/#example-31)
+
+This markdown:
+
+
+````````````markdown
+- Foo
+- * * *
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ul>
+<li>Foo</li>
+<li>
+<hr />
+</li>
+</ul>
+
+````````````
+
 ## [extension] Strikethrough
 
 ### [Example 491](https://github.github.com/gfm/#example-491)
@@ -10330,6 +12033,33 @@ Gives this correct output:
 <ul>
 <li><input disabled="" type="checkbox"> foo</li>
 <li><input checked="" disabled="" type="checkbox"> bar</li>
+</ul>
+````````````
+
+### [Example 280](https://github.github.com/gfm/#example-280)
+
+This markdown:
+
+
+````````````markdown
+- [x] foo
+  - [ ] bar
+  - [x] baz
+- [ ] bim
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ul>
+<li><input checked="" disabled="" type="checkbox"> foo
+<ul>
+<li><input disabled="" type="checkbox"> bar</li>
+<li><input checked="" disabled="" type="checkbox"> baz</li>
+</ul>
+</li>
+<li><input disabled="" type="checkbox"> bim</li>
 </ul>
 ````````````
 

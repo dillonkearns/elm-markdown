@@ -9,6 +9,7 @@ import Parser.Advanced as Advanced exposing (..)
 type ListItem
     = TaskItem Completion String
     | PlainItem String
+    | EmptyItem
 
 
 type Completion
