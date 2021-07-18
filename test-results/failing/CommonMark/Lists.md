@@ -22,7 +22,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<ol><li>a</li></ol><p>2. b</p><p>3. c</p>
+<ol><li><p>a</p></li><li><p>b</p><ol start="3"><li>c</li></ol></li></ol>
 ````````````
 ## [Example 283](https://spec.commonmark.org/0.29/#example-283)
 
@@ -46,5 +46,5 @@ Should give output:
 But instead was:
 
 ````````````html
-<ol><li>a</li></ol><p>2. b</p><pre><code>3. c</code></pre>
+<ol><li><p>a</p></li><li><p>b</p><ol start="3"><li>c</li></ol></li></ol>
 ````````````

@@ -8704,6 +8704,32 @@ Gives this correct output:
 
 ````````````
 
+### [Example 241](https://spec.commonmark.org/0.29/#example-241)
+
+This markdown:
+
+
+````````````markdown
+  10.  foo
+
+           bar
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ol start="10">
+<li>
+<p>foo</p>
+<pre><code>bar
+</code></pre>
+</li>
+</ol>
+
+````````````
+
 ### [Example 242](https://spec.commonmark.org/0.29/#example-242)
 
 This markdown:
@@ -8971,6 +8997,105 @@ Gives this correct output:
 
 ````````````
 
+### [Example 256](https://spec.commonmark.org/0.29/#example-256)
+
+This markdown:
+
+
+````````````markdown
+ 1.  A paragraph
+     with two lines.
+
+         indented code
+
+     > A block quote.
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ol>
+<li>
+<p>A paragraph
+with two lines.</p>
+<pre><code>indented code
+</code></pre>
+<blockquote>
+<p>A block quote.</p>
+</blockquote>
+</li>
+</ol>
+
+````````````
+
+### [Example 257](https://spec.commonmark.org/0.29/#example-257)
+
+This markdown:
+
+
+````````````markdown
+  1.  A paragraph
+      with two lines.
+
+          indented code
+
+      > A block quote.
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ol>
+<li>
+<p>A paragraph
+with two lines.</p>
+<pre><code>indented code
+</code></pre>
+<blockquote>
+<p>A block quote.</p>
+</blockquote>
+</li>
+</ol>
+
+````````````
+
+### [Example 258](https://spec.commonmark.org/0.29/#example-258)
+
+This markdown:
+
+
+````````````markdown
+   1.  A paragraph
+       with two lines.
+
+           indented code
+
+       > A block quote.
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ol>
+<li>
+<p>A paragraph
+with two lines.</p>
+<pre><code>indented code
+</code></pre>
+<blockquote>
+<p>A block quote.</p>
+</blockquote>
+</li>
+</ol>
+
+````````````
+
 ### [Example 259](https://spec.commonmark.org/0.29/#example-259)
 
 This markdown:
@@ -8997,6 +9122,61 @@ Gives this correct output:
 
     &gt; A block quote.
 </code></pre>
+
+````````````
+
+### [Example 260](https://spec.commonmark.org/0.29/#example-260)
+
+This markdown:
+
+
+````````````markdown
+  1.  A paragraph
+with two lines.
+
+          indented code
+
+      > A block quote.
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ol>
+<li>
+<p>A paragraph
+with two lines.</p>
+<pre><code>indented code
+</code></pre>
+<blockquote>
+<p>A block quote.</p>
+</blockquote>
+</li>
+</ol>
+
+````````````
+
+### [Example 261](https://spec.commonmark.org/0.29/#example-261)
+
+This markdown:
+
+
+````````````markdown
+  1.  A paragraph
+    with two lines.
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ol>
+<li>A paragraph
+with two lines.</li>
+</ol>
 
 ````````````
 

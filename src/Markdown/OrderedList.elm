@@ -1,9 +1,9 @@
-module Markdown.OrderedList exposing (parser, OrderedListMarker)
+module Markdown.OrderedList exposing (OrderedListMarker, parser)
 
 import Helpers
 import Parser
 import Parser.Advanced as Advanced exposing (..)
-import Parser.Extra exposing (chompOneOrMore)
+import Parser.Extra exposing (chompOneOrMore, upTo)
 import Parser.Token as Token
 import Whitespace
 
@@ -20,10 +20,9 @@ type alias Parser a =
 type alias ListItem =
     { order : Int
     , intended : Int
-    , marker: OrderedListMarker
-    , body: String
+    , marker : OrderedListMarker
+    , body : String
     }
-
 
 
 parser : Bool -> Parser ListItem
@@ -36,10 +35,15 @@ parser previousWasBody =
         |= getCol
         |= backtrackable
             (if previousWasBody then
-                positiveIntegerMaxOf9Digits |> andThen validateStartsWith1
+                succeed identity
+                    |. upTo 3 Whitespace.space
+                    |= positiveIntegerMaxOf9Digits
+                    |> andThen validateStartsWith1
 
              else
-                positiveIntegerMaxOf9Digits
+                succeed identity
+                    |. upTo 3 Whitespace.space
+                    |= positiveIntegerMaxOf9Digits
             )
         |= backtrackable orderedListMarkerParser
         |. chompOneOrMore Whitespace.isSpaceOrTab
