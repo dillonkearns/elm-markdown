@@ -421,8 +421,9 @@ walkInlinesHelp function block =
 
         OrderedList tight startIndex listItems ->
             List.map
-                (\(blocks) ->
-                    List.map (\child -> walkInlinesHelp function child) blocks)
+                (\blocks ->
+                    List.map (\child -> walkInlinesHelp function child) blocks
+                )
                 listItems
                 |> OrderedList tight startIndex
 
@@ -612,7 +613,6 @@ inlineParserValidateWalkBlock function block =
                             |> Result.map (ListItem task)
                     )
                 |> Result.map (UnorderedList tight)
-
 
         OrderedList tight startingIndex items ->
             items
