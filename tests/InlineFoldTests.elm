@@ -24,8 +24,8 @@ allInlines =
 allBlocks : List Block
 allBlocks =
     [ HtmlBlock (HtmlElement "" [] [ Paragraph [ Text "htmlblockparablock" ] ])
-    , UnorderedList <| List.map (\i -> ListItem NoTask [ i ]) allInlines
-    , OrderedList 0 [ allInlines ]
+    , UnorderedList False <| List.map (\i -> ListItem NoTask [ Paragraph [ i ] ]) allInlines
+    , OrderedList False 0 [ [ Paragraph allInlines ] ]
     , BlockQuote [ Paragraph allInlines ]
     , Heading H1 allInlines
     , Paragraph allInlines

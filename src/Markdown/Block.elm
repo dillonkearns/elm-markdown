@@ -892,11 +892,17 @@ foldl function acc list =
                         _ ->
                             foldl function (function block acc) remainingBlocks
 
-                UnorderedList tight listItems ->
-                    foldl function (function block acc) remainingBlocks
+                UnorderedList tight blocks ->
+                    let
+                        childBlocks : List Block
+                        childBlocks =
+                            blocks
+                                |> List.concatMap (\(ListItem _ children) -> children)
+                    in
+                    foldl function (function block acc) (childBlocks ++ remainingBlocks)
 
-                OrderedList _ int lists ->
-                    foldl function (function block acc) remainingBlocks
+                OrderedList _ int blocks ->
+                    foldl function (function block acc) (List.concat blocks ++ remainingBlocks)
 
                 BlockQuote blocks ->
                     foldl function (function block acc) (blocks ++ remainingBlocks)
