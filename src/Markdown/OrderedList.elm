@@ -1,4 +1,4 @@
-module Markdown.OrderedList exposing (OrderedListMarker, parser)
+module Markdown.OrderedList exposing (ListItem, OrderedListMarker(..), parser)
 
 import Helpers
 import Parser
@@ -37,40 +37,31 @@ parser previousWasBody =
     in
     succeed parseSubsequentItem
         |= getCol
-        |= backtrackable
-            (if previousWasBody then
-                succeed identity
-                    |. upTo 3 Whitespace.space
-                    |= positiveIntegerMaxOf9Digits
-                    |> andThen validateStartsWith1
-
-             else
-                succeed identity
-                    |. upTo 3 Whitespace.space
-                    |= positiveIntegerMaxOf9Digits
-            )
+        |= backtrackable (orderedListOrderParser previousWasBody)
         |= backtrackable orderedListMarkerParser
         |= getCol
         |= (if previousWasBody then
-                oneOf
-                    [ succeed Tuple.pair
-                        |. chompOneOrMore Whitespace.isSpaceOrTab
-                        |= getCol
-                        |= Advanced.getChompedString Helpers.chompUntilLineEndOrEnd
-                        |. Helpers.lineEndOrEnd
-                    ]
+                orderedListItemBodyParser
 
             else
                 oneOf
-                    [ succeed ( 2, "" )
-                        |. Helpers.lineEndOrEnd
-                    , succeed Tuple.pair
-                        |. chompOneOrMore Whitespace.isSpaceOrTab
-                        |= getCol
-                        |= Advanced.getChompedString Helpers.chompUntilLineEndOrEnd
-                        |. Helpers.lineEndOrEnd
+                    [ orderedListEmptyItemParser
+                    , orderedListItemBodyParser
                     ]
            )
+
+
+orderedListOrderParser previousWasBody =
+    if previousWasBody then
+        succeed identity
+            |. upTo 3 Whitespace.space
+            |= positiveIntegerMaxOf9Digits
+            |> andThen validateStartsWith1
+
+    else
+        succeed identity
+            |. upTo 3 Whitespace.space
+            |= positiveIntegerMaxOf9Digits
 
 
 positiveIntegerMaxOf9Digits : Parser Int
@@ -106,3 +97,19 @@ orderedListMarkerParser =
         , succeed Paren
             |. Advanced.symbol Token.closingParen
         ]
+
+
+orderedListItemBodyParser : Parser ( Int, String )
+orderedListItemBodyParser =
+    succeed (\bodyStartPos item -> ( bodyStartPos, item ))
+        |. chompOneOrMore Whitespace.isSpaceOrTab
+        |= getCol
+        |= Advanced.getChompedString Helpers.chompUntilLineEndOrEnd
+        |. Helpers.lineEndOrEnd
+
+
+orderedListEmptyItemParser : Parser ( Int, String )
+orderedListEmptyItemParser =
+    succeed (\bodyStartPos -> ( bodyStartPos, "" ))
+        |= getCol
+        |. Helpers.lineEndOrEnd
