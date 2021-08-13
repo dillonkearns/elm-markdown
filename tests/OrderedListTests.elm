@@ -1,7 +1,7 @@
 module OrderedListTests exposing (..)
 
 import Expect exposing (Expectation)
-import Markdown.OrderedList
+import Markdown.OrderedList exposing (ListItem, OrderedListMarker(..))
 import Markdown.Parser exposing (..)
 import Parser
 import Parser.Advanced as Advanced
@@ -24,12 +24,7 @@ suite =
                     |> Advanced.run (Markdown.OrderedList.parser False)
                     |> Expect.equal
                         (Ok
-                            ( 1
-                            , [ "Item 1"
-                              , "Item 2"
-                              , "Item 3"
-                              ]
-                            )
+                            (ListItem 1 3 Dot "Item 1")
                         )
         , test "list ending without newline" <|
             \() ->
@@ -39,12 +34,7 @@ suite =
                     |> Advanced.run (Markdown.OrderedList.parser False)
                     |> Expect.equal
                         (Ok
-                            ( 1
-                            , [ "Item 1"
-                              , "Item 2"
-                              , "Item 3"
-                              ]
-                            )
+                            (ListItem 1 3 Dot "Item 1")
                         )
         , test "basic list with that start with '1.' and repeat the same starting number" <|
             \() ->
@@ -55,12 +45,7 @@ suite =
                     |> Advanced.run (Markdown.OrderedList.parser False)
                     |> Expect.equal
                         (Ok
-                            ( 1
-                            , [ "Item 1"
-                              , "Item 2"
-                              , "Item 3"
-                              ]
-                            )
+                            (ListItem 1 3 Dot "Item 1")
                         )
         , test "basic list with that start with '1.' and follow with random numbers" <|
             \() ->
@@ -71,12 +56,7 @@ suite =
                     |> Advanced.run (Markdown.OrderedList.parser False)
                     |> Expect.equal
                         (Ok
-                            ( 1
-                            , [ "Item 1"
-                              , "Item 2"
-                              , "Item 3"
-                              ]
-                            )
+                            (ListItem 1 3 Dot "Item 1")
                         )
         , test "basic list with that start with '3.' and follow with the same number" <|
             \() ->
@@ -87,12 +67,7 @@ suite =
                     |> Advanced.run (Markdown.OrderedList.parser False)
                     |> Expect.equal
                         (Ok
-                            ( 3
-                            , [ "Item 1"
-                              , "Item 2"
-                              , "Item 3"
-                              ]
-                            )
+                            (ListItem 3 3 Dot "Item 1")
                         )
         , test "A list can start at 0" <|
             \() ->
@@ -103,12 +78,7 @@ suite =
                     |> Advanced.run (Markdown.OrderedList.parser False)
                     |> Expect.equal
                         (Ok
-                            ( 0
-                            , [ "Item 1"
-                              , "Item 2"
-                              , "Item 3"
-                              ]
-                            )
+                            (ListItem 0 3 Dot "Item 1")
                         )
         , test "A list starting number can have leading zeros" <|
             \() ->
@@ -119,12 +89,7 @@ suite =
                     |> Advanced.run (Markdown.OrderedList.parser False)
                     |> Expect.equal
                         (Ok
-                            ( 3
-                            , [ "Item 1"
-                              , "Item 2"
-                              , "Item 3"
-                              ]
-                            )
+                            (ListItem 3 5 Dot "Item 1")
                         )
         , test "basic list with that start with '3.' and follow with decreasing numbers" <|
             \() ->
@@ -135,12 +100,7 @@ suite =
                     |> Advanced.run (Markdown.OrderedList.parser False)
                     |> Expect.equal
                         (Ok
-                            ( 3
-                            , [ "Item 1"
-                              , "Item 2"
-                              , "Item 3"
-                              ]
-                            )
+                            (ListItem 3 3 Dot "Item 1")
                         )
         , test "basic list with '1)'" <|
             \() ->
@@ -151,12 +111,7 @@ suite =
                     |> Advanced.run (Markdown.OrderedList.parser False)
                     |> Expect.equal
                         (Ok
-                            ( 1
-                            , [ "Item 1"
-                              , "Item 2"
-                              , "Item 3"
-                              ]
-                            )
+                            (ListItem 1 3 Paren "Item 1")
                         )
         , test "basic list with that start with '3)' and follow with the same number" <|
             \() ->
@@ -167,12 +122,7 @@ suite =
                     |> Advanced.run (Markdown.OrderedList.parser False)
                     |> Expect.equal
                         (Ok
-                            ( 3
-                            , [ "Item 1"
-                              , "Item 2"
-                              , "Item 3"
-                              ]
-                            )
+                            (ListItem 3 3 Paren "Item 1")
                         )
         , test "sibling lists with different markers" <|
             \() ->
@@ -186,12 +136,7 @@ suite =
                     |> Advanced.run (Markdown.OrderedList.parser False)
                     |> Expect.equal
                         (Ok
-                            ( 1
-                            , [ "Item 1"
-                              , "Item 2"
-                              , "Item 3"
-                              ]
-                            )
+                            (ListItem 1 3 Paren "Item 1")
                         )
         , test "When the marker changes in the middle of a list" <|
             \() ->
@@ -202,11 +147,7 @@ suite =
                     |> Advanced.run (Markdown.OrderedList.parser False)
                     |> Expect.equal
                         (Ok
-                            ( 1
-                            , [ "foo"
-                              , "bar"
-                              ]
-                            )
+                            (ListItem 1 3 Dot "foo")
                         )
         , test "When there is an empty item" <|
             \() ->
@@ -217,12 +158,7 @@ suite =
                     |> Advanced.run (Markdown.OrderedList.parser False)
                     |> Expect.equal
                         (Ok
-                            ( 1
-                            , [ "foo"
-                              , ""
-                              , "bar"
-                              ]
-                            )
+                            (ListItem 1 3 Dot "foo")
                         )
         , test "Text starting with a decimal number" <|
             \() ->

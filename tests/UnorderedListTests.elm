@@ -3,7 +3,7 @@ module UnorderedListTests exposing (suite)
 import Expect exposing (Expectation)
 import Markdown.ListItem as ListItem exposing (ListItem)
 import Markdown.Parser
-import Markdown.UnorderedList
+import Markdown.UnorderedList exposing (UnorderedListMarker(..))
 import Parser
 import Parser.Advanced as Advanced
 import Test exposing (..)
@@ -22,26 +22,20 @@ suite =
 - Item 2
 - Item 3
 """
-                    |> Advanced.run Markdown.UnorderedList.parser
+                    |> Advanced.run (Markdown.UnorderedList.parser True)
                     |> Expect.equal
                         (Ok
-                            [ plainItem "Item 1"
-                            , plainItem "Item 2"
-                            , plainItem "Item 3"
-                            ]
+                            ( Minus, 2, plainItem "Item 1" )
                         )
         , test "list that ends without newline" <|
             \() ->
                 """- Item 1
 - Item 2
 - Item 3"""
-                    |> Advanced.run Markdown.UnorderedList.parser
+                    |> Advanced.run (Markdown.UnorderedList.parser True)
                     |> Expect.equal
                         (Ok
-                            [ plainItem "Item 1"
-                            , plainItem "Item 2"
-                            , plainItem "Item 3"
-                            ]
+                            ( Minus, 2, plainItem "Item 1" )
                         )
         , test "basic list with '+'" <|
             \() ->
@@ -49,13 +43,10 @@ suite =
 + Item 2
 + Item 3
 """
-                    |> Advanced.run Markdown.UnorderedList.parser
+                    |> Advanced.run (Markdown.UnorderedList.parser True)
                     |> Expect.equal
                         (Ok
-                            [ plainItem "Item 1"
-                            , plainItem "Item 2"
-                            , plainItem "Item 3"
-                            ]
+                            ( Plus, 2, plainItem "Item 1" )
                         )
         , test "basic list with '*'" <|
             \() ->
@@ -63,13 +54,10 @@ suite =
 * Item 2
 * Item 3
 """
-                    |> Advanced.run Markdown.UnorderedList.parser
+                    |> Advanced.run (Markdown.UnorderedList.parser True)
                     |> Expect.equal
                         (Ok
-                            [ plainItem "Item 1"
-                            , plainItem "Item 2"
-                            , plainItem "Item 3"
-                            ]
+                            ( Asterisk, 2, plainItem "Item 1" )
                         )
         , test "sibling lists with different markers" <|
             \() ->
@@ -83,13 +71,10 @@ suite =
 * Item 8
 * Item 9
 """
-                    |> Advanced.run Markdown.UnorderedList.parser
+                    |> Advanced.run (Markdown.UnorderedList.parser True)
                     |> Expect.equal
                         (Ok
-                            [ plainItem "Item 1"
-                            , plainItem "Item 2"
-                            , plainItem "Item 3"
-                            ]
+                            ( Minus, 2, plainItem "Item 1" )
                         )
         , test "A list item with emphasis in it and starting with '*'" <|
             \() ->
@@ -98,13 +83,10 @@ suite =
 * Item 3
 *emphasized text following the list*
 """
-                    |> Advanced.run Markdown.UnorderedList.parser
+                    |> Advanced.run (Markdown.UnorderedList.parser True)
                     |> Expect.equal
                         (Ok
-                            [ plainItem "Item 1 is *emphasized*"
-                            , plainItem "Item 2"
-                            , plainItem "Item 3"
-                            ]
+                            ( Asterisk, 2, plainItem "Item 1 is *emphasized*" )
                         )
         , test "When there is an empty item" <|
             \() ->
@@ -112,13 +94,10 @@ suite =
 *
 * bar
 """
-                    |> Advanced.run Markdown.UnorderedList.parser
+                    |> Advanced.run (Markdown.UnorderedList.parser True)
                     |> Expect.equal
                         (Ok
-                            [ plainItem "foo"
-                            , plainItem ""
-                            , plainItem "bar"
-                            ]
+                            ( Asterisk, 2, plainItem "foo" )
                         )
         ]
 
