@@ -198,12 +198,12 @@ Hello!
                     |> parse
                     |> Expect.equal
                         (Ok
-                            [ Block.OrderedList True
+                            [ Block.OrderedList Block.Tight
                                 1
                                 [ [ Paragraph (unstyledText "foo") ]
                                 , [ Paragraph (unstyledText "bar") ]
                                 ]
-                            , Block.OrderedList True
+                            , Block.OrderedList Block.Tight
                                 3
                                 [ [ Paragraph (unstyledText "baz") ]
                                 ]
@@ -228,7 +228,7 @@ Hello!
                     |> Expect.equal
                         (Ok
                             [ Block.Paragraph (unstyledText "The number of windows in my house is")
-                            , Block.OrderedList True
+                            , Block.OrderedList Block.Tight
                                 1
                                 [ [ Paragraph (unstyledText "The number of doors is 6.") ] ]
                             ]

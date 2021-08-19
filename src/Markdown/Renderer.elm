@@ -401,7 +401,7 @@ renderHelperSingle renderer =
                                         List.filterMap
                                             (\listItemBlock ->
                                                 case ( tight, listItemBlock ) of
-                                                    ( True, Block.Paragraph content ) ->
+                                                    ( Block.Tight, Block.Paragraph content ) ->
                                                         renderStyled renderer content |> Just
 
                                                     _ ->

@@ -78,7 +78,7 @@ type Block
     = -- Container Blocks
       HtmlBlock (Html Block)
     | UnorderedList ListDisplay (List (ListItem Block))
-    | OrderedList Bool Int (List (List Block))
+    | OrderedList ListDisplay Int (List (List Block))
     | BlockQuote (List Block)
       -- Leaf Blocks With Inlines
     | Heading HeadingLevel (List Inline)

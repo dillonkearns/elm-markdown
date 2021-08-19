@@ -20,7 +20,7 @@ suite =
                     |> Markdown.Parser.parse
                     |> Expect.equal
                         (Ok
-                            [ OrderedList True
+                            [ OrderedList Markdown.Block.Tight
                                 1
                                 [ [ Paragraph [ Text "Item 1" ] ]
                                 , [ Paragraph [ Text "Item 2" ] ]
@@ -36,7 +36,7 @@ suite =
                     |> Markdown.Parser.parse
                     |> Expect.equal
                         (Ok
-                            [ OrderedList True
+                            [ OrderedList Markdown.Block.Tight
                                 1
                                 [ [ Paragraph [ Text "Item 1" ] ]
                                 , [ Paragraph [ Text "Item 2" ] ]
@@ -53,7 +53,7 @@ suite =
                     |> Markdown.Parser.parse
                     |> Expect.equal
                         (Ok
-                            [ OrderedList True
+                            [ OrderedList Markdown.Block.Tight
                                 1
                                 [ [ Paragraph [ Text "Item 1" ] ]
                                 , [ Paragraph [ Text "Item 2" ] ]
@@ -70,7 +70,7 @@ suite =
                     |> Markdown.Parser.parse
                     |> Expect.equal
                         (Ok
-                            [ OrderedList True
+                            [ OrderedList Markdown.Block.Tight
                                 3
                                 [ [ Paragraph [ Text "Item 1" ] ]
                                 , [ Paragraph [ Text "Item 2" ] ]
@@ -90,13 +90,13 @@ suite =
                     |> Markdown.Parser.parse
                     |> Expect.equal
                         (Ok
-                            [ OrderedList True
+                            [ OrderedList Markdown.Block.Tight
                                 1
                                 [ [ Paragraph [ Text "Item 1" ] ]
                                 , [ Paragraph [ Text "Item 2" ] ]
                                 , [ Paragraph [ Text "Item 3" ] ]
                                 ]
-                            , OrderedList True
+                            , OrderedList Markdown.Block.Tight
                                 1
                                 [ [ Paragraph [ Text "Item 4" ] ]
                                 , [ Paragraph [ Text "Item 5" ] ]
@@ -113,12 +113,12 @@ suite =
                     |> Markdown.Parser.parse
                     |> Expect.equal
                         (Ok
-                            [ OrderedList True
+                            [ OrderedList Markdown.Block.Tight
                                 1
                                 [ [ Paragraph [ Text "foo" ] ]
                                 , [ Paragraph [ Text "bar" ] ]
                                 ]
-                            , OrderedList True
+                            , OrderedList Markdown.Block.Tight
                                 3
                                 [ [ Paragraph [ Text "baz" ] ]
                                 ]
@@ -133,7 +133,7 @@ suite =
                     |> Markdown.Parser.parse
                     |> Expect.equal
                         (Ok
-                            [ OrderedList True
+                            [ OrderedList Markdown.Block.Tight
                                 3
                                 [ [ Paragraph [ Text "Item 1" ] ]
                                 , [ Paragraph [ Text "Item 2" ] ]
@@ -150,7 +150,7 @@ suite =
                     |> Markdown.Parser.parse
                     |> Expect.equal
                         (Ok
-                            [ OrderedList True
+                            [ OrderedList Markdown.Block.Tight
                                 0
                                 [ [ Paragraph [ Text "Item 1" ] ]
                                 , [ Paragraph [ Text "Item 2" ] ]
@@ -167,7 +167,7 @@ suite =
                     |> Markdown.Parser.parse
                     |> Expect.equal
                         (Ok
-                            [ OrderedList True
+                            [ OrderedList Markdown.Block.Tight
                                 3
                                 [ [ Paragraph [ Text "Item 1" ] ]
                                 , [ Paragraph [ Text "Item 2" ] ]
@@ -184,7 +184,7 @@ suite =
                     |> Markdown.Parser.parse
                     |> Expect.equal
                         (Ok
-                            [ OrderedList True
+                            [ OrderedList Markdown.Block.Tight
                                 3
                                 [ [ Paragraph [ Text "Item 1" ] ]
                                 , [ Paragraph [ Text "Item 2" ] ]
@@ -201,7 +201,7 @@ suite =
                     |> Markdown.Parser.parse
                     |> Expect.equal
                         (Ok
-                            [ OrderedList True
+                            [ OrderedList Markdown.Block.Tight
                                 1
                                 [ [ Paragraph [ Text "Item 1" ] ]
                                 , [ Paragraph [ Text "Item 2" ] ]
@@ -218,7 +218,7 @@ suite =
                     |> Markdown.Parser.parse
                     |> Expect.equal
                         (Ok
-                            [ OrderedList True
+                            [ OrderedList Markdown.Block.Tight
                                 1
                                 [ [ Paragraph [ Text "foo" ] ]
                                 , []

@@ -310,7 +310,7 @@ parseInlines linkReferences rawBlock =
             unparsedItems
                 |> List.map parseItem
                 |> List.reverse
-                |> Block.OrderedList tight startingIndex
+                |> Block.OrderedList (isTightBoolToListDisplay tight) startingIndex
                 |> ParsedBlock
 
         RawBlock.CodeBlock codeBlock ->
