@@ -177,7 +177,7 @@ mapInline inline =
 
         Inline.HtmlInline node ->
             node
-                |> nodeToRawBlock
+                |> nodeToRawInline
                 |> Block.HtmlInline
 
         Inline.Emphasis level inlines ->
@@ -536,6 +536,11 @@ textNodeToBlocks textNodeValue =
         |> Result.withDefault []
 
 
+textNodeToInlines : String -> List Inline
+textNodeToInlines textNodeValue =
+    inlineParseHelper [] (UnparsedInlines textNodeValue)
+
+
 nodeToRawBlock : Node -> Block.Html Block
 nodeToRawBlock node =
     case node of
@@ -551,6 +556,39 @@ nodeToRawBlock node =
 
                         _ ->
                             [ nodeToRawBlock child |> Block.HtmlBlock ]
+            in
+            Block.HtmlElement tag
+                attributes
+                (List.concatMap parseChild children)
+
+        Comment string ->
+            Block.HtmlComment string
+
+        Cdata string ->
+            Block.Cdata string
+
+        ProcessingInstruction string ->
+            Block.ProcessingInstruction string
+
+        Declaration declarationType content ->
+            Block.HtmlDeclaration declarationType content
+
+
+nodeToRawInline : Node -> Block.Html Inline
+nodeToRawInline node =
+    case node of
+        HtmlParser.Text innerText ->
+            Block.HtmlComment "TODO this never happens, but use types to drop this case."
+
+        HtmlParser.Element tag attributes children ->
+            let
+                parseChild child =
+                    case child of
+                        HtmlParser.Text text ->
+                            textNodeToInlines text
+
+                        _ ->
+                            [ nodeToRawInline child |> Block.HtmlInline ]
             in
             Block.HtmlElement tag
                 attributes

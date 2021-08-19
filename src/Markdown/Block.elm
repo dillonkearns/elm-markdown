@@ -141,7 +141,7 @@ type HeadingLevel
 {-| An Inline block. Note that `HtmlInline`s can contain Blocks, not just nested `Inline`s.
 -}
 type Inline
-    = HtmlInline (Html Block)
+    = HtmlInline (Html Inline)
     | Link String (Maybe String) (List Inline)
     | Image String (Maybe String) (List Inline)
     | Emphasis (List Inline)
@@ -217,13 +217,8 @@ extractTextHelp inline text =
 
         HtmlInline html ->
             case html of
-                HtmlElement _ _ blocks ->
-                    blocks
-                        |> foldl
-                            (\block soFar ->
-                                soFar ++ extractInlineBlockText block
-                            )
-                            text
+                HtmlElement _ _ inlines ->
+                    text ++ extractInlineText inlines
 
                 _ ->
                     text
@@ -485,7 +480,7 @@ inlineParserWalk function inline =
         HtmlInline html ->
             case html of
                 HtmlElement string htmlAttributes children ->
-                    HtmlElement string htmlAttributes (List.map (walkInlines function) children)
+                    HtmlElement string htmlAttributes (List.map function children)
                         |> HtmlInline
 
                 _ ->
@@ -567,16 +562,16 @@ inlineParserValidateWalk function inline =
 
         HtmlInline html ->
             case html of
-                HtmlElement tagName htmlAttributes blocks ->
-                    blocks
-                        |> traverse (inlineParserValidateWalkBlock function)
+                HtmlElement tagName htmlAttributes inlines ->
+                    inlines
+                        |> traverse function
                         |> Result.andThen
-                            (\transformedBlocks ->
-                                HtmlElement tagName htmlAttributes transformedBlocks
+                            (\transformedInlines ->
+                                HtmlElement tagName htmlAttributes transformedInlines
                                     |> HtmlInline
                                     |> function
-                                    |> Result.mapError List.singleton
                             )
+                        |> Result.mapError List.singleton
 
                 _ ->
                     function inline
@@ -962,8 +957,8 @@ inlineFoldl ifunction top_acc list =
                                 ifn inline acc
                         in
                         case hblock of
-                            HtmlElement _ _ blocks ->
-                                inlineFoldl ifn hiacc blocks
+                            HtmlElement _ _ inlines ->
+                                List.foldl ifn hiacc inlines
 
                             HtmlComment _ ->
                                 ifn inline hiacc
