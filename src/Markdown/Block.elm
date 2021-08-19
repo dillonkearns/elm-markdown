@@ -303,22 +303,6 @@ extractInlineBlockText block =
             ""
 
 
-
---BlockQuote blocks ->
---
---
---Heading headingLevel inlines ->
---
---
---Table list lists ->
---
---
---CodeBlock record ->
---
---
---ThematicBreak ->
-
-
 {-| The way HTML is handled is one of the core ideas of this library.
 
 You get the full HTML structure that you can use to process the Blocks before rendering them. Once you render them,
