@@ -147,7 +147,7 @@ Hello!
                     |> parse
                     |> Expect.equal
                         (Ok
-                            [ Block.UnorderedList True
+                            [ Block.UnorderedList Block.Tight
                                 [ plainListItem "One"
                                 , plainListItem "Two"
                                 , plainListItem "Three"
@@ -172,17 +172,17 @@ Hello!
                     |> parse
                     |> Expect.equal
                         (Ok
-                            [ Block.UnorderedList True
+                            [ Block.UnorderedList Block.Tight
                                 [ plainListItem "Item 1"
                                 , plainListItem "Item 2"
                                 , plainListItem "Item 3"
                                 ]
-                            , Block.UnorderedList True
+                            , Block.UnorderedList Block.Tight
                                 [ plainListItem "Item 4"
                                 , plainListItem "Item 5"
                                 , plainListItem "Item 6"
                                 ]
-                            , Block.UnorderedList True
+                            , Block.UnorderedList Block.Tight
                                 [ plainListItem "Item 7"
                                 , plainListItem "Item 8"
                                 , plainListItem "Item 9"
@@ -403,7 +403,7 @@ Text after
                     |> Expect.equal
                         (Ok
                             [ Block.Heading Block.H1 (unstyledText "Title")
-                            , Block.UnorderedList True
+                            , Block.UnorderedList Block.Tight
                                 [ plainListItem "This is an item"
                                 , plainListItem "And so is this"
                                 ]

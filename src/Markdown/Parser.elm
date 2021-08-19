@@ -230,6 +230,15 @@ type InlineResult
     | InlineProblem Parser.Problem
 
 
+isTightBoolToListDisplay : Bool -> Block.ListDisplay
+isTightBoolToListDisplay isTight =
+    if isTight then
+        Block.Tight
+
+    else
+        Block.Loose
+
+
 parseInlines : LinkReferenceDefinitions -> RawBlock -> InlineResult
 parseInlines linkReferences rawBlock =
     case rawBlock of
@@ -283,7 +292,7 @@ parseInlines linkReferences rawBlock =
             unparsedItems
                 |> List.map (\item -> parseItem item.task item.body)
                 |> List.reverse
-                |> Block.UnorderedList tight
+                |> Block.UnorderedList (isTightBoolToListDisplay tight)
                 |> ParsedBlock
 
         OrderedListBlock tight _ _ startingIndex unparsedItems _ ->

@@ -77,7 +77,7 @@ In the simplest case, you can pass this directly to a renderer:
 type Block
     = -- Container Blocks
       HtmlBlock (Html Block)
-    | UnorderedList Bool (List (ListItem Block))
+    | UnorderedList ListDisplay (List (ListItem Block))
     | OrderedList Bool Int (List (List Block))
     | BlockQuote (List Block)
       -- Leaf Blocks With Inlines
