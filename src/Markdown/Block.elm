@@ -1,7 +1,7 @@
 module Markdown.Block exposing
     ( Block(..)
     , HeadingLevel(..), headingLevelToInt
-    , ListItem(..), Task(..), Alignment(..)
+    , ListItem(..), Task(..), Alignment(..), ListDisplay(..)
     , Html(..)
     , Inline(..)
     , HtmlAttribute
@@ -17,7 +17,7 @@ module Markdown.Block exposing
 
 ### List Items
 
-@docs ListItem, Task, Alignment
+@docs ListItem, Task, Alignment, ListDisplay
 
 
 ## HTML
@@ -87,6 +87,18 @@ type Block
       -- Leaf Blocks Without Inlines
     | CodeBlock { body : String, language : Maybe String }
     | ThematicBreak
+
+
+{-| Based on the whitespace around lists, markdown will wrap each list item with a paragraph (if it's a `Loose` list) or it won't (if it's a `Tight` list).
+
+<https://github.github.com/gfm/#lists>
+
+> A list is loose if any of its constituent list items are separated by blank lines, or if any of its constituent list items directly contain two block-level elements with a blank line between them. Otherwise a list is tight. (The difference in HTML output is that paragraphs in a loose list are wrapped in <p> tags, while paragraphs in a tight list are not.)
+
+-}
+type ListDisplay
+    = Loose
+    | Tight
 
 
 {-| Alignment in a header cell in a markdown table. See the `Table` variant in the `Block` type.
