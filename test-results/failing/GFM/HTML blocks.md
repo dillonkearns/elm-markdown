@@ -519,7 +519,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<ul><li>&lt;div&gt;</li><li>foo</li></ul>
+ERROR Problem at row 3 Problem at row 1 Expecting symbol
 ````````````
 ## [Example 145](https://spec.commonmark.org/0.29/#example-145)
 
