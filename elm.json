@@ -3,7 +3,7 @@
     "name": "dillonkearns/elm-markdown",
     "summary": "Pure Elm markdown parser with customizable rendering.",
     "license": "BSD-3-Clause",
-    "version": "6.0.1",
+    "version": "7.0.0",
     "exposed-modules": [
         "Markdown.Parser",
         "Markdown.Renderer",
