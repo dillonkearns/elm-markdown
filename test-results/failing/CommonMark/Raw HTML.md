@@ -1,6 +1,6 @@
 # CommonMark - Raw HTML
 
-## [Example 609](https://spec.commonmark.org/0.29/#example-609)
+## [Example 612](https://spec.commonmark.org/0.30/#example-612)
 
 This markdown:
 
@@ -20,7 +20,7 @@ But instead was:
 ````````````html
 ERROR Problem at row 2 Expecting symbol
 ````````````
-## [Example 610](https://spec.commonmark.org/0.29/#example-610)
+## [Example 613](https://spec.commonmark.org/0.30/#example-613)
 
 This markdown:
 
@@ -40,7 +40,7 @@ But instead was:
 ````````````html
 <a></a><b2></b2>
 ````````````
-## [Example 611](https://spec.commonmark.org/0.29/#example-611)
+## [Example 614](https://spec.commonmark.org/0.30/#example-614)
 
 This markdown:
 
@@ -61,7 +61,7 @@ But instead was:
 ````````````html
 ERROR Problem at row 3 Expecting symbol
 ````````````
-## [Example 612](https://spec.commonmark.org/0.29/#example-612)
+## [Example 615](https://spec.commonmark.org/0.30/#example-615)
 
 This markdown:
 
@@ -82,7 +82,7 @@ But instead was:
 ````````````html
 ERROR Problem at row 2 Expecting symbol =
 ````````````
-## [Example 613](https://spec.commonmark.org/0.29/#example-613)
+## [Example 616](https://spec.commonmark.org/0.30/#example-616)
 
 This markdown:
 
@@ -102,7 +102,7 @@ But instead was:
 ````````````html
 <p>Foo<responsive-image src="foo.jpg"></responsive-image></p>
 ````````````
-## [Example 614](https://spec.commonmark.org/0.29/#example-614)
+## [Example 617](https://spec.commonmark.org/0.30/#example-617)
 
 This markdown:
 
@@ -122,7 +122,7 @@ But instead was:
 ````````````html
 ERROR Problem at row 2 Expecting symbol
 ````````````
-## [Example 615](https://spec.commonmark.org/0.29/#example-615)
+## [Example 618](https://spec.commonmark.org/0.30/#example-618)
 
 This markdown:
 
@@ -142,7 +142,7 @@ But instead was:
 ````````````html
 ERROR Problem at row 2 Expecting symbol
 ````````````
-## [Example 616](https://spec.commonmark.org/0.29/#example-616)
+## [Example 619](https://spec.commonmark.org/0.30/#example-619)
 
 This markdown:
 
@@ -162,7 +162,7 @@ But instead was:
 ````````````html
 ERROR Problem at row 2 Expecting symbol &quot;
 ````````````
-## [Example 617](https://spec.commonmark.org/0.29/#example-617)
+## [Example 620](https://spec.commonmark.org/0.30/#example-620)
 
 This markdown:
 
@@ -185,7 +185,7 @@ But instead was:
 ````````````html
 ERROR Problem at row 3 Expecting symbol &quot; Problem at row 3 Expecting symbol &#39;
 ````````````
-## [Example 618](https://spec.commonmark.org/0.29/#example-618)
+## [Example 621](https://spec.commonmark.org/0.30/#example-621)
 
 This markdown:
 
@@ -205,7 +205,7 @@ But instead was:
 ````````````html
 ERROR Problem at row 1 Expecting symbol &quot; Problem at row 1 Expecting symbol &#39;
 ````````````
-## [Example 619](https://spec.commonmark.org/0.29/#example-619)
+## [Example 622](https://spec.commonmark.org/0.30/#example-622)
 
 This markdown:
 
@@ -225,7 +225,7 @@ But instead was:
 ````````````html
 ERROR Problem at row 1 Expecting at least 1 tag name character
 ````````````
-## [Example 620](https://spec.commonmark.org/0.29/#example-620)
+## [Example 623](https://spec.commonmark.org/0.30/#example-623)
 
 This markdown:
 
@@ -245,7 +245,7 @@ But instead was:
 ````````````html
 ERROR Problem at row 1 Expecting at least 1 tag name character
 ````````````
-## [Example 622](https://spec.commonmark.org/0.29/#example-622)
+## [Example 625](https://spec.commonmark.org/0.30/#example-625)
 
 This markdown:
 
@@ -265,7 +265,7 @@ But instead was:
 ````````````html
 <p>foo</p>
 ````````````
-## [Example 623](https://spec.commonmark.org/0.29/#example-623)
+## [Example 626](https://spec.commonmark.org/0.30/#example-626)
 
 This markdown:
 
@@ -287,7 +287,7 @@ But instead was:
 ````````````html
 <p>foo</p><p>foo</p>
 ````````````
-## [Example 626](https://spec.commonmark.org/0.29/#example-626)
+## [Example 629](https://spec.commonmark.org/0.30/#example-629)
 
 This markdown:
 
@@ -307,7 +307,7 @@ But instead was:
 ````````````html
 <p>foo</p>
 ````````````
-## [Example 627](https://spec.commonmark.org/0.29/#example-627)
+## [Example 630](https://spec.commonmark.org/0.30/#example-630)
 
 This markdown:
 
@@ -327,7 +327,7 @@ But instead was:
 ````````````html
 <p>foo &lt;a href=&quot;ö&quot;&gt;</p>
 ````````````
-## [Example 628](https://spec.commonmark.org/0.29/#example-628)
+## [Example 631](https://spec.commonmark.org/0.30/#example-631)
 
 This markdown:
 
@@ -347,7 +347,7 @@ But instead was:
 ````````````html
 <p>foo &lt;a href=&quot;*&quot;&gt;</p>
 ````````````
-## [Example 629](https://spec.commonmark.org/0.29/#example-629)
+## [Example 632](https://spec.commonmark.org/0.30/#example-632)
 
 This markdown:
 

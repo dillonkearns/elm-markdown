@@ -1,6 +1,6 @@
 # CommonMark - Hard line breaks
 
-## [Example 639](https://spec.commonmark.org/0.29/#example-639)
+## [Example 642](https://spec.commonmark.org/0.30/#example-642)
 
 This markdown:
 
@@ -22,7 +22,7 @@ But instead was:
 ````````````html
 ERROR Problem at row 3 Expecting symbol
 ````````````
-## [Example 640](https://spec.commonmark.org/0.29/#example-640)
+## [Example 643](https://spec.commonmark.org/0.30/#example-643)
 
 This markdown:
 
