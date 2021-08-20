@@ -2,7 +2,7 @@
 
 ## ATX headings
 
-### [Example 32](https://spec.commonmark.org/0.29/#example-32)
+### [Example 62](https://spec.commonmark.org/0.30/#example-62)
 
 This markdown:
 
@@ -30,7 +30,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 33](https://spec.commonmark.org/0.29/#example-33)
+### [Example 63](https://spec.commonmark.org/0.30/#example-63)
 
 This markdown:
 
@@ -48,7 +48,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 34](https://spec.commonmark.org/0.29/#example-34)
+### [Example 64](https://spec.commonmark.org/0.30/#example-64)
 
 This markdown:
 
@@ -69,7 +69,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 35](https://spec.commonmark.org/0.29/#example-35)
+### [Example 65](https://spec.commonmark.org/0.30/#example-65)
 
 This markdown:
 
@@ -87,7 +87,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 36](https://spec.commonmark.org/0.29/#example-36)
+### [Example 66](https://spec.commonmark.org/0.30/#example-66)
 
 This markdown:
 
@@ -105,7 +105,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 37](https://spec.commonmark.org/0.29/#example-37)
+### [Example 67](https://spec.commonmark.org/0.30/#example-67)
 
 This markdown:
 
@@ -123,7 +123,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 38](https://spec.commonmark.org/0.29/#example-38)
+### [Example 68](https://spec.commonmark.org/0.30/#example-68)
 
 This markdown:
 
@@ -145,7 +145,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 39](https://spec.commonmark.org/0.29/#example-39)
+### [Example 69](https://spec.commonmark.org/0.30/#example-69)
 
 This markdown:
 
@@ -164,7 +164,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 40](https://spec.commonmark.org/0.29/#example-40)
+### [Example 70](https://spec.commonmark.org/0.30/#example-70)
 
 This markdown:
 
@@ -184,7 +184,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 41](https://spec.commonmark.org/0.29/#example-41)
+### [Example 71](https://spec.commonmark.org/0.30/#example-71)
 
 This markdown:
 
@@ -204,7 +204,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 42](https://spec.commonmark.org/0.29/#example-42)
+### [Example 72](https://spec.commonmark.org/0.30/#example-72)
 
 This markdown:
 
@@ -224,7 +224,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 43](https://spec.commonmark.org/0.29/#example-43)
+### [Example 73](https://spec.commonmark.org/0.30/#example-73)
 
 This markdown:
 
@@ -242,7 +242,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 44](https://spec.commonmark.org/0.29/#example-44)
+### [Example 74](https://spec.commonmark.org/0.30/#example-74)
 
 This markdown:
 
@@ -260,7 +260,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 45](https://spec.commonmark.org/0.29/#example-45)
+### [Example 75](https://spec.commonmark.org/0.30/#example-75)
 
 This markdown:
 
@@ -278,7 +278,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 46](https://spec.commonmark.org/0.29/#example-46)
+### [Example 76](https://spec.commonmark.org/0.30/#example-76)
 
 This markdown:
 
@@ -300,7 +300,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 47](https://spec.commonmark.org/0.29/#example-47)
+### [Example 77](https://spec.commonmark.org/0.30/#example-77)
 
 This markdown:
 
@@ -322,7 +322,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 48](https://spec.commonmark.org/0.29/#example-48)
+### [Example 78](https://spec.commonmark.org/0.30/#example-78)
 
 This markdown:
 
@@ -344,7 +344,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 49](https://spec.commonmark.org/0.29/#example-49)
+### [Example 79](https://spec.commonmark.org/0.30/#example-79)
 
 This markdown:
 
@@ -368,7 +368,7 @@ Gives this correct output:
 
 ## Autolinks
 
-### [Example 590](https://spec.commonmark.org/0.29/#example-590)
+### [Example 593](https://spec.commonmark.org/0.30/#example-593)
 
 This markdown:
 
@@ -386,7 +386,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 591](https://spec.commonmark.org/0.29/#example-591)
+### [Example 594](https://spec.commonmark.org/0.30/#example-594)
 
 This markdown:
 
@@ -404,7 +404,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 592](https://spec.commonmark.org/0.29/#example-592)
+### [Example 595](https://spec.commonmark.org/0.30/#example-595)
 
 This markdown:
 
@@ -422,7 +422,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 593](https://spec.commonmark.org/0.29/#example-593)
+### [Example 596](https://spec.commonmark.org/0.30/#example-596)
 
 This markdown:
 
@@ -440,7 +440,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 594](https://spec.commonmark.org/0.29/#example-594)
+### [Example 597](https://spec.commonmark.org/0.30/#example-597)
 
 This markdown:
 
@@ -458,7 +458,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 595](https://spec.commonmark.org/0.29/#example-595)
+### [Example 598](https://spec.commonmark.org/0.30/#example-598)
 
 This markdown:
 
@@ -476,7 +476,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 596](https://spec.commonmark.org/0.29/#example-596)
+### [Example 599](https://spec.commonmark.org/0.30/#example-599)
 
 This markdown:
 
@@ -494,7 +494,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 597](https://spec.commonmark.org/0.29/#example-597)
+### [Example 600](https://spec.commonmark.org/0.30/#example-600)
 
 This markdown:
 
@@ -512,7 +512,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 598](https://spec.commonmark.org/0.29/#example-598)
+### [Example 601](https://spec.commonmark.org/0.30/#example-601)
 
 This markdown:
 
@@ -530,7 +530,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 599](https://spec.commonmark.org/0.29/#example-599)
+### [Example 602](https://spec.commonmark.org/0.30/#example-602)
 
 This markdown:
 
@@ -548,7 +548,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 600](https://spec.commonmark.org/0.29/#example-600)
+### [Example 603](https://spec.commonmark.org/0.30/#example-603)
 
 This markdown:
 
@@ -566,7 +566,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 601](https://spec.commonmark.org/0.29/#example-601)
+### [Example 604](https://spec.commonmark.org/0.30/#example-604)
 
 This markdown:
 
@@ -584,7 +584,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 602](https://spec.commonmark.org/0.29/#example-602)
+### [Example 605](https://spec.commonmark.org/0.30/#example-605)
 
 This markdown:
 
@@ -602,7 +602,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 603](https://spec.commonmark.org/0.29/#example-603)
+### [Example 606](https://spec.commonmark.org/0.30/#example-606)
 
 This markdown:
 
@@ -620,7 +620,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 604](https://spec.commonmark.org/0.29/#example-604)
+### [Example 607](https://spec.commonmark.org/0.30/#example-607)
 
 This markdown:
 
@@ -638,7 +638,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 605](https://spec.commonmark.org/0.29/#example-605)
+### [Example 608](https://spec.commonmark.org/0.30/#example-608)
 
 This markdown:
 
@@ -656,7 +656,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 606](https://spec.commonmark.org/0.29/#example-606)
+### [Example 609](https://spec.commonmark.org/0.30/#example-609)
 
 This markdown:
 
@@ -674,7 +674,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 607](https://spec.commonmark.org/0.29/#example-607)
+### [Example 610](https://spec.commonmark.org/0.30/#example-610)
 
 This markdown:
 
@@ -692,7 +692,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 608](https://spec.commonmark.org/0.29/#example-608)
+### [Example 611](https://spec.commonmark.org/0.30/#example-611)
 
 This markdown:
 
@@ -712,7 +712,7 @@ Gives this correct output:
 
 ## Backslash escapes
 
-### [Example 298](https://spec.commonmark.org/0.29/#example-298)
+### [Example 12](https://spec.commonmark.org/0.30/#example-12)
 
 This markdown:
 
@@ -730,7 +730,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 299](https://spec.commonmark.org/0.29/#example-299)
+### [Example 13](https://spec.commonmark.org/0.30/#example-13)
 
 This markdown:
 
@@ -748,7 +748,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 301](https://spec.commonmark.org/0.29/#example-301)
+### [Example 15](https://spec.commonmark.org/0.30/#example-15)
 
 This markdown:
 
@@ -766,7 +766,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 302](https://spec.commonmark.org/0.29/#example-302)
+### [Example 16](https://spec.commonmark.org/0.30/#example-16)
 
 This markdown:
 
@@ -786,7 +786,7 @@ bar</p>
 
 ````````````
 
-### [Example 303](https://spec.commonmark.org/0.29/#example-303)
+### [Example 17](https://spec.commonmark.org/0.30/#example-17)
 
 This markdown:
 
@@ -804,7 +804,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 304](https://spec.commonmark.org/0.29/#example-304)
+### [Example 18](https://spec.commonmark.org/0.30/#example-18)
 
 This markdown:
 
@@ -823,7 +823,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 305](https://spec.commonmark.org/0.29/#example-305)
+### [Example 19](https://spec.commonmark.org/0.30/#example-19)
 
 This markdown:
 
@@ -844,7 +844,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 306](https://spec.commonmark.org/0.29/#example-306)
+### [Example 20](https://spec.commonmark.org/0.30/#example-20)
 
 This markdown:
 
@@ -862,7 +862,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 308](https://spec.commonmark.org/0.29/#example-308)
+### [Example 22](https://spec.commonmark.org/0.30/#example-22)
 
 This markdown:
 
@@ -880,7 +880,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 309](https://spec.commonmark.org/0.29/#example-309)
+### [Example 23](https://spec.commonmark.org/0.30/#example-23)
 
 This markdown:
 
@@ -902,7 +902,7 @@ Gives this correct output:
 
 ## Blank lines
 
-### [Example 197](https://spec.commonmark.org/0.29/#example-197)
+### [Example 227](https://spec.commonmark.org/0.30/#example-227)
 
 This markdown:
 
@@ -930,7 +930,7 @@ Gives this correct output:
 
 ## Block quotes
 
-### [Example 198](https://spec.commonmark.org/0.29/#example-198)
+### [Example 228](https://spec.commonmark.org/0.30/#example-228)
 
 This markdown:
 
@@ -954,7 +954,7 @@ baz</p>
 
 ````````````
 
-### [Example 199](https://spec.commonmark.org/0.29/#example-199)
+### [Example 229](https://spec.commonmark.org/0.30/#example-229)
 
 This markdown:
 
@@ -978,7 +978,7 @@ baz</p>
 
 ````````````
 
-### [Example 200](https://spec.commonmark.org/0.29/#example-200)
+### [Example 230](https://spec.commonmark.org/0.30/#example-230)
 
 This markdown:
 
@@ -1002,7 +1002,7 @@ baz</p>
 
 ````````````
 
-### [Example 201](https://spec.commonmark.org/0.29/#example-201)
+### [Example 231](https://spec.commonmark.org/0.30/#example-231)
 
 This markdown:
 
@@ -1025,7 +1025,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 202](https://spec.commonmark.org/0.29/#example-202)
+### [Example 232](https://spec.commonmark.org/0.30/#example-232)
 
 This markdown:
 
@@ -1049,7 +1049,7 @@ baz</p>
 
 ````````````
 
-### [Example 203](https://spec.commonmark.org/0.29/#example-203)
+### [Example 233](https://spec.commonmark.org/0.30/#example-233)
 
 This markdown:
 
@@ -1073,7 +1073,7 @@ foo</p>
 
 ````````````
 
-### [Example 204](https://spec.commonmark.org/0.29/#example-204)
+### [Example 234](https://spec.commonmark.org/0.30/#example-234)
 
 This markdown:
 
@@ -1095,7 +1095,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 205](https://spec.commonmark.org/0.29/#example-205)
+### [Example 235](https://spec.commonmark.org/0.30/#example-235)
 
 This markdown:
 
@@ -1121,7 +1121,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 206](https://spec.commonmark.org/0.29/#example-206)
+### [Example 236](https://spec.commonmark.org/0.30/#example-236)
 
 This markdown:
 
@@ -1145,7 +1145,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 209](https://spec.commonmark.org/0.29/#example-209)
+### [Example 239](https://spec.commonmark.org/0.30/#example-239)
 
 This markdown:
 
@@ -1164,7 +1164,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 210](https://spec.commonmark.org/0.29/#example-210)
+### [Example 240](https://spec.commonmark.org/0.30/#example-240)
 
 This markdown:
 
@@ -1185,7 +1185,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 211](https://spec.commonmark.org/0.29/#example-211)
+### [Example 241](https://spec.commonmark.org/0.30/#example-241)
 
 This markdown:
 
@@ -1207,7 +1207,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 212](https://spec.commonmark.org/0.29/#example-212)
+### [Example 242](https://spec.commonmark.org/0.30/#example-242)
 
 This markdown:
 
@@ -1232,7 +1232,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 213](https://spec.commonmark.org/0.29/#example-213)
+### [Example 243](https://spec.commonmark.org/0.30/#example-243)
 
 This markdown:
 
@@ -1254,7 +1254,7 @@ bar</p>
 
 ````````````
 
-### [Example 214](https://spec.commonmark.org/0.29/#example-214)
+### [Example 244](https://spec.commonmark.org/0.30/#example-244)
 
 This markdown:
 
@@ -1277,7 +1277,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 215](https://spec.commonmark.org/0.29/#example-215)
+### [Example 245](https://spec.commonmark.org/0.30/#example-245)
 
 This markdown:
 
@@ -1299,7 +1299,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 216](https://spec.commonmark.org/0.29/#example-216)
+### [Example 246](https://spec.commonmark.org/0.30/#example-246)
 
 This markdown:
 
@@ -1325,7 +1325,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 217](https://spec.commonmark.org/0.29/#example-217)
+### [Example 247](https://spec.commonmark.org/0.30/#example-247)
 
 This markdown:
 
@@ -1347,7 +1347,7 @@ baz</p>
 
 ````````````
 
-### [Example 218](https://spec.commonmark.org/0.29/#example-218)
+### [Example 248](https://spec.commonmark.org/0.30/#example-248)
 
 This markdown:
 
@@ -1370,7 +1370,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 220](https://spec.commonmark.org/0.29/#example-220)
+### [Example 250](https://spec.commonmark.org/0.30/#example-250)
 
 This markdown:
 
@@ -1396,7 +1396,7 @@ bar</p>
 
 ````````````
 
-### [Example 221](https://spec.commonmark.org/0.29/#example-221)
+### [Example 251](https://spec.commonmark.org/0.30/#example-251)
 
 This markdown:
 
@@ -1424,7 +1424,7 @@ baz</p>
 
 ````````````
 
-### [Example 222](https://spec.commonmark.org/0.29/#example-222)
+### [Example 252](https://spec.commonmark.org/0.30/#example-252)
 
 This markdown:
 
@@ -1452,7 +1452,7 @@ Gives this correct output:
 
 ## Code spans
 
-### [Example 328](https://spec.commonmark.org/0.29/#example-328)
+### [Example 328](https://spec.commonmark.org/0.30/#example-328)
 
 This markdown:
 
@@ -1470,7 +1470,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 329](https://spec.commonmark.org/0.29/#example-329)
+### [Example 329](https://spec.commonmark.org/0.30/#example-329)
 
 This markdown:
 
@@ -1488,7 +1488,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 330](https://spec.commonmark.org/0.29/#example-330)
+### [Example 330](https://spec.commonmark.org/0.30/#example-330)
 
 This markdown:
 
@@ -1506,7 +1506,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 331](https://spec.commonmark.org/0.29/#example-331)
+### [Example 331](https://spec.commonmark.org/0.30/#example-331)
 
 This markdown:
 
@@ -1524,7 +1524,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 332](https://spec.commonmark.org/0.29/#example-332)
+### [Example 332](https://spec.commonmark.org/0.30/#example-332)
 
 This markdown:
 
@@ -1542,7 +1542,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 333](https://spec.commonmark.org/0.29/#example-333)
+### [Example 333](https://spec.commonmark.org/0.30/#example-333)
 
 This markdown:
 
@@ -1560,7 +1560,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 334](https://spec.commonmark.org/0.29/#example-334)
+### [Example 334](https://spec.commonmark.org/0.30/#example-334)
 
 This markdown:
 
@@ -1580,7 +1580,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 335](https://spec.commonmark.org/0.29/#example-335)
+### [Example 335](https://spec.commonmark.org/0.30/#example-335)
 
 This markdown:
 
@@ -1602,7 +1602,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 336](https://spec.commonmark.org/0.29/#example-336)
+### [Example 336](https://spec.commonmark.org/0.30/#example-336)
 
 This markdown:
 
@@ -1622,7 +1622,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 337](https://spec.commonmark.org/0.29/#example-337)
+### [Example 337](https://spec.commonmark.org/0.30/#example-337)
 
 This markdown:
 
@@ -1641,7 +1641,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 338](https://spec.commonmark.org/0.29/#example-338)
+### [Example 338](https://spec.commonmark.org/0.30/#example-338)
 
 This markdown:
 
@@ -1659,7 +1659,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 339](https://spec.commonmark.org/0.29/#example-339)
+### [Example 339](https://spec.commonmark.org/0.30/#example-339)
 
 This markdown:
 
@@ -1677,7 +1677,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 340](https://spec.commonmark.org/0.29/#example-340)
+### [Example 340](https://spec.commonmark.org/0.30/#example-340)
 
 This markdown:
 
@@ -1695,7 +1695,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 341](https://spec.commonmark.org/0.29/#example-341)
+### [Example 341](https://spec.commonmark.org/0.30/#example-341)
 
 This markdown:
 
@@ -1713,7 +1713,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 342](https://spec.commonmark.org/0.29/#example-342)
+### [Example 342](https://spec.commonmark.org/0.30/#example-342)
 
 This markdown:
 
@@ -1731,7 +1731,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 343](https://spec.commonmark.org/0.29/#example-343)
+### [Example 343](https://spec.commonmark.org/0.30/#example-343)
 
 This markdown:
 
@@ -1749,7 +1749,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 345](https://spec.commonmark.org/0.29/#example-345)
+### [Example 345](https://spec.commonmark.org/0.30/#example-345)
 
 This markdown:
 
@@ -1767,7 +1767,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 346](https://spec.commonmark.org/0.29/#example-346)
+### [Example 346](https://spec.commonmark.org/0.30/#example-346)
 
 This markdown:
 
@@ -1785,7 +1785,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 347](https://spec.commonmark.org/0.29/#example-347)
+### [Example 347](https://spec.commonmark.org/0.30/#example-347)
 
 This markdown:
 
@@ -1803,7 +1803,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 348](https://spec.commonmark.org/0.29/#example-348)
+### [Example 348](https://spec.commonmark.org/0.30/#example-348)
 
 This markdown:
 
@@ -1821,7 +1821,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 349](https://spec.commonmark.org/0.29/#example-349)
+### [Example 349](https://spec.commonmark.org/0.30/#example-349)
 
 This markdown:
 
@@ -1841,7 +1841,7 @@ Gives this correct output:
 
 ## Emphasis and strong emphasis
 
-### [Example 350](https://spec.commonmark.org/0.29/#example-350)
+### [Example 350](https://spec.commonmark.org/0.30/#example-350)
 
 This markdown:
 
@@ -1859,7 +1859,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 351](https://spec.commonmark.org/0.29/#example-351)
+### [Example 351](https://spec.commonmark.org/0.30/#example-351)
 
 This markdown:
 
@@ -1877,7 +1877,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 352](https://spec.commonmark.org/0.29/#example-352)
+### [Example 352](https://spec.commonmark.org/0.30/#example-352)
 
 This markdown:
 
@@ -1895,7 +1895,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 353](https://spec.commonmark.org/0.29/#example-353)
+### [Example 353](https://spec.commonmark.org/0.30/#example-353)
 
 This markdown:
 
@@ -1913,7 +1913,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 354](https://spec.commonmark.org/0.29/#example-354)
+### [Example 354](https://spec.commonmark.org/0.30/#example-354)
 
 This markdown:
 
@@ -1931,7 +1931,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 355](https://spec.commonmark.org/0.29/#example-355)
+### [Example 355](https://spec.commonmark.org/0.30/#example-355)
 
 This markdown:
 
@@ -1949,7 +1949,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 356](https://spec.commonmark.org/0.29/#example-356)
+### [Example 356](https://spec.commonmark.org/0.30/#example-356)
 
 This markdown:
 
@@ -1967,7 +1967,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 357](https://spec.commonmark.org/0.29/#example-357)
+### [Example 357](https://spec.commonmark.org/0.30/#example-357)
 
 This markdown:
 
@@ -1985,7 +1985,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 358](https://spec.commonmark.org/0.29/#example-358)
+### [Example 358](https://spec.commonmark.org/0.30/#example-358)
 
 This markdown:
 
@@ -2003,7 +2003,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 359](https://spec.commonmark.org/0.29/#example-359)
+### [Example 359](https://spec.commonmark.org/0.30/#example-359)
 
 This markdown:
 
@@ -2021,7 +2021,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 360](https://spec.commonmark.org/0.29/#example-360)
+### [Example 360](https://spec.commonmark.org/0.30/#example-360)
 
 This markdown:
 
@@ -2039,7 +2039,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 361](https://spec.commonmark.org/0.29/#example-361)
+### [Example 361](https://spec.commonmark.org/0.30/#example-361)
 
 This markdown:
 
@@ -2057,7 +2057,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 362](https://spec.commonmark.org/0.29/#example-362)
+### [Example 362](https://spec.commonmark.org/0.30/#example-362)
 
 This markdown:
 
@@ -2075,7 +2075,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 363](https://spec.commonmark.org/0.29/#example-363)
+### [Example 363](https://spec.commonmark.org/0.30/#example-363)
 
 This markdown:
 
@@ -2093,7 +2093,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 364](https://spec.commonmark.org/0.29/#example-364)
+### [Example 364](https://spec.commonmark.org/0.30/#example-364)
 
 This markdown:
 
@@ -2111,7 +2111,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 365](https://spec.commonmark.org/0.29/#example-365)
+### [Example 365](https://spec.commonmark.org/0.30/#example-365)
 
 This markdown:
 
@@ -2129,7 +2129,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 366](https://spec.commonmark.org/0.29/#example-366)
+### [Example 366](https://spec.commonmark.org/0.30/#example-366)
 
 This markdown:
 
@@ -2149,7 +2149,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 367](https://spec.commonmark.org/0.29/#example-367)
+### [Example 367](https://spec.commonmark.org/0.30/#example-367)
 
 This markdown:
 
@@ -2167,7 +2167,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 368](https://spec.commonmark.org/0.29/#example-368)
+### [Example 368](https://spec.commonmark.org/0.30/#example-368)
 
 This markdown:
 
@@ -2185,7 +2185,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 369](https://spec.commonmark.org/0.29/#example-369)
+### [Example 369](https://spec.commonmark.org/0.30/#example-369)
 
 This markdown:
 
@@ -2203,7 +2203,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 370](https://spec.commonmark.org/0.29/#example-370)
+### [Example 370](https://spec.commonmark.org/0.30/#example-370)
 
 This markdown:
 
@@ -2221,7 +2221,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 371](https://spec.commonmark.org/0.29/#example-371)
+### [Example 371](https://spec.commonmark.org/0.30/#example-371)
 
 This markdown:
 
@@ -2239,7 +2239,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 372](https://spec.commonmark.org/0.29/#example-372)
+### [Example 372](https://spec.commonmark.org/0.30/#example-372)
 
 This markdown:
 
@@ -2257,7 +2257,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 373](https://spec.commonmark.org/0.29/#example-373)
+### [Example 373](https://spec.commonmark.org/0.30/#example-373)
 
 This markdown:
 
@@ -2275,7 +2275,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 374](https://spec.commonmark.org/0.29/#example-374)
+### [Example 374](https://spec.commonmark.org/0.30/#example-374)
 
 This markdown:
 
@@ -2293,7 +2293,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 375](https://spec.commonmark.org/0.29/#example-375)
+### [Example 375](https://spec.commonmark.org/0.30/#example-375)
 
 This markdown:
 
@@ -2311,7 +2311,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 376](https://spec.commonmark.org/0.29/#example-376)
+### [Example 376](https://spec.commonmark.org/0.30/#example-376)
 
 This markdown:
 
@@ -2329,7 +2329,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 377](https://spec.commonmark.org/0.29/#example-377)
+### [Example 377](https://spec.commonmark.org/0.30/#example-377)
 
 This markdown:
 
@@ -2347,7 +2347,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 378](https://spec.commonmark.org/0.29/#example-378)
+### [Example 378](https://spec.commonmark.org/0.30/#example-378)
 
 This markdown:
 
@@ -2365,7 +2365,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 379](https://spec.commonmark.org/0.29/#example-379)
+### [Example 379](https://spec.commonmark.org/0.30/#example-379)
 
 This markdown:
 
@@ -2383,7 +2383,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 380](https://spec.commonmark.org/0.29/#example-380)
+### [Example 380](https://spec.commonmark.org/0.30/#example-380)
 
 This markdown:
 
@@ -2401,7 +2401,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 381](https://spec.commonmark.org/0.29/#example-381)
+### [Example 381](https://spec.commonmark.org/0.30/#example-381)
 
 This markdown:
 
@@ -2419,7 +2419,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 382](https://spec.commonmark.org/0.29/#example-382)
+### [Example 382](https://spec.commonmark.org/0.30/#example-382)
 
 This markdown:
 
@@ -2437,7 +2437,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 383](https://spec.commonmark.org/0.29/#example-383)
+### [Example 383](https://spec.commonmark.org/0.30/#example-383)
 
 This markdown:
 
@@ -2457,7 +2457,7 @@ foo bar__</p>
 
 ````````````
 
-### [Example 384](https://spec.commonmark.org/0.29/#example-384)
+### [Example 384](https://spec.commonmark.org/0.30/#example-384)
 
 This markdown:
 
@@ -2475,7 +2475,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 385](https://spec.commonmark.org/0.29/#example-385)
+### [Example 385](https://spec.commonmark.org/0.30/#example-385)
 
 This markdown:
 
@@ -2493,7 +2493,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 386](https://spec.commonmark.org/0.29/#example-386)
+### [Example 386](https://spec.commonmark.org/0.30/#example-386)
 
 This markdown:
 
@@ -2511,7 +2511,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 387](https://spec.commonmark.org/0.29/#example-387)
+### [Example 387](https://spec.commonmark.org/0.30/#example-387)
 
 This markdown:
 
@@ -2529,7 +2529,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 388](https://spec.commonmark.org/0.29/#example-388)
+### [Example 388](https://spec.commonmark.org/0.30/#example-388)
 
 This markdown:
 
@@ -2547,7 +2547,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 389](https://spec.commonmark.org/0.29/#example-389)
+### [Example 389](https://spec.commonmark.org/0.30/#example-389)
 
 This markdown:
 
@@ -2565,7 +2565,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 390](https://spec.commonmark.org/0.29/#example-390)
+### [Example 390](https://spec.commonmark.org/0.30/#example-390)
 
 This markdown:
 
@@ -2583,7 +2583,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 391](https://spec.commonmark.org/0.29/#example-391)
+### [Example 391](https://spec.commonmark.org/0.30/#example-391)
 
 This markdown:
 
@@ -2601,7 +2601,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 392](https://spec.commonmark.org/0.29/#example-392)
+### [Example 392](https://spec.commonmark.org/0.30/#example-392)
 
 This markdown:
 
@@ -2619,7 +2619,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 393](https://spec.commonmark.org/0.29/#example-393)
+### [Example 393](https://spec.commonmark.org/0.30/#example-393)
 
 This markdown:
 
@@ -2639,7 +2639,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 394](https://spec.commonmark.org/0.29/#example-394)
+### [Example 394](https://spec.commonmark.org/0.30/#example-394)
 
 This markdown:
 
@@ -2657,7 +2657,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 395](https://spec.commonmark.org/0.29/#example-395)
+### [Example 395](https://spec.commonmark.org/0.30/#example-395)
 
 This markdown:
 
@@ -2675,7 +2675,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 396](https://spec.commonmark.org/0.29/#example-396)
+### [Example 396](https://spec.commonmark.org/0.30/#example-396)
 
 This markdown:
 
@@ -2693,7 +2693,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 397](https://spec.commonmark.org/0.29/#example-397)
+### [Example 397](https://spec.commonmark.org/0.30/#example-397)
 
 This markdown:
 
@@ -2711,7 +2711,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 398](https://spec.commonmark.org/0.29/#example-398)
+### [Example 398](https://spec.commonmark.org/0.30/#example-398)
 
 This markdown:
 
@@ -2729,7 +2729,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 399](https://spec.commonmark.org/0.29/#example-399)
+### [Example 399](https://spec.commonmark.org/0.30/#example-399)
 
 This markdown:
 
@@ -2747,7 +2747,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 400](https://spec.commonmark.org/0.29/#example-400)
+### [Example 400](https://spec.commonmark.org/0.30/#example-400)
 
 This markdown:
 
@@ -2765,7 +2765,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 401](https://spec.commonmark.org/0.29/#example-401)
+### [Example 401](https://spec.commonmark.org/0.30/#example-401)
 
 This markdown:
 
@@ -2783,7 +2783,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 402](https://spec.commonmark.org/0.29/#example-402)
+### [Example 402](https://spec.commonmark.org/0.30/#example-402)
 
 This markdown:
 
@@ -2801,7 +2801,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 403](https://spec.commonmark.org/0.29/#example-403)
+### [Example 403](https://spec.commonmark.org/0.30/#example-403)
 
 This markdown:
 
@@ -2819,7 +2819,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 404](https://spec.commonmark.org/0.29/#example-404)
+### [Example 404](https://spec.commonmark.org/0.30/#example-404)
 
 This markdown:
 
@@ -2839,7 +2839,7 @@ bar</em></p>
 
 ````````````
 
-### [Example 405](https://spec.commonmark.org/0.29/#example-405)
+### [Example 405](https://spec.commonmark.org/0.30/#example-405)
 
 This markdown:
 
@@ -2857,7 +2857,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 406](https://spec.commonmark.org/0.29/#example-406)
+### [Example 406](https://spec.commonmark.org/0.30/#example-406)
 
 This markdown:
 
@@ -2875,7 +2875,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 407](https://spec.commonmark.org/0.29/#example-407)
+### [Example 407](https://spec.commonmark.org/0.30/#example-407)
 
 This markdown:
 
@@ -2893,7 +2893,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 408](https://spec.commonmark.org/0.29/#example-408)
+### [Example 408](https://spec.commonmark.org/0.30/#example-408)
 
 This markdown:
 
@@ -2911,7 +2911,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 409](https://spec.commonmark.org/0.29/#example-409)
+### [Example 409](https://spec.commonmark.org/0.30/#example-409)
 
 This markdown:
 
@@ -2929,7 +2929,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 410](https://spec.commonmark.org/0.29/#example-410)
+### [Example 410](https://spec.commonmark.org/0.30/#example-410)
 
 This markdown:
 
@@ -2947,7 +2947,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 411](https://spec.commonmark.org/0.29/#example-411)
+### [Example 411](https://spec.commonmark.org/0.30/#example-411)
 
 This markdown:
 
@@ -2965,7 +2965,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 412](https://spec.commonmark.org/0.29/#example-412)
+### [Example 412](https://spec.commonmark.org/0.30/#example-412)
 
 This markdown:
 
@@ -2983,7 +2983,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 413](https://spec.commonmark.org/0.29/#example-413)
+### [Example 413](https://spec.commonmark.org/0.30/#example-413)
 
 This markdown:
 
@@ -3001,7 +3001,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 414](https://spec.commonmark.org/0.29/#example-414)
+### [Example 414](https://spec.commonmark.org/0.30/#example-414)
 
 This markdown:
 
@@ -3019,7 +3019,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 415](https://spec.commonmark.org/0.29/#example-415)
+### [Example 415](https://spec.commonmark.org/0.30/#example-415)
 
 This markdown:
 
@@ -3037,7 +3037,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 416](https://spec.commonmark.org/0.29/#example-416)
+### [Example 416](https://spec.commonmark.org/0.30/#example-416)
 
 This markdown:
 
@@ -3055,7 +3055,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 417](https://spec.commonmark.org/0.29/#example-417)
+### [Example 417](https://spec.commonmark.org/0.30/#example-417)
 
 This markdown:
 
@@ -3073,7 +3073,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 418](https://spec.commonmark.org/0.29/#example-418)
+### [Example 418](https://spec.commonmark.org/0.30/#example-418)
 
 This markdown:
 
@@ -3091,7 +3091,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 419](https://spec.commonmark.org/0.29/#example-419)
+### [Example 419](https://spec.commonmark.org/0.30/#example-419)
 
 This markdown:
 
@@ -3109,7 +3109,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 420](https://spec.commonmark.org/0.29/#example-420)
+### [Example 420](https://spec.commonmark.org/0.30/#example-420)
 
 This markdown:
 
@@ -3127,7 +3127,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 421](https://spec.commonmark.org/0.29/#example-421)
+### [Example 421](https://spec.commonmark.org/0.30/#example-421)
 
 This markdown:
 
@@ -3145,7 +3145,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 422](https://spec.commonmark.org/0.29/#example-422)
+### [Example 422](https://spec.commonmark.org/0.30/#example-422)
 
 This markdown:
 
@@ -3165,7 +3165,7 @@ bar</strong></p>
 
 ````````````
 
-### [Example 423](https://spec.commonmark.org/0.29/#example-423)
+### [Example 423](https://spec.commonmark.org/0.30/#example-423)
 
 This markdown:
 
@@ -3183,7 +3183,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 424](https://spec.commonmark.org/0.29/#example-424)
+### [Example 424](https://spec.commonmark.org/0.30/#example-424)
 
 This markdown:
 
@@ -3201,7 +3201,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 425](https://spec.commonmark.org/0.29/#example-425)
+### [Example 425](https://spec.commonmark.org/0.30/#example-425)
 
 This markdown:
 
@@ -3219,7 +3219,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 426](https://spec.commonmark.org/0.29/#example-426)
+### [Example 426](https://spec.commonmark.org/0.30/#example-426)
 
 This markdown:
 
@@ -3237,7 +3237,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 427](https://spec.commonmark.org/0.29/#example-427)
+### [Example 427](https://spec.commonmark.org/0.30/#example-427)
 
 This markdown:
 
@@ -3255,7 +3255,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 428](https://spec.commonmark.org/0.29/#example-428)
+### [Example 428](https://spec.commonmark.org/0.30/#example-428)
 
 This markdown:
 
@@ -3273,7 +3273,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 429](https://spec.commonmark.org/0.29/#example-429)
+### [Example 429](https://spec.commonmark.org/0.30/#example-429)
 
 This markdown:
 
@@ -3291,7 +3291,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 430](https://spec.commonmark.org/0.29/#example-430)
+### [Example 430](https://spec.commonmark.org/0.30/#example-430)
 
 This markdown:
 
@@ -3309,7 +3309,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 431](https://spec.commonmark.org/0.29/#example-431)
+### [Example 431](https://spec.commonmark.org/0.30/#example-431)
 
 This markdown:
 
@@ -3329,7 +3329,7 @@ bim</em> bop</strong></p>
 
 ````````````
 
-### [Example 432](https://spec.commonmark.org/0.29/#example-432)
+### [Example 432](https://spec.commonmark.org/0.30/#example-432)
 
 This markdown:
 
@@ -3347,7 +3347,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 433](https://spec.commonmark.org/0.29/#example-433)
+### [Example 433](https://spec.commonmark.org/0.30/#example-433)
 
 This markdown:
 
@@ -3365,7 +3365,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 434](https://spec.commonmark.org/0.29/#example-434)
+### [Example 434](https://spec.commonmark.org/0.30/#example-434)
 
 This markdown:
 
@@ -3383,7 +3383,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 435](https://spec.commonmark.org/0.29/#example-435)
+### [Example 435](https://spec.commonmark.org/0.30/#example-435)
 
 This markdown:
 
@@ -3401,7 +3401,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 436](https://spec.commonmark.org/0.29/#example-436)
+### [Example 436](https://spec.commonmark.org/0.30/#example-436)
 
 This markdown:
 
@@ -3419,7 +3419,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 437](https://spec.commonmark.org/0.29/#example-437)
+### [Example 437](https://spec.commonmark.org/0.30/#example-437)
 
 This markdown:
 
@@ -3437,7 +3437,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 438](https://spec.commonmark.org/0.29/#example-438)
+### [Example 438](https://spec.commonmark.org/0.30/#example-438)
 
 This markdown:
 
@@ -3455,7 +3455,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 439](https://spec.commonmark.org/0.29/#example-439)
+### [Example 439](https://spec.commonmark.org/0.30/#example-439)
 
 This markdown:
 
@@ -3473,7 +3473,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 440](https://spec.commonmark.org/0.29/#example-440)
+### [Example 440](https://spec.commonmark.org/0.30/#example-440)
 
 This markdown:
 
@@ -3491,7 +3491,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 441](https://spec.commonmark.org/0.29/#example-441)
+### [Example 441](https://spec.commonmark.org/0.30/#example-441)
 
 This markdown:
 
@@ -3509,7 +3509,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 442](https://spec.commonmark.org/0.29/#example-442)
+### [Example 442](https://spec.commonmark.org/0.30/#example-442)
 
 This markdown:
 
@@ -3527,7 +3527,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 443](https://spec.commonmark.org/0.29/#example-443)
+### [Example 443](https://spec.commonmark.org/0.30/#example-443)
 
 This markdown:
 
@@ -3545,7 +3545,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 444](https://spec.commonmark.org/0.29/#example-444)
+### [Example 444](https://spec.commonmark.org/0.30/#example-444)
 
 This markdown:
 
@@ -3563,7 +3563,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 445](https://spec.commonmark.org/0.29/#example-445)
+### [Example 445](https://spec.commonmark.org/0.30/#example-445)
 
 This markdown:
 
@@ -3581,7 +3581,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 446](https://spec.commonmark.org/0.29/#example-446)
+### [Example 446](https://spec.commonmark.org/0.30/#example-446)
 
 This markdown:
 
@@ -3599,7 +3599,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 447](https://spec.commonmark.org/0.29/#example-447)
+### [Example 447](https://spec.commonmark.org/0.30/#example-447)
 
 This markdown:
 
@@ -3617,7 +3617,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 448](https://spec.commonmark.org/0.29/#example-448)
+### [Example 448](https://spec.commonmark.org/0.30/#example-448)
 
 This markdown:
 
@@ -3635,7 +3635,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 449](https://spec.commonmark.org/0.29/#example-449)
+### [Example 449](https://spec.commonmark.org/0.30/#example-449)
 
 This markdown:
 
@@ -3653,7 +3653,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 450](https://spec.commonmark.org/0.29/#example-450)
+### [Example 450](https://spec.commonmark.org/0.30/#example-450)
 
 This markdown:
 
@@ -3671,7 +3671,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 451](https://spec.commonmark.org/0.29/#example-451)
+### [Example 451](https://spec.commonmark.org/0.30/#example-451)
 
 This markdown:
 
@@ -3689,7 +3689,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 452](https://spec.commonmark.org/0.29/#example-452)
+### [Example 452](https://spec.commonmark.org/0.30/#example-452)
 
 This markdown:
 
@@ -3707,7 +3707,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 453](https://spec.commonmark.org/0.29/#example-453)
+### [Example 453](https://spec.commonmark.org/0.30/#example-453)
 
 This markdown:
 
@@ -3725,7 +3725,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 454](https://spec.commonmark.org/0.29/#example-454)
+### [Example 454](https://spec.commonmark.org/0.30/#example-454)
 
 This markdown:
 
@@ -3743,7 +3743,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 455](https://spec.commonmark.org/0.29/#example-455)
+### [Example 455](https://spec.commonmark.org/0.30/#example-455)
 
 This markdown:
 
@@ -3761,7 +3761,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 456](https://spec.commonmark.org/0.29/#example-456)
+### [Example 456](https://spec.commonmark.org/0.30/#example-456)
 
 This markdown:
 
@@ -3779,7 +3779,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 457](https://spec.commonmark.org/0.29/#example-457)
+### [Example 457](https://spec.commonmark.org/0.30/#example-457)
 
 This markdown:
 
@@ -3797,7 +3797,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 458](https://spec.commonmark.org/0.29/#example-458)
+### [Example 458](https://spec.commonmark.org/0.30/#example-458)
 
 This markdown:
 
@@ -3815,7 +3815,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 459](https://spec.commonmark.org/0.29/#example-459)
+### [Example 459](https://spec.commonmark.org/0.30/#example-459)
 
 This markdown:
 
@@ -3833,7 +3833,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 460](https://spec.commonmark.org/0.29/#example-460)
+### [Example 460](https://spec.commonmark.org/0.30/#example-460)
 
 This markdown:
 
@@ -3851,7 +3851,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 461](https://spec.commonmark.org/0.29/#example-461)
+### [Example 461](https://spec.commonmark.org/0.30/#example-461)
 
 This markdown:
 
@@ -3869,7 +3869,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 462](https://spec.commonmark.org/0.29/#example-462)
+### [Example 462](https://spec.commonmark.org/0.30/#example-462)
 
 This markdown:
 
@@ -3887,7 +3887,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 463](https://spec.commonmark.org/0.29/#example-463)
+### [Example 463](https://spec.commonmark.org/0.30/#example-463)
 
 This markdown:
 
@@ -3905,7 +3905,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 464](https://spec.commonmark.org/0.29/#example-464)
+### [Example 464](https://spec.commonmark.org/0.30/#example-464)
 
 This markdown:
 
@@ -3923,7 +3923,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 465](https://spec.commonmark.org/0.29/#example-465)
+### [Example 465](https://spec.commonmark.org/0.30/#example-465)
 
 This markdown:
 
@@ -3941,7 +3941,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 466](https://spec.commonmark.org/0.29/#example-466)
+### [Example 466](https://spec.commonmark.org/0.30/#example-466)
 
 This markdown:
 
@@ -3959,7 +3959,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 467](https://spec.commonmark.org/0.29/#example-467)
+### [Example 467](https://spec.commonmark.org/0.30/#example-467)
 
 This markdown:
 
@@ -3977,7 +3977,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 468](https://spec.commonmark.org/0.29/#example-468)
+### [Example 468](https://spec.commonmark.org/0.30/#example-468)
 
 This markdown:
 
@@ -3995,7 +3995,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 469](https://spec.commonmark.org/0.29/#example-469)
+### [Example 469](https://spec.commonmark.org/0.30/#example-469)
 
 This markdown:
 
@@ -4013,7 +4013,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 470](https://spec.commonmark.org/0.29/#example-470)
+### [Example 470](https://spec.commonmark.org/0.30/#example-470)
 
 This markdown:
 
@@ -4031,7 +4031,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 471](https://spec.commonmark.org/0.29/#example-471)
+### [Example 471](https://spec.commonmark.org/0.30/#example-471)
 
 This markdown:
 
@@ -4049,7 +4049,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 472](https://spec.commonmark.org/0.29/#example-472)
+### [Example 472](https://spec.commonmark.org/0.30/#example-472)
 
 This markdown:
 
@@ -4067,7 +4067,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 473](https://spec.commonmark.org/0.29/#example-473)
+### [Example 473](https://spec.commonmark.org/0.30/#example-473)
 
 This markdown:
 
@@ -4085,7 +4085,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 474](https://spec.commonmark.org/0.29/#example-474)
+### [Example 474](https://spec.commonmark.org/0.30/#example-474)
 
 This markdown:
 
@@ -4103,7 +4103,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 477](https://spec.commonmark.org/0.29/#example-477)
+### [Example 477](https://spec.commonmark.org/0.30/#example-477)
 
 This markdown:
 
@@ -4121,7 +4121,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 478](https://spec.commonmark.org/0.29/#example-478)
+### [Example 478](https://spec.commonmark.org/0.30/#example-478)
 
 This markdown:
 
@@ -4139,7 +4139,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 479](https://spec.commonmark.org/0.29/#example-479)
+### [Example 479](https://spec.commonmark.org/0.30/#example-479)
 
 This markdown:
 
@@ -4157,7 +4157,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 480](https://spec.commonmark.org/0.29/#example-480)
+### [Example 480](https://spec.commonmark.org/0.30/#example-480)
 
 This markdown:
 
@@ -4177,7 +4177,7 @@ Gives this correct output:
 
 ## Entity and numeric character references
 
-### [Example 312](https://spec.commonmark.org/0.29/#example-312)
+### [Example 26](https://spec.commonmark.org/0.30/#example-26)
 
 This markdown:
 
@@ -4195,7 +4195,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 313](https://spec.commonmark.org/0.29/#example-313)
+### [Example 27](https://spec.commonmark.org/0.30/#example-27)
 
 This markdown:
 
@@ -4213,31 +4213,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 314](https://spec.commonmark.org/0.29/#example-314)
-
-This markdown:
-
-
-````````````markdown
-&nbsp &x; &#; &#x;
-&#987654321;
-&#abcdef0;
-&ThisIsNotDefined; &hi?;
-
-````````````
-
-Gives this correct output:
-
-
-````````````html
-<p>&amp;nbsp &amp;x; &amp;#; &amp;#x;
-&amp;#987654321;
-&amp;#abcdef0;
-&amp;ThisIsNotDefined; &amp;hi?;</p>
-
-````````````
-
-### [Example 315](https://spec.commonmark.org/0.29/#example-315)
+### [Example 29](https://spec.commonmark.org/0.30/#example-29)
 
 This markdown:
 
@@ -4255,7 +4231,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 316](https://spec.commonmark.org/0.29/#example-316)
+### [Example 30](https://spec.commonmark.org/0.30/#example-30)
 
 This markdown:
 
@@ -4273,7 +4249,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 318](https://spec.commonmark.org/0.29/#example-318)
+### [Example 32](https://spec.commonmark.org/0.30/#example-32)
 
 This markdown:
 
@@ -4291,7 +4267,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 319](https://spec.commonmark.org/0.29/#example-319)
+### [Example 33](https://spec.commonmark.org/0.30/#example-33)
 
 This markdown:
 
@@ -4311,7 +4287,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 320](https://spec.commonmark.org/0.29/#example-320)
+### [Example 34](https://spec.commonmark.org/0.30/#example-34)
 
 This markdown:
 
@@ -4332,7 +4308,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 321](https://spec.commonmark.org/0.29/#example-321)
+### [Example 35](https://spec.commonmark.org/0.30/#example-35)
 
 This markdown:
 
@@ -4350,7 +4326,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 322](https://spec.commonmark.org/0.29/#example-322)
+### [Example 36](https://spec.commonmark.org/0.30/#example-36)
 
 This markdown:
 
@@ -4369,7 +4345,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 323](https://spec.commonmark.org/0.29/#example-323)
+### [Example 37](https://spec.commonmark.org/0.30/#example-37)
 
 This markdown:
 
@@ -4389,7 +4365,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 324](https://spec.commonmark.org/0.29/#example-324)
+### [Example 38](https://spec.commonmark.org/0.30/#example-38)
 
 This markdown:
 
@@ -4412,7 +4388,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 325](https://spec.commonmark.org/0.29/#example-325)
+### [Example 39](https://spec.commonmark.org/0.30/#example-39)
 
 This markdown:
 
@@ -4432,7 +4408,7 @@ bar</p>
 
 ````````````
 
-### [Example 326](https://spec.commonmark.org/0.29/#example-326)
+### [Example 40](https://spec.commonmark.org/0.30/#example-40)
 
 This markdown:
 
@@ -4450,7 +4426,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 327](https://spec.commonmark.org/0.29/#example-327)
+### [Example 41](https://spec.commonmark.org/0.30/#example-41)
 
 This markdown:
 
@@ -4470,7 +4446,7 @@ Gives this correct output:
 
 ## Fenced code blocks
 
-### [Example 89](https://spec.commonmark.org/0.29/#example-89)
+### [Example 119](https://spec.commonmark.org/0.30/#example-119)
 
 This markdown:
 
@@ -4493,7 +4469,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 90](https://spec.commonmark.org/0.29/#example-90)
+### [Example 120](https://spec.commonmark.org/0.30/#example-120)
 
 This markdown:
 
@@ -4516,7 +4492,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 91](https://spec.commonmark.org/0.29/#example-91)
+### [Example 121](https://spec.commonmark.org/0.30/#example-121)
 
 This markdown:
 
@@ -4536,7 +4512,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 92](https://spec.commonmark.org/0.29/#example-92)
+### [Example 122](https://spec.commonmark.org/0.30/#example-122)
 
 This markdown:
 
@@ -4559,7 +4535,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 93](https://spec.commonmark.org/0.29/#example-93)
+### [Example 123](https://spec.commonmark.org/0.30/#example-123)
 
 This markdown:
 
@@ -4582,7 +4558,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 94](https://spec.commonmark.org/0.29/#example-94)
+### [Example 124](https://spec.commonmark.org/0.30/#example-124)
 
 This markdown:
 
@@ -4605,7 +4581,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 95](https://spec.commonmark.org/0.29/#example-95)
+### [Example 125](https://spec.commonmark.org/0.30/#example-125)
 
 This markdown:
 
@@ -4628,7 +4604,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 96](https://spec.commonmark.org/0.29/#example-96)
+### [Example 126](https://spec.commonmark.org/0.30/#example-126)
 
 This markdown:
 
@@ -4646,7 +4622,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 97](https://spec.commonmark.org/0.29/#example-97)
+### [Example 127](https://spec.commonmark.org/0.30/#example-127)
 
 This markdown:
 
@@ -4670,7 +4646,7 @@ aaa
 
 ````````````
 
-### [Example 98](https://spec.commonmark.org/0.29/#example-98)
+### [Example 128](https://spec.commonmark.org/0.30/#example-128)
 
 This markdown:
 
@@ -4695,7 +4671,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 99](https://spec.commonmark.org/0.29/#example-99)
+### [Example 129](https://spec.commonmark.org/0.30/#example-129)
 
 This markdown:
 
@@ -4718,7 +4694,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 100](https://spec.commonmark.org/0.29/#example-100)
+### [Example 130](https://spec.commonmark.org/0.30/#example-130)
 
 This markdown:
 
@@ -4737,7 +4713,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 101](https://spec.commonmark.org/0.29/#example-101)
+### [Example 131](https://spec.commonmark.org/0.30/#example-131)
 
 This markdown:
 
@@ -4760,7 +4736,7 @@ aaa
 
 ````````````
 
-### [Example 102](https://spec.commonmark.org/0.29/#example-102)
+### [Example 132](https://spec.commonmark.org/0.30/#example-132)
 
 This markdown:
 
@@ -4785,7 +4761,7 @@ aaa
 
 ````````````
 
-### [Example 103](https://spec.commonmark.org/0.29/#example-103)
+### [Example 133](https://spec.commonmark.org/0.30/#example-133)
 
 This markdown:
 
@@ -4810,7 +4786,7 @@ aaa
 
 ````````````
 
-### [Example 104](https://spec.commonmark.org/0.29/#example-104)
+### [Example 134](https://spec.commonmark.org/0.30/#example-134)
 
 This markdown:
 
@@ -4833,7 +4809,7 @@ aaa
 
 ````````````
 
-### [Example 105](https://spec.commonmark.org/0.29/#example-105)
+### [Example 135](https://spec.commonmark.org/0.30/#example-135)
 
 This markdown:
 
@@ -4854,7 +4830,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 106](https://spec.commonmark.org/0.29/#example-106)
+### [Example 136](https://spec.commonmark.org/0.30/#example-136)
 
 This markdown:
 
@@ -4875,7 +4851,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 107](https://spec.commonmark.org/0.29/#example-107)
+### [Example 137](https://spec.commonmark.org/0.30/#example-137)
 
 This markdown:
 
@@ -4897,7 +4873,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 108](https://spec.commonmark.org/0.29/#example-108)
+### [Example 138](https://spec.commonmark.org/0.30/#example-138)
 
 This markdown:
 
@@ -4917,7 +4893,7 @@ aaa</p>
 
 ````````````
 
-### [Example 109](https://spec.commonmark.org/0.29/#example-109)
+### [Example 139](https://spec.commonmark.org/0.30/#example-139)
 
 This markdown:
 
@@ -4939,7 +4915,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 110](https://spec.commonmark.org/0.29/#example-110)
+### [Example 140](https://spec.commonmark.org/0.30/#example-140)
 
 This markdown:
 
@@ -4964,7 +4940,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 111](https://spec.commonmark.org/0.29/#example-111)
+### [Example 141](https://spec.commonmark.org/0.30/#example-141)
 
 This markdown:
 
@@ -4990,7 +4966,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 112](https://spec.commonmark.org/0.29/#example-112)
+### [Example 142](https://spec.commonmark.org/0.30/#example-142)
 
 This markdown:
 
@@ -5015,7 +4991,7 @@ end
 
 ````````````
 
-### [Example 113](https://spec.commonmark.org/0.29/#example-113)
+### [Example 143](https://spec.commonmark.org/0.30/#example-143)
 
 This markdown:
 
@@ -5040,7 +5016,7 @@ end
 
 ````````````
 
-### [Example 114](https://spec.commonmark.org/0.29/#example-114)
+### [Example 144](https://spec.commonmark.org/0.30/#example-144)
 
 This markdown:
 
@@ -5059,7 +5035,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 115](https://spec.commonmark.org/0.29/#example-115)
+### [Example 145](https://spec.commonmark.org/0.30/#example-145)
 
 This markdown:
 
@@ -5079,7 +5055,7 @@ foo</p>
 
 ````````````
 
-### [Example 116](https://spec.commonmark.org/0.29/#example-116)
+### [Example 146](https://spec.commonmark.org/0.30/#example-146)
 
 This markdown:
 
@@ -5100,7 +5076,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 117](https://spec.commonmark.org/0.29/#example-117)
+### [Example 147](https://spec.commonmark.org/0.30/#example-147)
 
 This markdown:
 
@@ -5123,7 +5099,7 @@ Gives this correct output:
 
 ## HTML blocks
 
-### [Example 122](https://spec.commonmark.org/0.29/#example-122)
+### [Example 152](https://spec.commonmark.org/0.30/#example-152)
 
 This markdown:
 
@@ -5147,7 +5123,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 123](https://spec.commonmark.org/0.29/#example-123)
+### [Example 153](https://spec.commonmark.org/0.30/#example-153)
 
 This markdown:
 
@@ -5169,7 +5145,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 124](https://spec.commonmark.org/0.29/#example-124)
+### [Example 154](https://spec.commonmark.org/0.30/#example-154)
 
 This markdown:
 
@@ -5191,7 +5167,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 137](https://spec.commonmark.org/0.29/#example-137)
+### [Example 167](https://spec.commonmark.org/0.30/#example-167)
 
 This markdown:
 
@@ -5215,7 +5191,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 148](https://spec.commonmark.org/0.29/#example-148)
+### [Example 179](https://spec.commonmark.org/0.30/#example-179)
 
 This markdown:
 
@@ -5241,7 +5217,7 @@ bar
 
 ````````````
 
-### [Example 151](https://spec.commonmark.org/0.29/#example-151)
+### [Example 182](https://spec.commonmark.org/0.30/#example-182)
 
 This markdown:
 
@@ -5283,7 +5259,7 @@ function matchwo(a,b)
 
 ````````````
 
-### [Example 157](https://spec.commonmark.org/0.29/#example-157)
+### [Example 188](https://spec.commonmark.org/0.30/#example-188)
 
 This markdown:
 
@@ -5309,7 +5285,7 @@ Gives this correct output:
 
 ## Hard line breaks
 
-### [Example 630](https://spec.commonmark.org/0.29/#example-630)
+### [Example 633](https://spec.commonmark.org/0.30/#example-633)
 
 This markdown:
 
@@ -5329,7 +5305,7 @@ baz</p>
 
 ````````````
 
-### [Example 631](https://spec.commonmark.org/0.29/#example-631)
+### [Example 634](https://spec.commonmark.org/0.30/#example-634)
 
 This markdown:
 
@@ -5349,7 +5325,7 @@ baz</p>
 
 ````````````
 
-### [Example 632](https://spec.commonmark.org/0.29/#example-632)
+### [Example 635](https://spec.commonmark.org/0.30/#example-635)
 
 This markdown:
 
@@ -5369,7 +5345,7 @@ baz</p>
 
 ````````````
 
-### [Example 633](https://spec.commonmark.org/0.29/#example-633)
+### [Example 636](https://spec.commonmark.org/0.30/#example-636)
 
 This markdown:
 
@@ -5389,7 +5365,7 @@ bar</p>
 
 ````````````
 
-### [Example 634](https://spec.commonmark.org/0.29/#example-634)
+### [Example 637](https://spec.commonmark.org/0.30/#example-637)
 
 This markdown:
 
@@ -5409,7 +5385,7 @@ bar</p>
 
 ````````````
 
-### [Example 635](https://spec.commonmark.org/0.29/#example-635)
+### [Example 638](https://spec.commonmark.org/0.30/#example-638)
 
 This markdown:
 
@@ -5429,7 +5405,7 @@ bar</em></p>
 
 ````````````
 
-### [Example 636](https://spec.commonmark.org/0.29/#example-636)
+### [Example 639](https://spec.commonmark.org/0.30/#example-639)
 
 This markdown:
 
@@ -5449,13 +5425,13 @@ bar</em></p>
 
 ````````````
 
-### [Example 637](https://spec.commonmark.org/0.29/#example-637)
+### [Example 640](https://spec.commonmark.org/0.30/#example-640)
 
 This markdown:
 
 
 ````````````markdown
-`code 
+`code  
 span`
 
 ````````````
@@ -5464,11 +5440,11 @@ Gives this correct output:
 
 
 ````````````html
-<p><code>code  span</code></p>
+<p><code>code   span</code></p>
 
 ````````````
 
-### [Example 638](https://spec.commonmark.org/0.29/#example-638)
+### [Example 641](https://spec.commonmark.org/0.30/#example-641)
 
 This markdown:
 
@@ -5487,7 +5463,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 641](https://spec.commonmark.org/0.29/#example-641)
+### [Example 644](https://spec.commonmark.org/0.30/#example-644)
 
 This markdown:
 
@@ -5505,7 +5481,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 642](https://spec.commonmark.org/0.29/#example-642)
+### [Example 645](https://spec.commonmark.org/0.30/#example-645)
 
 This markdown:
 
@@ -5523,7 +5499,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 643](https://spec.commonmark.org/0.29/#example-643)
+### [Example 646](https://spec.commonmark.org/0.30/#example-646)
 
 This markdown:
 
@@ -5541,7 +5517,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 644](https://spec.commonmark.org/0.29/#example-644)
+### [Example 647](https://spec.commonmark.org/0.30/#example-647)
 
 This markdown:
 
@@ -5561,7 +5537,7 @@ Gives this correct output:
 
 ## Images
 
-### [Example 568](https://spec.commonmark.org/0.29/#example-568)
+### [Example 571](https://spec.commonmark.org/0.30/#example-571)
 
 This markdown:
 
@@ -5579,7 +5555,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 569](https://spec.commonmark.org/0.29/#example-569)
+### [Example 572](https://spec.commonmark.org/0.30/#example-572)
 
 This markdown:
 
@@ -5599,7 +5575,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 570](https://spec.commonmark.org/0.29/#example-570)
+### [Example 573](https://spec.commonmark.org/0.30/#example-573)
 
 This markdown:
 
@@ -5617,7 +5593,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 571](https://spec.commonmark.org/0.29/#example-571)
+### [Example 574](https://spec.commonmark.org/0.30/#example-574)
 
 This markdown:
 
@@ -5635,7 +5611,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 572](https://spec.commonmark.org/0.29/#example-572)
+### [Example 575](https://spec.commonmark.org/0.30/#example-575)
 
 This markdown:
 
@@ -5655,7 +5631,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 573](https://spec.commonmark.org/0.29/#example-573)
+### [Example 576](https://spec.commonmark.org/0.30/#example-576)
 
 This markdown:
 
@@ -5675,7 +5651,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 574](https://spec.commonmark.org/0.29/#example-574)
+### [Example 577](https://spec.commonmark.org/0.30/#example-577)
 
 This markdown:
 
@@ -5693,7 +5669,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 575](https://spec.commonmark.org/0.29/#example-575)
+### [Example 578](https://spec.commonmark.org/0.30/#example-578)
 
 This markdown:
 
@@ -5711,7 +5687,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 576](https://spec.commonmark.org/0.29/#example-576)
+### [Example 579](https://spec.commonmark.org/0.30/#example-579)
 
 This markdown:
 
@@ -5729,7 +5705,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 577](https://spec.commonmark.org/0.29/#example-577)
+### [Example 580](https://spec.commonmark.org/0.30/#example-580)
 
 This markdown:
 
@@ -5747,7 +5723,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 578](https://spec.commonmark.org/0.29/#example-578)
+### [Example 581](https://spec.commonmark.org/0.30/#example-581)
 
 This markdown:
 
@@ -5767,7 +5743,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 579](https://spec.commonmark.org/0.29/#example-579)
+### [Example 582](https://spec.commonmark.org/0.30/#example-582)
 
 This markdown:
 
@@ -5787,7 +5763,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 580](https://spec.commonmark.org/0.29/#example-580)
+### [Example 583](https://spec.commonmark.org/0.30/#example-583)
 
 This markdown:
 
@@ -5807,7 +5783,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 581](https://spec.commonmark.org/0.29/#example-581)
+### [Example 584](https://spec.commonmark.org/0.30/#example-584)
 
 This markdown:
 
@@ -5827,7 +5803,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 582](https://spec.commonmark.org/0.29/#example-582)
+### [Example 585](https://spec.commonmark.org/0.30/#example-585)
 
 This markdown:
 
@@ -5847,7 +5823,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 583](https://spec.commonmark.org/0.29/#example-583)
+### [Example 586](https://spec.commonmark.org/0.30/#example-586)
 
 This markdown:
 
@@ -5869,7 +5845,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 584](https://spec.commonmark.org/0.29/#example-584)
+### [Example 587](https://spec.commonmark.org/0.30/#example-587)
 
 This markdown:
 
@@ -5889,7 +5865,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 585](https://spec.commonmark.org/0.29/#example-585)
+### [Example 588](https://spec.commonmark.org/0.30/#example-588)
 
 This markdown:
 
@@ -5909,7 +5885,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 586](https://spec.commonmark.org/0.29/#example-586)
+### [Example 589](https://spec.commonmark.org/0.30/#example-589)
 
 This markdown:
 
@@ -5930,7 +5906,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 587](https://spec.commonmark.org/0.29/#example-587)
+### [Example 590](https://spec.commonmark.org/0.30/#example-590)
 
 This markdown:
 
@@ -5950,7 +5926,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 588](https://spec.commonmark.org/0.29/#example-588)
+### [Example 591](https://spec.commonmark.org/0.30/#example-591)
 
 This markdown:
 
@@ -5970,7 +5946,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 589](https://spec.commonmark.org/0.29/#example-589)
+### [Example 592](https://spec.commonmark.org/0.30/#example-592)
 
 This markdown:
 
@@ -5992,7 +5968,7 @@ Gives this correct output:
 
 ## Indented code blocks
 
-### [Example 77](https://spec.commonmark.org/0.29/#example-77)
+### [Example 107](https://spec.commonmark.org/0.30/#example-107)
 
 This markdown:
 
@@ -6013,7 +5989,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 78](https://spec.commonmark.org/0.29/#example-78)
+### [Example 108](https://spec.commonmark.org/0.30/#example-108)
 
 This markdown:
 
@@ -6038,7 +6014,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 79](https://spec.commonmark.org/0.29/#example-79)
+### [Example 109](https://spec.commonmark.org/0.30/#example-109)
 
 This markdown:
 
@@ -6065,7 +6041,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 80](https://spec.commonmark.org/0.29/#example-80)
+### [Example 110](https://spec.commonmark.org/0.30/#example-110)
 
 This markdown:
 
@@ -6090,7 +6066,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 81](https://spec.commonmark.org/0.29/#example-81)
+### [Example 111](https://spec.commonmark.org/0.30/#example-111)
 
 This markdown:
 
@@ -6121,7 +6097,7 @@ chunk3
 
 ````````````
 
-### [Example 82](https://spec.commonmark.org/0.29/#example-82)
+### [Example 112](https://spec.commonmark.org/0.30/#example-112)
 
 This markdown:
 
@@ -6144,7 +6120,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 83](https://spec.commonmark.org/0.29/#example-83)
+### [Example 113](https://spec.commonmark.org/0.30/#example-113)
 
 This markdown:
 
@@ -6165,7 +6141,7 @@ bar</p>
 
 ````````````
 
-### [Example 84](https://spec.commonmark.org/0.29/#example-84)
+### [Example 114](https://spec.commonmark.org/0.30/#example-114)
 
 This markdown:
 
@@ -6186,7 +6162,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 85](https://spec.commonmark.org/0.29/#example-85)
+### [Example 115](https://spec.commonmark.org/0.30/#example-115)
 
 This markdown:
 
@@ -6215,7 +6191,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 86](https://spec.commonmark.org/0.29/#example-86)
+### [Example 116](https://spec.commonmark.org/0.30/#example-116)
 
 This markdown:
 
@@ -6236,7 +6212,7 @@ bar
 
 ````````````
 
-### [Example 87](https://spec.commonmark.org/0.29/#example-87)
+### [Example 117](https://spec.commonmark.org/0.30/#example-117)
 
 This markdown:
 
@@ -6259,7 +6235,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 88](https://spec.commonmark.org/0.29/#example-88)
+### [Example 118](https://spec.commonmark.org/0.30/#example-118)
 
 This markdown:
 
@@ -6280,7 +6256,7 @@ Gives this correct output:
 
 ## Inlines
 
-### [Example 297](https://spec.commonmark.org/0.29/#example-297)
+### [Example 327](https://spec.commonmark.org/0.30/#example-327)
 
 This markdown:
 
@@ -6300,7 +6276,7 @@ Gives this correct output:
 
 ## Link reference definitions
 
-### [Example 161](https://spec.commonmark.org/0.29/#example-161)
+### [Example 192](https://spec.commonmark.org/0.30/#example-192)
 
 This markdown:
 
@@ -6320,7 +6296,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 162](https://spec.commonmark.org/0.29/#example-162)
+### [Example 193](https://spec.commonmark.org/0.30/#example-193)
 
 This markdown:
 
@@ -6342,7 +6318,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 164](https://spec.commonmark.org/0.29/#example-164)
+### [Example 195](https://spec.commonmark.org/0.30/#example-195)
 
 This markdown:
 
@@ -6364,7 +6340,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 165](https://spec.commonmark.org/0.29/#example-165)
+### [Example 196](https://spec.commonmark.org/0.30/#example-196)
 
 This markdown:
 
@@ -6392,7 +6368,7 @@ line2
 
 ````````````
 
-### [Example 166](https://spec.commonmark.org/0.29/#example-166)
+### [Example 197](https://spec.commonmark.org/0.30/#example-197)
 
 This markdown:
 
@@ -6416,7 +6392,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 167](https://spec.commonmark.org/0.29/#example-167)
+### [Example 198](https://spec.commonmark.org/0.30/#example-198)
 
 This markdown:
 
@@ -6437,7 +6413,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 168](https://spec.commonmark.org/0.29/#example-168)
+### [Example 199](https://spec.commonmark.org/0.30/#example-199)
 
 This markdown:
 
@@ -6458,7 +6434,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 169](https://spec.commonmark.org/0.29/#example-169)
+### [Example 200](https://spec.commonmark.org/0.30/#example-200)
 
 This markdown:
 
@@ -6478,7 +6454,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 172](https://spec.commonmark.org/0.29/#example-172)
+### [Example 203](https://spec.commonmark.org/0.30/#example-203)
 
 This markdown:
 
@@ -6498,7 +6474,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 173](https://spec.commonmark.org/0.29/#example-173)
+### [Example 204](https://spec.commonmark.org/0.30/#example-204)
 
 This markdown:
 
@@ -6519,7 +6495,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 174](https://spec.commonmark.org/0.29/#example-174)
+### [Example 205](https://spec.commonmark.org/0.30/#example-205)
 
 This markdown:
 
@@ -6539,7 +6515,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 175](https://spec.commonmark.org/0.29/#example-175)
+### [Example 206](https://spec.commonmark.org/0.30/#example-206)
 
 This markdown:
 
@@ -6559,7 +6535,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 176](https://spec.commonmark.org/0.29/#example-176)
+### [Example 207](https://spec.commonmark.org/0.30/#example-207)
 
 This markdown:
 
@@ -6576,7 +6552,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 177](https://spec.commonmark.org/0.29/#example-177)
+### [Example 208](https://spec.commonmark.org/0.30/#example-208)
 
 This markdown:
 
@@ -6597,7 +6573,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 178](https://spec.commonmark.org/0.29/#example-178)
+### [Example 209](https://spec.commonmark.org/0.30/#example-209)
 
 This markdown:
 
@@ -6615,7 +6591,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 179](https://spec.commonmark.org/0.29/#example-179)
+### [Example 210](https://spec.commonmark.org/0.30/#example-210)
 
 This markdown:
 
@@ -6634,7 +6610,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 180](https://spec.commonmark.org/0.29/#example-180)
+### [Example 211](https://spec.commonmark.org/0.30/#example-211)
 
 This markdown:
 
@@ -6656,7 +6632,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 181](https://spec.commonmark.org/0.29/#example-181)
+### [Example 212](https://spec.commonmark.org/0.30/#example-212)
 
 This markdown:
 
@@ -6680,7 +6656,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 183](https://spec.commonmark.org/0.29/#example-183)
+### [Example 214](https://spec.commonmark.org/0.30/#example-214)
 
 This markdown:
 
@@ -6703,7 +6679,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 184](https://spec.commonmark.org/0.29/#example-184)
+### [Example 215](https://spec.commonmark.org/0.30/#example-215)
 
 This markdown:
 
@@ -6725,7 +6701,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 185](https://spec.commonmark.org/0.29/#example-185)
+### [Example 216](https://spec.commonmark.org/0.30/#example-216)
 
 This markdown:
 
@@ -6746,7 +6722,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 186](https://spec.commonmark.org/0.29/#example-186)
+### [Example 217](https://spec.commonmark.org/0.30/#example-217)
 
 This markdown:
 
@@ -6773,7 +6749,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 187](https://spec.commonmark.org/0.29/#example-187)
+### [Example 218](https://spec.commonmark.org/0.30/#example-218)
 
 This markdown:
 
@@ -6795,26 +6771,9 @@ Gives this correct output:
 
 ````````````
 
-### [Example 188](https://spec.commonmark.org/0.29/#example-188)
-
-This markdown:
-
-
-````````````markdown
-[foo]: /url
-
-````````````
-
-Gives this correct output:
-
-
-````````````html
-
-````````````
-
 ## Links
 
-### [Example 481](https://spec.commonmark.org/0.29/#example-481)
+### [Example 481](https://spec.commonmark.org/0.30/#example-481)
 
 This markdown:
 
@@ -6832,7 +6791,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 482](https://spec.commonmark.org/0.29/#example-482)
+### [Example 482](https://spec.commonmark.org/0.30/#example-482)
 
 This markdown:
 
@@ -6850,7 +6809,25 @@ Gives this correct output:
 
 ````````````
 
-### [Example 483](https://spec.commonmark.org/0.29/#example-483)
+### [Example 483](https://spec.commonmark.org/0.30/#example-483)
+
+This markdown:
+
+
+````````````markdown
+[](./target.md)
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p><a href="./target.md"></a></p>
+
+````````````
+
+### [Example 484](https://spec.commonmark.org/0.30/#example-484)
 
 This markdown:
 
@@ -6868,7 +6845,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 484](https://spec.commonmark.org/0.29/#example-484)
+### [Example 485](https://spec.commonmark.org/0.30/#example-485)
 
 This markdown:
 
@@ -6886,7 +6863,25 @@ Gives this correct output:
 
 ````````````
 
-### [Example 485](https://spec.commonmark.org/0.29/#example-485)
+### [Example 486](https://spec.commonmark.org/0.30/#example-486)
+
+This markdown:
+
+
+````````````markdown
+[]()
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p><a href=""></a></p>
+
+````````````
+
+### [Example 487](https://spec.commonmark.org/0.30/#example-487)
 
 This markdown:
 
@@ -6904,7 +6899,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 486](https://spec.commonmark.org/0.29/#example-486)
+### [Example 488](https://spec.commonmark.org/0.30/#example-488)
 
 This markdown:
 
@@ -6922,7 +6917,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 487](https://spec.commonmark.org/0.29/#example-487)
+### [Example 489](https://spec.commonmark.org/0.30/#example-489)
 
 This markdown:
 
@@ -6942,7 +6937,7 @@ bar)</p>
 
 ````````````
 
-### [Example 489](https://spec.commonmark.org/0.29/#example-489)
+### [Example 491](https://spec.commonmark.org/0.30/#example-491)
 
 This markdown:
 
@@ -6960,7 +6955,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 492](https://spec.commonmark.org/0.29/#example-492)
+### [Example 494](https://spec.commonmark.org/0.30/#example-494)
 
 This markdown:
 
@@ -6978,7 +6973,25 @@ Gives this correct output:
 
 ````````````
 
-### [Example 494](https://spec.commonmark.org/0.29/#example-494)
+### [Example 496](https://spec.commonmark.org/0.30/#example-496)
+
+This markdown:
+
+
+````````````markdown
+[link](foo(and(bar))
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p>[link](foo(and(bar))</p>
+
+````````````
+
+### [Example 497](https://spec.commonmark.org/0.30/#example-497)
 
 This markdown:
 
@@ -6996,7 +7009,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 495](https://spec.commonmark.org/0.29/#example-495)
+### [Example 498](https://spec.commonmark.org/0.30/#example-498)
 
 This markdown:
 
@@ -7014,7 +7027,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 496](https://spec.commonmark.org/0.29/#example-496)
+### [Example 499](https://spec.commonmark.org/0.30/#example-499)
 
 This markdown:
 
@@ -7032,7 +7045,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 497](https://spec.commonmark.org/0.29/#example-497)
+### [Example 500](https://spec.commonmark.org/0.30/#example-500)
 
 This markdown:
 
@@ -7056,7 +7069,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 498](https://spec.commonmark.org/0.29/#example-498)
+### [Example 501](https://spec.commonmark.org/0.30/#example-501)
 
 This markdown:
 
@@ -7074,7 +7087,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 499](https://spec.commonmark.org/0.29/#example-499)
+### [Example 502](https://spec.commonmark.org/0.30/#example-502)
 
 This markdown:
 
@@ -7092,7 +7105,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 500](https://spec.commonmark.org/0.29/#example-500)
+### [Example 503](https://spec.commonmark.org/0.30/#example-503)
 
 This markdown:
 
@@ -7110,7 +7123,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 501](https://spec.commonmark.org/0.29/#example-501)
+### [Example 504](https://spec.commonmark.org/0.30/#example-504)
 
 This markdown:
 
@@ -7132,7 +7145,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 503](https://spec.commonmark.org/0.29/#example-503)
+### [Example 506](https://spec.commonmark.org/0.30/#example-506)
 
 This markdown:
 
@@ -7150,7 +7163,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 504](https://spec.commonmark.org/0.29/#example-504)
+### [Example 507](https://spec.commonmark.org/0.30/#example-507)
 
 This markdown:
 
@@ -7168,7 +7181,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 506](https://spec.commonmark.org/0.29/#example-506)
+### [Example 509](https://spec.commonmark.org/0.30/#example-509)
 
 This markdown:
 
@@ -7187,7 +7200,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 507](https://spec.commonmark.org/0.29/#example-507)
+### [Example 510](https://spec.commonmark.org/0.30/#example-510)
 
 This markdown:
 
@@ -7205,7 +7218,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 508](https://spec.commonmark.org/0.29/#example-508)
+### [Example 511](https://spec.commonmark.org/0.30/#example-511)
 
 This markdown:
 
@@ -7223,7 +7236,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 509](https://spec.commonmark.org/0.29/#example-509)
+### [Example 512](https://spec.commonmark.org/0.30/#example-512)
 
 This markdown:
 
@@ -7241,7 +7254,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 510](https://spec.commonmark.org/0.29/#example-510)
+### [Example 513](https://spec.commonmark.org/0.30/#example-513)
 
 This markdown:
 
@@ -7259,7 +7272,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 511](https://spec.commonmark.org/0.29/#example-511)
+### [Example 514](https://spec.commonmark.org/0.30/#example-514)
 
 This markdown:
 
@@ -7277,7 +7290,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 512](https://spec.commonmark.org/0.29/#example-512)
+### [Example 515](https://spec.commonmark.org/0.30/#example-515)
 
 This markdown:
 
@@ -7295,7 +7308,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 513](https://spec.commonmark.org/0.29/#example-513)
+### [Example 516](https://spec.commonmark.org/0.30/#example-516)
 
 This markdown:
 
@@ -7313,7 +7326,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 514](https://spec.commonmark.org/0.29/#example-514)
+### [Example 517](https://spec.commonmark.org/0.30/#example-517)
 
 This markdown:
 
@@ -7331,7 +7344,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 515](https://spec.commonmark.org/0.29/#example-515)
+### [Example 518](https://spec.commonmark.org/0.30/#example-518)
 
 This markdown:
 
@@ -7349,7 +7362,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 516](https://spec.commonmark.org/0.29/#example-516)
+### [Example 519](https://spec.commonmark.org/0.30/#example-519)
 
 This markdown:
 
@@ -7367,7 +7380,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 517](https://spec.commonmark.org/0.29/#example-517)
+### [Example 520](https://spec.commonmark.org/0.30/#example-520)
 
 This markdown:
 
@@ -7385,7 +7398,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 518](https://spec.commonmark.org/0.29/#example-518)
+### [Example 521](https://spec.commonmark.org/0.30/#example-521)
 
 This markdown:
 
@@ -7403,7 +7416,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 519](https://spec.commonmark.org/0.29/#example-519)
+### [Example 522](https://spec.commonmark.org/0.30/#example-522)
 
 This markdown:
 
@@ -7421,7 +7434,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 521](https://spec.commonmark.org/0.29/#example-521)
+### [Example 524](https://spec.commonmark.org/0.30/#example-524)
 
 This markdown:
 
@@ -7439,7 +7452,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 522](https://spec.commonmark.org/0.29/#example-522)
+### [Example 525](https://spec.commonmark.org/0.30/#example-525)
 
 This markdown:
 
@@ -7457,7 +7470,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 523](https://spec.commonmark.org/0.29/#example-523)
+### [Example 526](https://spec.commonmark.org/0.30/#example-526)
 
 This markdown:
 
@@ -7477,7 +7490,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 524](https://spec.commonmark.org/0.29/#example-524)
+### [Example 527](https://spec.commonmark.org/0.30/#example-527)
 
 This markdown:
 
@@ -7497,7 +7510,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 525](https://spec.commonmark.org/0.29/#example-525)
+### [Example 528](https://spec.commonmark.org/0.30/#example-528)
 
 This markdown:
 
@@ -7517,7 +7530,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 526](https://spec.commonmark.org/0.29/#example-526)
+### [Example 529](https://spec.commonmark.org/0.30/#example-529)
 
 This markdown:
 
@@ -7537,7 +7550,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 527](https://spec.commonmark.org/0.29/#example-527)
+### [Example 530](https://spec.commonmark.org/0.30/#example-530)
 
 This markdown:
 
@@ -7557,7 +7570,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 528](https://spec.commonmark.org/0.29/#example-528)
+### [Example 531](https://spec.commonmark.org/0.30/#example-531)
 
 This markdown:
 
@@ -7577,7 +7590,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 529](https://spec.commonmark.org/0.29/#example-529)
+### [Example 532](https://spec.commonmark.org/0.30/#example-532)
 
 This markdown:
 
@@ -7597,7 +7610,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 530](https://spec.commonmark.org/0.29/#example-530)
+### [Example 533](https://spec.commonmark.org/0.30/#example-533)
 
 This markdown:
 
@@ -7617,13 +7630,13 @@ Gives this correct output:
 
 ````````````
 
-### [Example 531](https://spec.commonmark.org/0.29/#example-531)
+### [Example 534](https://spec.commonmark.org/0.30/#example-534)
 
 This markdown:
 
 
 ````````````markdown
-[foo *bar][ref]
+[foo *bar][ref]*
 
 [ref]: /uri
 
@@ -7633,11 +7646,11 @@ Gives this correct output:
 
 
 ````````````html
-<p><a href="/uri">foo *bar</a></p>
+<p><a href="/uri">foo *bar</a>*</p>
 
 ````````````
 
-### [Example 533](https://spec.commonmark.org/0.29/#example-533)
+### [Example 536](https://spec.commonmark.org/0.30/#example-536)
 
 This markdown:
 
@@ -7657,7 +7670,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 534](https://spec.commonmark.org/0.29/#example-534)
+### [Example 537](https://spec.commonmark.org/0.30/#example-537)
 
 This markdown:
 
@@ -7677,7 +7690,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 535](https://spec.commonmark.org/0.29/#example-535)
+### [Example 538](https://spec.commonmark.org/0.30/#example-538)
 
 This markdown:
 
@@ -7697,27 +7710,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 536](https://spec.commonmark.org/0.29/#example-536)
-
-This markdown:
-
-
-````````````markdown
-[Толпой][Толпой] is a Russian word.
-
-[ТОЛПОЙ]: /url
-
-````````````
-
-Gives this correct output:
-
-
-````````````html
-<p><a href="/url">Толпой</a> is a Russian word.</p>
-
-````````````
-
-### [Example 538](https://spec.commonmark.org/0.29/#example-538)
+### [Example 541](https://spec.commonmark.org/0.30/#example-541)
 
 This markdown:
 
@@ -7737,7 +7730,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 539](https://spec.commonmark.org/0.29/#example-539)
+### [Example 542](https://spec.commonmark.org/0.30/#example-542)
 
 This markdown:
 
@@ -7759,7 +7752,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 540](https://spec.commonmark.org/0.29/#example-540)
+### [Example 543](https://spec.commonmark.org/0.30/#example-543)
 
 This markdown:
 
@@ -7781,7 +7774,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 541](https://spec.commonmark.org/0.29/#example-541)
+### [Example 544](https://spec.commonmark.org/0.30/#example-544)
 
 This markdown:
 
@@ -7801,7 +7794,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 543](https://spec.commonmark.org/0.29/#example-543)
+### [Example 546](https://spec.commonmark.org/0.30/#example-546)
 
 This markdown:
 
@@ -7822,7 +7815,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 544](https://spec.commonmark.org/0.29/#example-544)
+### [Example 547](https://spec.commonmark.org/0.30/#example-547)
 
 This markdown:
 
@@ -7843,7 +7836,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 545](https://spec.commonmark.org/0.29/#example-545)
+### [Example 548](https://spec.commonmark.org/0.30/#example-548)
 
 This markdown:
 
@@ -7863,7 +7856,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 546](https://spec.commonmark.org/0.29/#example-546)
+### [Example 549](https://spec.commonmark.org/0.30/#example-549)
 
 This markdown:
 
@@ -7883,7 +7876,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 549](https://spec.commonmark.org/0.29/#example-549)
+### [Example 552](https://spec.commonmark.org/0.30/#example-552)
 
 This markdown:
 
@@ -7903,7 +7896,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 550](https://spec.commonmark.org/0.29/#example-550)
+### [Example 553](https://spec.commonmark.org/0.30/#example-553)
 
 This markdown:
 
@@ -7923,7 +7916,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 551](https://spec.commonmark.org/0.29/#example-551)
+### [Example 554](https://spec.commonmark.org/0.30/#example-554)
 
 This markdown:
 
@@ -7943,7 +7936,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 552](https://spec.commonmark.org/0.29/#example-552)
+### [Example 555](https://spec.commonmark.org/0.30/#example-555)
 
 This markdown:
 
@@ -7965,7 +7958,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 553](https://spec.commonmark.org/0.29/#example-553)
+### [Example 556](https://spec.commonmark.org/0.30/#example-556)
 
 This markdown:
 
@@ -7985,7 +7978,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 554](https://spec.commonmark.org/0.29/#example-554)
+### [Example 557](https://spec.commonmark.org/0.30/#example-557)
 
 This markdown:
 
@@ -8005,7 +7998,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 555](https://spec.commonmark.org/0.29/#example-555)
+### [Example 558](https://spec.commonmark.org/0.30/#example-558)
 
 This markdown:
 
@@ -8025,7 +8018,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 556](https://spec.commonmark.org/0.29/#example-556)
+### [Example 559](https://spec.commonmark.org/0.30/#example-559)
 
 This markdown:
 
@@ -8045,7 +8038,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 557](https://spec.commonmark.org/0.29/#example-557)
+### [Example 560](https://spec.commonmark.org/0.30/#example-560)
 
 This markdown:
 
@@ -8065,7 +8058,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 558](https://spec.commonmark.org/0.29/#example-558)
+### [Example 561](https://spec.commonmark.org/0.30/#example-561)
 
 This markdown:
 
@@ -8085,7 +8078,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 559](https://spec.commonmark.org/0.29/#example-559)
+### [Example 562](https://spec.commonmark.org/0.30/#example-562)
 
 This markdown:
 
@@ -8105,7 +8098,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 560](https://spec.commonmark.org/0.29/#example-560)
+### [Example 563](https://spec.commonmark.org/0.30/#example-563)
 
 This markdown:
 
@@ -8125,7 +8118,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 561](https://spec.commonmark.org/0.29/#example-561)
+### [Example 564](https://spec.commonmark.org/0.30/#example-564)
 
 This markdown:
 
@@ -8146,7 +8139,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 562](https://spec.commonmark.org/0.29/#example-562)
+### [Example 565](https://spec.commonmark.org/0.30/#example-565)
 
 This markdown:
 
@@ -8166,7 +8159,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 563](https://spec.commonmark.org/0.29/#example-563)
+### [Example 566](https://spec.commonmark.org/0.30/#example-566)
 
 This markdown:
 
@@ -8186,7 +8179,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 564](https://spec.commonmark.org/0.29/#example-564)
+### [Example 567](https://spec.commonmark.org/0.30/#example-567)
 
 This markdown:
 
@@ -8206,7 +8199,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 565](https://spec.commonmark.org/0.29/#example-565)
+### [Example 568](https://spec.commonmark.org/0.30/#example-568)
 
 This markdown:
 
@@ -8226,7 +8219,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 566](https://spec.commonmark.org/0.29/#example-566)
+### [Example 569](https://spec.commonmark.org/0.30/#example-569)
 
 This markdown:
 
@@ -8247,7 +8240,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 567](https://spec.commonmark.org/0.29/#example-567)
+### [Example 570](https://spec.commonmark.org/0.30/#example-570)
 
 This markdown:
 
@@ -8270,7 +8263,7 @@ Gives this correct output:
 
 ## List items
 
-### [Example 223](https://spec.commonmark.org/0.29/#example-223)
+### [Example 253](https://spec.commonmark.org/0.30/#example-253)
 
 This markdown:
 
@@ -8299,7 +8292,7 @@ with two lines.</p>
 
 ````````````
 
-### [Example 224](https://spec.commonmark.org/0.29/#example-224)
+### [Example 254](https://spec.commonmark.org/0.30/#example-254)
 
 This markdown:
 
@@ -8332,7 +8325,7 @@ with two lines.</p>
 
 ````````````
 
-### [Example 225](https://spec.commonmark.org/0.29/#example-225)
+### [Example 255](https://spec.commonmark.org/0.30/#example-255)
 
 This markdown:
 
@@ -8355,7 +8348,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 226](https://spec.commonmark.org/0.29/#example-226)
+### [Example 256](https://spec.commonmark.org/0.30/#example-256)
 
 This markdown:
 
@@ -8380,7 +8373,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 227](https://spec.commonmark.org/0.29/#example-227)
+### [Example 257](https://spec.commonmark.org/0.30/#example-257)
 
 This markdown:
 
@@ -8404,7 +8397,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 228](https://spec.commonmark.org/0.29/#example-228)
+### [Example 258](https://spec.commonmark.org/0.30/#example-258)
 
 This markdown:
 
@@ -8429,7 +8422,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 229](https://spec.commonmark.org/0.29/#example-229)
+### [Example 259](https://spec.commonmark.org/0.30/#example-259)
 
 This markdown:
 
@@ -8458,7 +8451,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 230](https://spec.commonmark.org/0.29/#example-230)
+### [Example 260](https://spec.commonmark.org/0.30/#example-260)
 
 This markdown:
 
@@ -8485,7 +8478,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 231](https://spec.commonmark.org/0.29/#example-231)
+### [Example 261](https://spec.commonmark.org/0.30/#example-261)
 
 This markdown:
 
@@ -8506,7 +8499,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 232](https://spec.commonmark.org/0.29/#example-232)
+### [Example 262](https://spec.commonmark.org/0.30/#example-262)
 
 This markdown:
 
@@ -8532,7 +8525,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 233](https://spec.commonmark.org/0.29/#example-233)
+### [Example 263](https://spec.commonmark.org/0.30/#example-263)
 
 This markdown:
 
@@ -8568,7 +8561,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 234](https://spec.commonmark.org/0.29/#example-234)
+### [Example 264](https://spec.commonmark.org/0.30/#example-264)
 
 This markdown:
 
@@ -8600,7 +8593,7 @@ baz
 
 ````````````
 
-### [Example 235](https://spec.commonmark.org/0.29/#example-235)
+### [Example 265](https://spec.commonmark.org/0.30/#example-265)
 
 This markdown:
 
@@ -8620,7 +8613,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 236](https://spec.commonmark.org/0.29/#example-236)
+### [Example 266](https://spec.commonmark.org/0.30/#example-266)
 
 This markdown:
 
@@ -8638,7 +8631,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 237](https://spec.commonmark.org/0.29/#example-237)
+### [Example 267](https://spec.commonmark.org/0.30/#example-267)
 
 This markdown:
 
@@ -8658,7 +8651,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 238](https://spec.commonmark.org/0.29/#example-238)
+### [Example 268](https://spec.commonmark.org/0.30/#example-268)
 
 This markdown:
 
@@ -8678,7 +8671,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 239](https://spec.commonmark.org/0.29/#example-239)
+### [Example 269](https://spec.commonmark.org/0.30/#example-269)
 
 This markdown:
 
@@ -8696,7 +8689,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 240](https://spec.commonmark.org/0.29/#example-240)
+### [Example 270](https://spec.commonmark.org/0.30/#example-270)
 
 This markdown:
 
@@ -8722,7 +8715,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 241](https://spec.commonmark.org/0.29/#example-241)
+### [Example 271](https://spec.commonmark.org/0.30/#example-271)
 
 This markdown:
 
@@ -8748,7 +8741,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 242](https://spec.commonmark.org/0.29/#example-242)
+### [Example 272](https://spec.commonmark.org/0.30/#example-272)
 
 This markdown:
 
@@ -8774,7 +8767,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 243](https://spec.commonmark.org/0.29/#example-243)
+### [Example 273](https://spec.commonmark.org/0.30/#example-273)
 
 This markdown:
 
@@ -8804,7 +8797,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 244](https://spec.commonmark.org/0.29/#example-244)
+### [Example 274](https://spec.commonmark.org/0.30/#example-274)
 
 This markdown:
 
@@ -8834,7 +8827,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 245](https://spec.commonmark.org/0.29/#example-245)
+### [Example 275](https://spec.commonmark.org/0.30/#example-275)
 
 This markdown:
 
@@ -8855,7 +8848,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 246](https://spec.commonmark.org/0.29/#example-246)
+### [Example 276](https://spec.commonmark.org/0.30/#example-276)
 
 This markdown:
 
@@ -8878,7 +8871,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 247](https://spec.commonmark.org/0.29/#example-247)
+### [Example 277](https://spec.commonmark.org/0.30/#example-277)
 
 This markdown:
 
@@ -8903,7 +8896,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 248](https://spec.commonmark.org/0.29/#example-248)
+### [Example 278](https://spec.commonmark.org/0.30/#example-278)
 
 This markdown:
 
@@ -8938,7 +8931,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 249](https://spec.commonmark.org/0.29/#example-249)
+### [Example 279](https://spec.commonmark.org/0.30/#example-279)
 
 This markdown:
 
@@ -8959,7 +8952,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 250](https://spec.commonmark.org/0.29/#example-250)
+### [Example 280](https://spec.commonmark.org/0.30/#example-280)
 
 This markdown:
 
@@ -8982,7 +8975,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 251](https://spec.commonmark.org/0.29/#example-251)
+### [Example 281](https://spec.commonmark.org/0.30/#example-281)
 
 This markdown:
 
@@ -9006,7 +8999,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 252](https://spec.commonmark.org/0.29/#example-252)
+### [Example 282](https://spec.commonmark.org/0.30/#example-282)
 
 This markdown:
 
@@ -9030,7 +9023,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 253](https://spec.commonmark.org/0.29/#example-253)
+### [Example 283](https://spec.commonmark.org/0.30/#example-283)
 
 This markdown:
 
@@ -9054,7 +9047,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 254](https://spec.commonmark.org/0.29/#example-254)
+### [Example 284](https://spec.commonmark.org/0.30/#example-284)
 
 This markdown:
 
@@ -9074,7 +9067,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 255](https://spec.commonmark.org/0.29/#example-255)
+### [Example 285](https://spec.commonmark.org/0.30/#example-285)
 
 This markdown:
 
@@ -9099,7 +9092,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 256](https://spec.commonmark.org/0.29/#example-256)
+### [Example 286](https://spec.commonmark.org/0.30/#example-286)
 
 This markdown:
 
@@ -9132,7 +9125,7 @@ with two lines.</p>
 
 ````````````
 
-### [Example 257](https://spec.commonmark.org/0.29/#example-257)
+### [Example 287](https://spec.commonmark.org/0.30/#example-287)
 
 This markdown:
 
@@ -9165,7 +9158,7 @@ with two lines.</p>
 
 ````````````
 
-### [Example 258](https://spec.commonmark.org/0.29/#example-258)
+### [Example 288](https://spec.commonmark.org/0.30/#example-288)
 
 This markdown:
 
@@ -9198,7 +9191,7 @@ with two lines.</p>
 
 ````````````
 
-### [Example 259](https://spec.commonmark.org/0.29/#example-259)
+### [Example 289](https://spec.commonmark.org/0.30/#example-289)
 
 This markdown:
 
@@ -9227,7 +9220,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 260](https://spec.commonmark.org/0.29/#example-260)
+### [Example 290](https://spec.commonmark.org/0.30/#example-290)
 
 This markdown:
 
@@ -9260,7 +9253,7 @@ with two lines.</p>
 
 ````````````
 
-### [Example 261](https://spec.commonmark.org/0.29/#example-261)
+### [Example 291](https://spec.commonmark.org/0.30/#example-291)
 
 This markdown:
 
@@ -9282,7 +9275,7 @@ with two lines.</li>
 
 ````````````
 
-### [Example 262](https://spec.commonmark.org/0.29/#example-262)
+### [Example 292](https://spec.commonmark.org/0.30/#example-292)
 
 This markdown:
 
@@ -9310,7 +9303,7 @@ continued here.</p>
 
 ````````````
 
-### [Example 263](https://spec.commonmark.org/0.29/#example-263)
+### [Example 293](https://spec.commonmark.org/0.30/#example-293)
 
 This markdown:
 
@@ -9338,7 +9331,7 @@ continued here.</p>
 
 ````````````
 
-### [Example 264](https://spec.commonmark.org/0.29/#example-264)
+### [Example 294](https://spec.commonmark.org/0.30/#example-294)
 
 This markdown:
 
@@ -9373,7 +9366,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 265](https://spec.commonmark.org/0.29/#example-265)
+### [Example 295](https://spec.commonmark.org/0.30/#example-295)
 
 This markdown:
 
@@ -9399,7 +9392,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 266](https://spec.commonmark.org/0.29/#example-266)
+### [Example 296](https://spec.commonmark.org/0.30/#example-296)
 
 This markdown:
 
@@ -9424,7 +9417,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 267](https://spec.commonmark.org/0.29/#example-267)
+### [Example 297](https://spec.commonmark.org/0.30/#example-297)
 
 This markdown:
 
@@ -9448,7 +9441,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 268](https://spec.commonmark.org/0.29/#example-268)
+### [Example 298](https://spec.commonmark.org/0.30/#example-298)
 
 This markdown:
 
@@ -9472,7 +9465,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 269](https://spec.commonmark.org/0.29/#example-269)
+### [Example 299](https://spec.commonmark.org/0.30/#example-299)
 
 This markdown:
 
@@ -9500,7 +9493,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 270](https://spec.commonmark.org/0.29/#example-270)
+### [Example 300](https://spec.commonmark.org/0.30/#example-300)
 
 This markdown:
 
@@ -9530,7 +9523,7 @@ baz</li>
 
 ## Lists
 
-### [Example 271](https://spec.commonmark.org/0.29/#example-271)
+### [Example 301](https://spec.commonmark.org/0.30/#example-301)
 
 This markdown:
 
@@ -9556,7 +9549,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 272](https://spec.commonmark.org/0.29/#example-272)
+### [Example 302](https://spec.commonmark.org/0.30/#example-302)
 
 This markdown:
 
@@ -9582,7 +9575,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 273](https://spec.commonmark.org/0.29/#example-273)
+### [Example 303](https://spec.commonmark.org/0.30/#example-303)
 
 This markdown:
 
@@ -9606,7 +9599,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 274](https://spec.commonmark.org/0.29/#example-274)
+### [Example 304](https://spec.commonmark.org/0.30/#example-304)
 
 This markdown:
 
@@ -9626,7 +9619,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 275](https://spec.commonmark.org/0.29/#example-275)
+### [Example 305](https://spec.commonmark.org/0.30/#example-305)
 
 This markdown:
 
@@ -9648,7 +9641,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 276](https://spec.commonmark.org/0.29/#example-276)
+### [Example 306](https://spec.commonmark.org/0.30/#example-306)
 
 This markdown:
 
@@ -9681,7 +9674,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 277](https://spec.commonmark.org/0.29/#example-277)
+### [Example 307](https://spec.commonmark.org/0.30/#example-307)
 
 This markdown:
 
@@ -9717,7 +9710,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 278](https://spec.commonmark.org/0.29/#example-278)
+### [Example 308](https://spec.commonmark.org/0.30/#example-308)
 
 This markdown:
 
@@ -9749,7 +9742,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 279](https://spec.commonmark.org/0.29/#example-279)
+### [Example 309](https://spec.commonmark.org/0.30/#example-309)
 
 This markdown:
 
@@ -9786,7 +9779,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 280](https://spec.commonmark.org/0.29/#example-280)
+### [Example 310](https://spec.commonmark.org/0.30/#example-310)
 
 This markdown:
 
@@ -9818,7 +9811,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 281](https://spec.commonmark.org/0.29/#example-281)
+### [Example 311](https://spec.commonmark.org/0.30/#example-311)
 
 This markdown:
 
@@ -9850,7 +9843,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 282](https://spec.commonmark.org/0.29/#example-282)
+### [Example 312](https://spec.commonmark.org/0.30/#example-312)
 
 This markdown:
 
@@ -9878,7 +9871,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 283](https://spec.commonmark.org/0.29/#example-283)
+### [Example 313](https://spec.commonmark.org/0.30/#example-313)
 
 This markdown:
 
@@ -9909,7 +9902,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 284](https://spec.commonmark.org/0.29/#example-284)
+### [Example 314](https://spec.commonmark.org/0.30/#example-314)
 
 This markdown:
 
@@ -9940,7 +9933,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 285](https://spec.commonmark.org/0.29/#example-285)
+### [Example 315](https://spec.commonmark.org/0.30/#example-315)
 
 This markdown:
 
@@ -9969,7 +9962,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 286](https://spec.commonmark.org/0.29/#example-286)
+### [Example 316](https://spec.commonmark.org/0.30/#example-316)
 
 This markdown:
 
@@ -10002,7 +9995,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 287](https://spec.commonmark.org/0.29/#example-287)
+### [Example 317](https://spec.commonmark.org/0.30/#example-317)
 
 This markdown:
 
@@ -10034,7 +10027,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 288](https://spec.commonmark.org/0.29/#example-288)
+### [Example 318](https://spec.commonmark.org/0.30/#example-318)
 
 This markdown:
 
@@ -10067,7 +10060,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 289](https://spec.commonmark.org/0.29/#example-289)
+### [Example 319](https://spec.commonmark.org/0.30/#example-319)
 
 This markdown:
 
@@ -10099,7 +10092,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 290](https://spec.commonmark.org/0.29/#example-290)
+### [Example 320](https://spec.commonmark.org/0.30/#example-320)
 
 This markdown:
 
@@ -10127,7 +10120,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 291](https://spec.commonmark.org/0.29/#example-291)
+### [Example 321](https://spec.commonmark.org/0.30/#example-321)
 
 This markdown:
 
@@ -10159,7 +10152,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 292](https://spec.commonmark.org/0.29/#example-292)
+### [Example 322](https://spec.commonmark.org/0.30/#example-322)
 
 This markdown:
 
@@ -10179,7 +10172,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 293](https://spec.commonmark.org/0.29/#example-293)
+### [Example 323](https://spec.commonmark.org/0.30/#example-323)
 
 This markdown:
 
@@ -10204,7 +10197,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 294](https://spec.commonmark.org/0.29/#example-294)
+### [Example 324](https://spec.commonmark.org/0.30/#example-324)
 
 This markdown:
 
@@ -10232,7 +10225,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 295](https://spec.commonmark.org/0.29/#example-295)
+### [Example 325](https://spec.commonmark.org/0.30/#example-325)
 
 This markdown:
 
@@ -10261,7 +10254,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 296](https://spec.commonmark.org/0.29/#example-296)
+### [Example 326](https://spec.commonmark.org/0.30/#example-326)
 
 This markdown:
 
@@ -10302,7 +10295,7 @@ Gives this correct output:
 
 ## Paragraphs
 
-### [Example 189](https://spec.commonmark.org/0.29/#example-189)
+### [Example 219](https://spec.commonmark.org/0.30/#example-219)
 
 This markdown:
 
@@ -10323,7 +10316,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 190](https://spec.commonmark.org/0.29/#example-190)
+### [Example 220](https://spec.commonmark.org/0.30/#example-220)
 
 This markdown:
 
@@ -10348,7 +10341,7 @@ ddd</p>
 
 ````````````
 
-### [Example 191](https://spec.commonmark.org/0.29/#example-191)
+### [Example 221](https://spec.commonmark.org/0.30/#example-221)
 
 This markdown:
 
@@ -10370,7 +10363,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 192](https://spec.commonmark.org/0.29/#example-192)
+### [Example 222](https://spec.commonmark.org/0.30/#example-222)
 
 This markdown:
 
@@ -10390,7 +10383,7 @@ bbb</p>
 
 ````````````
 
-### [Example 193](https://spec.commonmark.org/0.29/#example-193)
+### [Example 223](https://spec.commonmark.org/0.30/#example-223)
 
 This markdown:
 
@@ -10412,7 +10405,7 @@ ccc</p>
 
 ````````````
 
-### [Example 194](https://spec.commonmark.org/0.29/#example-194)
+### [Example 224](https://spec.commonmark.org/0.30/#example-224)
 
 This markdown:
 
@@ -10432,7 +10425,7 @@ bbb</p>
 
 ````````````
 
-### [Example 195](https://spec.commonmark.org/0.29/#example-195)
+### [Example 225](https://spec.commonmark.org/0.30/#example-225)
 
 This markdown:
 
@@ -10453,7 +10446,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 196](https://spec.commonmark.org/0.29/#example-196)
+### [Example 226](https://spec.commonmark.org/0.30/#example-226)
 
 This markdown:
 
@@ -10475,7 +10468,7 @@ bbb</p>
 
 ## Precedence
 
-### [Example 12](https://spec.commonmark.org/0.29/#example-12)
+### [Example 42](https://spec.commonmark.org/0.30/#example-42)
 
 This markdown:
 
@@ -10499,7 +10492,7 @@ Gives this correct output:
 
 ## Raw HTML
 
-### [Example 621](https://spec.commonmark.org/0.29/#example-621)
+### [Example 624](https://spec.commonmark.org/0.30/#example-624)
 
 This markdown:
 
@@ -10519,7 +10512,7 @@ comment - with hyphen --></p>
 
 ````````````
 
-### [Example 624](https://spec.commonmark.org/0.29/#example-624)
+### [Example 627](https://spec.commonmark.org/0.30/#example-627)
 
 This markdown:
 
@@ -10537,7 +10530,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 625](https://spec.commonmark.org/0.29/#example-625)
+### [Example 628](https://spec.commonmark.org/0.30/#example-628)
 
 This markdown:
 
@@ -10557,7 +10550,7 @@ Gives this correct output:
 
 ## Setext headings
 
-### [Example 50](https://spec.commonmark.org/0.29/#example-50)
+### [Example 80](https://spec.commonmark.org/0.30/#example-80)
 
 This markdown:
 
@@ -10580,7 +10573,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 51](https://spec.commonmark.org/0.29/#example-51)
+### [Example 81](https://spec.commonmark.org/0.30/#example-81)
 
 This markdown:
 
@@ -10601,7 +10594,7 @@ baz</em></h1>
 
 ````````````
 
-### [Example 52](https://spec.commonmark.org/0.29/#example-52)
+### [Example 82](https://spec.commonmark.org/0.30/#example-82)
 
 This markdown:
 
@@ -10622,7 +10615,7 @@ baz</em></h1>
 
 ````````````
 
-### [Example 53](https://spec.commonmark.org/0.29/#example-53)
+### [Example 83](https://spec.commonmark.org/0.30/#example-83)
 
 This markdown:
 
@@ -10645,7 +10638,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 54](https://spec.commonmark.org/0.29/#example-54)
+### [Example 84](https://spec.commonmark.org/0.30/#example-84)
 
 This markdown:
 
@@ -10672,7 +10665,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 55](https://spec.commonmark.org/0.29/#example-55)
+### [Example 85](https://spec.commonmark.org/0.30/#example-85)
 
 This markdown:
 
@@ -10699,7 +10692,7 @@ Foo
 
 ````````````
 
-### [Example 56](https://spec.commonmark.org/0.29/#example-56)
+### [Example 86](https://spec.commonmark.org/0.30/#example-86)
 
 This markdown:
 
@@ -10718,7 +10711,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 57](https://spec.commonmark.org/0.29/#example-57)
+### [Example 87](https://spec.commonmark.org/0.30/#example-87)
 
 This markdown:
 
@@ -10738,7 +10731,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 58](https://spec.commonmark.org/0.29/#example-58)
+### [Example 88](https://spec.commonmark.org/0.30/#example-88)
 
 This markdown:
 
@@ -10763,7 +10756,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 59](https://spec.commonmark.org/0.29/#example-59)
+### [Example 89](https://spec.commonmark.org/0.30/#example-89)
 
 This markdown:
 
@@ -10782,7 +10775,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 60](https://spec.commonmark.org/0.29/#example-60)
+### [Example 90](https://spec.commonmark.org/0.30/#example-90)
 
 This markdown:
 
@@ -10801,7 +10794,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 62](https://spec.commonmark.org/0.29/#example-62)
+### [Example 92](https://spec.commonmark.org/0.30/#example-92)
 
 This markdown:
 
@@ -10823,7 +10816,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 64](https://spec.commonmark.org/0.29/#example-64)
+### [Example 94](https://spec.commonmark.org/0.30/#example-94)
 
 This markdown:
 
@@ -10845,7 +10838,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 65](https://spec.commonmark.org/0.29/#example-65)
+### [Example 95](https://spec.commonmark.org/0.30/#example-95)
 
 This markdown:
 
@@ -10866,7 +10859,7 @@ Bar</h2>
 
 ````````````
 
-### [Example 66](https://spec.commonmark.org/0.29/#example-66)
+### [Example 96](https://spec.commonmark.org/0.30/#example-96)
 
 This markdown:
 
@@ -10892,7 +10885,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 67](https://spec.commonmark.org/0.29/#example-67)
+### [Example 97](https://spec.commonmark.org/0.30/#example-97)
 
 This markdown:
 
@@ -10911,7 +10904,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 68](https://spec.commonmark.org/0.29/#example-68)
+### [Example 98](https://spec.commonmark.org/0.30/#example-98)
 
 This markdown:
 
@@ -10931,7 +10924,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 69](https://spec.commonmark.org/0.29/#example-69)
+### [Example 99](https://spec.commonmark.org/0.30/#example-99)
 
 This markdown:
 
@@ -10953,7 +10946,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 70](https://spec.commonmark.org/0.29/#example-70)
+### [Example 100](https://spec.commonmark.org/0.30/#example-100)
 
 This markdown:
 
@@ -10974,7 +10967,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 71](https://spec.commonmark.org/0.29/#example-71)
+### [Example 101](https://spec.commonmark.org/0.30/#example-101)
 
 This markdown:
 
@@ -10996,7 +10989,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 72](https://spec.commonmark.org/0.29/#example-72)
+### [Example 102](https://spec.commonmark.org/0.30/#example-102)
 
 This markdown:
 
@@ -11015,7 +11008,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 73](https://spec.commonmark.org/0.29/#example-73)
+### [Example 103](https://spec.commonmark.org/0.30/#example-103)
 
 This markdown:
 
@@ -11039,7 +11032,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 74](https://spec.commonmark.org/0.29/#example-74)
+### [Example 104](https://spec.commonmark.org/0.30/#example-104)
 
 This markdown:
 
@@ -11065,7 +11058,7 @@ bar</p>
 
 ````````````
 
-### [Example 75](https://spec.commonmark.org/0.29/#example-75)
+### [Example 105](https://spec.commonmark.org/0.30/#example-105)
 
 This markdown:
 
@@ -11089,7 +11082,7 @@ bar</p>
 
 ````````````
 
-### [Example 76](https://spec.commonmark.org/0.29/#example-76)
+### [Example 106](https://spec.commonmark.org/0.30/#example-106)
 
 This markdown:
 
@@ -11115,7 +11108,7 @@ baz</p>
 
 ## Soft line breaks
 
-### [Example 645](https://spec.commonmark.org/0.29/#example-645)
+### [Example 648](https://spec.commonmark.org/0.30/#example-648)
 
 This markdown:
 
@@ -11135,7 +11128,7 @@ baz</p>
 
 ````````````
 
-### [Example 646](https://spec.commonmark.org/0.29/#example-646)
+### [Example 649](https://spec.commonmark.org/0.30/#example-649)
 
 This markdown:
 
@@ -11157,7 +11150,7 @@ baz</p>
 
 ## Tabs
 
-### [Example 1](https://spec.commonmark.org/0.29/#example-1)
+### [Example 1](https://spec.commonmark.org/0.30/#example-1)
 
 This markdown:
 
@@ -11176,7 +11169,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 2](https://spec.commonmark.org/0.29/#example-2)
+### [Example 2](https://spec.commonmark.org/0.30/#example-2)
 
 This markdown:
 
@@ -11195,7 +11188,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 3](https://spec.commonmark.org/0.29/#example-3)
+### [Example 3](https://spec.commonmark.org/0.30/#example-3)
 
 This markdown:
 
@@ -11216,7 +11209,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 6](https://spec.commonmark.org/0.29/#example-6)
+### [Example 6](https://spec.commonmark.org/0.30/#example-6)
 
 This markdown:
 
@@ -11237,7 +11230,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 8](https://spec.commonmark.org/0.29/#example-8)
+### [Example 8](https://spec.commonmark.org/0.30/#example-8)
 
 This markdown:
 
@@ -11258,7 +11251,7 @@ bar
 
 ````````````
 
-### [Example 10](https://spec.commonmark.org/0.29/#example-10)
+### [Example 10](https://spec.commonmark.org/0.30/#example-10)
 
 This markdown:
 
@@ -11276,7 +11269,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 11](https://spec.commonmark.org/0.29/#example-11)
+### [Example 11](https://spec.commonmark.org/0.30/#example-11)
 
 This markdown:
 
@@ -11296,7 +11289,7 @@ Gives this correct output:
 
 ## Textual content
 
-### [Example 647](https://spec.commonmark.org/0.29/#example-647)
+### [Example 650](https://spec.commonmark.org/0.30/#example-650)
 
 This markdown:
 
@@ -11314,7 +11307,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 648](https://spec.commonmark.org/0.29/#example-648)
+### [Example 651](https://spec.commonmark.org/0.30/#example-651)
 
 This markdown:
 
@@ -11332,7 +11325,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 649](https://spec.commonmark.org/0.29/#example-649)
+### [Example 652](https://spec.commonmark.org/0.30/#example-652)
 
 This markdown:
 
@@ -11352,7 +11345,7 @@ Gives this correct output:
 
 ## Thematic breaks
 
-### [Example 13](https://spec.commonmark.org/0.29/#example-13)
+### [Example 43](https://spec.commonmark.org/0.30/#example-43)
 
 This markdown:
 
@@ -11374,7 +11367,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 14](https://spec.commonmark.org/0.29/#example-14)
+### [Example 44](https://spec.commonmark.org/0.30/#example-44)
 
 This markdown:
 
@@ -11392,7 +11385,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 15](https://spec.commonmark.org/0.29/#example-15)
+### [Example 45](https://spec.commonmark.org/0.30/#example-45)
 
 This markdown:
 
@@ -11410,7 +11403,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 16](https://spec.commonmark.org/0.29/#example-16)
+### [Example 46](https://spec.commonmark.org/0.30/#example-46)
 
 This markdown:
 
@@ -11432,7 +11425,7 @@ __</p>
 
 ````````````
 
-### [Example 17](https://spec.commonmark.org/0.29/#example-17)
+### [Example 47](https://spec.commonmark.org/0.30/#example-47)
 
 This markdown:
 
@@ -11454,7 +11447,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 18](https://spec.commonmark.org/0.29/#example-18)
+### [Example 48](https://spec.commonmark.org/0.30/#example-48)
 
 This markdown:
 
@@ -11473,7 +11466,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 19](https://spec.commonmark.org/0.29/#example-19)
+### [Example 49](https://spec.commonmark.org/0.30/#example-49)
 
 This markdown:
 
@@ -11493,7 +11486,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 20](https://spec.commonmark.org/0.29/#example-20)
+### [Example 50](https://spec.commonmark.org/0.30/#example-50)
 
 This markdown:
 
@@ -11511,7 +11504,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 21](https://spec.commonmark.org/0.29/#example-21)
+### [Example 51](https://spec.commonmark.org/0.30/#example-51)
 
 This markdown:
 
@@ -11529,7 +11522,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 22](https://spec.commonmark.org/0.29/#example-22)
+### [Example 52](https://spec.commonmark.org/0.30/#example-52)
 
 This markdown:
 
@@ -11547,7 +11540,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 23](https://spec.commonmark.org/0.29/#example-23)
+### [Example 53](https://spec.commonmark.org/0.30/#example-53)
 
 This markdown:
 
@@ -11565,7 +11558,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 24](https://spec.commonmark.org/0.29/#example-24)
+### [Example 54](https://spec.commonmark.org/0.30/#example-54)
 
 This markdown:
 
@@ -11583,7 +11576,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 25](https://spec.commonmark.org/0.29/#example-25)
+### [Example 55](https://spec.commonmark.org/0.30/#example-55)
 
 This markdown:
 
@@ -11607,7 +11600,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 26](https://spec.commonmark.org/0.29/#example-26)
+### [Example 56](https://spec.commonmark.org/0.30/#example-56)
 
 This markdown:
 
@@ -11625,7 +11618,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 27](https://spec.commonmark.org/0.29/#example-27)
+### [Example 57](https://spec.commonmark.org/0.30/#example-57)
 
 This markdown:
 
@@ -11651,7 +11644,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 28](https://spec.commonmark.org/0.29/#example-28)
+### [Example 58](https://spec.commonmark.org/0.30/#example-58)
 
 This markdown:
 
@@ -11673,7 +11666,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 29](https://spec.commonmark.org/0.29/#example-29)
+### [Example 59](https://spec.commonmark.org/0.30/#example-59)
 
 This markdown:
 
@@ -11694,7 +11687,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 30](https://spec.commonmark.org/0.29/#example-30)
+### [Example 60](https://spec.commonmark.org/0.30/#example-60)
 
 This markdown:
 
@@ -11720,7 +11713,7 @@ Gives this correct output:
 
 ````````````
 
-### [Example 31](https://spec.commonmark.org/0.29/#example-31)
+### [Example 61](https://spec.commonmark.org/0.30/#example-61)
 
 This markdown:
 

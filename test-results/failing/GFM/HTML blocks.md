@@ -1,6 +1,6 @@
 # GFM - HTML blocks
 
-## [Example 118](https://spec.commonmark.org/0.29/#example-118)
+## [Example 148](https://spec.commonmark.org/0.30/#example-148)
 
 This markdown:
 
@@ -26,7 +26,7 @@ But instead was:
 ````````````html
 <table><tr><td><pre><p><strong>Hello</strong>,</p><p><em>world</em>.</p></pre></td></tr></table>
 ````````````
-## [Example 119](https://spec.commonmark.org/0.29/#example-119)
+## [Example 149](https://spec.commonmark.org/0.30/#example-149)
 
 This markdown:
 
@@ -54,7 +54,7 @@ But instead was:
 ````````````html
 <table><tr><pre><code></code></pre><td><pre><code>hi</code></pre></td></tr></table><p>okay.</p>
 ````````````
-## [Example 120](https://spec.commonmark.org/0.29/#example-120)
+## [Example 150](https://spec.commonmark.org/0.30/#example-150)
 
 This markdown:
 
@@ -76,7 +76,7 @@ But instead was:
 ````````````html
 <p>&lt;div&gt;<em>hello</em>&lt;foo&gt;&lt;a&gt;</p>
 ````````````
-## [Example 121](https://spec.commonmark.org/0.29/#example-121)
+## [Example 151](https://spec.commonmark.org/0.30/#example-151)
 
 This markdown:
 
@@ -97,7 +97,7 @@ But instead was:
 ````````````html
 ERROR Problem at row 1 Expecting at least 1 tag name character
 ````````````
-## [Example 125](https://spec.commonmark.org/0.29/#example-125)
+## [Example 155](https://spec.commonmark.org/0.30/#example-155)
 
 This markdown:
 
@@ -120,7 +120,7 @@ But instead was:
 ````````````html
 ERROR Problem at row 5 Expecting symbol
 ````````````
-## [Example 126](https://spec.commonmark.org/0.29/#example-126)
+## [Example 156](https://spec.commonmark.org/0.30/#example-156)
 
 This markdown:
 
@@ -141,7 +141,7 @@ But instead was:
 ````````````html
 ERROR Problem at row 3 Expecting symbol =
 ````````````
-## [Example 127](https://spec.commonmark.org/0.29/#example-127)
+## [Example 157](https://spec.commonmark.org/0.30/#example-157)
 
 This markdown:
 
@@ -162,7 +162,7 @@ But instead was:
 ````````````html
 ERROR Problem at row 2 Expecting symbol =
 ````````````
-## [Example 128](https://spec.commonmark.org/0.29/#example-128)
+## [Example 158](https://spec.commonmark.org/0.30/#example-158)
 
 This markdown:
 
@@ -183,7 +183,7 @@ But instead was:
 ````````````html
 ERROR Problem at row 1 Expecting symbol =
 ````````````
-## [Example 129](https://spec.commonmark.org/0.29/#example-129)
+## [Example 159](https://spec.commonmark.org/0.30/#example-159)
 
 This markdown:
 
@@ -203,7 +203,7 @@ But instead was:
 ````````````html
 <div><a href="bar"><p><em>foo</em></p></a></div>
 ````````````
-## [Example 130](https://spec.commonmark.org/0.29/#example-130)
+## [Example 160](https://spec.commonmark.org/0.30/#example-160)
 
 This markdown:
 
@@ -225,7 +225,7 @@ But instead was:
 ````````````html
 <table><tr><td><p>foo</p></td></tr></table>
 ````````````
-## [Example 131](https://spec.commonmark.org/0.29/#example-131)
+## [Example 161](https://spec.commonmark.org/0.30/#example-161)
 
 This markdown:
 
@@ -248,7 +248,7 @@ But instead was:
 ````````````html
 <div></div><pre><code class="language-c">int x = 33;</code></pre>
 ````````````
-## [Example 132](https://spec.commonmark.org/0.29/#example-132)
+## [Example 162](https://spec.commonmark.org/0.30/#example-162)
 
 This markdown:
 
@@ -270,7 +270,7 @@ But instead was:
 ````````````html
 <a href="foo"><p><em>bar</em></p></a>
 ````````````
-## [Example 133](https://spec.commonmark.org/0.29/#example-133)
+## [Example 163](https://spec.commonmark.org/0.30/#example-163)
 
 This markdown:
 
@@ -292,7 +292,7 @@ But instead was:
 ````````````html
 <warning><p><em>bar</em></p></warning>
 ````````````
-## [Example 134](https://spec.commonmark.org/0.29/#example-134)
+## [Example 164](https://spec.commonmark.org/0.30/#example-164)
 
 This markdown:
 
@@ -314,7 +314,7 @@ But instead was:
 ````````````html
 <i class="foo"><p><em>bar</em></p></i>
 ````````````
-## [Example 135](https://spec.commonmark.org/0.29/#example-135)
+## [Example 165](https://spec.commonmark.org/0.30/#example-165)
 
 This markdown:
 
@@ -335,7 +335,7 @@ But instead was:
 ````````````html
 ERROR Problem at row 1 Expecting at least 1 tag name character
 ````````````
-## [Example 136](https://spec.commonmark.org/0.29/#example-136)
+## [Example 166](https://spec.commonmark.org/0.30/#example-166)
 
 This markdown:
 
@@ -357,7 +357,7 @@ But instead was:
 ````````````html
 <del><p><em>foo</em></p></del>
 ````````````
-## [Example 138](https://spec.commonmark.org/0.29/#example-138)
+## [Example 168](https://spec.commonmark.org/0.30/#example-168)
 
 This markdown:
 
@@ -377,7 +377,7 @@ But instead was:
 ````````````html
 <del><p><em>foo</em></p></del>
 ````````````
-## [Example 139](https://spec.commonmark.org/0.29/#example-139)
+## [Example 169](https://spec.commonmark.org/0.30/#example-169)
 
 This markdown:
 
@@ -403,7 +403,7 @@ But instead was:
 ````````````html
 <pre language="haskell"><code><p>import Text.HTML.TagSoup</p><p>main :: IO () main = print $ parseTags tags</p></code></pre><p>okay</p>
 ````````````
-## [Example 140](https://spec.commonmark.org/0.29/#example-140)
+## [Example 170](https://spec.commonmark.org/0.30/#example-170)
 
 This markdown:
 
@@ -428,7 +428,33 @@ But instead was:
 ````````````html
 <script type="text/javascript">&lt;p&gt;// JavaScript example&lt;/p&gt;&lt;p&gt;document.getElementById(&quot;demo&quot;).innerHTML = &quot;Hello JavaScript!&quot;;&lt;/p&gt;</script><p>okay</p>
 ````````````
-## [Example 141](https://spec.commonmark.org/0.29/#example-141)
+## [Example 171](https://spec.commonmark.org/0.30/#example-171)
+
+This markdown:
+
+````````````markdown
+<textarea>
+
+*foo*
+
+_bar_
+
+</textarea>
+
+````````````
+
+Should give output:
+
+````````````html
+<textarea>*foo* _bar_</textarea>
+````````````
+
+But instead was:
+
+````````````html
+<textarea>&lt;p&gt;&lt;em&gt;foo&lt;/em&gt;&lt;/p&gt;&lt;p&gt;&lt;em&gt;bar&lt;/em&gt;&lt;/p&gt;</textarea>
+````````````
+## [Example 172](https://spec.commonmark.org/0.30/#example-172)
 
 This markdown:
 
@@ -454,7 +480,7 @@ But instead was:
 ````````````html
 <style type="text/css">&lt;p&gt;h1 {color:red;}&lt;/p&gt;&lt;p&gt;p {color:blue;}&lt;/p&gt;</style><p>okay</p>
 ````````````
-## [Example 142](https://spec.commonmark.org/0.29/#example-142)
+## [Example 173](https://spec.commonmark.org/0.30/#example-173)
 
 This markdown:
 
@@ -477,7 +503,7 @@ But instead was:
 ````````````html
 ERROR Problem at row 5 Expecting symbol
 ````````````
-## [Example 143](https://spec.commonmark.org/0.29/#example-143)
+## [Example 174](https://spec.commonmark.org/0.30/#example-174)
 
 This markdown:
 
@@ -500,7 +526,7 @@ But instead was:
 ````````````html
 ERROR Problem at row 4 Problem at row 2 Expecting symbol
 ````````````
-## [Example 144](https://spec.commonmark.org/0.29/#example-144)
+## [Example 175](https://spec.commonmark.org/0.30/#example-175)
 
 This markdown:
 
@@ -521,7 +547,7 @@ But instead was:
 ````````````html
 ERROR Problem at row 3 Problem at row 1 Expecting symbol
 ````````````
-## [Example 145](https://spec.commonmark.org/0.29/#example-145)
+## [Example 176](https://spec.commonmark.org/0.30/#example-176)
 
 This markdown:
 
@@ -542,7 +568,7 @@ But instead was:
 ````````````html
 <style>&lt;p&gt;p{color:red;}&lt;/p&gt;</style><p><em>foo</em></p>
 ````````````
-## [Example 146](https://spec.commonmark.org/0.29/#example-146)
+## [Example 177](https://spec.commonmark.org/0.30/#example-177)
 
 This markdown:
 
@@ -563,7 +589,7 @@ But instead was:
 ````````````html
 <p><em>bar</em><em>baz</em></p>
 ````````````
-## [Example 147](https://spec.commonmark.org/0.29/#example-147)
+## [Example 178](https://spec.commonmark.org/0.30/#example-178)
 
 This markdown:
 
@@ -585,7 +611,7 @@ But instead was:
 ````````````html
 <script>&lt;p&gt;foo&lt;/p&gt;</script><ol><li><em>bar</em></li></ol>
 ````````````
-## [Example 149](https://spec.commonmark.org/0.29/#example-149)
+## [Example 180](https://spec.commonmark.org/0.30/#example-180)
 
 This markdown:
 
@@ -610,7 +636,7 @@ But instead was:
 ````````````html
 <p>okay</p>
 ````````````
-## [Example 150](https://spec.commonmark.org/0.29/#example-150)
+## [Example 181](https://spec.commonmark.org/0.30/#example-181)
 
 This markdown:
 
@@ -630,7 +656,7 @@ But instead was:
 ````````````html
 
 ````````````
-## [Example 152](https://spec.commonmark.org/0.29/#example-152)
+## [Example 183](https://spec.commonmark.org/0.30/#example-183)
 
 This markdown:
 
@@ -652,7 +678,7 @@ But instead was:
 ````````````html
 <p></p><pre><code>&lt;!-- foo --&gt;</code></pre>
 ````````````
-## [Example 153](https://spec.commonmark.org/0.29/#example-153)
+## [Example 184](https://spec.commonmark.org/0.30/#example-184)
 
 This markdown:
 
@@ -674,7 +700,7 @@ But instead was:
 ````````````html
 <p>&lt;div&gt;</p><pre><code>&lt;div&gt;</code></pre>
 ````````````
-## [Example 154](https://spec.commonmark.org/0.29/#example-154)
+## [Example 185](https://spec.commonmark.org/0.30/#example-185)
 
 This markdown:
 
@@ -697,7 +723,7 @@ But instead was:
 ````````````html
 <p>Foo</p><div><p>bar</p></div>
 ````````````
-## [Example 155](https://spec.commonmark.org/0.29/#example-155)
+## [Example 186](https://spec.commonmark.org/0.30/#example-186)
 
 This markdown:
 
@@ -720,7 +746,7 @@ But instead was:
 ````````````html
 <div><p>bar</p></div><p><em>foo</em></p>
 ````````````
-## [Example 156](https://spec.commonmark.org/0.29/#example-156)
+## [Example 187](https://spec.commonmark.org/0.30/#example-187)
 
 This markdown:
 
@@ -742,7 +768,7 @@ But instead was:
 ````````````html
 ERROR Problem at row 4 Expecting symbol
 ````````````
-## [Example 158](https://spec.commonmark.org/0.29/#example-158)
+## [Example 189](https://spec.commonmark.org/0.30/#example-189)
 
 This markdown:
 
@@ -764,7 +790,7 @@ But instead was:
 ````````````html
 <div><p><em>Emphasized</em>text.</p></div>
 ````````````
-## [Example 159](https://spec.commonmark.org/0.29/#example-159)
+## [Example 190](https://spec.commonmark.org/0.30/#example-190)
 
 This markdown:
 
@@ -794,7 +820,7 @@ But instead was:
 ````````````html
 <table><tr><td><p>Hi</p></td></tr></table>
 ````````````
-## [Example 160](https://spec.commonmark.org/0.29/#example-160)
+## [Example 191](https://spec.commonmark.org/0.30/#example-191)
 
 This markdown:
 

@@ -1,6 +1,6 @@
 # GFM - Links
 
-## [Example 488](https://spec.commonmark.org/0.29/#example-488)
+## [Example 490](https://spec.commonmark.org/0.30/#example-490)
 
 This markdown:
 
@@ -21,7 +21,7 @@ But instead was:
 ````````````html
 <p>[link](&lt;foo bar&gt;)</p>
 ````````````
-## [Example 490](https://spec.commonmark.org/0.29/#example-490)
+## [Example 492](https://spec.commonmark.org/0.30/#example-492)
 
 This markdown:
 
@@ -41,7 +41,7 @@ But instead was:
 ````````````html
 <p><a href="foo%5C">link</a></p>
 ````````````
-## [Example 491](https://spec.commonmark.org/0.29/#example-491)
+## [Example 493](https://spec.commonmark.org/0.30/#example-493)
 
 This markdown:
 
@@ -63,7 +63,7 @@ But instead was:
 ````````````html
 <p><a href="%3Cb">a</a>c<a href="%3Cb">a</a>c&gt;<a href="%3Cb%3Ec">a</a></p>
 ````````````
-## [Example 493](https://spec.commonmark.org/0.29/#example-493)
+## [Example 495](https://spec.commonmark.org/0.30/#example-495)
 
 This markdown:
 
@@ -83,7 +83,7 @@ But instead was:
 ````````````html
 <p>[link](foo(and(bar)))</p>
 ````````````
-## [Example 502](https://spec.commonmark.org/0.29/#example-502)
+## [Example 505](https://spec.commonmark.org/0.30/#example-505)
 
 This markdown:
 
@@ -103,7 +103,7 @@ But instead was:
 ````````````html
 <p><a \""="" href="/url" title="title \">link</a></p>
 ````````````
-## [Example 505](https://spec.commonmark.org/0.29/#example-505)
+## [Example 508](https://spec.commonmark.org/0.30/#example-508)
 
 This markdown:
 
@@ -123,7 +123,7 @@ But instead was:
 ````````````html
 <p><a and\"="" href="/url" title="title \" title"="">link</a></p>
 ````````````
-## [Example 520](https://spec.commonmark.org/0.29/#example-520)
+## [Example 523](https://spec.commonmark.org/0.30/#example-523)
 
 This markdown:
 
@@ -143,7 +143,7 @@ But instead was:
 ````````````html
 <p><a href="baz">foo &lt;bar attr=&quot;</a>&quot;&gt;</p>
 ````````````
-## [Example 532](https://spec.commonmark.org/0.29/#example-532)
+## [Example 535](https://spec.commonmark.org/0.30/#example-535)
 
 This markdown:
 
@@ -165,7 +165,29 @@ But instead was:
 ````````````html
 <p><a href="/uri">foo &lt;bar attr=&quot;</a>&quot;&gt;</p>
 ````````````
-## [Example 537](https://spec.commonmark.org/0.29/#example-537)
+## [Example 539](https://spec.commonmark.org/0.30/#example-539)
+
+This markdown:
+
+````````````markdown
+[ẞ]
+
+[SS]: /url
+
+````````````
+
+Should give output:
+
+````````````html
+<p><a href="/url">ẞ</a></p>
+````````````
+
+But instead was:
+
+````````````html
+<p>[ẞ]</p>
+````````````
+## [Example 540](https://spec.commonmark.org/0.30/#example-540)
 
 This markdown:
 
@@ -188,7 +210,7 @@ But instead was:
 ````````````html
 <p>[Baz][Foo bar]</p>
 ````````````
-## [Example 542](https://spec.commonmark.org/0.29/#example-542)
+## [Example 545](https://spec.commonmark.org/0.30/#example-545)
 
 This markdown:
 
@@ -210,7 +232,7 @@ But instead was:
 ````````````html
 <p>[foo][ref[]</p>
 ````````````
-## [Example 547](https://spec.commonmark.org/0.29/#example-547)
+## [Example 550](https://spec.commonmark.org/0.30/#example-550)
 
 This markdown:
 
@@ -232,7 +254,7 @@ But instead was:
 ````````````html
 <p><a href="/uri"></a></p>
 ````````````
-## [Example 548](https://spec.commonmark.org/0.29/#example-548)
+## [Example 551](https://spec.commonmark.org/0.30/#example-551)
 
 This markdown:
 
