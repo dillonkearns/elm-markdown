@@ -1,7 +1,7 @@
 module Markdown.Block exposing
     ( Block(..)
     , HeadingLevel(..), headingLevelToInt
-    , ListItem(..), Task(..), Alignment(..), ListDisplay(..)
+    , ListItem(..), Task(..), Alignment(..), ListSpacing(..)
     , Html(..)
     , Inline(..)
     , HtmlAttribute
@@ -17,7 +17,7 @@ module Markdown.Block exposing
 
 ### List Items
 
-@docs ListItem, Task, Alignment, ListDisplay
+@docs ListItem, Task, Alignment, ListSpacing
 
 
 ## HTML
@@ -77,8 +77,8 @@ In the simplest case, you can pass this directly to a renderer:
 type Block
     = -- Container Blocks
       HtmlBlock (Html Block)
-    | UnorderedList ListDisplay (List (ListItem Block))
-    | OrderedList ListDisplay Int (List (List Block))
+    | UnorderedList ListSpacing (List (ListItem Block))
+    | OrderedList ListSpacing Int (List (List Block))
     | BlockQuote (List Block)
       -- Leaf Blocks With Inlines
     | Heading HeadingLevel (List Inline)
@@ -96,7 +96,7 @@ type Block
 > A list is loose if any of its constituent list items are separated by blank lines, or if any of its constituent list items directly contain two block-level elements with a blank line between them. Otherwise a list is tight. (The difference in HTML output is that paragraphs in a loose list are wrapped in <p> tags, while paragraphs in a tight list are not.)
 
 -}
-type ListDisplay
+type ListSpacing
     = Loose
     | Tight
 

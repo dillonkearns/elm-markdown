@@ -230,7 +230,7 @@ type InlineResult
     | InlineProblem Parser.Problem
 
 
-isTightBoolToListDisplay : Bool -> Block.ListDisplay
+isTightBoolToListDisplay : Bool -> Block.ListSpacing
 isTightBoolToListDisplay isTight =
     if isTight then
         Block.Tight

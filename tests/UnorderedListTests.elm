@@ -1,7 +1,7 @@
 module UnorderedListTests exposing (suite)
 
 import Expect exposing (Expectation)
-import Markdown.Block exposing (Block(..), Inline(..), ListDisplay(..), ListItem(..), Task(..))
+import Markdown.Block exposing (Block(..), Inline(..), ListItem(..), ListSpacing(..), Task(..))
 import Markdown.Parser
 import Parser
 import Parser.Advanced as Advanced
