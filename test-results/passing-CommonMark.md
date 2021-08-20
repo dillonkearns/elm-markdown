@@ -4085,6 +4085,24 @@ Gives this correct output:
 
 ````````````
 
+### [Example 474](https://spec.commonmark.org/0.29/#example-474)
+
+This markdown:
+
+
+````````````markdown
+*<img src="foo" title="*"/>
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p>*<img src="foo" title="*"/></p>
+
+````````````
+
 ### [Example 477](https://spec.commonmark.org/0.29/#example-477)
 
 This markdown:

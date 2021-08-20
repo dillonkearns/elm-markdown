@@ -1,25 +1,5 @@
 # CommonMark - Emphasis and strong emphasis
 
-## [Example 474](https://spec.commonmark.org/0.29/#example-474)
-
-This markdown:
-
-````````````markdown
-*<img src="foo" title="*"/>
-
-````````````
-
-Should give output:
-
-````````````html
-<p>*<img src="foo" title="*"></p>
-````````````
-
-But instead was:
-
-````````````html
-<p>*<img src="foo" title="*"></img></p>
-````````````
 ## [Example 475](https://spec.commonmark.org/0.29/#example-475)
 
 This markdown:
