@@ -12,7 +12,7 @@
   },
   "author": "Dillon Kearns",
   "devDependencies": {
-    "@markedjs/html-differ": "^3.0.0",
+    "@markedjs/html-differ": "^3.0.4",
     "elm": "latest-0.19.1",
     "elm-format": "^0.8.2",
     "elm-hot": "^1.0.1",

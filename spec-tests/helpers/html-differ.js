@@ -4,8 +4,8 @@ const htmlDiffer = new HtmlDiffer({ ignoreSelfClosingSlash: true });
 module.exports = {
   isEqual: htmlDiffer.isEqual.bind(htmlDiffer),
   firstDiff: (actual, expected, padding) => {
-    return htmlDiffer.diffHtml(actual, expected).then(diffs => {
-      return htmlDiffer.isEqual(actual, expected).then(equal => {
+    return htmlDiffer.diffHtml(actual, expected).then((diffs) => {
+      return htmlDiffer.isEqual(actual, expected).then((equal) => {
         if (equal) {
           return null;
         }
@@ -31,7 +31,7 @@ module.exports = {
           {
             firstIndex: null,
             actual: "",
-            expected: ""
+            expected: "",
           }
         );
 
@@ -44,15 +44,15 @@ module.exports = {
             expected: result.expected.substring(
               result.firstIndex - padding,
               result.firstIndex + padding
-            )
+            ),
           };
         } else {
           return {
             actual: result.actual,
-            expected: result.expected
+            expected: result.expected,
           };
         }
       });
     });
-  }
+  },
 };
