@@ -39,6 +39,14 @@ markdownBody =
 - [ ] B
 - [X] C
 
+## Nested Lists
+
+- Item 1
+  - Nested item
+  - Sibling
+    - Another level of nesting
+  - Sibling 2
+
 ## Block quotes
 
 > This is a
@@ -228,12 +236,12 @@ renderer =
                 children
     , unorderedList =
         \items ->
-            Element.column [ Element.spacing 15 ]
+            Element.column [ Element.paddingXY 10 0 ]
                 (items
                     |> List.map
                         (\(ListItem task children) ->
-                            Element.paragraph [ Element.spacing 5 ]
-                                [ Element.paragraph
+                            Element.paragraph [  ]
+                                [ Element.row
                                     [ Element.alignTop ]
                                     ((case task of
                                         IncompleteTask ->
