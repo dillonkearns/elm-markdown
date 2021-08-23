@@ -174,7 +174,7 @@ renderMarkdown markdown =
                         classes =
                             -- Only the first word is used in the class
                             case Maybe.map String.words language of
-                                Just (actualLanguage::_) ->
+                                Just (actualLanguage :: _) ->
                                     [ Attr.class <| "language-" ++ actualLanguage ]
 
                                 _ ->
@@ -282,7 +282,7 @@ passThroughNode nodeName =
 
 {-| TODO come up with an API to provide a solution to do this sort of thing publicly
 -}
-passthrough : (String -> List Markdown.HtmlRenderer.Attribute -> List Block -> Result String view) -> Markdown.HtmlRenderer.HtmlRenderer view
+passthrough : (String -> List Markdown.HtmlRenderer.Attribute -> Markdown.HtmlRenderer.InlinesOrBlocks -> Result String view) -> Markdown.HtmlRenderer.HtmlRenderer view
 passthrough renderFn =
     Markdown.HtmlRenderer.HtmlRenderer renderFn
 

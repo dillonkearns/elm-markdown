@@ -310,7 +310,7 @@ renderHtml tagName attributes children (Markdown.HtmlRenderer.HtmlRenderer htmlR
         |> Result.andThen
             (\okChildren ->
                 children
-                    |> List.map Markdown.HtmlRenderer.Block
+                    |> Markdown.HtmlRenderer.Blocks
                     |> htmlRenderer tagName attributes
                     |> Result.map
                         (\myRenderer -> myRenderer okChildren)
@@ -618,7 +618,7 @@ renderInlineHtml tagName attributes children (Markdown.HtmlRenderer.HtmlRenderer
         |> Result.andThen
             (\okChildren ->
                 children
-                    |> List.map Markdown.HtmlRenderer.Inline
+                    |> Markdown.HtmlRenderer.Inlines
                     |> htmlRenderer tagName attributes
                     |> Result.map
                         (\myRenderer -> myRenderer okChildren)

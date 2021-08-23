@@ -1309,10 +1309,16 @@
     "auto_links": [
       null
     ],
+    "backslash_escapes": [
+      null
+    ],
     "blockquotes_with_code_blocks": [
       null
     ],
     "code_blocks": [
+      null
+    ],
+    "code_spans": [
       null
     ],
     "horizontal_rules": [
