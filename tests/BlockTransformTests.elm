@@ -347,19 +347,15 @@ suite =
                 [ HtmlInline
                     (HtmlElement "greeting"
                         []
-                        [ [ Strong [ Text "Hello" ]
-                          , Text " there!"
-                          ]
-                            |> Paragraph
+                        [ Strong [ Text "Hello" ]
+                        , Text " there!"
                         ]
                     )
                 , HtmlInline
                     (HtmlElement "greeting"
                         []
-                        [ [ Strong [ Text "Buenos" ]
-                          , Text " dias!"
-                          ]
-                            |> Paragraph
+                        [ Strong [ Text "Buenos" ]
+                        , Text " dias!"
                         ]
                     )
                 ]

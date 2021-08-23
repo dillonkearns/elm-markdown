@@ -2,6 +2,7 @@ module Tests exposing (suite)
 
 import Expect exposing (Expectation)
 import Markdown.Block as Block exposing (..)
+import Markdown.HtmlRenderer exposing (InlinesOrBlocks(..))
 import Markdown.Parser as Markdown exposing (..)
 import Parser
 import Parser.Advanced as Advanced exposing ((|.), (|=))
@@ -734,7 +735,7 @@ I'm part of the block quote
                                     , HtmlInline
                                         (HtmlElement "resources"
                                             []
-                                            [ HtmlBlock
+                                            [ HtmlInline
                                                 (HtmlElement "resource"
                                                     [ { name = "type", value = "book" }
                                                     , { name = "title", value = "Notes From Underground" }
@@ -757,14 +758,14 @@ I'm part of the block quote
                                     , HtmlInline
                                         (HtmlElement "resources"
                                             []
-                                            [ HtmlBlock
+                                            [ HtmlInline
                                                 (HtmlElement "resource"
                                                     [ { name = "type", value = "book" }
                                                     , { name = "title", value = "Notes From Underground" }
                                                     ]
                                                     []
                                                 )
-                                            , Paragraph [ Text "9/10 interesting read!" ]
+                                            , Text "9/10 interesting read!"
                                             ]
                                         )
                                     ]
