@@ -45,7 +45,6 @@ markdownBody =
   - Nested item
   - Sibling
     - Another level of nesting
-    - Another level of nesting
   - Sibling 2
 
 ## Block quotes
