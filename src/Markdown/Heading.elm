@@ -90,8 +90,7 @@ dropClosingSequence headingString =
 dropTrailingHashes : String -> String
 dropTrailingHashes headingString =
     if headingString |> String.endsWith "#" then
-        String.dropRight 1 headingString
-            |> dropTrailingHashes
+        dropTrailingHashes (String.dropRight 1 headingString)
 
     else
         headingString
