@@ -37,12 +37,12 @@ Markdown.Html.oneOf
 ```
 
 Note that it gets the rendered children as an argument. This is rendering the inner contents of the HTML tag using
-your HTML renderer, so you get all of your rendered lists, code blocks, links, etc. within your tag. You can try a [live Ellie demo of this code snippet](https://ellie-app.com/8kHgbSLfhfha1).
+your HTML renderer, so you get all of your rendered lists, code blocks, links, etc. within your tag. You can try a [live Ellie demo of this code snippet](https://ellie-app.com/cHB3fRSKVRha1).
 
 ## Live Code Demos
 
 - [Custom HTML Block Rendering (with `elm-ui`)](https://ellie-app.com/d7R3b9FsHfCa1)
-- [Extracting a table of contents from the parsed Markdown](https://ellie-app.com/8kQhZhZpjfca1)
+- [Extracting a table of contents from the parsed Markdown](https://ellie-app.com/cHB3fRSKVRha1)
 - [Running the built-in, standard markdown HTML renderer](https://ellie-app.com/f4FsH8bHsC6a1)
 - [Live Lisp evaluation, with values propogating through multiple Markdown HTML blocks](https://bburdette.github.io/cellme/mdcelldemo.html) - check out the source code at [github.com/bburdette/cellme/blob/master/examples/src/MdMain.elm](https://github.com/bburdette/cellme/blob/master/examples/src/MdMain.elm)
 
