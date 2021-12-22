@@ -174,10 +174,10 @@ defaultHtmlRenderer =
                 )
     , html = Markdown.Html.oneOf []
     , codeBlock =
-        \{ body, language } ->
+        \block ->
             Html.pre []
                 [ Html.code []
-                    [ Html.text body
+                    [ Html.text block.body
                     ]
                 ]
     , thematicBreak = Html.hr [] []
@@ -207,8 +207,10 @@ defaultHtmlRenderer =
                         |> Maybe.withDefault []
             in
             Html.th attrs
-    , tableCell = Html.td []
+    , tableCell = \_ children -> Html.td [] children
+    , strikethrough = Html.span [ Attr.style "text-decoration-line" "line-through" ]
     }
+
 ```
 
 
