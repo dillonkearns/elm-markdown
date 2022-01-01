@@ -309,7 +309,9 @@ renderHtml tagName attributes children (Markdown.HtmlRenderer.HtmlRenderer htmlR
         |> combineResults
         |> Result.andThen
             (\okChildren ->
-                htmlRenderer tagName attributes children
+                children
+                    |> Markdown.HtmlRenderer.Blocks
+                    |> htmlRenderer tagName attributes
                     |> Result.map
                         (\myRenderer -> myRenderer okChildren)
             )
@@ -579,7 +581,7 @@ renderSingleInline renderer inline =
         Block.HtmlInline html ->
             case html of
                 Block.HtmlElement tag attributes children ->
-                    renderHtmlNode renderer tag attributes children
+                    renderInlineHtmlNode renderer tag attributes children
                         |> Just
 
                 _ ->
@@ -593,3 +595,39 @@ renderHtmlNode renderer tag attributes children =
         children
         renderer.html
         (renderHelper renderer children)
+
+
+renderInlineHtmlNode : Renderer view -> String -> List Attribute -> List Inline -> Result String view
+renderInlineHtmlNode renderer tag attributes children =
+    renderInlineHtml tag
+        attributes
+        children
+        renderer.html
+        (renderHelperInline renderer children)
+
+
+renderInlineHtml :
+    String
+    -> List Attribute
+    -> List Inline
+    -> Markdown.Html.Renderer (List view -> view)
+    -> Result String (List view)
+    -> Result String view
+renderInlineHtml tagName attributes children (Markdown.HtmlRenderer.HtmlRenderer htmlRenderer) renderedChildren =
+    renderedChildren
+        |> Result.andThen
+            (\okChildren ->
+                children
+                    |> Markdown.HtmlRenderer.Inlines
+                    |> htmlRenderer tagName attributes
+                    |> Result.map
+                        (\myRenderer -> myRenderer okChildren)
+            )
+
+
+renderHelperInline :
+    Renderer view
+    -> List Inline
+    -> Result String (List view)
+renderHelperInline renderer blocks =
+    renderStyled renderer blocks

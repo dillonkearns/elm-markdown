@@ -324,7 +324,7 @@ passThroughNode nodeName =
 
 {-| TODO come up with an API to provide a solution to do this sort of thing publicly
 -}
-passthrough : (String -> List Markdown.HtmlRenderer.Attribute -> List Block -> Result String view) -> Markdown.HtmlRenderer.HtmlRenderer view
+passthrough : (String -> List Markdown.HtmlRenderer.Attribute -> Markdown.HtmlRenderer.InlinesOrBlocks -> Result String view) -> Markdown.HtmlRenderer.HtmlRenderer view
 passthrough renderFn =
     Markdown.HtmlRenderer.HtmlRenderer renderFn
 
