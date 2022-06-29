@@ -28,6 +28,20 @@ suite =
             \() ->
                 """<!-- hello! -->"""
                     |> expectHtml (HtmlParser.Comment " hello! ")
+        , describe "HTML entities"
+            [ test "leaves valid entities alone" <|
+                \() ->
+                    """<div>&amp;</div>"""
+                        |> expectHtml (HtmlParser.Element "div" [] [ HtmlParser.Text "&amp;" ])
+            , test "doesn't touch & which is not part of HTML entity" <|
+                \() ->
+                    """<div>Dog & cat</div>"""
+                        |> expectHtml (HtmlParser.Element "div" [] [ HtmlParser.Text "Dog & cat" ])
+            , test "rejects invalid entity" <|
+                \() ->
+                    """<div>&invalid;</div>"""
+                        |> expectError
+            ]
         , test "CDATA" <|
             \() ->
                 """<![CDATA[This is CDATA! :-)]]>"""
