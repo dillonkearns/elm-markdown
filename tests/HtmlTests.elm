@@ -1,16 +1,9 @@
 module HtmlTests exposing (suite)
 
-import Dict
 import Expect exposing (Expectation)
 import HtmlParser
-import Markdown.InlineParser
-import Parser
 import Parser.Advanced as Advanced
 import Test exposing (..)
-
-
-type alias Parser a =
-    Advanced.Parser String Parser.Problem a
 
 
 suite : Test
@@ -18,37 +11,37 @@ suite =
     describe "inline parsing"
         [ test "simple div" <|
             \() ->
-                """<div></div>"""
+                "<div></div>"
                     |> expectHtml (HtmlParser.Element "div" [] [])
         , test "empty comment" <|
             \() ->
-                """<!---->"""
+                "<!---->"
                     |> expectHtml (HtmlParser.Comment "")
         , test "simple comment" <|
             \() ->
-                """<!-- hello! -->"""
+                "<!-- hello! -->"
                     |> expectHtml (HtmlParser.Comment " hello! ")
         , describe "HTML entities"
             [ test "leaves valid entities alone" <|
                 \() ->
-                    """<div>&amp;</div>"""
+                    "<div>&amp;</div>"
                         |> expectHtml (HtmlParser.Element "div" [] [ HtmlParser.Text "&amp;" ])
             , test "doesn't touch & which is not part of HTML entity" <|
                 \() ->
-                    """<div>Dog & cat</div>"""
+                    "<div>Dog & cat</div>"
                         |> expectHtml (HtmlParser.Element "div" [] [ HtmlParser.Text "Dog & cat" ])
             , test "rejects invalid entity" <|
                 \() ->
-                    """<div>&invalid;</div>"""
+                    "<div>&invalid;</div>"
                         |> expectError
             ]
         , test "CDATA" <|
             \() ->
-                """<![CDATA[This is CDATA! :-)]]>"""
+                "<![CDATA[This is CDATA! :-)]]>"
                     |> expectHtml (HtmlParser.Cdata "This is CDATA! :-)")
         , test "CDATA with nested HTML" <|
             \() ->
-                """<![CDATA[<raw-html />]]>"""
+                "<![CDATA[<raw-html />]]>"
                     |> expectHtml (HtmlParser.Cdata "<raw-html />")
         , test "doctype declaration" <|
             \() ->
@@ -116,15 +109,15 @@ next line
         , describe "unclosed tags do not cause infinite loops"
             [ test "cdata" <|
                 \() ->
-                    """<![CDATA[Whoops, I forgot the closing >.]]"""
+                    "<![CDATA[Whoops, I forgot the closing >.]]"
                         |> expectError
             , test "HTML element" <|
                 \() ->
-                    """<div> Whoops, I forgot the closing tag<"""
+                    "<div> Whoops, I forgot the closing tag<"
                         |> expectError
             , test "processing instruction" <|
                 \() ->
-                    """<? Whoops, I forgot the closing tag ?"""
+                    "<? Whoops, I forgot the closing tag ?"
                         |> expectError
             ]
         ]
