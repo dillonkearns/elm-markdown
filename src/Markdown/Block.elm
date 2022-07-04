@@ -1,7 +1,7 @@
 module Markdown.Block exposing
     ( Block(..)
     , HeadingLevel(..), headingLevelToInt
-    , ListItem(..), Task(..), Alignment(..)
+    , ListItem(..), Task(..), Alignment(..), ListSpacing(..)
     , Html(..)
     , Inline(..)
     , HtmlAttribute
@@ -17,7 +17,7 @@ module Markdown.Block exposing
 
 ### List Items
 
-@docs ListItem, Task, Alignment
+@docs ListItem, Task, Alignment, ListSpacing
 
 
 ## HTML
@@ -77,8 +77,8 @@ In the simplest case, you can pass this directly to a renderer:
 type Block
     = -- Container Blocks
       HtmlBlock (Html Block)
-    | UnorderedList (List (ListItem Inline))
-    | OrderedList Int (List (List Inline))
+    | UnorderedList ListSpacing (List (ListItem Block))
+    | OrderedList ListSpacing Int (List (List Block))
     | BlockQuote (List Block)
       -- Leaf Blocks With Inlines
     | Heading HeadingLevel (List Inline)
@@ -87,6 +87,18 @@ type Block
       -- Leaf Blocks Without Inlines
     | CodeBlock { body : String, language : Maybe String }
     | ThematicBreak
+
+
+{-| Based on the whitespace around lists, markdown will wrap each list item with a paragraph (if it's a `Loose` list) or it won't (if it's a `Tight` list).
+
+<https://github.github.com/gfm/#lists>
+
+> A list is loose if any of its constituent list items are separated by blank lines, or if any of its constituent list items directly contain two block-level elements with a blank line between them. Otherwise a list is tight. (The difference in HTML output is that paragraphs in a loose list are wrapped in <p> tags, while paragraphs in a tight list are not.)
+
+-}
+type ListSpacing
+    = Loose
+    | Tight
 
 
 {-| Alignment in a header cell in a markdown table. See the `Table` variant in the `Block` type.
@@ -245,17 +257,24 @@ extractInlineBlockText block =
                 _ ->
                     ""
 
-        UnorderedList items ->
+        UnorderedList tight items ->
             items
                 |> List.map
-                    (\(ListItem task inlines) ->
-                        extractInlineText inlines
+                    (\(ListItem task blocks) ->
+                        blocks
+                            |> List.map extractInlineBlockText
+                            |> String.join "\n"
                     )
                 |> String.join "\n"
 
-        OrderedList int items ->
+        OrderedList tight int items ->
             items
-                |> List.map extractInlineText
+                |> List.map
+                    (\blocks ->
+                        blocks
+                            |> List.map extractInlineBlockText
+                            |> String.join "\n"
+                    )
                 |> String.join "\n"
 
         BlockQuote blocks ->
@@ -404,19 +423,21 @@ walkInlinesHelp function block =
             List.map (inlineParserWalk function) inlines
                 |> Paragraph
 
-        UnorderedList listItems ->
+        UnorderedList tight listItems ->
             List.map
                 (\(ListItem task children) ->
-                    ListItem task (List.map (inlineParserWalk function) children)
+                    ListItem task (List.map (\child -> walkInlinesHelp function child) children)
                 )
                 listItems
-                |> UnorderedList
+                |> UnorderedList tight
 
-        OrderedList startingIndex listItems ->
+        OrderedList tight startIndex listItems ->
             List.map
-                (List.map (inlineParserWalk function))
+                (\blocks ->
+                    List.map (\child -> walkInlinesHelp function child) blocks
+                )
                 listItems
-                |> OrderedList startingIndex
+                |> OrderedList tight startIndex
 
         BlockQuote children ->
             BlockQuote (List.map (walkInlinesHelp function) children)
@@ -548,7 +569,6 @@ inlineParserValidateWalk function inline =
                             |> Result.mapError List.singleton
                     )
 
-
         CodeSpan string ->
             function inline
                 |> Result.mapError List.singleton
@@ -596,20 +616,24 @@ inlineParserValidateWalkBlock function block =
                 _ ->
                     Ok block
 
-        UnorderedList items ->
+        UnorderedList tight items ->
             items
                 |> traverse
-                    (\(ListItem task item) ->
-                        item
-                            |> traverse (inlineParserValidateWalk function)
+                    (\(ListItem task nestedBlocks) ->
+                        nestedBlocks
+                            |> traverse (inlineParserValidateWalkBlock function)
                             |> Result.map (ListItem task)
                     )
-                |> Result.map UnorderedList
+                |> Result.map (UnorderedList tight)
 
-        OrderedList startingIndex lists ->
-            lists
-                |> traverse (traverse (inlineParserValidateWalk function))
-                |> Result.map (OrderedList startingIndex)
+        OrderedList tight startingIndex items ->
+            items
+                |> traverse
+                    (\nestedBlocks ->
+                        nestedBlocks
+                            |> traverse (inlineParserValidateWalkBlock function)
+                    )
+                |> Result.map (OrderedList tight startingIndex)
 
         BlockQuote nestedBlocks ->
             nestedBlocks
@@ -713,10 +737,10 @@ walk function block =
                 _ ->
                     function block
 
-        UnorderedList _ ->
+        UnorderedList tight _ ->
             function block
 
-        OrderedList _ _ ->
+        OrderedList _ _ _ ->
             function block
 
         -- These cases don't have nested blocks
@@ -880,11 +904,17 @@ foldl function acc list =
                         _ ->
                             foldl function (function block acc) remainingBlocks
 
-                UnorderedList listItems ->
-                    foldl function (function block acc) remainingBlocks
+                UnorderedList tight blocks ->
+                    let
+                        childBlocks : List Block
+                        childBlocks =
+                            blocks
+                                |> List.concatMap (\(ListItem _ children) -> children)
+                    in
+                    foldl function (function block acc) (childBlocks ++ remainingBlocks)
 
-                OrderedList int lists ->
-                    foldl function (function block acc) remainingBlocks
+                OrderedList _ int blocks ->
+                    foldl function (function block acc) (List.concat blocks ++ remainingBlocks)
 
                 BlockQuote blocks ->
                     foldl function (function block acc) (blocks ++ remainingBlocks)
@@ -1016,21 +1046,11 @@ inlineFoldl ifunction top_acc list =
                     HtmlBlock html ->
                         acc
 
-                    UnorderedList listItems ->
-                        List.foldl
-                            (\(ListItem _ inlines) liacc ->
-                                List.foldl function liacc inlines
-                            )
-                            acc
-                            listItems
+                    UnorderedList tight _ ->
+                        acc
 
-                    OrderedList int lists ->
-                        List.foldl
-                            (\inlines lacc ->
-                                List.foldl function lacc inlines
-                            )
-                            acc
-                            lists
+                    OrderedList _ int lists ->
+                        acc
 
                     BlockQuote _ ->
                         acc

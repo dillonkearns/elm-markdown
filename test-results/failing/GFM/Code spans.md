@@ -1,6 +1,6 @@
 # GFM - Code spans
 
-## [Example 344](https://spec.commonmark.org/0.29/#example-344)
+## [Example 344](https://spec.commonmark.org/0.30/#example-344)
 
 This markdown:
 

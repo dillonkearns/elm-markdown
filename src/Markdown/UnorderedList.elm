@@ -1,64 +1,87 @@
-module Markdown.UnorderedList exposing (parser)
+module Markdown.UnorderedList exposing (UnorderedListMarker(..), parser)
 
-import Whitespace
-import Markdown.ListItem as ListItem exposing (ListItem)
-import Parser
+import Helpers
+import Markdown.ListItem as ListItem exposing (ListItem(..))
+import Parser exposing (Problem)
 import Parser.Advanced as Advanced exposing (..)
-import Parser.Extra exposing (chompOneOrMore)
-import Parser.Token as Token
+import Parser.Extra as Extra exposing (chompOneOrMore)
+import Whitespace
+
+
+type UnorderedListMarker
+    = Minus
+    | Plus
+    | Asterisk
 
 
 type alias Parser a =
     Advanced.Parser String Parser.Problem a
 
 
-parser : Parser (List ListItem)
-parser =
-    let
-        parseSubsequentItems listMarker firstItem =
-            loop [] (statementsHelp (singleItemParser listMarker) firstItem)
-    in
-    succeed parseSubsequentItems
-        |= backtrackable listMarkerParser
+parser : Bool -> Parser ( UnorderedListMarker, Int, ListItem )
+parser previousWasBody =
+    succeed getIntendedCodeItem
+        |= getCol
+        |= backtrackable unorderedListMarkerParser
+        |= getCol
+        |= (if previousWasBody then
+                unorderedListItemBodyParser
+
+            else
+                oneOf
+                    [ unorderedListEmptyItemParser
+                    , unorderedListItemBodyParser
+                    ]
+           )
+
+
+unorderedListMarkerParser : Parser UnorderedListMarker
+unorderedListMarkerParser =
+    oneOf
+        [ succeed Minus
+            |. Extra.upTo 3 Whitespace.space
+            |. Advanced.symbol (Advanced.Token "-" (Parser.ExpectingSymbol "-"))
+        , succeed Plus
+            |. Advanced.symbol (Advanced.Token "+" (Parser.ExpectingSymbol "+"))
+        , succeed Asterisk
+            |. Advanced.symbol (Advanced.Token "*" (Parser.ExpectingSymbol "*"))
+        ]
+
+
+unorderedListItemBodyParser : Parser ( Int, ListItem )
+unorderedListItemBodyParser =
+    succeed (\bodyStartPos item -> ( bodyStartPos, item ))
         |. chompOneOrMore Whitespace.isSpaceOrTab
+        |= getCol
         |= ListItem.parser
-        |> andThen identity
 
 
-listMarkerParser : Parser (Token Parser.Problem)
-listMarkerParser =
-    Advanced.oneOf
-        [ succeed Token.minus
-            |. symbol Token.minus
-        , succeed Token.plus
-            |. symbol Token.plus
-        , succeed Token.asterisk
-            |. symbol Token.asterisk
-        ]
+unorderedListEmptyItemParser : Parser ( Int, ListItem )
+unorderedListEmptyItemParser =
+    succeed (\bodyStartPos -> ( bodyStartPos, EmptyItem ))
+        |= getCol
+        |. Helpers.lineEndOrEnd
 
 
-singleItemParser : Token Parser.Problem -> Parser ListItem
-singleItemParser listMarker =
-    succeed identity
-        |. backtrackable (symbol listMarker)
-        |= itemBody
+getIntendedCodeItem markerStartPos listMarker markerEndPos ( bodyStartPos, item ) =
+    let
+        spaceNum =
+            bodyStartPos - markerEndPos
+    in
+    if spaceNum <= 4 then
+        ( listMarker, bodyStartPos - markerStartPos, item )
 
+    else
+        let
+            intendedCodeItem =
+                case item of
+                    TaskItem completion string ->
+                        TaskItem completion (String.repeat (spaceNum - 1) " " ++ string)
 
-itemBody : Parser ListItem
-itemBody =
-    oneOf
-        [ succeed identity
-            |. backtrackable (chompOneOrMore Whitespace.isSpaceOrTab)
-            |= ListItem.parser
-        , succeed (ListItem.PlainItem "")
-            |. Whitespace.lineEnd
-        ]
+                    PlainItem string ->
+                        PlainItem (String.repeat (spaceNum - 1) " " ++ string)
 
-
-statementsHelp : Parser ListItem -> ListItem -> List ListItem -> Parser (Step (List ListItem) (List ListItem))
-statementsHelp itemParser firstItem revStmts =
-    oneOf
-        [ itemParser
-            |> Advanced.map (\stmt -> Loop (stmt :: revStmts))
-        , succeed (Done (firstItem :: List.reverse revStmts))
-        ]
+                    EmptyItem ->
+                        EmptyItem
+        in
+        ( listMarker, markerEndPos - markerStartPos + 1, intendedCodeItem )

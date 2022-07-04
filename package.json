@@ -12,7 +12,8 @@
   },
   "author": "Dillon Kearns",
   "devDependencies": {
-    "@markedjs/html-differ": "^3.0.0",
+    "@markedjs/html-differ": "^3.0.4",
+    "cheerio": "^1.0.0-rc.10",
     "elm": "latest-0.19.1",
     "elm-format": "^0.8.2",
     "elm-hot": "^1.0.1",
@@ -22,6 +23,7 @@
     "front-matter": "^3.0.2",
     "jasmine": "^3.4.0",
     "json-stable-stringify": "^1.0.1",
-    "node-elm-compiler": "^5.0.3"
+    "node-elm-compiler": "^5.0.3",
+    "node-fetch": "^2.6.1"
   }
 }

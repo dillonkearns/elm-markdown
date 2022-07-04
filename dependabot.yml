@@ -1,0 +1,26 @@
+version: 2
+updates:
+  - package-ecosystem: "elm"
+    directory: "/"
+    schedule:
+      interval: "daily"
+
+  - package-ecosystem: "elm"
+    directory: "/examples"
+    schedule:
+      interval: "daily"
+
+  - package-ecosystem: "elm"
+    directory: "/review"
+    schedule:
+      interval: "daily"
+
+  - package-ecosystem: "elm"
+    directory: "/spec-tests"
+    schedule:
+      interval: "daily"
+
+  - package-ecosystem: "elm"
+    directory: "/benchmarks"
+    schedule:
+      interval: "daily"

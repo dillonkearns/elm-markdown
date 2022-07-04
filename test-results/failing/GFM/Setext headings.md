@@ -1,30 +1,6 @@
 # GFM - Setext headings
 
-## [Example 55](https://spec.commonmark.org/0.29/#example-55)
-
-This markdown:
-
-````````````markdown
-    Foo
-    ---
-
-    Foo
----
-
-````````````
-
-Should give output:
-
-````````````html
-<pre><code>Foo --- Foo</code></pre><hr>
-````````````
-
-But instead was:
-
-````````````html
-<pre><code>Foo ---</code></pre><pre><code>Foo</code></pre><hr>
-````````````
-## [Example 61](https://spec.commonmark.org/0.29/#example-61)
+## [Example 91](https://spec.commonmark.org/0.30/#example-91)
 
 This markdown:
 
@@ -52,7 +28,7 @@ But instead was:
 ---
 of dashes"></a>
 ````````````
-## [Example 63](https://spec.commonmark.org/0.29/#example-63)
+## [Example 93](https://spec.commonmark.org/0.30/#example-93)
 
 This markdown:
 

@@ -7,6 +7,7 @@ import Markdown.Html
 import Markdown.HtmlRenderer
 import Markdown.Parser as Markdown
 import Markdown.Renderer
+import Regex
 
 
 port requestHtml : (String -> msg) -> Sub msg
@@ -174,7 +175,7 @@ renderMarkdown markdown =
                         classes =
                             -- Only the first word is used in the class
                             case Maybe.map String.words language of
-                                Just (actualLanguage::_) ->
+                                Just (actualLanguage :: _) ->
                                     [ Attr.class <| "language-" ++ actualLanguage ]
 
                                 _ ->
@@ -237,6 +238,47 @@ renderMarkdown markdown =
             }
         |> Result.map (List.map (Html.toString 0))
         |> Result.map (String.join "")
+        |> Result.map removeVoidClosingTags
+
+
+{-| Ensure that void tags don't have closing tag, see <https://github.com/zwilias/elm-html-string/issues/12>.
+-}
+removeVoidClosingTags : String -> String
+removeVoidClosingTags string =
+    string
+        |> Regex.replace voidClosingReplaceRegex (\_ -> "")
+
+
+voidClosingReplaceRegex =
+    Regex.fromString
+        ("("
+            ++ (voidTags
+                    |> List.map (\tagName -> "</" ++ tagName ++ ">")
+                    |> String.join "|"
+               )
+            ++ ")"
+        )
+        |> Maybe.withDefault Regex.never
+
+
+{-| <https://html.spec.whatwg.org/multipage/syntax.html#void-elements>
+-}
+voidTags =
+    [ "area"
+    , "base"
+    , "br"
+    , "col"
+    , "embed"
+    , "hr"
+    , "img"
+    , "input"
+    , "link"
+    , "meta"
+    , "param"
+    , "source"
+    , "track"
+    , "wbr"
+    ]
 
 
 htmlRenderer : Markdown.Html.Renderer (List (Html.Html msg) -> Html.Html msg)

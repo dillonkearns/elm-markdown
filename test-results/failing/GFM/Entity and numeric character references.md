@@ -1,6 +1,6 @@
 # GFM - Entity and numeric character references
 
-## [Example 311](https://spec.commonmark.org/0.29/#example-311)
+## [Example 25](https://spec.commonmark.org/0.30/#example-25)
 
 This markdown:
 
@@ -22,7 +22,30 @@ But instead was:
 ````````````html
 <p>&amp; © Æ &amp;Dcaron; ¾ &amp;HilbertSpace; &amp;DifferentialD; &amp;ClockwiseContourIntegral; &amp;ngE;</p>
 ````````````
-## [Example 317](https://spec.commonmark.org/0.29/#example-317)
+## [Example 28](https://spec.commonmark.org/0.30/#example-28)
+
+This markdown:
+
+````````````markdown
+&nbsp &x; &#; &#x;
+&#87654321;
+&#abcdef0;
+&ThisIsNotDefined; &hi?;
+
+````````````
+
+Should give output:
+
+````````````html
+<p>&amp;nbsp &amp;x; &amp;#; &amp;#x; &amp;#87654321; &amp;#abcdef0; &amp;ThisIsNotDefined; &amp;hi?;</p>
+````````````
+
+But instead was:
+
+````````````html
+<p>&amp;nbsp &amp;x; &amp;#; &amp;#x; � &amp;#abcdef0; &amp;ThisIsNotDefined; &amp;hi?;</p>
+````````````
+## [Example 31](https://spec.commonmark.org/0.30/#example-31)
 
 This markdown:
 

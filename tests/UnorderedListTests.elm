@@ -1,9 +1,8 @@
 module UnorderedListTests exposing (suite)
 
 import Expect exposing (Expectation)
-import Markdown.ListItem as ListItem exposing (ListItem)
+import Markdown.Block exposing (Block(..), Inline(..), ListItem(..), ListSpacing(..), Task(..))
 import Markdown.Parser
-import Markdown.UnorderedList
 import Parser
 import Parser.Advanced as Advanced
 import Test exposing (..)
@@ -22,12 +21,14 @@ suite =
 - Item 2
 - Item 3
 """
-                    |> Advanced.run Markdown.UnorderedList.parser
+                    |> Markdown.Parser.parse
                     |> Expect.equal
                         (Ok
-                            [ plainItem "Item 1"
-                            , plainItem "Item 2"
-                            , plainItem "Item 3"
+                            [ UnorderedList Tight
+                                [ ListItem NoTask [ Paragraph [ Text "Item 1" ] ]
+                                , ListItem NoTask [ Paragraph [ Text "Item 2" ] ]
+                                , ListItem NoTask [ Paragraph [ Text "Item 3" ] ]
+                                ]
                             ]
                         )
         , test "list that ends without newline" <|
@@ -35,12 +36,14 @@ suite =
                 """- Item 1
 - Item 2
 - Item 3"""
-                    |> Advanced.run Markdown.UnorderedList.parser
+                    |> Markdown.Parser.parse
                     |> Expect.equal
                         (Ok
-                            [ plainItem "Item 1"
-                            , plainItem "Item 2"
-                            , plainItem "Item 3"
+                            [ UnorderedList Tight
+                                [ ListItem NoTask [ Paragraph [ Text "Item 1" ] ]
+                                , ListItem NoTask [ Paragraph [ Text "Item 2" ] ]
+                                , ListItem NoTask [ Paragraph [ Text "Item 3" ] ]
+                                ]
                             ]
                         )
         , test "basic list with '+'" <|
@@ -49,12 +52,14 @@ suite =
 + Item 2
 + Item 3
 """
-                    |> Advanced.run Markdown.UnorderedList.parser
+                    |> Markdown.Parser.parse
                     |> Expect.equal
                         (Ok
-                            [ plainItem "Item 1"
-                            , plainItem "Item 2"
-                            , plainItem "Item 3"
+                            [ UnorderedList Tight
+                                [ ListItem NoTask [ Paragraph [ Text "Item 1" ] ]
+                                , ListItem NoTask [ Paragraph [ Text "Item 2" ] ]
+                                , ListItem NoTask [ Paragraph [ Text "Item 3" ] ]
+                                ]
                             ]
                         )
         , test "basic list with '*'" <|
@@ -63,12 +68,14 @@ suite =
 * Item 2
 * Item 3
 """
-                    |> Advanced.run Markdown.UnorderedList.parser
+                    |> Markdown.Parser.parse
                     |> Expect.equal
                         (Ok
-                            [ plainItem "Item 1"
-                            , plainItem "Item 2"
-                            , plainItem "Item 3"
+                            [ UnorderedList Tight
+                                [ ListItem NoTask [ Paragraph [ Text "Item 1" ] ]
+                                , ListItem NoTask [ Paragraph [ Text "Item 2" ] ]
+                                , ListItem NoTask [ Paragraph [ Text "Item 3" ] ]
+                                ]
                             ]
                         )
         , test "sibling lists with different markers" <|
@@ -83,12 +90,24 @@ suite =
 * Item 8
 * Item 9
 """
-                    |> Advanced.run Markdown.UnorderedList.parser
+                    |> Markdown.Parser.parse
                     |> Expect.equal
                         (Ok
-                            [ plainItem "Item 1"
-                            , plainItem "Item 2"
-                            , plainItem "Item 3"
+                            [ UnorderedList Tight
+                                [ ListItem NoTask [ Paragraph [ Text "Item 1" ] ]
+                                , ListItem NoTask [ Paragraph [ Text "Item 2" ] ]
+                                , ListItem NoTask [ Paragraph [ Text "Item 3" ] ]
+                                ]
+                            , UnorderedList Tight
+                                [ ListItem NoTask [ Paragraph [ Text "Item 4" ] ]
+                                , ListItem NoTask [ Paragraph [ Text "Item 5" ] ]
+                                , ListItem NoTask [ Paragraph [ Text "Item 6" ] ]
+                                ]
+                            , UnorderedList Tight
+                                [ ListItem NoTask [ Paragraph [ Text "Item 7" ] ]
+                                , ListItem NoTask [ Paragraph [ Text "Item 8" ] ]
+                                , ListItem NoTask [ Paragraph [ Text "Item 9" ] ]
+                                ]
                             ]
                         )
         , test "A list item with emphasis in it and starting with '*'" <|
@@ -98,12 +117,24 @@ suite =
 * Item 3
 *emphasized text following the list*
 """
-                    |> Advanced.run Markdown.UnorderedList.parser
+                    |> Markdown.Parser.parse
                     |> Expect.equal
                         (Ok
-                            [ plainItem "Item 1 is *emphasized*"
-                            , plainItem "Item 2"
-                            , plainItem "Item 3"
+                            [ UnorderedList Tight
+                                [ ListItem NoTask
+                                    [ Paragraph
+                                        [ Text "Item 1 is "
+                                        , Emphasis [ Text "emphasized" ]
+                                        ]
+                                    ]
+                                , ListItem NoTask [ Paragraph [ Text "Item 2" ] ]
+                                , ListItem NoTask
+                                    [ Paragraph
+                                        [ Text "Item 3\n"
+                                        , Emphasis [ Text "emphasized text following the list" ]
+                                        ]
+                                    ]
+                                ]
                             ]
                         )
         , test "When there is an empty item" <|
@@ -112,17 +143,14 @@ suite =
 *
 * bar
 """
-                    |> Advanced.run Markdown.UnorderedList.parser
+                    |> Markdown.Parser.parse
                     |> Expect.equal
                         (Ok
-                            [ plainItem "foo"
-                            , plainItem ""
-                            , plainItem "bar"
+                            [ UnorderedList Tight
+                                [ ListItem NoTask [ Paragraph [ Text "foo" ] ]
+                                , ListItem NoTask []
+                                , ListItem NoTask [ Paragraph [ Text "bar" ] ]
+                                ]
                             ]
                         )
         ]
-
-
-plainItem : String -> ListItem
-plainItem body =
-    ListItem.PlainItem body

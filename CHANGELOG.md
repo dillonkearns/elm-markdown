@@ -9,6 +9,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [7.0.0] - 2021-08-20
+
+### Added
+
+- We now have nested list parsing! 🎉 A huge thanks to [@LutSa](https://github.com/LutSa) and [@klaftertief](https://github.com/klaftertief) for their work on this! See [#88](https://github.com/dillonkearns/elm-markdown/pull/88).
+
+### Fixed
+
+- Multiline list items are parsed correctly (fixes [#81](https://github.com/dillonkearns/elm-markdown/issues/81)).
+- Fixed precedence - thematic breaks take precedence over new list item (fixes [#59](https://github.com/dillonkearns/elm-markdown/issues/59)).
+
 ## [6.0.1] - 2021-03-16
 
 ### Fixed

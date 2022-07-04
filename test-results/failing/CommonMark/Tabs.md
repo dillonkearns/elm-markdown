@@ -1,6 +1,6 @@
 # CommonMark - Tabs
 
-## [Example 4](https://spec.commonmark.org/0.29/#example-4)
+## [Example 4](https://spec.commonmark.org/0.30/#example-4)
 
 This markdown:
 
@@ -20,9 +20,9 @@ Should give output:
 But instead was:
 
 ````````````html
-<p>- foo</p><pre><code>bar</code></pre>
+<ul><li>foo</li></ul><pre><code>bar</code></pre>
 ````````````
-## [Example 5](https://spec.commonmark.org/0.29/#example-5)
+## [Example 5](https://spec.commonmark.org/0.30/#example-5)
 
 This markdown:
 
@@ -44,7 +44,7 @@ But instead was:
 ````````````html
 <ul><li>foo</li></ul><pre><code>bar</code></pre>
 ````````````
-## [Example 7](https://spec.commonmark.org/0.29/#example-7)
+## [Example 7](https://spec.commonmark.org/0.30/#example-7)
 
 This markdown:
 
@@ -64,7 +64,7 @@ But instead was:
 ````````````html
 <ul><li>foo</li></ul>
 ````````````
-## [Example 9](https://spec.commonmark.org/0.29/#example-9)
+## [Example 9](https://spec.commonmark.org/0.30/#example-9)
 
 This markdown:
 
@@ -84,5 +84,5 @@ Should give output:
 But instead was:
 
 ````````````html
-<p>- foo - bar - baz</p>
+<ul><li>foo<ul><li>bar - baz</li></ul></li></ul>
 ````````````

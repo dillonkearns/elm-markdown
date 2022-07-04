@@ -1,6 +1,6 @@
 # CommonMark - Block quotes
 
-## [Example 207](https://spec.commonmark.org/0.29/#example-207)
+## [Example 237](https://spec.commonmark.org/0.30/#example-237)
 
 This markdown:
 
@@ -22,7 +22,7 @@ But instead was:
 ````````````html
 <blockquote><pre><code>foo</code></pre></blockquote><pre><code></code></pre>
 ````````````
-## [Example 208](https://spec.commonmark.org/0.29/#example-208)
+## [Example 238](https://spec.commonmark.org/0.30/#example-238)
 
 This markdown:
 
@@ -43,7 +43,7 @@ But instead was:
 ````````````html
 <blockquote><p>foo</p></blockquote><pre><code>- bar</code></pre>
 ````````````
-## [Example 219](https://spec.commonmark.org/0.29/#example-219)
+## [Example 249](https://spec.commonmark.org/0.30/#example-249)
 
 This markdown:
 

@@ -55,6 +55,31 @@ Gives this correct output:
 
 ````````````
 
+## blockquote_list_item
+
+### Example undefined
+
+This markdown:
+
+
+````````````markdown
+This fails in markdown.pl and upskirt:
+
+* hello
+  > world
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p>This fails in markdown.pl and upskirt:</p>
+
+<ul><li>hello<blockquote><p>world</p></blockquote></li></ul>
+
+````````````
+
 ## case_insensitive_refs
 
 ### Example undefined
@@ -134,6 +159,40 @@ Gives this correct output:
 
 ````````````html
 <p>&gt;</p>
+
+````````````
+
+## hr_list_break
+
+### Example undefined
+
+This markdown:
+
+
+````````````markdown
+* hello
+world
+* how
+are
+* * *
+you today?
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ul>
+<li>hello
+world</li>
+<li>how
+are</li>
+</ul>
+
+<hr>
+
+<p>you today?</p>
 
 ````````````
 
@@ -312,6 +371,81 @@ Gives this correct output:
 <p>(<a href="http://example.com/1">one</a>) (<a href="http://example.com/2">two</a>)</p>
 
 <p>(<a href="http://example.com/1" title="a">one</a>) (<a href="http://example.com/2" title="b">two</a>)</p>
+
+````````````
+
+## list_table
+
+### Example undefined
+
+This markdown:
+
+
+````````````markdown
+* Table in list:
+
+  | column1 | column2 |
+  |---------|---------|
+  | value1  | value2  |
+  | value3  | value4  |
+
+* No leading pipe table in list:
+
+  column1 | column2
+  --------|--------
+  value1  | value2
+  value3  | value4
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<ul>
+	<li>
+		<p>Table in list:</p>
+		<table>
+			<thead>
+				<tr>
+					<th>column1</th>
+					<th>column2</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>value1</td>
+					<td>value2</td>
+				</tr>
+				<tr>
+					<td>value3</td>
+					<td>value4</td>
+				</tr>
+			</tbody>
+		</table>
+	</li>
+	<li>
+		<p>No leading pipe table in list:</p>
+		<table>
+			<thead>
+				<tr>
+					<th>column1</th>
+					<th>column2</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>value1</td>
+					<td>value2</td>
+				</tr>
+				<tr>
+					<td>value3</td>
+					<td>value4</td>
+				</tr>
+			</tbody>
+		</table>
+	</li>
+</ul>
 
 ````````````
 

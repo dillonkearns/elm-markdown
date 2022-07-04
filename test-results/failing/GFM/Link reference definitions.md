@@ -1,6 +1,6 @@
 # GFM - Link reference definitions
 
-## [Example 163](https://spec.commonmark.org/0.29/#example-163)
+## [Example 194](https://spec.commonmark.org/0.30/#example-194)
 
 This markdown:
 
@@ -22,7 +22,7 @@ But instead was:
 ````````````html
 <p>[Foo*bar]]:my_(url) &#39;title (with parens)&#39;</p><p>[Foo*bar]]</p>
 ````````````
-## [Example 170](https://spec.commonmark.org/0.29/#example-170)
+## [Example 201](https://spec.commonmark.org/0.30/#example-201)
 
 This markdown:
 
@@ -44,7 +44,7 @@ But instead was:
 ````````````html
 <p>[foo]: &lt;bar&gt;(baz)</p><p>[foo]</p>
 ````````````
-## [Example 171](https://spec.commonmark.org/0.29/#example-171)
+## [Example 202](https://spec.commonmark.org/0.30/#example-202)
 
 This markdown:
 
@@ -66,7 +66,7 @@ But instead was:
 ````````````html
 <p>[foo]: /url\bar*baz &quot;foo&quot;bar\baz&quot;</p><p>[foo]</p>
 ````````````
-## [Example 182](https://spec.commonmark.org/0.29/#example-182)
+## [Example 213](https://spec.commonmark.org/0.30/#example-213)
 
 This markdown:
 
@@ -88,26 +88,4 @@ But instead was:
 
 ````````````html
 <p>Foo<a href="/baz">bar</a></p>
-````````````
-## [Example 187](https://spec.commonmark.org/0.29/#example-187)
-
-This markdown:
-
-````````````markdown
-[foo]
-
-> [foo]: /url
-
-````````````
-
-Should give output:
-
-````````````html
-<p><a href="/url">foo</a></p><blockquote></blockquote>
-````````````
-
-But instead was:
-
-````````````html
-<p>[foo]</p><blockquote></blockquote>
 ````````````
