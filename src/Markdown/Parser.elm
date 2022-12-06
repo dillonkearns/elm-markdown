@@ -688,8 +688,7 @@ endWithOpenBlockOrParagraph : RawBlock -> Bool
 endWithOpenBlockOrParagraph block = 
     case block of
     OpenBlockOrParagraph (UnparsedInlines str) -> 
-        not (String.endsWith (Debug.log "str" str) "\n")
-
+        not (String.endsWith str "\n")
     ParsedBlockQuote blocks ->
         case blocks of
             last :: _ ->
@@ -703,6 +702,7 @@ endWithOpenBlockOrParagraph block =
                         endWithOpenBlockOrParagraph last
                     _ -> False
             _ -> False
+    Heading _ _ -> True
     _  -> False
 
     --| UnorderedListBlock Bool Int (List CloseListItem) OpenListItem
