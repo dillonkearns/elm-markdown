@@ -1145,6 +1145,52 @@ Gives this correct output:
 
 ````````````
 
+### [Example 237](https://spec.commonmark.org/0.30/#example-237)
+
+This markdown:
+
+
+````````````markdown
+> ```
+foo
+```
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<blockquote>
+<pre><code></code></pre>
+</blockquote>
+<p>foo</p>
+<pre><code></code></pre>
+
+````````````
+
+### [Example 238](https://spec.commonmark.org/0.30/#example-238)
+
+This markdown:
+
+
+````````````markdown
+> foo
+    - bar
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<blockquote>
+<p>foo
+- bar</p>
+</blockquote>
+
+````````````
+
 ### [Example 239](https://spec.commonmark.org/0.30/#example-239)
 
 This markdown:
@@ -1355,6 +1401,29 @@ This markdown:
 ````````````markdown
 > bar
 
+baz
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<blockquote>
+<p>bar</p>
+</blockquote>
+<p>baz</p>
+
+````````````
+
+### [Example 249](https://spec.commonmark.org/0.30/#example-249)
+
+This markdown:
+
+
+````````````markdown
+> bar
+>
 baz
 
 ````````````

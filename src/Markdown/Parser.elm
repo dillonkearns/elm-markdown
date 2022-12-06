@@ -684,6 +684,34 @@ parseAllInlinesHelp state rawBlocks parsedBlocks =
         [] ->
             Ok parsedBlocks
 
+endWithOpenBlockOrParagraph : RawBlock -> Bool
+endWithOpenBlockOrParagraph block = 
+    case block of
+    OpenBlockOrParagraph (UnparsedInlines str) -> 
+        not (String.endsWith (Debug.log "str" str) "\n")
+
+    ParsedBlockQuote blocks ->
+        case blocks of
+            last :: _ ->
+                endWithOpenBlockOrParagraph last
+            _ -> False
+    OrderedListBlock _ _ _ _ blockslist _ ->
+        case blockslist of 
+            blocks :: _ ->
+                case blocks of
+                    last :: _ ->
+                        endWithOpenBlockOrParagraph last
+                    _ -> False
+            _ -> False
+    _  -> False
+
+    --| UnorderedListBlock Bool Int (List CloseListItem) OpenListItem
+    --| CodeBlock CodeBlock
+    --| IndentedCodeBlock String
+    --| ThematicBreak
+    --| Table (Markdown.Table.Table String)
+   -- | TableDelimiter Markdown.Table.TableDelimiterRow
+    --| SetextLine SetextLevel String
 
 completeOrMergeBlocks : State -> RawBlock -> Parser State
 completeOrMergeBlocks state newRawBlock =
@@ -729,14 +757,64 @@ completeOrMergeBlocks state newRawBlock =
                                 :: rest
                         }
 
-                OpenBlockOrParagraph (UnparsedInlines body1) ->
-                    succeed
-                        { linkReferenceDefinitions = state.linkReferenceDefinitions
-                        , rawBlocks =
-                            BlockQuote (joinRawStringsWith "\n" body2 body1)
-                                :: rest
-                        }
 
+                OpenBlockOrParagraph (UnparsedInlines body1) ->
+                        case Advanced.run rawBlockParser body2 of
+                            Ok value ->
+                                case value.rawBlocks of
+                                    last :: _ ->
+                                        if endWithOpenBlockOrParagraph last && not (String.endsWith "\n" body2) then
+                                            succeed
+                                                { linkReferenceDefinitions = state.linkReferenceDefinitions
+                                                , rawBlocks =
+                                                    BlockQuote (joinStringsPreserveAll body2 (body1))
+                                                        :: rest
+                                                }
+                                        else
+                                            case Advanced.run rawBlockParser body2 of
+                                                Ok value1 ->
+                                                    succeed
+                                                        { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
+                                                        , rawBlocks = newRawBlock :: (value1.rawBlocks |> ParsedBlockQuote) :: rest
+                                                        }
+
+                                                Err e1 ->
+                                                    problem (Parser.Problem (deadEndsToString e1))                                    
+                                    _ -> 
+                                        case Advanced.run rawBlockParser body2 of
+                                            Ok value1 ->
+                                                succeed
+                                                    { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
+                                                    , rawBlocks = newRawBlock :: (value1.rawBlocks |> ParsedBlockQuote) :: rest
+                                                    }
+
+                                            Err e1 ->
+                                                problem (Parser.Problem (deadEndsToString e1))
+                            Err e ->
+                                problem (Parser.Problem (deadEndsToString e))
+                IndentedCodeBlock body1 ->
+                        case Advanced.run rawBlockParser body2 of
+                            Ok value ->
+                                case value.rawBlocks of
+                                    OpenBlockOrParagraph _ :: _ ->
+                                        succeed
+                                            { linkReferenceDefinitions = state.linkReferenceDefinitions
+                                            , rawBlocks =
+                                               BlockQuote (joinRawStringsWith " " body2 (body1))
+                                                    :: rest
+                                            }
+                                    _ -> 
+                                        case Advanced.run rawBlockParser body2 of
+                                            Ok value1 ->
+                                                succeed
+                                                    { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
+                                                    , rawBlocks = newRawBlock :: (value1.rawBlocks |> ParsedBlockQuote) :: rest
+                                                    }
+
+                                            Err e1 ->
+                                                problem (Parser.Problem (deadEndsToString e1))
+                            Err e ->
+                                problem (Parser.Problem (deadEndsToString e))
                 _ ->
                     case Advanced.run rawBlockParser body2 of
                         Ok value ->
