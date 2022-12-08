@@ -705,14 +705,6 @@ endWithOpenBlockOrParagraph block =
     Heading _ _ -> True
     _  -> False
 
-    --| UnorderedListBlock Bool Int (List CloseListItem) OpenListItem
-    --| CodeBlock CodeBlock
-    --| IndentedCodeBlock String
-    --| ThematicBreak
-    --| Table (Markdown.Table.Table String)
-   -- | TableDelimiter Markdown.Table.TableDelimiterRow
-    --| SetextLine SetextLevel String
-
 completeOrMergeBlocks : State -> RawBlock -> Parser State
 completeOrMergeBlocks state newRawBlock =
     case
