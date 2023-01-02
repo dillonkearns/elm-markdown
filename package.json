@@ -4,7 +4,7 @@
   "description": "Markdown parsing in pure elm.",
   "scripts": {
     "build": "rm -r dist && parcel build src/index.html --public-url ./",
-    "test": "elm-test tests && elm-verify-examples --run-tests && (cd review && elm-test) && elm-review",
+    "test": "elm-test tests && elm-verify-examples --run-tests && (cd review && elm-test)",
     "review": "elm-review",
     "autotest": "elm-test --watch tests",
     "test:check-regressions": "git diff --exit-code -- spec-results.json",
