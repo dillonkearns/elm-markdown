@@ -240,6 +240,7 @@ extractTextHelp inline text =
 
 extractInlineBlockText : Block -> String
 extractInlineBlockText block =
+    -- known-unoptimized-recursion
     case block of
         Paragraph inlines ->
             extractInlineText inlines
@@ -418,6 +419,7 @@ walkInlines function block =
 
 walkInlinesHelp : (Inline -> Inline) -> Block -> Block
 walkInlinesHelp function block =
+    -- known-unoptimized-recursion
     case block of
         Paragraph inlines ->
             List.map (inlineParserWalk function) inlines
@@ -477,6 +479,7 @@ walkInlinesHelp function block =
 
 inlineParserWalk : (Inline -> Inline) -> Inline -> Inline
 inlineParserWalk function inline =
+    -- known-unoptimized-recursion
     case inline of
         Link url maybeTitle inlines ->
             List.map (inlineParserWalk function) inlines
@@ -523,6 +526,7 @@ inlineParserWalk function inline =
 
 inlineParserValidateWalk : (Inline -> Result error Inline) -> Inline -> Result (List error) Inline
 inlineParserValidateWalk function inline =
+    -- known-unoptimized-recursion
     case inline of
         Link url maybeTitle inlines ->
             traverse (inlineParserValidateWalk function) inlines
@@ -601,6 +605,7 @@ inlineParserValidateWalk function inline =
 
 inlineParserValidateWalkBlock : (Inline -> Result error Inline) -> Block -> Result (List error) Block
 inlineParserValidateWalkBlock function block =
+    -- known-unoptimized-recursion
     case block of
         ThematicBreak ->
             Ok ThematicBreak
@@ -721,6 +726,7 @@ This example bumps headings down by one level.
 -}
 walk : (Block -> Block) -> Block -> Block
 walk function block =
+    -- known-unoptimized-recursion
     case block of
         BlockQuote blocks ->
             List.map (walk function) blocks

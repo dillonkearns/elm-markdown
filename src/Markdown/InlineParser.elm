@@ -263,6 +263,7 @@ tokenize rawText =
 
 cleanAngleBracketTokens : List { a | index : Int } -> List { a | index : Int } -> Int -> List { a | index : Int }
 cleanAngleBracketTokens tokensL tokensR countL =
+    -- known-unoptimized-recursion
     case tokensR of
         [] ->
             []
@@ -301,6 +302,7 @@ cleanAngleBracketTokens tokensL tokensR countL =
 -}
 mergeByIndex : List { a | index : Int } -> List { a | index : Int } -> List { a | index : Int }
 mergeByIndex left right =
+    -- known-unoptimized-recursion
     case left of
         lfirst :: lrest ->
             case right of

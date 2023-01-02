@@ -334,6 +334,7 @@ renderHelper renderer blocks =
 
 renderHelperSingle : Renderer view -> Block -> Maybe (Result String view)
 renderHelperSingle renderer =
+    -- known-unoptimized-recursion
     \block ->
         case block of
             Block.Heading level content ->

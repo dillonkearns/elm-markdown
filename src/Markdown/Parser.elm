@@ -161,6 +161,7 @@ inlineParseHelper referencesDict (UnparsedInlines unparsedInlines) =
 
 mapInline : Inline.Inline -> Block.Inline
 mapInline inline =
+    -- known-unoptimized-recursion
     case inline of
         Inline.Text string ->
             Block.Text string
