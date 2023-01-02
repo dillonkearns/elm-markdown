@@ -250,8 +250,36 @@ tokenize rawText =
         |> mergeByIndex (findLinkImageOpenTokens rawText)
         |> mergeByIndex (findLinkImageCloseTokens rawText)
         |> mergeByIndex (findHardBreakTokens rawText)
-        |> mergeByIndex (findAngleBracketLTokens rawText)
-        |> mergeByIndex (findAngleBracketRTokens rawText)
+        |> mergeByIndex 
+        (cleanAngleBracketTokens (rawText |> findAngleBracketLTokens |> List.sortBy .index) (rawText |> findAngleBracketRTokens |> List.sortBy .index) 0)
+
+
+cleanAngleBracketTokens : List { a | index : Int } -> List { a | index : Int } -> Int -> List { a | index : Int }
+cleanAngleBracketTokens tokensL tokensR countL=
+    case tokensR of
+        [] -> []
+        hd1 :: rest1 ->
+            case tokensL of
+                [] -> 
+                    if countL > 1 then
+                        cleanAngleBracketTokens tokensL rest1 (countL - 1)
+                    else if countL == 1 then
+                        hd1 :: (cleanAngleBracketTokens tokensL rest1 (countL - 1))
+                    else
+                        cleanAngleBracketTokens tokensL rest1 0
+                hd :: rest ->
+                    if (hd.index < hd1.index) then
+                        if countL == 0 then
+                            hd :: (cleanAngleBracketTokens rest tokensR (countL + 1))
+                        else
+                            cleanAngleBracketTokens rest tokensR (countL + 1)
+                    else
+                        if countL > 1 then
+                            cleanAngleBracketTokens tokensL rest1 (countL - 1)
+                        else if countL == 1 then
+                            hd1 :: (cleanAngleBracketTokens tokensL rest1 (countL - 1))
+                        else
+                            cleanAngleBracketTokens tokensL rest1 0
 
 
 {-| Merges two sorted sequences into a sorted sequence

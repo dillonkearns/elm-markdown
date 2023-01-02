@@ -118,6 +118,25 @@ Hello!
                                 )
                             ]
                         )
+        , test "embedded HTML with attribute containing <> chars" <|
+            \() ->
+                """# Heading
+<div attr="<u>">
+Hello!
+</div>
+"""
+                    |> parse
+                    |> Expect.equal
+                        (Ok
+                            [ Block.Heading Block.H1 (unstyledText "Heading")
+                            , Block.HtmlBlock
+                                (Block.HtmlElement "div"
+                                    [ { name = "attr", value = "<u>" } ]
+                                    [ Block.Paragraph (unstyledText "Hello!")
+                                    ]
+                                )
+                            ]
+                        )
         , test "heading within HTML" <|
             \() ->
                 """# Heading
@@ -583,6 +602,28 @@ I'm part of the block quote
                                         (Block.HtmlElement "bio"
                                             -- NOTE: attribute names are in reverse alphabetical order
                                             [ { name = "photo", value = "https://avatars2.githubusercontent.com/u/1384166" }
+                                            , { name = "name", value = "Dillon Kearns" }
+                                            ]
+                                            []
+                                        )
+                                    ]
+                                ]
+                            ]
+                        )
+        , test "inline HTML with an attribute with <> chars" <|
+            \() ->
+                """This is *italicized inline HTML <bio name="Dillon Kearns" photo="https://avatars2.githubusercontent.com/<u>/1384166" />*"""
+                    |> parse
+                    |> Expect.equal
+                        (Ok
+                            [ Block.Paragraph
+                                [ Block.Text "This is "
+                                , Block.Emphasis
+                                    [ Block.Text "italicized inline HTML "
+                                    , Block.HtmlInline
+                                        (Block.HtmlElement "bio"
+                                            -- NOTE: attribute names are in reverse alphabetical order
+                                            [ { name = "photo", value = "https://avatars2.githubusercontent.com/<u>/1384166" }
                                             , { name = "name", value = "Dillon Kearns" }
                                             ]
                                             []
