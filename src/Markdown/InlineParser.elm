@@ -250,36 +250,44 @@ tokenize rawText =
         |> mergeByIndex (findLinkImageOpenTokens rawText)
         |> mergeByIndex (findLinkImageCloseTokens rawText)
         |> mergeByIndex (findHardBreakTokens rawText)
-        |> mergeByIndex 
-        (cleanAngleBracketTokens (rawText |> findAngleBracketLTokens |> List.sortBy .index) (rawText |> findAngleBracketRTokens |> List.sortBy .index) 0)
+        |> mergeByIndex
+            (cleanAngleBracketTokens (rawText |> findAngleBracketLTokens |> List.sortBy .index) (rawText |> findAngleBracketRTokens |> List.sortBy .index) 0)
 
 
 cleanAngleBracketTokens : List { a | index : Int } -> List { a | index : Int } -> Int -> List { a | index : Int }
-cleanAngleBracketTokens tokensL tokensR countL=
+cleanAngleBracketTokens tokensL tokensR countL =
     case tokensR of
-        [] -> []
+        [] ->
+            []
+
         hd1 :: rest1 ->
             case tokensL of
-                [] -> 
+                [] ->
                     if countL > 1 then
                         cleanAngleBracketTokens tokensL rest1 (countL - 1)
+
                     else if countL == 1 then
-                        hd1 :: (cleanAngleBracketTokens tokensL rest1 (countL - 1))
+                        hd1 :: cleanAngleBracketTokens tokensL rest1 (countL - 1)
+
                     else
                         cleanAngleBracketTokens tokensL rest1 0
+
                 hd :: rest ->
-                    if (hd.index < hd1.index) then
+                    if hd.index < hd1.index then
                         if countL == 0 then
-                            hd :: (cleanAngleBracketTokens rest tokensR (countL + 1))
+                            hd :: cleanAngleBracketTokens rest tokensR (countL + 1)
+
                         else
                             cleanAngleBracketTokens rest tokensR (countL + 1)
+
+                    else if countL > 1 then
+                        cleanAngleBracketTokens tokensL rest1 (countL - 1)
+
+                    else if countL == 1 then
+                        hd1 :: cleanAngleBracketTokens tokensL rest1 (countL - 1)
+
                     else
-                        if countL > 1 then
-                            cleanAngleBracketTokens tokensL rest1 (countL - 1)
-                        else if countL == 1 then
-                            hd1 :: (cleanAngleBracketTokens tokensL rest1 (countL - 1))
-                        else
-                            cleanAngleBracketTokens tokensL rest1 0
+                        cleanAngleBracketTokens tokensL rest1 0
 
 
 {-| Merges two sorted sequences into a sorted sequence
@@ -462,6 +470,8 @@ regMatchToEmphasisToken char rawText regMatch =
         _ ->
             Nothing
 
+
+
 -- Strikethrough Tokens
 
 
@@ -486,12 +496,12 @@ regMatchToStrikethroughToken regMatch =
                     Maybe.map String.length maybeBackslashes
                         |> Maybe.withDefault 0
 
-                (length, meaning) =
-                  if isEven backslashesLength then
-                      (String.length tilde, StrikethroughToken NotEscaped)
+                ( length, meaning ) =
+                    if isEven backslashesLength then
+                        ( String.length tilde, StrikethroughToken NotEscaped )
 
-                  else
-                      (String.length tilde, StrikethroughToken Escaped)
+                    else
+                        ( String.length tilde, StrikethroughToken Escaped )
             in
             Just
                 { index = regMatch.index + backslashesLength
@@ -501,9 +511,6 @@ regMatchToStrikethroughToken regMatch =
 
         _ ->
             Nothing
-
-
-
 
 
 {-| Whitespace characters matched by the `\\s` regex
@@ -520,7 +527,7 @@ isWhitespace c =
         '\n' ->
             True
 
-        '\r' ->
+        '\u{000D}' ->
             True
 
         '\t' ->
@@ -1685,13 +1692,13 @@ refRegexToMatch matchModel references maybeRegexMatch =
                         _ ->
                             LinkType (prepareUrlAndTitle rawUrl maybeTitle)
             in
-            Just (
-                Match
+            Just
+                (Match
                     { matchModel
                         | type_ = type_
                         , end = matchModel.end + regexMatchLength
                     }
-                    )
+                )
 
 
 encodeUrl : String -> String
@@ -1784,8 +1791,10 @@ isOpenEmphasisToken closeToken openToken =
                             -- if the sum of lengths
                             -- is not multiple of 3
                             -- is Open emphasis
-                            modBy 3 (closeToken.length + openToken.length) /= 0
-                         || (modBy 3 closeToken.length == 0 && modBy 3 openToken.length == 0)
+                            modBy 3 (closeToken.length + openToken.length)
+                                /= 0
+                                || (modBy 3 closeToken.length == 0 && modBy 3 openToken.length == 0)
+
                         else
                             True
 
@@ -1880,34 +1889,39 @@ lineBreakTTM remaining tokens matches refs rawText =
                     lineBreakTTM tokensTail (token :: tokens) matches refs rawText
 
 
+
 -- StrikethroughType Tokens To Matches
+
 
 isStrikethroughTokenPair : Token -> Token -> Bool
 isStrikethroughTokenPair closeToken openToken =
     let
-        (openTokenIsStrikethrough, openTokenLength) =
+        ( openTokenIsStrikethrough, openTokenLength ) =
             case openToken.meaning of
                 -- If open token is escaped, ignore first '~'
                 StrikethroughToken Escaped ->
-                    (True, openToken.length - 1)
+                    ( True, openToken.length - 1 )
+
                 StrikethroughToken NotEscaped ->
-                    (True, openToken.length)
+                    ( True, openToken.length )
 
                 _ ->
-                    (False, 0)
+                    ( False, 0 )
 
-        (closeTokenIsStrikethrough, closeTokenLength) =
+        ( closeTokenIsStrikethrough, closeTokenLength ) =
             case closeToken.meaning of
                 -- If close token is escaped, ignore first '~'
                 StrikethroughToken Escaped ->
-                    (True, closeToken.length - 1)
+                    ( True, closeToken.length - 1 )
+
                 StrikethroughToken NotEscaped ->
-                    (True, closeToken.length)
+                    ( True, closeToken.length )
 
                 _ ->
-                    (False, 0)
+                    ( False, 0 )
     in
-        closeTokenIsStrikethrough && openTokenIsStrikethrough && closeTokenLength == openTokenLength
+    closeTokenIsStrikethrough && openTokenIsStrikethrough && closeTokenLength == openTokenLength
+
 
 strikethroughToMatch : Token -> List Match -> References -> String -> ( Token, List Token, List Token ) -> ( List Token, List Match )
 strikethroughToMatch closeToken matches references rawText ( openToken, _, remainTokens ) =
@@ -1939,6 +1953,7 @@ strikethroughToMatch closeToken matches references rawText ( openToken, _, remai
     , match :: matches
     )
 
+
 strikethroughTTM : List Token -> List Token -> List Match -> References -> String -> List Match
 strikethroughTTM remaining tokens matches references rawText =
     case remaining of
@@ -1948,21 +1963,19 @@ strikethroughTTM remaining tokens matches references rawText =
         token :: tokensTail ->
             case token.meaning of
                 StrikethroughToken isEscaped ->
-                  case findToken (isStrikethroughTokenPair token) tokens of
-                      Just content ->
-                          let
-                              ( newTokens, newMatches ) =
-                                  strikethroughToMatch token matches references rawText content
-                          in
-                          strikethroughTTM tokensTail newTokens newMatches references rawText
+                    case findToken (isStrikethroughTokenPair token) tokens of
+                        Just content ->
+                            let
+                                ( newTokens, newMatches ) =
+                                    strikethroughToMatch token matches references rawText content
+                            in
+                            strikethroughTTM tokensTail newTokens newMatches references rawText
 
-
-                      Nothing ->
-                          strikethroughTTM tokensTail (token :: tokens) matches references rawText
+                        Nothing ->
+                            strikethroughTTM tokensTail (token :: tokens) matches references rawText
 
                 _ ->
                     strikethroughTTM tokensTail (token :: tokens) matches references rawText
-
 
 
 

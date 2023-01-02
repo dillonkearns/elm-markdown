@@ -1,9 +1,9 @@
 module Markdown.ListItem exposing (Completion(..), ListItem(..), parser)
 
-import Whitespace
 import Helpers
 import Parser
 import Parser.Advanced as Advanced exposing (..)
+import Whitespace
 
 
 type ListItem

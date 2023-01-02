@@ -1,6 +1,5 @@
 module Markdown.LinkReferenceDefinition exposing (..)
 
-import Whitespace
 import Helpers
 import Markdown.Helpers
 import Parser
@@ -8,6 +7,7 @@ import Parser.Advanced as Advanced exposing (..)
 import Parser.Extra
 import Parser.Token as Token
 import Url
+import Whitespace
 
 
 type alias Parser a =

@@ -1,11 +1,11 @@
 module WhitespaceTests exposing (suite)
 
 import Expect
-import Whitespace
 import Helpers
 import Parser
 import Parser.Advanced as Advanced exposing (..)
 import Test exposing (..)
+import Whitespace
 
 
 type alias Parser a =
@@ -22,32 +22,34 @@ suite =
     describe "lineEnd"
         [ test "single new line" <|
             \() ->
-                """chomp\nmore"""
-            |> Advanced.run
-                ( succeed ()
-                    |. Helpers.chompUntilLineEndOrEnd
-                    |. Whitespace.lineEnd
-                    |> Advanced.getChompedString
-                )
-            |> Expect.equal (Ok "chomp\n")
+                """chomp
+more"""
+                    |> Advanced.run
+                        (succeed ()
+                            |. Helpers.chompUntilLineEndOrEnd
+                            |. Whitespace.lineEnd
+                            |> Advanced.getChompedString
+                        )
+                    |> Expect.equal (Ok "chomp\n")
         , test "single carriage return" <|
             \() ->
-                """chomp\rmore"""
-            |> Advanced.run
-                ( succeed ()
-                    |. Helpers.chompUntilLineEndOrEnd
-                    |. Whitespace.lineEnd
-                    |> Advanced.getChompedString
-                )
-            |> Expect.equal (Ok "chomp\r")
+                """chomp\u{000D}more"""
+                    |> Advanced.run
+                        (succeed ()
+                            |. Helpers.chompUntilLineEndOrEnd
+                            |. Whitespace.lineEnd
+                            |> Advanced.getChompedString
+                        )
+                    |> Expect.equal (Ok "chomp\u{000D}")
         , test "carriage return followed by newline" <|
             \() ->
-                """chomp\r\nmore"""
-            |> Advanced.run
-                ( succeed ()
-                    |. Helpers.chompUntilLineEndOrEnd
-                    |. Whitespace.lineEnd
-                    |> Advanced.getChompedString
-                )
-            |> Expect.equal (Ok "chomp\r\n")
+                """chomp\u{000D}
+more"""
+                    |> Advanced.run
+                        (succeed ()
+                            |. Helpers.chompUntilLineEndOrEnd
+                            |. Whitespace.lineEnd
+                            |> Advanced.getChompedString
+                        )
+                    |> Expect.equal (Ok "chomp\u{000D}\n")
         ]

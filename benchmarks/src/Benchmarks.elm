@@ -2,7 +2,6 @@ module Benchmarks exposing (..)
 
 import Benchmark exposing (Benchmark, describe)
 import Dict
-import Whitespace
 import Markdown
 import Markdown.InlineParser
 import Markdown.OrderedList
@@ -11,6 +10,7 @@ import Parser
 import Parser.Advanced as Advanced exposing ((|.), (|=), chompIf, chompUntil, chompWhile, getChompedString, map, succeed, symbol)
 import Parser.Token as Token
 import ThematicBreak
+import Whitespace
 
 
 suite : Benchmark

@@ -22,11 +22,11 @@ suite =
         [ test "successfully parses the end" <|
             \() ->
                 """chompmore"""
-            |> Advanced.run
-                ( succeed ()
-                    |. Helpers.chompUntilLineEndOrEnd
-                    |. Helpers.lineEndOrEnd
-                    |> Advanced.getChompedString
-                )
-            |> Expect.equal (Ok "chompmore")
+                    |> Advanced.run
+                        (succeed ()
+                            |. Helpers.chompUntilLineEndOrEnd
+                            |. Helpers.lineEndOrEnd
+                            |> Advanced.getChompedString
+                        )
+                    |> Expect.equal (Ok "chompmore")
         ]

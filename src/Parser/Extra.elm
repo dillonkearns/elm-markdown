@@ -1,4 +1,4 @@
-module Parser.Extra exposing (positiveInteger, chompOneOrMore, maybeChomp, upToThree, upTo)
+module Parser.Extra exposing (chompOneOrMore, maybeChomp, positiveInteger, upTo, upToThree)
 
 import Parser
 import Parser.Advanced as Advanced exposing ((|.), Parser, chompIf, chompWhile, mapChompedString, oneOf, succeed)
@@ -8,6 +8,7 @@ type alias Parser a =
     Advanced.Parser String Parser.Problem a
 
 
+
 -- Validators
 
 
@@ -15,6 +16,7 @@ positiveInteger : Parser Int
 positiveInteger =
     mapChompedString (\str _ -> String.toInt str |> Maybe.withDefault 0) <|
         chompOneOrMore Char.isDigit
+
 
 
 -- Chomp N
@@ -32,6 +34,7 @@ maybeChomp condition =
         [ chompIf condition (Parser.Problem "Character not found")
         , succeed ()
         ]
+
 
 
 -- Parse N

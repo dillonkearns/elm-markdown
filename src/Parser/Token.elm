@@ -1,4 +1,4 @@
-module Parser.Token exposing (parseString, asterisk, carriageReturn, closingParen, closingSquareBracket, colon, dot, doubleQuote, greaterThan, hash, lessThan, minus, newline, openingSquareBracket, plus, singleQuote, space, tab, tilde, backtick, equals)
+module Parser.Token exposing (asterisk, backtick, carriageReturn, closingParen, closingSquareBracket, colon, dot, doubleQuote, equals, greaterThan, hash, lessThan, minus, newline, openingSquareBracket, parseString, plus, singleQuote, space, tab, tilde)
 
 import Parser
 import Parser.Advanced as Advanced exposing (Token(..))
@@ -41,7 +41,7 @@ newline =
 
 carriageReturn : Token Parser.Problem
 carriageReturn =
-    Token "\r" (Parser.Expecting "a carriage return")
+    Token "\u{000D}" (Parser.Expecting "a carriage return")
 
 
 hash : Token Parser.Problem

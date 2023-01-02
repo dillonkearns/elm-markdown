@@ -3,8 +3,8 @@ module Markdown.CodeBlock exposing (..)
 import Helpers
 import Parser
 import Parser.Advanced as Advanced exposing (..)
-import Parser.Token as Token
 import Parser.Extra as Extra
+import Parser.Token as Token
 import Whitespace
 
 
@@ -42,6 +42,7 @@ tilde =
     { kind = Tilde, char = '~', token = Token.tilde }
 
 
+
 --
 
 
@@ -57,33 +58,51 @@ parser =
             )
 
 
+
 -- Parses the opening fence and with it information about
 -- indentation, and what the closing fence should look like.
+
+
 openingFence : Parser Fence
 openingFence =
     succeed (\indent ( character, length ) -> { character = character, length = length, indented = indent })
         |. Whitespace.upToThreeSpaces
         -- Indentation
-        |= ( getCol |> andThen colToIndentation )
+        |= (getCol |> andThen colToIndentation)
         |= oneOf
             [ fenceOfAtLeast 3 backtick
             , fenceOfAtLeast 3 tilde
             ]
 
 
+
 -- In this case max three, as that's the max the opening fence can be indented.
 -- getCol always starts from 1, so 1 needs to be subtracted.
+
+
 colToIndentation : Int -> Parser Int
 colToIndentation int =
     case int of
-        1 -> succeed 0
-        2 -> succeed 1
-        3 -> succeed 2
-        4 -> succeed 3
-        _ -> Advanced.problem (Parser.Expecting "Fenced code blocks should be indented no more than 3 spaces")
+        1 ->
+            succeed 0
+
+        2 ->
+            succeed 1
+
+        3 ->
+            succeed 2
+
+        4 ->
+            succeed 3
+
+        _ ->
+            Advanced.problem (Parser.Expecting "Fenced code blocks should be indented no more than 3 spaces")
+
 
 
 -- Parses the closing fence, making sure it is the right length
+
+
 closingFence : Int -> FenceCharacterConfig -> Parser ()
 closingFence minLength fenceCharacter =
     succeed ()
@@ -93,10 +112,13 @@ closingFence minLength fenceCharacter =
         |. Helpers.lineEndOrEnd
 
 
+
 {- Code fence (from GFM):
-    > sequence of at least three consecutive backtick characters (`) or tildes (~).
-    > (Tildes and backticks cannot be mixed.)
+   > sequence of at least three consecutive backtick characters (`) or tildes (~).
+   > (Tildes and backticks cannot be mixed.)
 -}
+
+
 fenceOfAtLeast : Int -> FenceCharacterConfig -> Parser ( FenceCharacterConfig, Int )
 fenceOfAtLeast minLength fenceCharacter =
     let
@@ -113,11 +135,14 @@ fenceOfAtLeast minLength fenceCharacter =
         |> mapChompedString (\str _ -> ( fenceCharacter, String.length str ))
 
 
+
 {- Info string
-    > The line with the opening code fence may optionally be followed by text.
-    > This is trimmed of leading and trailing whitespace.
-    > If coming after a ` fence, it must not contain any ` characters.
+   > The line with the opening code fence may optionally be followed by text.
+   > This is trimmed of leading and trailing whitespace.
+   > If coming after a ` fence, it must not contain any ` characters.
 -}
+
+
 infoString : FenceCharacterConfig -> Parser (Maybe String)
 infoString fenceCharacter =
     let
@@ -139,10 +164,13 @@ infoString fenceCharacter =
                 |> mapChompedString toInfoString
 
 
+
 {- Body
-    > If the leading code fence is indented N spaces, then up to N spaces of
-    > indentation are removed from each line of the content (if present).
+   > If the leading code fence is indented N spaces, then up to N spaces of
+   > indentation are removed from each line of the content (if present).
 -}
+
+
 type alias Body =
     String
 
@@ -178,7 +206,10 @@ remainingBlockHelp ( fence, body ) =
         ]
 
 
+
 -- Parse code block line, returning the offset at which the indentation ended
+
+
 codeBlockLine : Int -> Parser Int
 codeBlockLine indented =
     succeed identity

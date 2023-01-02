@@ -1,11 +1,11 @@
 module Markdown.Heading exposing (..)
 
-import Whitespace
 import Helpers
 import Markdown.RawBlock exposing (Attribute, RawBlock(..), UnparsedInlines(..))
 import Parser
-import Parser.Advanced as Advanced exposing ((|.), (|=), Nestable(..), Step(..), andThen, chompIf, chompWhile, getChompedString, spaces, succeed, symbol, oneOf)
+import Parser.Advanced as Advanced exposing ((|.), (|=), Nestable(..), Step(..), andThen, chompIf, chompWhile, getChompedString, oneOf, spaces, succeed, symbol)
 import Parser.Token as Token
+import Whitespace
 
 
 type alias Parser a =
@@ -50,7 +50,8 @@ parser =
             , succeed identity
                 |. oneOf
                     [ symbol Token.space
-                    , symbol Token.tab]
+                    , symbol Token.tab
+                    ]
                 |= (Helpers.chompUntilLineEndOrEnd
                         |> Advanced.mapChompedString
                             (\headingText _ ->
@@ -58,8 +59,8 @@ parser =
                                     |> String.trim
                                     |> dropClosingSequence
                                     |> UnparsedInlines
-                        )
-                    )
+                            )
+                   )
             ]
 
 
@@ -73,16 +74,16 @@ isHash c =
             False
 
 
-dropClosingSequence: String -> String
+dropClosingSequence : String -> String
 dropClosingSequence headingString =
     let
-        droppedTrailingHashesString = 
-            headingString 
+        droppedTrailingHashesString =
+            headingString
                 |> dropTrailingHashes
     in
     if (droppedTrailingHashesString |> String.endsWith " ") || (droppedTrailingHashesString |> String.isEmpty) then
         droppedTrailingHashesString |> String.trimRight
-        
+
     else
         headingString
 

@@ -240,7 +240,7 @@ renderer =
                 (items
                     |> List.map
                         (\(ListItem task children) ->
-                            Element.paragraph [  ]
+                            Element.paragraph []
                                 [ Element.row
                                     [ Element.alignTop ]
                                     ((case task of

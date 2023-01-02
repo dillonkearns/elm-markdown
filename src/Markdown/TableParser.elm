@@ -1,13 +1,13 @@
 module Markdown.TableParser exposing (..)
 
-import Whitespace
 import Helpers
 import Markdown.Block exposing (Alignment(..))
 import Markdown.Table exposing (TableDelimiterRow(..))
 import Parser
 import Parser.Advanced as Advanced exposing (..)
-import Parser.Extra exposing (maybeChomp, chompOneOrMore)
+import Parser.Extra exposing (chompOneOrMore, maybeChomp)
 import Parser.Token as Token
+import Whitespace
 
 
 type alias Parser a =

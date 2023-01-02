@@ -1,9 +1,9 @@
 module Helpers exposing (..)
 
-import Whitespace
 import Parser
 import Parser.Advanced as Advanced exposing (..)
 import Parser.Token as Token
+import Whitespace
 
 
 type alias Parser a =

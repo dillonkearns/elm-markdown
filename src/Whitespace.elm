@@ -9,6 +9,7 @@ type alias Parser a =
     Advanced.Parser String Parser.Problem a
 
 
+
 -- Assertions
 
 
@@ -32,7 +33,7 @@ isWhitespace char =
         '\u{000C}' ->
             True
 
-        '\r' ->
+        '\u{000D}' ->
             True
 
         _ ->
@@ -40,16 +41,18 @@ isWhitespace char =
 
 
 {-| Line ending as defined in the GFM spec
-    Note that a line ending can also be a carriage return
-    followed by a newline.
+Note that a line ending can also be a carriage return
+followed by a newline.
 -}
 isLineEnd : Char -> Bool
 isLineEnd char =
     case char of
-        '\n' -> -- Newline
+        '\n' ->
+            -- Newline
             True
 
-        '\r' -> -- Carriage return
+        '\u{000D}' ->
+            -- Carriage return
             True
 
         _ ->
@@ -74,6 +77,7 @@ isSpace =
     (==) ' '
 
 
+
 -- Parsers
 
 
@@ -87,10 +91,13 @@ tab =
     token Token.tab
 
 
+
 -- A note about the relationship between tabs and spaces:
 -- In places where tabs can define block structure, they are to be
 -- treated as four spaces i.e. a single tab can create an indented
 -- code block.
+
+
 upToThreeSpaces : Parser ()
 upToThreeSpaces =
     oneOf
@@ -115,6 +122,7 @@ lineEnd =
         ]
 
 
+
 -- Chompers
 
 
@@ -127,4 +135,3 @@ requiredWhitespace : Parser ()
 requiredWhitespace =
     chompIf isWhitespace (Parser.Expecting "Required whitespace")
         |. chompWhile isWhitespace
-

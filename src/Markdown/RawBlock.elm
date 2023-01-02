@@ -2,10 +2,10 @@ module Markdown.RawBlock exposing (Attribute, RawBlock(..), SetextLevel(..), Unp
 
 import Markdown.Block exposing (Block)
 import Markdown.CodeBlock exposing (CodeBlock)
+import Markdown.OrderedList exposing (OrderedListMarker)
 import Markdown.Table
 import Markdown.TableParser as TableParser
 import Markdown.UnorderedList exposing (UnorderedListMarker)
-import Markdown.OrderedList exposing (OrderedListMarker)
 
 
 type alias Attribute =
