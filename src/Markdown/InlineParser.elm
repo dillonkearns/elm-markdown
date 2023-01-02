@@ -1815,8 +1815,8 @@ emphasisToMatch references rawText closeToken tokensTail ( openToken, innerToken
 -- Line Break Tokens To Matches
 
 
-lineBreakTTM : List Token -> List Token -> List Match -> References -> String -> List Match
-lineBreakTTM remaining tokens matches refs rawText =
+lineBreakTTM : List Token -> List Match -> List Match
+lineBreakTTM remaining matches =
     case remaining of
         [] ->
             matches
@@ -1824,12 +1824,12 @@ lineBreakTTM remaining tokens matches refs rawText =
         token :: tokensTail ->
             case token.meaning of
                 HardLineBreakToken ->
-                    -- NOTE: the origiginal also moved into this branch when
+                    -- NOTE: the original also moved into this branch when
                     -- (token.meaning == SoftLineBreakToken && softAsHardLineBreak
-                    lineBreakTTM tokensTail tokens (tokenToMatch token HardLineBreakType :: matches) refs rawText
+                    lineBreakTTM tokensTail (tokenToMatch token HardLineBreakType :: matches)
 
                 _ ->
-                    lineBreakTTM tokensTail (token :: tokens) matches refs rawText
+                    lineBreakTTM tokensTail matches
 
 
 

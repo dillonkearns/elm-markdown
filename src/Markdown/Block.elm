@@ -24,7 +24,7 @@ module Markdown.Block exposing
 
 @docs Html
 
-See [`Markdown.Html`](Markdown.Html) for more.
+See [`Markdown.Html`](Markdown-Html) for more.
 
 
 ## Inlines

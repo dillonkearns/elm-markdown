@@ -31,6 +31,7 @@ parser =
 headerParser : Parser (Markdown.Table.TableHeader String)
 headerParser =
     let
+        headersWithAlignment : List a -> List b -> List { label : a, alignment : b }
         headersWithAlignment headers columnAlignments =
             List.map2
                 (\headerCell alignment ->
@@ -58,6 +59,7 @@ headerParser =
 parseHeader : TableDelimiterRow -> String -> Result String (Markdown.Table.TableHeader String)
 parseHeader (TableDelimiterRow _ columnAlignments) headersRow =
     let
+        headersWithAlignment : List a -> List { label : a, alignment : Maybe Alignment }
         headersWithAlignment headers =
             List.map2
                 (\headerCell alignment ->
@@ -68,6 +70,7 @@ parseHeader (TableDelimiterRow _ columnAlignments) headersRow =
                 headers
                 columnAlignments
 
+        combineHeaderAndDelimiter : List a -> Result String (Markdown.Table.TableHeader a)
         combineHeaderAndDelimiter headers =
             if List.length headers == List.length columnAlignments then
                 Ok (Markdown.Table.TableHeader (headersWithAlignment headers))
@@ -102,17 +105,21 @@ parseCells =
 parseCellHelper : ( Maybe String, List String ) -> Parser (Step ( Maybe String, List String ) (List String))
 parseCellHelper ( curr, acc ) =
     let
+        addToCurrent : String -> String
         addToCurrent c =
             Maybe.withDefault "" curr ++ c
 
+        continueCell : String -> Step ( Maybe String, List String ) a
         continueCell c =
             Loop ( Just (addToCurrent c), acc )
 
+        finishCell : Step ( Maybe a, List String ) b
         finishCell =
             curr
                 |> Maybe.map (\cell -> Loop ( Nothing, cell :: acc ))
                 |> Maybe.withDefault (Loop ( Nothing, acc ))
 
+        return : Step state (List String)
         return =
             curr
                 |> Maybe.map (\cell -> Done (cell :: acc))
@@ -212,6 +219,7 @@ bodyRowParser expectedRowLength =
 standardizeRowLength : Int -> List String -> List String
 standardizeRowLength expectedLength row =
     let
+        rowLength : Int
         rowLength =
             List.length row
     in

@@ -47,8 +47,8 @@ Often you'll want to render these `Block`s directly:
 
 But you can also do a lot with the `Block`s before passing them through:
 
-  - Transform the `Block`s ([example: make each heading one level deeper](TODO))
-  - Use the blocks to gather metadata about the markdown document ([example: building a table of contents from `Block`s](TODO))
+  - Transform the `Block`s ([example: make each heading one level deeper](https://github.com/dillonkearns/elm-markdown/blob/8fa879e72d33dec98d5cf95af2a8f8cf8c6d5d10/tests/BlockTransformTests.elm#L84-L133))
+  - Use the blocks to gather metadata about the markdown document ([example: building a table of contents from `Block`s](https://ellie-app.com/cHB3fRSKVRha1))
 
 -}
 parse : String -> Result (List (Advanced.DeadEnd String Parser.Problem)) (List Block)
@@ -435,7 +435,8 @@ blockQuote =
 unorderedListBlock : Bool -> Parser RawBlock
 unorderedListBlock previousWasBody =
     let
-        parseListItem listmarker intended unparsedListItem =
+        parseListItem : a -> ListItem.ListItem -> { body : String.String, task : Maybe Bool, marker : a }
+        parseListItem listmarker unparsedListItem =
             case unparsedListItem of
                 ListItem.TaskItem completion body ->
                     { body = body
@@ -1309,6 +1310,7 @@ completeBlocks state =
             case Advanced.run rawBlockParser openListItem of
                 Ok value ->
                     let
+                        tight2 : Bool
                         tight2 =
                             if List.member BlankLine value.rawBlocks then
                                 False

@@ -63,8 +63,10 @@ unorderedListEmptyItemParser =
         |. Helpers.lineEndOrEnd
 
 
+getIntendedCodeItem : Int -> b -> Int -> ( Int, ListItem ) -> ( b, Int, ListItem )
 getIntendedCodeItem markerStartPos listMarker markerEndPos ( bodyStartPos, item ) =
     let
+        spaceNum : Int
         spaceNum =
             bodyStartPos - markerEndPos
     in
@@ -73,6 +75,7 @@ getIntendedCodeItem markerStartPos listMarker markerEndPos ( bodyStartPos, item 
 
     else
         let
+            intendedCodeItem : ListItem
             intendedCodeItem =
                 case item of
                     TaskItem completion string ->

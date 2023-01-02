@@ -229,6 +229,7 @@ defaultHtmlRenderer =
     , tableCell =
         \maybeAlignment ->
             let
+                attrs : List (Html.Attribute msg)
                 attrs =
                     maybeAlignment
                         |> Maybe.map
