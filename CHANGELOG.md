@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [7.0.1] - 2023-01-02
+
+### Fixed
+- Fix a corner case for parsing block quotes, see [#127](https://github.com/dillonkearns/elm-markdown/pull/127). Thank you [LutSa](https://github.com/LutSa)!
+- Fix parsing of `<` and `>` characters within HTML attributes to treat them as plain characters instead of closing HTML element, see [#130](https://github.com/dillonkearns/elm-markdown/pull/130). Thank you [LutSa](https://github.com/LutSa)!
+
+
 ## [7.0.0] - 2021-08-20
 
 ### Added
