@@ -1437,6 +1437,7 @@ linkOrImageTypeToMatch closeToken tokensTail oldMatches references rawText ( ope
         -- Active opening: set all before to inactive if found
         LinkOpenToken Active ->
             let
+                tempMatch : Match
                 tempMatch =
                     findTempMatch True
             in

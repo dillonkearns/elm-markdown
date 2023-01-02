@@ -55,6 +55,7 @@ suite =
         ]
 
 
+expectFail : String -> Expect.Expectation
 expectFail input =
     case Advanced.run ThematicBreak.parser input of
         Ok _ ->

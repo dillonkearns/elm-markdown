@@ -2,7 +2,7 @@ module InlineFoldTests exposing (suite)
 
 import Dict
 import Expect
-import Markdown.Block as Block exposing (..)
+import Markdown.Block as Block exposing (Block(..), HeadingLevel(..), Html(..), Inline(..), ListItem(..), Task(..))
 import Test exposing (..)
 
 
@@ -37,6 +37,7 @@ allBlocks =
 countInline : Inline -> Dict.Dict String Int -> Dict.Dict String Int
 countInline inline totals =
     let
+        increment : Dict.Dict String Int -> String -> Dict.Dict String Int
         increment =
             \dict str ->
                 case Dict.get str dict of
@@ -81,12 +82,15 @@ suite =
         [ test "count inlines" <|
             \() ->
                 let
+                    totes : Dict.Dict String Int
                     totes =
-                        inlineFoldl countInline Dict.empty allBlocks
+                        Block.inlineFoldl countInline Dict.empty allBlocks
 
+                    occs : Int
                     occs =
                         7
 
+                    targets : Dict.Dict String number
                     targets =
                         Dict.fromList
                             [ ( "HardLineBreak", occs )

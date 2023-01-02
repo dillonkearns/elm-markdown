@@ -3,15 +3,15 @@ module TableParserTests exposing (delimiterParsingSuite, fullTableSuite, rowPars
 import Expect exposing (Expectation)
 import Markdown.Block exposing (Alignment(..))
 import Markdown.Table exposing (TableDelimiterRow(..))
-import Markdown.TableParser exposing (..)
+import Markdown.TableParser
 import Parser.Advanced as Advanced
-import Test exposing (..)
+import Test exposing (Test, describe, test)
 
 
 expectDelimiterRowOk : String -> List (Maybe Alignment) -> Expectation
 expectDelimiterRowOk testString columns =
     testString
-        |> Advanced.run delimiterRowParser
+        |> Advanced.run Markdown.TableParser.delimiterRowParser
         |> Expect.equal
             (Ok (TableDelimiterRow { raw = testString, trimmed = String.trim testString } columns))
 
@@ -40,7 +40,7 @@ delimiterParsingSuite =
         , test "delimiter row with no trailing or leading pipes" <|
             \() ->
                 "--"
-                    |> expectParserFail delimiterRowParser
+                    |> expectParserFail Markdown.TableParser.delimiterRowParser
         , test "delimiter row with space padding" <|
             \() ->
                 expectDelimiterRowOk "| -- |-- | --   |" [ Nothing, Nothing, Nothing ]
@@ -53,7 +53,7 @@ delimiterParsingSuite =
         , test "delimiter rows cannot have spaces between the hyphens" <|
             \() ->
                 "|---|- -|"
-                    |> expectParserFail delimiterRowParser
+                    |> expectParserFail Markdown.TableParser.delimiterRowParser
         , test "delimiter row with alignment in columns" <|
             \() ->
                 expectDelimiterRowOk "| :-- |-- | :-: | ---:   " [ Just AlignLeft, Nothing, Just AlignCenter, Just AlignRight ]
@@ -66,7 +66,7 @@ rowParsingSuite =
         [ test "simple row" <|
             \() ->
                 "| abc | def |"
-                    |> Advanced.run rowParser
+                    |> Advanced.run Markdown.TableParser.rowParser
                     |> Expect.equal
                         (Ok
                             [ "abc", "def" ]
@@ -74,7 +74,7 @@ rowParsingSuite =
         , test "single row" <|
             \() ->
                 "| abc |"
-                    |> Advanced.run rowParser
+                    |> Advanced.run Markdown.TableParser.rowParser
                     |> Expect.equal
                         (Ok
                             [ "abc" ]
@@ -82,7 +82,7 @@ rowParsingSuite =
         , test "row without trailing or leading pipes" <|
             \() ->
                 "cell 1 | cell 2 | cell 3"
-                    |> Advanced.run rowParser
+                    |> Advanced.run Markdown.TableParser.rowParser
                     |> Expect.equal
                         (Ok
                             [ "cell 1", "cell 2", "cell 3" ]
@@ -90,7 +90,7 @@ rowParsingSuite =
         , test "row with escaped pipes" <|
             \() ->
                 "| abc | a \\| b |"
-                    |> Advanced.run rowParser
+                    |> Advanced.run Markdown.TableParser.rowParser
                     |> Expect.equal
                         (Ok
                             [ "abc", "a | b" ]
@@ -98,7 +98,7 @@ rowParsingSuite =
         , test "row with escaped pipes at the end" <|
             \() ->
                 "| abc | def\\|"
-                    |> Advanced.run rowParser
+                    |> Advanced.run Markdown.TableParser.rowParser
                     |> Expect.equal
                         (Ok
                             [ "abc", "def|" ]
@@ -106,7 +106,7 @@ rowParsingSuite =
         , test "row with escaped pipes at the beginning" <|
             \() ->
                 "\\|  abc | def |"
-                    |> Advanced.run rowParser
+                    |> Advanced.run Markdown.TableParser.rowParser
                     |> Expect.equal
                         (Ok
                             [ "|  abc", "def" ]
@@ -114,7 +114,7 @@ rowParsingSuite =
         , test "row with empty cell contents" <|
             \() ->
                 "| abc |  |"
-                    |> Advanced.run rowParser
+                    |> Advanced.run Markdown.TableParser.rowParser
                     |> Expect.equal
                         (Ok
                             [ "abc", "" ]
@@ -122,7 +122,7 @@ rowParsingSuite =
         , test "with double escaped pipe character" <|
             \() ->
                 "| abc \\\\|  |"
-                    |> Advanced.run rowParser
+                    |> Advanced.run Markdown.TableParser.rowParser
                     |> Expect.equal
                         (Ok
                             [ "abc |" ]
@@ -130,7 +130,7 @@ rowParsingSuite =
         , test "with triple escaped pipe character" <|
             \() ->
                 "| abc \\\\\\|  |"
-                    |> Advanced.run rowParser
+                    |> Advanced.run Markdown.TableParser.rowParser
                     |> Expect.equal
                         (Ok
                             [ "abc \\|" ]
@@ -145,7 +145,7 @@ fullTableSuite =
             \() ->
                 """| abc | def |
 |---|---|"""
-                    |> Advanced.run parser
+                    |> Advanced.run Markdown.TableParser.parser
                     |> Expect.equal
                         (Ok
                             (Markdown.Table.Table
@@ -160,7 +160,7 @@ fullTableSuite =
                 """| abc | def |
 |---|---|
 """
-                    |> Advanced.run parser
+                    |> Advanced.run Markdown.TableParser.parser
                     |> Expect.equal
                         (Ok
                             (Markdown.Table.Table
@@ -208,7 +208,7 @@ Hey, I forgot to finish my table! Whoops!
 | foo | bar |
 | bar | baz |
 """
-                    |> Advanced.run parser
+                    |> Advanced.run Markdown.TableParser.parser
                     |> Expect.equal
                         (Ok
                             (Markdown.Table.Table
@@ -227,7 +227,7 @@ Hey, I forgot to finish my table! Whoops!
 | bar |
 | bar | baz | boo |
 """
-                    |> Advanced.run parser
+                    |> Advanced.run Markdown.TableParser.parser
                     |> Expect.equal
                         (Ok
                             (Markdown.Table.Table
@@ -246,7 +246,7 @@ Hey, I forgot to finish my table! Whoops!
 foo | bar
 bar | baz
 """
-                    |> Advanced.run parser
+                    |> Advanced.run Markdown.TableParser.parser
                     |> Expect.equal
                         (Ok
                             (Markdown.Table.Table
@@ -263,7 +263,7 @@ bar | baz
                 """abc | def
 --- | ---
 """
-                    |> Advanced.run parser
+                    |> Advanced.run Markdown.TableParser.parser
                     |> Expect.equal
                         (Ok
                             (Markdown.Table.Table
@@ -287,7 +287,7 @@ bar
 | --- |
 bar
 """
-                    |> Advanced.run parser
+                    |> Advanced.run Markdown.TableParser.parser
                     |> Expect.equal
                         (Ok
                             (Markdown.Table.Table
@@ -302,7 +302,7 @@ bar
 | --- |
 bar
 """
-                    |> Advanced.run parser
+                    |> Advanced.run Markdown.TableParser.parser
                     |> Expect.equal
                         (Ok
                             (Markdown.Table.Table
@@ -324,7 +324,7 @@ bar
 |\\\\\\\\||
 
 """
-                    |> Advanced.run parser
+                    |> Advanced.run Markdown.TableParser.parser
                     |> Expect.equal
                         (Ok
                             (Markdown.Table.Table
@@ -343,6 +343,7 @@ bar
         ]
 
 
+expectParserFail : Advanced.Parser c x a -> String -> Expectation
 expectParserFail someParser input =
     case Advanced.run someParser input of
         Ok _ ->
@@ -352,8 +353,9 @@ expectParserFail someParser input =
             Expect.pass
 
 
+expectFail : String -> Expectation
 expectFail input =
-    case Advanced.run parser input of
+    case Advanced.run Markdown.TableParser.parser input of
         Ok _ ->
             Expect.fail "Expected a parser error."
 

@@ -2,11 +2,14 @@ module HtmlRendererTests exposing (suite)
 
 import Expect
 import Markdown.Html
-import Markdown.Parser as Markdown exposing (..)
+import Markdown.Parser as Markdown
 import Markdown.Renderer
+import Parser
+import Parser.Advanced
 import Test exposing (..)
 
 
+render : Markdown.Renderer.Renderer view -> String -> Result String (List view)
 render renderer markdown =
     markdown
         |> Markdown.parse
@@ -14,6 +17,7 @@ render renderer markdown =
         |> Result.andThen (\ast -> Markdown.Renderer.render renderer ast)
 
 
+deadEndsToString : List (Parser.Advanced.DeadEnd String Parser.Problem) -> String
 deadEndsToString deadEnds =
     deadEnds
         |> List.map deadEndToString
