@@ -50,8 +50,6 @@ config =
      , Docs.UpToDateReadmeLinks.rule
      , NoExposingEverything.rule
      , NoPrematureLetComputation.rule
-     , NoImportingEverything.rule []
-        |> ignoreInTest
      , NoUnoptimizedRecursion.rule (NoUnoptimizedRecursion.optOutWithComment "known-unoptimized-recursion")
         |> ignoreInTest
      , NoDebug.Log.rule
@@ -59,9 +57,6 @@ config =
         |> ignoreInTest
      , NoMissingTypeAnnotation.rule
      , NoMissingTypeAnnotationInLetIn.rule
-        |> Rule.ignoreErrorsForFiles
-            [ "tests/FormTests.elm"
-            ]
      , NoMissingTypeExpose.rule
      , NoUnmatchedUnit.rule
      ]
@@ -80,7 +75,9 @@ config =
                     |> Rule.ignoreErrorsForDirectories
                         []
                     |> Rule.ignoreErrorsForFiles
-                        []
+                        [ -- vendored code
+                          "src/HtmlParser.elm"
+                        ]
             )
 
 
