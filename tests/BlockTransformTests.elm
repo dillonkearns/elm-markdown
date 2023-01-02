@@ -3,7 +3,7 @@ module BlockTransformTests exposing (suite)
 import Dict
 import Expect
 import GithubSlugs
-import Markdown.Block as Block
+import Markdown.Block as Block exposing (Block(..), HeadingLevel(..), Html(..), Inline(..))
 import Test exposing (..)
 
 

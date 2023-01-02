@@ -17,6 +17,7 @@ module Markdown.Html exposing
 -}
 
 import List.Helpers
+import Markdown.Block exposing (Block)
 import Markdown.HtmlRenderer
 
 
@@ -68,6 +69,7 @@ be using this function when you use this module.
 oneOf : List (Renderer view) -> Renderer view
 oneOf decoders =
     let
+        unwrappedDecoders : List (String -> List Markdown.HtmlRenderer.Attribute -> List Block -> Result String view)
         unwrappedDecoders =
             decoders
                 |> List.map

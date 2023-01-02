@@ -52,6 +52,7 @@ parser previousWasBody =
            )
 
 
+orderedListOrderParser : Bool -> Advanced.Parser String Parser.Problem Int
 orderedListOrderParser previousWasBody =
     if previousWasBody then
         succeed identity

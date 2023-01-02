@@ -18,6 +18,7 @@ parser =
                 |> andThen
                     (\startingSpaces ->
                         let
+                            startSpace : Int
                             startSpace =
                                 String.length startingSpaces
                         in
@@ -33,6 +34,7 @@ parser =
                 |> andThen
                     (\additionalHashes ->
                         let
+                            level : Int
                             level =
                                 String.length additionalHashes + 1
                         in
@@ -76,6 +78,7 @@ isHash c =
 dropClosingSequence : String -> String
 dropClosingSequence headingString =
     let
+        droppedTrailingHashesString : String
         droppedTrailingHashesString =
             headingString
                 |> dropTrailingHashes

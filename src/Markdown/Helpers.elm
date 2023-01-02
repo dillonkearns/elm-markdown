@@ -61,6 +61,7 @@ containsAmpersand string =
 formatStr : String -> String
 formatStr str =
     let
+        withEscapes : String
         withEscapes =
             replaceEscapable str
     in

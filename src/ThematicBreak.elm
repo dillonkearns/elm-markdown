@@ -48,6 +48,7 @@ parseThematicBreak =
 withChar : Char -> Parser ThematicBreak
 withChar tchar =
     let
+        token : Parser ()
         token =
             Token.parseString (String.fromChar tchar)
     in

@@ -69,6 +69,7 @@ destinationParser =
 titleParser : Parser (Maybe String)
 titleParser =
     let
+        inDoubleQuotes : Advanced.Parser String Parser.Problem (Maybe String)
         inDoubleQuotes =
             succeed Just
                 |. symbol Token.doubleQuote
@@ -79,6 +80,7 @@ titleParser =
                 |. symbol Token.doubleQuote
                 |. onlyWhitespaceTillNewline
 
+        inSingleQuotes : Advanced.Parser String Parser.Problem (Maybe String)
         inSingleQuotes =
             succeed Just
                 |. symbol Token.singleQuote

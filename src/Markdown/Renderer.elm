@@ -140,6 +140,7 @@ defaultHtmlRenderer =
                             case item of
                                 Block.ListItem task children ->
                                     let
+                                        checkbox : Html msg
                                         checkbox =
                                             case task of
                                                 Block.NoTask ->
@@ -185,6 +186,7 @@ defaultHtmlRenderer =
     , codeBlock =
         \{ body, language } ->
             let
+                classes : List (Html.Attribute msg)
                 classes =
                     -- Only the first word is used in the class
                     case Maybe.map String.words language of
@@ -207,6 +209,7 @@ defaultHtmlRenderer =
     , tableHeaderCell =
         \maybeAlignment ->
             let
+                attrs : List (Html.Attribute msg)
                 attrs =
                     maybeAlignment
                         |> Maybe.map

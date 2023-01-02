@@ -652,6 +652,7 @@ inlineParserValidateWalkBlock function block =
 
         Table header rows ->
             let
+                mappedHeader : Result (List error) (List { alignment : Maybe Alignment, label : List Inline })
                 mappedHeader =
                     header
                         |> traverse
@@ -666,6 +667,7 @@ inlineParserValidateWalkBlock function block =
                                         )
                             )
 
+                mappedRows : Result (List error) (List (List (List Inline)))
                 mappedRows =
                     traverse (traverse (traverse (inlineParserValidateWalk function))) rows
             in
@@ -974,6 +976,7 @@ inlineFoldl ifunction top_acc list =
                 case inline of
                     HtmlInline hblock ->
                         let
+                            hiacc : acc
                             hiacc =
                                 ifn inline acc
                         in
@@ -995,6 +998,7 @@ inlineFoldl ifunction top_acc list =
 
                     Link _ _ inlines ->
                         let
+                            iacc : acc
                             iacc =
                                 ifn inline acc
                         in
@@ -1002,6 +1006,7 @@ inlineFoldl ifunction top_acc list =
 
                     Image _ _ inlines ->
                         let
+                            iacc : acc
                             iacc =
                                 ifn inline acc
                         in
@@ -1009,6 +1014,7 @@ inlineFoldl ifunction top_acc list =
 
                     Emphasis inlines ->
                         let
+                            iacc : acc
                             iacc =
                                 ifn inline acc
                         in
@@ -1016,6 +1022,7 @@ inlineFoldl ifunction top_acc list =
 
                     Strong inlines ->
                         let
+                            iacc : acc
                             iacc =
                                 ifn inline acc
                         in
@@ -1023,6 +1030,7 @@ inlineFoldl ifunction top_acc list =
 
                     Strikethrough inlines ->
                         let
+                            iacc : acc
                             iacc =
                                 ifn inline acc
                         in
@@ -1037,9 +1045,11 @@ inlineFoldl ifunction top_acc list =
                     HardLineBreak ->
                         ifn inline acc
 
+        function : Inline -> acc -> acc
         function =
             inlineFoldF ifunction
 
+        bfn : Block -> acc -> acc
         bfn =
             \block acc ->
                 case block of
@@ -1063,6 +1073,7 @@ inlineFoldl ifunction top_acc list =
 
                     Table labels listlists ->
                         let
+                            llacc : acc
                             llacc =
                                 List.foldl
                                     (\inlines iacc ->

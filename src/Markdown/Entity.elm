@@ -74,9 +74,11 @@ isValidUnicode int =
 isBadEndUnicode : Int -> Bool
 isBadEndUnicode int =
     let
+        remain : Int
         remain =
             modBy 131070 int
 
+        remain_ : Int
         remain_ =
             modBy 16 int
     in
@@ -118,6 +120,7 @@ replaceHexadecimal match =
 hexToInt : String -> Int
 hexToInt string =
     let
+        folder : Char -> Int -> Int
         folder hexDigit int =
             int * 16 + modBy 39 (Char.toCode hexDigit) - 9
     in

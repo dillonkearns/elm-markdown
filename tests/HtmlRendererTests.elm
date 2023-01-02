@@ -20,7 +20,7 @@ render renderer markdown =
 deadEndsToString : List (Parser.Advanced.DeadEnd String Parser.Problem) -> String
 deadEndsToString deadEnds =
     deadEnds
-        |> List.map deadEndToString
+        |> List.map Markdown.deadEndToString
         |> String.join "\n"
 
 

@@ -42,6 +42,7 @@ headerParser =
                 headers
                 columnAlignments
 
+        validateHeaderMatchesDelimiter : ( List a, TableDelimiterRow ) -> Advanced.Parser c Parser.Problem (Markdown.Table.TableHeader a)
         validateHeaderMatchesDelimiter ( headers, TableDelimiterRow _ columnAlignments ) =
             if List.length headers == List.length columnAlignments then
                 Advanced.succeed (Markdown.Table.TableHeader (headersWithAlignment headers columnAlignments))
