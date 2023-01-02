@@ -6,10 +6,10 @@ module Markdown.Parser exposing (parse, deadEndToString)
 
 -}
 
-import Dict exposing (Dict)
+import Dict
 import Helpers
 import HtmlParser exposing (Node(..))
-import Markdown.Block as Block exposing (Block, Inline, ListItem, Task)
+import Markdown.Block as Block exposing (Block, Inline)
 import Markdown.CodeBlock
 import Markdown.Heading as Heading
 import Markdown.Helpers exposing (isEven)
@@ -18,12 +18,12 @@ import Markdown.InlineParser
 import Markdown.LinkReferenceDefinition as LinkReferenceDefinition exposing (LinkReferenceDefinition)
 import Markdown.ListItem as ListItem
 import Markdown.OrderedList
-import Markdown.RawBlock as RawBlock exposing (Attribute, RawBlock(..), SetextLevel(..), UnparsedInlines(..))
+import Markdown.RawBlock as RawBlock exposing (RawBlock(..), SetextLevel(..), UnparsedInlines(..))
 import Markdown.Table
 import Markdown.TableParser as TableParser
 import Markdown.UnorderedList
 import Parser
-import Parser.Advanced as Advanced exposing ((|.), (|=), Nestable(..), Step(..), andThen, chompIf, chompWhile, getChompedString, getIndent, loop, map, oneOf, problem, succeed, symbol, token)
+import Parser.Advanced as Advanced exposing ((|.), (|=), Step(..), andThen, chompIf, chompWhile, getChompedString, loop, map, oneOf, problem, succeed, symbol, token)
 import Parser.Token as Token
 import String exposing (repeat, trim)
 import ThematicBreak
@@ -47,8 +47,8 @@ Often you'll want to render these `Block`s directly:
 
 But you can also do a lot with the `Block`s before passing them through:
 
-  - Transform the `Block`s ([example: make each heading one level deeper](TODO))
-  - Use the blocks to gather metadata about the markdown document ([example: building a table of contents from `Block`s](TODO))
+  - Transform the `Block`s ([example: make each heading one level deeper](https://github.com/dillonkearns/elm-markdown/blob/8fa879e72d33dec98d5cf95af2a8f8cf8c6d5d10/tests/BlockTransformTests.elm#L84-L133))
+  - Use the blocks to gather metadata about the markdown document ([example: building a table of contents from `Block`s](https://ellie-app.com/cHB3fRSKVRha1))
 
 -}
 parse : String -> Result (List (Advanced.DeadEnd String Parser.Problem)) (List Block)
@@ -70,6 +70,7 @@ parse input =
                     let
                         -- TODO find a better way to do this
                         -- e.g. make sure they are never generated
+                        isNotEmptyParagraph : Block -> Bool
                         isNotEmptyParagraph block =
                             case block of
                                 Block.Paragraph [] ->
@@ -148,6 +149,7 @@ type alias Parser a =
 inlineParseHelper : LinkReferenceDefinitions -> UnparsedInlines -> List Block.Inline
 inlineParseHelper referencesDict (UnparsedInlines unparsedInlines) =
     let
+        mappedReferencesDict : Dict.Dict String.String ( String.String, Maybe String.String )
         mappedReferencesDict =
             referencesDict
                 |> List.map (Tuple.mapSecond (\{ destination, title } -> ( destination, title )))
@@ -159,6 +161,7 @@ inlineParseHelper referencesDict (UnparsedInlines unparsedInlines) =
 
 mapInline : Inline.Inline -> Block.Inline
 mapInline inline =
+    -- known-unoptimized-recursion
     case inline of
         Inline.Text string ->
             Block.Text string
@@ -263,19 +266,22 @@ parseInlines linkReferences rawBlock =
             Block.HtmlBlock html
                 |> ParsedBlock
 
-        UnorderedListBlock tight intended unparsedItems _ ->
+        UnorderedListBlock tight _ unparsedItems _ ->
             let
+                parseItem : Maybe Bool -> List RawBlock -> Block.ListItem Block
                 parseItem rawBlockTask rawBlocks =
                     let
+                        blocks : List Block
                         blocks =
                             case parseAllInlines { linkReferenceDefinitions = linkReferences, rawBlocks = rawBlocks } of
                                 Ok parsedBlocks ->
                                     parsedBlocks
 
                                 --TODO: pass this Err e
-                                Err e ->
+                                Err _ ->
                                     []
 
+                        blocksTask : Block.Task
                         blocksTask =
                             case rawBlockTask of
                                 Just False ->
@@ -304,7 +310,7 @@ parseInlines linkReferences rawBlock =
                             parsedBlocks
 
                         --TODO: pass this Err e
-                        Err e ->
+                        Err _ ->
                             []
             in
             unparsedItems
@@ -323,7 +329,7 @@ parseInlines linkReferences rawBlock =
         BlankLine ->
             EmptyBlock
 
-        RawBlock.BlockQuote rawBlocks ->
+        RawBlock.BlockQuote _ ->
             EmptyBlock
 
         ParsedBlockQuote rawBlocks ->
@@ -435,7 +441,8 @@ blockQuote =
 unorderedListBlock : Bool -> Parser RawBlock
 unorderedListBlock previousWasBody =
     let
-        parseListItem listmarker intended unparsedListItem =
+        parseListItem : a -> ListItem.ListItem -> { body : String.String, task : Maybe Bool, marker : a }
+        parseListItem listmarker unparsedListItem =
             case unparsedListItem of
                 ListItem.TaskItem completion body ->
                     { body = body
@@ -469,7 +476,7 @@ unorderedListBlock previousWasBody =
                 UnorderedListBlock True
                     intended
                     []
-                    (parseListItem listmarker intended unparsedListItem)
+                    (parseListItem listmarker unparsedListItem)
             )
 
 
@@ -539,11 +546,12 @@ textNodeToBlocks textNodeValue =
 nodeToRawBlock : Node -> Block.Html Block
 nodeToRawBlock node =
     case node of
-        HtmlParser.Text innerText ->
+        HtmlParser.Text _ ->
             Block.HtmlComment "TODO this never happens, but use types to drop this case."
 
         HtmlParser.Element tag attributes children ->
             let
+                parseChild : Node -> List Block
                 parseChild child =
                     case child of
                         HtmlParser.Text text ->
@@ -598,6 +606,7 @@ childToBlocks node blocks =
             case nodesToBlocks children of
                 Ok childrenAsBlocks ->
                     let
+                        block : Block
                         block =
                             Block.HtmlElement tag attributes childrenAsBlocks
                                 |> Block.HtmlBlock
@@ -840,7 +849,7 @@ completeOrMergeBlocks state newRawBlock =
 
         ( _, (UnorderedListBlock tight intended1 closeListItems2 openListItem2) :: rest ) ->
             case newRawBlock of
-                UnorderedListBlock _ intended2 closeListItems1 openListItem1 ->
+                UnorderedListBlock _ intended2 _ openListItem1 ->
                     if openListItem2.marker == openListItem1.marker then
                         case Advanced.run rawBlockParser openListItem2.body of
                             Ok value ->
@@ -863,6 +872,7 @@ completeOrMergeBlocks state newRawBlock =
                         case Advanced.run rawBlockParser openListItem2.body of
                             Ok value ->
                                 let
+                                    tight2 : Bool
                                     tight2 =
                                         if List.member BlankLine value.rawBlocks then
                                             False
@@ -890,6 +900,7 @@ completeOrMergeBlocks state newRawBlock =
                     case Advanced.run rawBlockParser openListItem2.body of
                         Ok value ->
                             let
+                                tight2 : Bool
                                 tight2 =
                                     if List.member BlankLine value.rawBlocks then
                                         False
@@ -909,11 +920,12 @@ completeOrMergeBlocks state newRawBlock =
         -- (\item -> OrderedListBlock True item.intended item.marker item.order [] item.body)
         ( _, (OrderedListBlock tight intended1 marker order closeListItems2 openListItem2) :: rest ) ->
             case newRawBlock of
-                OrderedListBlock _ intended2 marker2 _ closeListItems1 openListItem1 ->
+                OrderedListBlock _ intended2 marker2 _ _ openListItem1 ->
                     if marker == marker2 then
                         case Advanced.run rawBlockParser openListItem2 of
                             Ok value ->
                                 let
+                                    tight2 : Bool
                                     tight2 =
                                         if List.member BlankLine value.rawBlocks then
                                             False
@@ -933,6 +945,7 @@ completeOrMergeBlocks state newRawBlock =
                         case Advanced.run rawBlockParser openListItem2 of
                             Ok value ->
                                 let
+                                    tight2 : Bool
                                     tight2 =
                                         if List.member BlankLine value.rawBlocks then
                                             False
@@ -960,6 +973,7 @@ completeOrMergeBlocks state newRawBlock =
                     case Advanced.run rawBlockParser openListItem2 of
                         Ok value ->
                             let
+                                tight2 : Bool
                                 tight2 =
                                     if List.member BlankLine value.rawBlocks then
                                         False
@@ -1095,6 +1109,7 @@ stepRawBlock revStmts =
 
             (UnorderedListBlock tight intended closeListItems openListItem) :: rest ->
                 let
+                    completeOrMergeUnorderedListBlock : { a | rawBlocks : List RawBlock } -> String.String -> { a | rawBlocks : List RawBlock }
                     completeOrMergeUnorderedListBlock state newString =
                         { state
                             | rawBlocks =
@@ -1104,6 +1119,7 @@ stepRawBlock revStmts =
                                     :: rest
                         }
 
+                    completeOrMergeUnorderedListBlockBlankLine : { a | rawBlocks : List RawBlock } -> String.String -> { a | rawBlocks : List RawBlock }
                     completeOrMergeUnorderedListBlockBlankLine state newString =
                         { state
                             | rawBlocks =
@@ -1131,6 +1147,7 @@ stepRawBlock revStmts =
 
             BlankLine :: (UnorderedListBlock tight intended closeListItems openListItem) :: rest ->
                 let
+                    completeOrMergeUnorderedListBlock : { a | rawBlocks : List RawBlock } -> String.String -> { a | rawBlocks : List RawBlock }
                     completeOrMergeUnorderedListBlock state newString =
                         { state
                             | rawBlocks =
@@ -1140,6 +1157,7 @@ stepRawBlock revStmts =
                                     :: rest
                         }
 
+                    completeOrMergeUnorderedListBlockBlankLine : { a | rawBlocks : List RawBlock } -> String.String -> { a | rawBlocks : List RawBlock }
                     completeOrMergeUnorderedListBlockBlankLine state newString =
                         { state
                             | rawBlocks =
@@ -1173,6 +1191,7 @@ stepRawBlock revStmts =
 
             (OrderedListBlock tight intended marker order closeListItems openListItem) :: rest ->
                 let
+                    completeOrMergeUnorderedListBlock : { a | rawBlocks : List RawBlock } -> String.String -> { a | rawBlocks : List RawBlock }
                     completeOrMergeUnorderedListBlock state newString =
                         { state
                             | rawBlocks =
@@ -1180,6 +1199,7 @@ stepRawBlock revStmts =
                                     :: rest
                         }
 
+                    completeOrMergeUnorderedListBlockBlankLine : { a | rawBlocks : List RawBlock } -> String.String -> { a | rawBlocks : List RawBlock }
                     completeOrMergeUnorderedListBlockBlankLine state newString =
                         { state
                             | rawBlocks =
@@ -1205,6 +1225,7 @@ stepRawBlock revStmts =
 
             BlankLine :: (OrderedListBlock tight intended marker order closeListItems openListItem) :: rest ->
                 let
+                    completeOrMergeUnorderedListBlock : { a | rawBlocks : List RawBlock } -> String.String -> { a | rawBlocks : List RawBlock }
                     completeOrMergeUnorderedListBlock state newString =
                         { state
                             | rawBlocks =
@@ -1212,6 +1233,7 @@ stepRawBlock revStmts =
                                     :: rest
                         }
 
+                    completeOrMergeUnorderedListBlockBlankLine : { a | rawBlocks : List RawBlock } -> String.String -> { a | rawBlocks : List RawBlock }
                     completeOrMergeUnorderedListBlockBlankLine state newString =
                         { state
                             | rawBlocks =
@@ -1271,6 +1293,7 @@ completeBlocks state =
             case Advanced.run rawBlockParser openListItem.body of
                 Ok value ->
                     let
+                        tight2 : Bool
                         tight2 =
                             if List.member BlankLine value.rawBlocks then
                                 False
@@ -1290,6 +1313,7 @@ completeBlocks state =
             case Advanced.run rawBlockParser openListItem.body of
                 Ok value ->
                     let
+                        tight2 : Bool
                         tight2 =
                             if List.member BlankLine value.rawBlocks then
                                 False
@@ -1309,6 +1333,7 @@ completeBlocks state =
             case Advanced.run rawBlockParser openListItem of
                 Ok value ->
                     let
+                        tight2 : Bool
                         tight2 =
                             if List.member BlankLine value.rawBlocks then
                                 False
@@ -1328,6 +1353,7 @@ completeBlocks state =
             case Advanced.run rawBlockParser openListItem of
                 Ok value ->
                     let
+                        tight2 : Bool
                         tight2 =
                             if List.member BlankLine value.rawBlocks then
                                 False
@@ -1512,6 +1538,7 @@ indentedCodeBlock =
 setextLineParser : Parser RawBlock
 setextLineParser =
     let
+        setextLevel : a -> Advanced.Token x -> Char -> Advanced.Parser c x a
         setextLevel level levelToken levelChar =
             succeed level
                 |. token levelToken

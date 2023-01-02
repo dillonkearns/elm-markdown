@@ -2,14 +2,10 @@ module Tests exposing (suite)
 
 import Expect exposing (Expectation)
 import Markdown.Block as Block exposing (..)
-import Markdown.Parser as Markdown exposing (..)
+import Markdown.Parser as Markdown
 import Parser
-import Parser.Advanced as Advanced exposing ((|.), (|=))
+import Parser.Advanced as Advanced
 import Test exposing (..)
-
-
-type alias Parser a =
-    Advanced.Parser String Parser.Problem a
 
 
 parse : String -> Result (List (Advanced.DeadEnd String Parser.Problem)) (List Block)
@@ -915,13 +911,3 @@ emphasisText body =
     [ Block.Emphasis <|
         [ Block.Text body ]
     ]
-
-
-parserError : String -> Expect.Expectation
-parserError markdown =
-    case parse markdown of
-        Ok _ ->
-            Expect.fail "Expected a parser failure!"
-
-        Err _ ->
-            Expect.pass

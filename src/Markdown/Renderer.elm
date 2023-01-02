@@ -19,10 +19,10 @@ module Markdown.Renderer exposing
 
 import Html exposing (Html)
 import Html.Attributes as Attr
-import Markdown.Block as Block exposing (Block, Inline, ListItem, Task)
+import Markdown.Block as Block exposing (Block, Inline, ListItem)
 import Markdown.Html
 import Markdown.HtmlRenderer
-import Markdown.RawBlock exposing (Attribute, RawBlock(..), UnparsedInlines(..))
+import Markdown.RawBlock exposing (Attribute)
 
 
 {-| A record with functions that define how to render all possible markdown blocks.
@@ -140,6 +140,7 @@ defaultHtmlRenderer =
                             case item of
                                 Block.ListItem task children ->
                                     let
+                                        checkbox : Html msg
                                         checkbox =
                                             case task of
                                                 Block.NoTask ->
@@ -185,6 +186,7 @@ defaultHtmlRenderer =
     , codeBlock =
         \{ body, language } ->
             let
+                classes : List (Html.Attribute msg)
                 classes =
                     -- Only the first word is used in the class
                     case Maybe.map String.words language of
@@ -207,6 +209,7 @@ defaultHtmlRenderer =
     , tableHeaderCell =
         \maybeAlignment ->
             let
+                attrs : List (Html.Attribute msg)
                 attrs =
                     maybeAlignment
                         |> Maybe.map
@@ -229,6 +232,7 @@ defaultHtmlRenderer =
     , tableCell =
         \maybeAlignment ->
             let
+                attrs : List (Html.Attribute msg)
                 attrs =
                     maybeAlignment
                         |> Maybe.map
@@ -330,6 +334,7 @@ renderHelper renderer blocks =
 
 renderHelperSingle : Renderer view -> Block -> Maybe (Result String view)
 renderHelperSingle renderer =
+    -- known-unoptimized-recursion
     \block ->
         case block of
             Block.Heading level content ->

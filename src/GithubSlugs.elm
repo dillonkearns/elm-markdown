@@ -60,6 +60,7 @@ TODO - this doesn't strip emoji yet
 -}
 trackOccurence : String -> Dict.Dict String Int -> ( String, Dict.Dict String Int )
 trackOccurence slug occurences =
+    -- known-unoptimized-recursion
     -- TODO this is not actually tail-recursive!
     case Dict.get slug occurences of
         Just n ->

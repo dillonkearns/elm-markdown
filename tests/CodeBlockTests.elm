@@ -2,7 +2,6 @@ module CodeBlockTests exposing (suite)
 
 import Expect
 import Markdown.CodeBlock
-import Markdown.Parser exposing (..)
 import Parser.Advanced as Advanced
 import Test exposing (..)
 

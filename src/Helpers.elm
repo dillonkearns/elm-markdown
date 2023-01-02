@@ -1,8 +1,7 @@
-module Helpers exposing (..)
+module Helpers exposing (Parser, chompUntilLineEndOrEnd, endOfFile, lineEndOrEnd)
 
 import Parser
 import Parser.Advanced as Advanced exposing (..)
-import Parser.Token as Token
 import Whitespace
 
 

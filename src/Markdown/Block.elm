@@ -24,7 +24,7 @@ module Markdown.Block exposing
 
 @docs Html
 
-See [`Markdown.Html`](Markdown.Html) for more.
+See [`Markdown.Html`](Markdown-Html) for more.
 
 
 ## Inlines
@@ -240,6 +240,7 @@ extractTextHelp inline text =
 
 extractInlineBlockText : Block -> String
 extractInlineBlockText block =
+    -- known-unoptimized-recursion
     case block of
         Paragraph inlines ->
             extractInlineText inlines
@@ -257,17 +258,17 @@ extractInlineBlockText block =
                 _ ->
                     ""
 
-        UnorderedList tight items ->
+        UnorderedList _ items ->
             items
                 |> List.map
-                    (\(ListItem task blocks) ->
+                    (\(ListItem _ blocks) ->
                         blocks
                             |> List.map extractInlineBlockText
                             |> String.join "\n"
                     )
                 |> String.join "\n"
 
-        OrderedList tight int items ->
+        OrderedList _ _ items ->
             items
                 |> List.map
                     (\blocks ->
@@ -282,7 +283,7 @@ extractInlineBlockText block =
                 |> List.map extractInlineBlockText
                 |> String.join "\n"
 
-        Heading headingLevel inlines ->
+        Heading _ inlines ->
             extractInlineText inlines
 
         Table header rows ->
@@ -418,6 +419,7 @@ walkInlines function block =
 
 walkInlinesHelp : (Inline -> Inline) -> Block -> Block
 walkInlinesHelp function block =
+    -- known-unoptimized-recursion
     case block of
         Paragraph inlines ->
             List.map (inlineParserWalk function) inlines
@@ -468,7 +470,7 @@ walkInlinesHelp function block =
                 _ ->
                     block
 
-        CodeBlock record ->
+        CodeBlock _ ->
             block
 
         ThematicBreak ->
@@ -477,6 +479,7 @@ walkInlinesHelp function block =
 
 inlineParserWalk : (Inline -> Inline) -> Inline -> Inline
 inlineParserWalk function inline =
+    -- known-unoptimized-recursion
     case inline of
         Link url maybeTitle inlines ->
             List.map (inlineParserWalk function) inlines
@@ -523,6 +526,7 @@ inlineParserWalk function inline =
 
 inlineParserValidateWalk : (Inline -> Result error Inline) -> Inline -> Result (List error) Inline
 inlineParserValidateWalk function inline =
+    -- known-unoptimized-recursion
     case inline of
         Link url maybeTitle inlines ->
             traverse (inlineParserValidateWalk function) inlines
@@ -569,11 +573,11 @@ inlineParserValidateWalk function inline =
                             |> Result.mapError List.singleton
                     )
 
-        CodeSpan string ->
+        CodeSpan _ ->
             function inline
                 |> Result.mapError List.singleton
 
-        Text string ->
+        Text _ ->
             function inline
                 |> Result.mapError List.singleton
 
@@ -601,6 +605,7 @@ inlineParserValidateWalk function inline =
 
 inlineParserValidateWalkBlock : (Inline -> Result error Inline) -> Block -> Result (List error) Block
 inlineParserValidateWalkBlock function block =
+    -- known-unoptimized-recursion
     case block of
         ThematicBreak ->
             Ok ThematicBreak
@@ -652,6 +657,7 @@ inlineParserValidateWalkBlock function block =
 
         Table header rows ->
             let
+                mappedHeader : Result (List error) (List { alignment : Maybe Alignment, label : List Inline })
                 mappedHeader =
                     header
                         |> traverse
@@ -666,12 +672,13 @@ inlineParserValidateWalkBlock function block =
                                         )
                             )
 
+                mappedRows : Result (List error) (List (List (List Inline)))
                 mappedRows =
                     traverse (traverse (traverse (inlineParserValidateWalk function))) rows
             in
             Result.map2 Table mappedHeader mappedRows
 
-        CodeBlock record ->
+        CodeBlock _ ->
             Ok block
 
 
@@ -719,6 +726,7 @@ This example bumps headings down by one level.
 -}
 walk : (Block -> Block) -> Block -> Block
 walk function block =
+    -- known-unoptimized-recursion
     case block of
         BlockQuote blocks ->
             List.map (walk function) blocks
@@ -737,7 +745,7 @@ walk function block =
                 _ ->
                     function block
 
-        UnorderedList tight _ ->
+        UnorderedList _ _ ->
             function block
 
         OrderedList _ _ _ ->
@@ -904,7 +912,7 @@ foldl function acc list =
                         _ ->
                             foldl function (function block acc) remainingBlocks
 
-                UnorderedList tight blocks ->
+                UnorderedList _ blocks ->
                     let
                         childBlocks : List Block
                         childBlocks =
@@ -913,7 +921,7 @@ foldl function acc list =
                     in
                     foldl function (function block acc) (childBlocks ++ remainingBlocks)
 
-                OrderedList _ int blocks ->
+                OrderedList _ _ blocks ->
                     foldl function (function block acc) (List.concat blocks ++ remainingBlocks)
 
                 BlockQuote blocks ->
@@ -974,6 +982,7 @@ inlineFoldl ifunction top_acc list =
                 case inline of
                     HtmlInline hblock ->
                         let
+                            hiacc : acc
                             hiacc =
                                 ifn inline acc
                         in
@@ -995,6 +1004,7 @@ inlineFoldl ifunction top_acc list =
 
                     Link _ _ inlines ->
                         let
+                            iacc : acc
                             iacc =
                                 ifn inline acc
                         in
@@ -1002,6 +1012,7 @@ inlineFoldl ifunction top_acc list =
 
                     Image _ _ inlines ->
                         let
+                            iacc : acc
                             iacc =
                                 ifn inline acc
                         in
@@ -1009,6 +1020,7 @@ inlineFoldl ifunction top_acc list =
 
                     Emphasis inlines ->
                         let
+                            iacc : acc
                             iacc =
                                 ifn inline acc
                         in
@@ -1016,6 +1028,7 @@ inlineFoldl ifunction top_acc list =
 
                     Strong inlines ->
                         let
+                            iacc : acc
                             iacc =
                                 ifn inline acc
                         in
@@ -1023,6 +1036,7 @@ inlineFoldl ifunction top_acc list =
 
                     Strikethrough inlines ->
                         let
+                            iacc : acc
                             iacc =
                                 ifn inline acc
                         in
@@ -1037,19 +1051,21 @@ inlineFoldl ifunction top_acc list =
                     HardLineBreak ->
                         ifn inline acc
 
+        function : Inline -> acc -> acc
         function =
             inlineFoldF ifunction
 
+        bfn : Block -> acc -> acc
         bfn =
             \block acc ->
                 case block of
-                    HtmlBlock html ->
+                    HtmlBlock _ ->
                         acc
 
-                    UnorderedList tight _ ->
+                    UnorderedList _ _ ->
                         acc
 
-                    OrderedList _ int lists ->
+                    OrderedList _ _ _ ->
                         acc
 
                     BlockQuote _ ->
@@ -1063,6 +1079,7 @@ inlineFoldl ifunction top_acc list =
 
                     Table labels listlists ->
                         let
+                            llacc : acc
                             llacc =
                                 List.foldl
                                     (\inlines iacc ->

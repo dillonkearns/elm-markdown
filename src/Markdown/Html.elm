@@ -16,7 +16,6 @@ module Markdown.Html exposing
 
 -}
 
-import Html
 import List.Helpers
 import Markdown.Block exposing (Block)
 import Markdown.HtmlRenderer
@@ -70,6 +69,7 @@ be using this function when you use this module.
 oneOf : List (Renderer view) -> Renderer view
 oneOf decoders =
     let
+        unwrappedDecoders : List (String -> List Markdown.HtmlRenderer.Attribute -> List Block -> Result String view)
         unwrappedDecoders =
             decoders
                 |> List.map
@@ -80,7 +80,7 @@ oneOf decoders =
             \tagName attributes children ->
                 resultOr (decoder tagName attributes children) (soFar tagName attributes children)
         )
-        (\tagName attributes children ->
+        (\_ _ _ ->
             Err []
         )
         unwrappedDecoders
@@ -178,7 +178,7 @@ attributesToString attributes =
 tag : String -> view -> Renderer view
 tag expectedTag a =
     Markdown.HtmlRenderer.HtmlRenderer
-        (\tagName attributes children ->
+        (\tagName _ _ ->
             if tagName == expectedTag then
                 Ok a
 
@@ -212,7 +212,7 @@ withAttribute attributeName (Markdown.HtmlRenderer.HtmlRenderer renderer) =
             |> (case
                     attributes
                         |> List.Helpers.find
-                            (\{ name, value } ->
+                            (\{ name } ->
                                 name == attributeName
                             )
                 of
@@ -251,7 +251,7 @@ withOptionalAttribute attributeName (Markdown.HtmlRenderer.HtmlRenderer renderer
             |> (case
                     attributes
                         |> List.Helpers.find
-                            (\{ name, value } ->
+                            (\{ name } ->
                                 name == attributeName
                             )
                 of

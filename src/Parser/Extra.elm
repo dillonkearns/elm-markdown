@@ -1,4 +1,4 @@
-module Parser.Extra exposing (chompOneOrMore, maybeChomp, positiveInteger, upTo, upToThree)
+module Parser.Extra exposing (chompOneOrMore, maybeChomp, positiveInteger, upTo)
 
 import Parser
 import Parser.Advanced as Advanced exposing ((|.), Parser, chompIf, chompWhile, mapChompedString, oneOf, succeed)
@@ -38,16 +38,6 @@ maybeChomp condition =
 
 
 -- Parse N
-
-
-upToThree : Parser () -> Parser ()
-upToThree parser =
-    oneOf
-        [ parser
-            |. oneOf [ parser, succeed () ]
-            |. oneOf [ parser, succeed () ]
-        , succeed ()
-        ]
 
 
 upTo : Int -> Parser () -> Parser ()

@@ -14,10 +14,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js 13
+      - name: Use Node.js 18
         uses: actions/setup-node@v1
         with:
-          node-version: 13
+          node-version: 18
       - uses: actions/cache@v1
         with:
           path: ~/.npm
@@ -38,10 +38,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js 13
+      - name: Use Node.js 18
         uses: actions/setup-node@v1
         with:
-          node-version: 13
+          node-version: 18
       - uses: actions/cache@v1
         with:
           path: ~/.npm
@@ -57,16 +57,21 @@ jobs:
       - run: ./node_modules/.bin/elm make --output /dev/null && cd examples && ../node_modules/.bin/elm make src/*.elm --output /dev/null && cd .. && cd spec-tests && ../node_modules/.bin/elm make OutputMarkdownHtml.elm --output /dev/null
       - name: elm-format
         run: npx --no-install elm-format --validate src/ benchmarks/src/ review/src/ examples/src/ tests/
+      - name: Add elm-review, elm and elm-format to path
+        run: npm bin >> $GITHUB_PATH
+      - uses: sparksp/elm-review-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   end-to-end:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js 13
+      - name: Use Node.js 18
         uses: actions/setup-node@v1
         with:
-          node-version: 13
+          node-version: 18
       - uses: actions/cache@v1
         with:
           path: ~/.npm
@@ -90,10 +95,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js 13
+      - name: Use Node.js 18
         uses: actions/setup-node@v1
         with:
-          node-version: 13
+          node-version: 18
       - uses: actions/cache@v1
         with:
           path: ~/.npm
@@ -116,10 +121,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js 13
+      - name: Use Node.js 18
         uses: actions/setup-node@v1
         with:
-          node-version: 13
+          node-version: 18
       - uses: actions/cache@v1
         with:
           path: ~/.npm
@@ -134,7 +139,7 @@ jobs:
       - run: npm ci
       - run: ./node_modules/.bin/elm make --output /dev/null && cd examples && ../node_modules/.bin/elm make src/*.elm --output /dev/null && cd .. && cd spec-tests && ../node_modules/.bin/elm make OutputMarkdownHtml.elm --output /dev/null
       - name: Elm Publish
-        uses: dillonkearns/elm-publish-action@1.0.1
+        uses: dillonkearns/elm-publish-action@v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path-to-elm: ./node_modules/.bin/elm

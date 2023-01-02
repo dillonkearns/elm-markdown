@@ -4,7 +4,7 @@
   "description": "Markdown parsing in pure elm.",
   "scripts": {
     "build": "rm -r dist && parcel build src/index.html --public-url ./",
-    "test": "elm-test tests && elm-verify-examples --run-tests && (cd review && elm-test) && elm-review",
+    "test": "elm-test tests && elm-verify-examples --run-tests && (cd review && elm-test)",
     "review": "elm-review",
     "autotest": "elm-test --watch tests",
     "test:check-regressions": "git diff --exit-code -- spec-results.json",
@@ -17,7 +17,7 @@
     "elm": "latest-0.19.1",
     "elm-format": "^0.8.5",
     "elm-hot": "^1.0.1",
-    "elm-review": "^2.0.0",
+    "elm-review": "^2.9.1",
     "elm-test": "^0.19.1-revision10",
     "elm-verify-examples": "^5.2.0",
     "front-matter": "^3.0.2",

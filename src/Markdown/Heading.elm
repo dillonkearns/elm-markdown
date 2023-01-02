@@ -1,11 +1,10 @@
-module Markdown.Heading exposing (..)
+module Markdown.Heading exposing (Parser, parser)
 
 import Helpers
-import Markdown.RawBlock exposing (Attribute, RawBlock(..), UnparsedInlines(..))
+import Markdown.RawBlock exposing (RawBlock(..), UnparsedInlines(..))
 import Parser
-import Parser.Advanced as Advanced exposing ((|.), (|=), Nestable(..), Step(..), andThen, chompIf, chompWhile, getChompedString, oneOf, spaces, succeed, symbol)
+import Parser.Advanced as Advanced exposing ((|.), (|=), andThen, chompWhile, getChompedString, oneOf, spaces, succeed, symbol)
 import Parser.Token as Token
-import Whitespace
 
 
 type alias Parser a =
@@ -19,6 +18,7 @@ parser =
                 |> andThen
                     (\startingSpaces ->
                         let
+                            startSpace : Int
                             startSpace =
                                 String.length startingSpaces
                         in
@@ -34,6 +34,7 @@ parser =
                 |> andThen
                     (\additionalHashes ->
                         let
+                            level : Int
                             level =
                                 String.length additionalHashes + 1
                         in
@@ -77,6 +78,7 @@ isHash c =
 dropClosingSequence : String -> String
 dropClosingSequence headingString =
     let
+        droppedTrailingHashesString : String
         droppedTrailingHashesString =
             headingString
                 |> dropTrailingHashes

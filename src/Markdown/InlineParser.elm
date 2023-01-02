@@ -1,9 +1,10 @@
-module Markdown.InlineParser exposing (parse, query, tokenize, walk)
+module Markdown.InlineParser exposing (parse)
 
 import Dict
 import HtmlParser
 import Markdown.Helpers exposing (References, cleanWhitespaces, formatStr, ifError, insideSquareBracketRegex, isEven, lineEndChars, prepareRefLabel, returnFirstJust, titleRegex, whiteSpaceChars)
 import Markdown.Inline exposing (Inline(..))
+import Parser exposing (Problem)
 import Parser.Advanced as Advanced exposing ((|=))
 import Regex exposing (Regex)
 import Url
@@ -16,9 +17,11 @@ import Url
 parse : References -> String -> List Inline
 parse refs rawText_ =
     let
+        rawText : String
         rawText =
             String.trim rawText_
 
+        tokens : List Token
         tokens =
             tokenize rawText
     in
@@ -76,6 +79,7 @@ parseTextMatch rawText (Match matchModel) parsedMatches =
         [] ->
             -- Add final normal match
             let
+                finalStr : String
                 finalStr =
                     String.dropLeft matchModel.end rawText
             in
@@ -87,7 +91,7 @@ parseTextMatch rawText (Match matchModel) parsedMatches =
                 , normalMatch finalStr
                 ]
 
-        (Match matchHead) :: matchesTail ->
+        (Match matchHead) :: _ ->
             case matchHead.type_ of
                 NormalType ->
                     updtMatch :: parsedMatches
@@ -130,8 +134,7 @@ type Active
 
 
 type Opening
-    = Opening
-    | NotOpening
+    = NotOpening
 
 
 type Meaning
@@ -143,7 +146,6 @@ type Meaning
     | AngleBracketClose Escaped
     | HtmlToken Opening HtmlModel
     | EmphasisToken Char { leftFringeRank : Int, rightFringeRank : Int }
-    | SoftLineBreakToken
     | HardLineBreakToken
     | StrikethroughToken Escaped
 
@@ -177,18 +179,23 @@ findTokenHelp innerTokens isToken tokens =
 tokenPairToMatch : References -> String -> (String -> String) -> Type -> Token -> Token -> List Token -> Match
 tokenPairToMatch references rawText processText type_ openToken closeToken innerTokens =
     let
+        start : Int
         start =
             openToken.index
 
+        end : Int
         end =
             closeToken.index + closeToken.length
 
+        textStart : Int
         textStart =
             openToken.index + openToken.length
 
+        textEnd : Int
         textEnd =
             closeToken.index
 
+        text : String
         text =
             String.slice textStart textEnd rawText
                 |> processText
@@ -256,6 +263,7 @@ tokenize rawText =
 
 cleanAngleBracketTokens : List { a | index : Int } -> List { a | index : Int } -> Int -> List { a | index : Int }
 cleanAngleBracketTokens tokensL tokensR countL =
+    -- known-unoptimized-recursion
     case tokensR of
         [] ->
             []
@@ -294,6 +302,7 @@ cleanAngleBracketTokens tokensL tokensR countL =
 -}
 mergeByIndex : List { a | index : Int } -> List { a | index : Int } -> List { a | index : Int }
 mergeByIndex left right =
+    -- known-unoptimized-recursion
     case left of
         lfirst :: lrest ->
             case right of
@@ -332,6 +341,7 @@ regMatchToCodeToken regMatch =
     case regMatch.submatches of
         maybeBackslashes :: (Just backtick) :: _ ->
             let
+                backslashesLength : Int
                 backslashesLength =
                     Maybe.map String.length maybeBackslashes
                         |> Maybe.withDefault 0
@@ -492,6 +502,7 @@ regMatchToStrikethroughToken regMatch =
     case regMatch.submatches of
         maybeBackslashes :: (Just tilde) :: _ ->
             let
+                backslashesLength : Int
                 backslashesLength =
                     Maybe.map String.length maybeBackslashes
                         |> Maybe.withDefault 0
@@ -687,13 +698,16 @@ regMatchToLinkImageOpenToken regMatch =
     case regMatch.submatches of
         maybeBackslashes :: maybeImageOpen :: (Just _) :: _ ->
             let
+                backslashesLength : Int
                 backslashesLength =
                     Maybe.map String.length maybeBackslashes
                         |> Maybe.withDefault 0
 
+                isEscaped : Bool
                 isEscaped =
                     not (isEven backslashesLength)
 
+                index : Int
                 index =
                     if isEscaped then
                         regMatch.index + backslashesLength + 1
@@ -750,6 +764,7 @@ regMatchToLinkImageCloseToken regMatch =
     case regMatch.submatches of
         maybeBackslashes :: (Just _) :: _ ->
             let
+                backslashesLength : Int
                 backslashesLength =
                     Maybe.map String.length maybeBackslashes
                         |> Maybe.withDefault 0
@@ -789,6 +804,7 @@ regMatchToAngleBracketRToken regMatch =
     case regMatch.submatches of
         maybeBackslashes :: (Just _) :: _ ->
             let
+                backslashesLength : Int
                 backslashesLength =
                     Maybe.map String.length maybeBackslashes
                         |> Maybe.withDefault 0
@@ -823,8 +839,9 @@ angleBracketLTokenRegex =
 regMatchToAngleBracketLToken : Regex.Match -> Maybe Token
 regMatchToAngleBracketLToken regMatch =
     case regMatch.submatches of
-        maybeBackslashes :: (Just delimiter) :: _ ->
+        maybeBackslashes :: (Just _) :: _ ->
             let
+                backslashesLength : Int
                 backslashesLength =
                     Maybe.map String.length maybeBackslashes
                         |> Maybe.withDefault 0
@@ -869,6 +886,7 @@ regMatchToHardBreakToken regMatch =
     case regMatch.submatches of
         (Just backslashes) :: _ ->
             let
+                backslashesLength : Int
                 backslashesLength =
                     String.length backslashes
             in
@@ -907,6 +925,7 @@ regMatchToSoftHardBreakToken regMatch =
     case regMatch.submatches of
         (Just backslashes) :: _ ->
             let
+                backslashesLength : Int
                 backslashesLength =
                     String.length backslashes
             in
@@ -929,7 +948,7 @@ regMatchToSoftHardBreakToken regMatch =
                 }
                     |> Just
 
-        _ :: maybeSpaces :: _ ->
+        _ :: _ :: _ ->
             { index = regMatch.index
             , length = String.length regMatch.match
             , meaning = HardLineBreakToken
@@ -1080,7 +1099,7 @@ codeAutolinkTypeHtmlTagTTM remaining tokens matches references rawText =
 
         token :: tokensTail ->
             case token.meaning of
-                CodeToken isEscaped ->
+                CodeToken _ ->
                     case findToken (isCodeTokenPair token) tokens of
                         Just code ->
                             let
@@ -1094,6 +1113,7 @@ codeAutolinkTypeHtmlTagTTM remaining tokens matches references rawText =
 
                 AngleBracketClose isEscaped ->
                     let
+                        isAngleBracketOpen : { a | meaning : Meaning } -> Bool
                         isAngleBracketOpen { meaning } =
                             case meaning of
                                 AngleBracketOpen ->
@@ -1164,6 +1184,7 @@ codeToMatch closeToken matches references rawText ( openToken, _, remainTokens )
                 _ ->
                     openToken
 
+        match : Match
         match =
             tokenPairToMatch
                 references
@@ -1186,6 +1207,7 @@ codeToMatch closeToken matches references rawText ( openToken, _, remainTokens )
 angleBracketsToMatch : Token -> Escaped -> List Match -> References -> String -> ( Token, List Token, List Token ) -> Maybe ( List Token, List Match )
 angleBracketsToMatch closeToken escaped matches references rawText ( openToken, _, remainTokens ) =
     let
+        result : Result Match Match
         result =
             tokenPairToMatch references rawText (\s -> s) CodeType openToken closeToken []
                 |> autolinkToMatch
@@ -1275,6 +1297,7 @@ type alias HtmlModel =
 --}
 
 
+softAsHardLineBreak : Bool
 softAsHardLineBreak =
     False
 
@@ -1282,6 +1305,7 @@ softAsHardLineBreak =
 htmlToToken : String -> Match -> Maybe Token
 htmlToToken rawText (Match match) =
     let
+        consumedCharacters : Advanced.Parser String Problem { length : Int, htmlTag : HtmlParser.Node }
         consumedCharacters =
             Advanced.succeed
                 (\startOffset htmlTag endOffset ->
@@ -1293,6 +1317,7 @@ htmlToToken rawText (Match match) =
                 |= HtmlParser.html
                 |= Advanced.getOffset
 
+        parsed : Result (List (Advanced.DeadEnd String Problem)) { length : Int, htmlTag : HtmlParser.Node }
         parsed =
             rawText
                 |> String.dropLeft match.start
@@ -1301,6 +1326,7 @@ htmlToToken rawText (Match match) =
     case parsed of
         Ok { htmlTag, length } ->
             let
+                htmlToken : Meaning
                 htmlToken =
                     HtmlToken NotOpening htmlTag
             in
@@ -1332,64 +1358,8 @@ htmlElementTTM remaining tokens matches references rawText =
                                 references
                                 rawText
 
-                        Opening ->
-                            case findToken (isCloseToken htmlModel) tokensTail of
-                                Nothing ->
-                                    htmlElementTTM tokensTail tokens (tokenToMatch token (HtmlType htmlModel) :: matches) references rawText
-
-                                Just ( closeToken, innerTokens, newTail ) ->
-                                    let
-                                        newMatch =
-                                            tokenPairToMatch
-                                                references
-                                                rawText
-                                                (\s -> s)
-                                                (HtmlType htmlModel)
-                                                token
-                                                closeToken
-                                                innerTokens
-                                    in
-                                    htmlElementTTM newTail tokens (newMatch :: matches) references rawText
-
                 _ ->
                     htmlElementTTM tokensTail (token :: tokens) matches references rawText
-
-
-isVoidTag : HtmlModel -> Bool
-isVoidTag htmlModel =
-    -- TODO should I use this later?
-    --List.member htmlModel.tag voidHtmlTags
-    False
-
-
-voidHtmlTags : List String
-voidHtmlTags =
-    [ "area"
-    , "base"
-    , "br"
-    , "col"
-    , "embed"
-    , "hr"
-    , "img"
-    , "input"
-    , "keygen"
-    , "link"
-    , "meta"
-    , "param"
-    , "source"
-    , "track"
-    , "wbr"
-    ]
-
-
-isCloseToken : HtmlModel -> Token -> Bool
-isCloseToken htmlModel token =
-    --case token.meaning of
-    --    HtmlToken False htmlModel_ ->
-    --        htmlModel.tag == htmlModel_.tag
-    --
-    --    _ ->
-    False
 
 
 
@@ -1477,6 +1447,7 @@ linkOrImageTypeToMatch closeToken tokensTail oldMatches references rawText ( ope
     case openToken.meaning of
         ImageOpenToken ->
             let
+                tempMatch : Match
                 tempMatch =
                     findTempMatch False
             in
@@ -1495,6 +1466,7 @@ linkOrImageTypeToMatch closeToken tokensTail oldMatches references rawText ( ope
         -- Active opening: set all before to inactive if found
         LinkOpenToken Active ->
             let
+                tempMatch : Match
                 tempMatch =
                     findTempMatch True
             in
@@ -1567,6 +1539,7 @@ checkForInlineLinkTypeOrImageType remainText (Match tempMatch) refs =
 checkForInlineReferences : String -> Match -> References -> Maybe Match
 checkForInlineReferences remainText (Match tempMatch) references =
     let
+        matches : List Regex.Match
         matches =
             Regex.findAtMost 1 refLabelRegex remainText
     in
@@ -1684,6 +1657,7 @@ refRegexToMatch matchModel references maybeRegexMatch =
                         Nothing ->
                             0
 
+                type_ : Type
                 type_ =
                     case matchModel.type_ of
                         ImageType _ ->
@@ -1815,6 +1789,7 @@ emphasisToMatch references rawText closeToken tokensTail ( openToken, innerToken
         remainLength =
             openToken.length - closeToken.length
 
+        updt : { openToken : Token, closeToken : Token, remainTokens : List Token, tokensTail : List Token }
         updt =
             if remainLength == 0 then
                 -- Perfect match
@@ -1872,8 +1847,8 @@ emphasisToMatch references rawText closeToken tokensTail ( openToken, innerToken
 -- Line Break Tokens To Matches
 
 
-lineBreakTTM : List Token -> List Token -> List Match -> References -> String -> List Match
-lineBreakTTM remaining tokens matches refs rawText =
+lineBreakTTM : List Token -> List Match -> List Match
+lineBreakTTM remaining matches =
     case remaining of
         [] ->
             matches
@@ -1881,12 +1856,12 @@ lineBreakTTM remaining tokens matches refs rawText =
         token :: tokensTail ->
             case token.meaning of
                 HardLineBreakToken ->
-                    -- NOTE: the origiginal also moved into this branch when
+                    -- NOTE: the original also moved into this branch when
                     -- (token.meaning == SoftLineBreakToken && softAsHardLineBreak
-                    lineBreakTTM tokensTail tokens (tokenToMatch token HardLineBreakType :: matches) refs rawText
+                    lineBreakTTM tokensTail (tokenToMatch token HardLineBreakType :: matches)
 
                 _ ->
-                    lineBreakTTM tokensTail (token :: tokens) matches refs rawText
+                    lineBreakTTM tokensTail matches
 
 
 
@@ -1939,6 +1914,7 @@ strikethroughToMatch closeToken matches references rawText ( openToken, _, remai
                 _ ->
                     openToken
 
+        match : Match
         match =
             tokenPairToMatch
                 references
@@ -1958,11 +1934,11 @@ strikethroughTTM : List Token -> List Token -> List Match -> References -> Strin
 strikethroughTTM remaining tokens matches references rawText =
     case remaining of
         [] ->
-            lineBreakTTM (List.reverse tokens) [] matches references rawText
+            lineBreakTTM (List.reverse tokens) matches
 
         token :: tokensTail ->
             case token.meaning of
-                StrikethroughToken isEscaped ->
+                StrikethroughToken _ ->
                     case findToken (isStrikethroughTokenPair token) tokens of
                         Just content ->
                             let
@@ -2026,97 +2002,3 @@ matchToInline (Match match) =
 
 
 -- Helpers
-
-
-{-| Apply a function to every inline recursively.
-
-Example of converting all text in **headings** to **ALL CAPS**:
-
-    import Html exposing (Html, article)
-    import Markdown.Block as Block exposing (Block(..))
-    import Markdown.Inline as Inline exposing (Inline(..))
-
-    view : Html msg
-    view =
-        myMarkdownString
-            |> Block.parse Nothing
-            |> List.map (Block.walk modHeader)
-            |> List.map Block.toHtml
-            |> List.concat
-            |> article []
-
-    modHeader : Block b i -> Block b i
-    modHeader block =
-        case block of
-            Heading rawText level inlines ->
-                List.map (Inline.walk upperText) inlines
-                    |> Heading rawText level
-
-            _ ->
-                block
-
-    upperText : Inline -> Inline
-    upperText inline =
-        case inline of
-            Text str ->
-                Text (String.toUpper str)
-
-            _ ->
-                inline
-
-**Note:** In this example, `Block.walkInlines` could be used instead.
-
--}
-walk : (Inline -> Inline) -> Inline -> Inline
-walk function inline =
-    case inline of
-        Link url maybeTitle inlines ->
-            List.map (walk function) inlines
-                |> Link url maybeTitle
-                |> function
-
-        Image url maybeTitle inlines ->
-            List.map (walk function) inlines
-                |> Image url maybeTitle
-                |> function
-
-        HtmlInline html ->
-            --List.map (walk function) inlines
-            --    |> HtmlInline tag attrs
-            function inline
-
-        Emphasis length inlines ->
-            List.map (walk function) inlines
-                |> Emphasis length
-                |> function
-
-        _ ->
-            function inline
-
-
-query : (Inline -> List a) -> Inline -> List a
-query function inline =
-    case inline of
-        Link url maybeTitle inlines ->
-            List.map (query function) inlines
-                |> List.concat
-                |> (++) (function (Link url maybeTitle inlines))
-
-        Image url maybeTitle inlines ->
-            List.map (query function) inlines
-                |> List.concat
-                |> (++) (function (Image url maybeTitle inlines))
-
-        HtmlInline html ->
-            --List.map (query function) inlines
-            --    |> List.concat
-            --    |> (++) (function (HtmlInline tag attrs inlines))
-            function inline
-
-        Emphasis length inlines ->
-            List.map (query function) inlines
-                |> List.concat
-                |> (++) (function (Emphasis length inlines))
-
-        _ ->
-            function inline

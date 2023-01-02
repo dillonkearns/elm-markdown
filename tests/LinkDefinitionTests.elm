@@ -1,7 +1,7 @@
 module LinkDefinitionTests exposing (suite)
 
 import Expect exposing (Expectation)
-import Markdown.Block as Block exposing (..)
+import Markdown.Block exposing (..)
 import Markdown.Parser
 import Test exposing (Test, describe, test)
 

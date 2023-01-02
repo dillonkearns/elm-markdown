@@ -3,7 +3,7 @@ module BlockTransformTests exposing (suite)
 import Dict
 import Expect
 import GithubSlugs
-import Markdown.Block as Block exposing (..)
+import Markdown.Block as Block exposing (Block(..), HeadingLevel(..), Html(..), Inline(..))
 import Test exposing (..)
 
 
@@ -84,6 +84,7 @@ suite =
         , test "walk" <|
             \() ->
                 let
+                    bumpHeadingLevel : HeadingLevel -> HeadingLevel
                     bumpHeadingLevel level =
                         case level of
                             H1 ->
@@ -290,6 +291,7 @@ suite =
         , test "add slugs" <|
             \() ->
                 let
+                    slugs : List Block -> List String
                     slugs blocks =
                         blocks
                             |> GithubSlugs.gatherHeadingOccurrences
@@ -318,8 +320,10 @@ suite =
                             _ ->
                                 Nothing
 
+                    checkLinkReferences : List Block -> Result { missingRefs : List String } value
                     checkLinkReferences blocks =
                         let
+                            destinations : List String
                             destinations =
                                 allLinks blocks
                         in

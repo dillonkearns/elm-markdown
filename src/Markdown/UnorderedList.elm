@@ -2,7 +2,7 @@ module Markdown.UnorderedList exposing (UnorderedListMarker(..), parser)
 
 import Helpers
 import Markdown.ListItem as ListItem exposing (ListItem(..))
-import Parser exposing (Problem)
+import Parser
 import Parser.Advanced as Advanced exposing (..)
 import Parser.Extra as Extra exposing (chompOneOrMore)
 import Whitespace
@@ -63,8 +63,10 @@ unorderedListEmptyItemParser =
         |. Helpers.lineEndOrEnd
 
 
+getIntendedCodeItem : Int -> b -> Int -> ( Int, ListItem ) -> ( b, Int, ListItem )
 getIntendedCodeItem markerStartPos listMarker markerEndPos ( bodyStartPos, item ) =
     let
+        spaceNum : Int
         spaceNum =
             bodyStartPos - markerEndPos
     in
@@ -73,6 +75,7 @@ getIntendedCodeItem markerStartPos listMarker markerEndPos ( bodyStartPos, item 
 
     else
         let
+            intendedCodeItem : ListItem
             intendedCodeItem =
                 case item of
                     TaskItem completion string ->

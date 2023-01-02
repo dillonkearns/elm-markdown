@@ -1,4 +1,4 @@
-module Markdown.Helpers exposing (..)
+module Markdown.Helpers exposing (References, cleanWhitespaces, formatStr, ifError, insideSquareBracketRegex, isEven, lineEndChars, prepareRefLabel, returnFirstJust, titleRegex, whiteSpaceChars)
 
 import Dict exposing (Dict)
 import Markdown.Entity as Entity
@@ -11,10 +11,6 @@ type alias References =
 
 
 -- Label ( Url, Maybe Title )
-
-
-type alias Attribute =
-    { name : String, value : String }
 
 
 insideSquareBracketRegex : String
@@ -57,32 +53,15 @@ cleanWhitespaces original =
 --|> Regex.replace whitespacesRegex (\_ -> " ")
 
 
-whitespacesRegex : Regex
-whitespacesRegex =
-    Regex.fromString ("[" ++ whiteSpaceChars ++ "]+")
-        |> Maybe.withDefault Regex.never
-
-
-tabRegex : Regex
-tabRegex =
-    Regex.fromString "\\t"
-        |> Maybe.withDefault Regex.never
-
-
 containsAmpersand : String -> Bool
 containsAmpersand string =
     String.contains "&" string
 
 
-initSpacesRegex : Regex
-initSpacesRegex =
-    Regex.fromString "^ +"
-        |> Maybe.withDefault Regex.never
-
-
 formatStr : String -> String
 formatStr str =
     let
+        withEscapes : String
         withEscapes =
             replaceEscapable str
     in

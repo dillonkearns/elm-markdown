@@ -1,4 +1,4 @@
-module Markdown.CodeBlock exposing (..)
+module Markdown.CodeBlock exposing (Body, CodeBlock, Fence, FenceCharacter(..), FenceCharacterConfig, Parser, parser)
 
 import Helpers
 import Parser
@@ -34,10 +34,12 @@ type alias FenceCharacterConfig =
     { kind : FenceCharacter, char : Char, token : Token Parser.Problem }
 
 
+backtick : { kind : FenceCharacter, char : Char, token : Token Parser.Problem }
 backtick =
     { kind = Backtick, char = '`', token = Token.backtick }
 
 
+tilde : { kind : FenceCharacter, char : Char, token : Token Parser.Problem }
 tilde =
     { kind = Tilde, char = '~', token = Token.tilde }
 
@@ -124,6 +126,7 @@ fenceOfAtLeast minLength fenceCharacter =
     let
         -- Chains the token parsers together
         -- End up with succeed () |. token Token.tilde |. ... for minLength
+        builtTokens : Advanced.Parser c Parser.Problem ()
         builtTokens =
             token fenceCharacter.token
                 |> List.repeat minLength
@@ -146,6 +149,7 @@ fenceOfAtLeast minLength fenceCharacter =
 infoString : FenceCharacterConfig -> Parser (Maybe String)
 infoString fenceCharacter =
     let
+        toInfoString : String -> b -> Maybe String
         toInfoString str _ =
             case String.trim str of
                 "" ->

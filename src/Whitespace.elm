@@ -1,4 +1,4 @@
-module Whitespace exposing (..)
+module Whitespace exposing (Parser, isLineEnd, isSpace, isSpaceOrTab, isWhitespace, lineEnd, requiredWhitespace, space, upToThreeSpaces)
 
 import Parser
 import Parser.Advanced as Advanced exposing (..)
@@ -86,11 +86,6 @@ space =
     token Token.space
 
 
-tab : Parser ()
-tab =
-    token Token.tab
-
-
 
 -- A note about the relationship between tabs and spaces:
 -- In places where tabs can define block structure, they are to be
@@ -124,11 +119,6 @@ lineEnd =
 
 
 -- Chompers
-
-
-optionalWhitespace : Parser ()
-optionalWhitespace =
-    chompWhile isWhitespace
 
 
 requiredWhitespace : Parser ()

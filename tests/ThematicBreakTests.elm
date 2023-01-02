@@ -1,14 +1,9 @@
 module ThematicBreakTests exposing (suite)
 
-import Expect exposing (Expectation)
-import Parser
-import Parser.Advanced as Advanced exposing (..)
+import Expect
+import Parser.Advanced as Advanced
 import Test exposing (..)
 import ThematicBreak exposing (ThematicBreak(..), parser)
-
-
-type alias Parser a =
-    Advanced.Parser String Parser.Problem a
 
 
 suite : Test
@@ -60,6 +55,7 @@ suite =
         ]
 
 
+expectFail : String -> Expect.Expectation
 expectFail input =
     case Advanced.run ThematicBreak.parser input of
         Ok _ ->

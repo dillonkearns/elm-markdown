@@ -28,6 +28,7 @@ type alias ListItem =
 parser : Bool -> Parser ListItem
 parser previousWasBody =
     let
+        parseSubsequentItem : Int -> Int -> OrderedListMarker -> Int -> ( Int, String ) -> ListItem
         parseSubsequentItem start order marker mid ( end, body ) =
             if (end - mid) <= 4 then
                 ListItem order (end - start) marker body
@@ -51,6 +52,7 @@ parser previousWasBody =
            )
 
 
+orderedListOrderParser : Bool -> Advanced.Parser String Parser.Problem Int
 orderedListOrderParser previousWasBody =
     if previousWasBody then
         succeed identity
