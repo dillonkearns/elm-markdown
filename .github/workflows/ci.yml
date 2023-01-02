@@ -57,6 +57,8 @@ jobs:
       - run: ./node_modules/.bin/elm make --output /dev/null && cd examples && ../node_modules/.bin/elm make src/*.elm --output /dev/null && cd .. && cd spec-tests && ../node_modules/.bin/elm make OutputMarkdownHtml.elm --output /dev/null
       - name: elm-format
         run: npx --no-install elm-format --validate src/ benchmarks/src/ review/src/ examples/src/ tests/
+      - name: Add elm-review, elm and elm-format to path
+        run: npm bin >> $GITHUB_PATH
       - uses: sparksp/elm-review-action@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
