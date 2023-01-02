@@ -2,19 +2,9 @@ module WhitespaceTests exposing (suite)
 
 import Expect
 import Helpers
-import Parser
 import Parser.Advanced as Advanced exposing (..)
 import Test exposing (..)
 import Whitespace
-
-
-type alias Parser a =
-    Advanced.Parser String Parser.Problem a
-
-
-chomper : Parser () -> Parser String
-chomper parser =
-    parser |> Advanced.getChompedString
 
 
 suite : Test

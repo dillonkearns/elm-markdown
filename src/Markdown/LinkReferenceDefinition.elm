@@ -1,4 +1,4 @@
-module Markdown.LinkReferenceDefinition exposing (..)
+module Markdown.LinkReferenceDefinition exposing (LinkReferenceDefinition, Parser, parser)
 
 import Helpers
 import Markdown.Helpers

@@ -1,4 +1,4 @@
-module Markdown.CodeBlock exposing (..)
+module Markdown.CodeBlock exposing (Body, CodeBlock, Fence, FenceCharacter(..), FenceCharacterConfig, Parser, parser)
 
 import Helpers
 import Parser

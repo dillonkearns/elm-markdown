@@ -1,22 +1,10 @@
 module HtmlRendererTests exposing (suite)
 
-import Expect exposing (Expectation)
-import Markdown.Block as Block exposing (Block)
+import Expect
 import Markdown.Html
 import Markdown.Parser as Markdown exposing (..)
 import Markdown.Renderer
-import Parser
-import Parser.Advanced as Advanced
 import Test exposing (..)
-
-
-type alias Parser a =
-    Advanced.Parser String Parser.Problem a
-
-
-parse : String -> Result (List (Advanced.DeadEnd String Parser.Problem)) (List Block)
-parse =
-    Markdown.parse
 
 
 render renderer markdown =
@@ -40,35 +28,35 @@ type Rendered tag
 testRenderer : List (Markdown.Html.Renderer (List (Rendered a) -> Rendered a)) -> Markdown.Renderer.Renderer (Rendered a)
 testRenderer htmlRenderer =
     { heading =
-        \{ level, children } ->
+        \_ ->
             Unexpected "heading"
     , paragraph = \_ -> Unexpected "String"
     , blockQuote = \_ -> Unexpected "String"
     , strong =
-        \content -> Unexpected "String"
+        \_ -> Unexpected "String"
     , emphasis =
-        \content -> Unexpected "String"
+        \_ -> Unexpected "String"
     , strikethrough =
-        \content -> Unexpected "String"
+        \_ -> Unexpected "String"
     , hardLineBreak = Unexpected "String"
     , codeSpan =
-        \content -> Unexpected "String"
-    , image = \link -> Unexpected "String"
+        \_ -> Unexpected "String"
+    , image = \_ -> Unexpected "String"
     , link =
-        \link content ->
+        \_ _ ->
             Unexpected "String"
     , text =
         \_ ->
             Unexpected "String"
     , unorderedList =
-        \items ->
+        \_ ->
             Unexpected "String"
     , orderedList =
-        \startingIndex items ->
+        \_ _ ->
             Unexpected "String"
     , html = Markdown.Html.oneOf htmlRenderer
     , codeBlock =
-        \{ body, language } ->
+        \_ ->
             Unexpected "String"
     , thematicBreak = Unexpected "String"
     , table = \_ -> Unexpected "String"
@@ -88,7 +76,7 @@ suite =
                 "<social-links />"
                     |> render
                         (testRenderer
-                            [ Markdown.Html.tag "social-links" (\children -> Html "social-links")
+                            [ Markdown.Html.tag "social-links" (\_ -> Html "social-links")
                             ]
                         )
                     |> Expect.equal (Ok [ Html "social-links" ])
@@ -104,7 +92,7 @@ suite =
                     |> render
                         (testRenderer
                             [ Markdown.Html.tag "signup-form"
-                                (\buttonText children ->
+                                (\buttonText _ ->
                                     Html
                                         { tag = "signup-form"
                                         , buttonText = buttonText
@@ -127,7 +115,7 @@ suite =
                     |> render
                         (testRenderer
                             [ Markdown.Html.tag "signup-form"
-                                (\buttonText children ->
+                                (\buttonText _ ->
                                     Html
                                         { tag = "signup-form"
                                         , buttonText = buttonText
@@ -148,7 +136,7 @@ Expecting attribute "button".
                     |> render
                         (testRenderer
                             [ Markdown.Html.tag "signup-form"
-                                (\buttonText children ->
+                                (\buttonText _ ->
                                     Html
                                         { tag = "signup-form"
                                         , buttonText = Just buttonText
@@ -156,7 +144,7 @@ Expecting attribute "button".
                                 )
                                 |> Markdown.Html.withAttribute "button"
                             , Markdown.Html.tag "signup-form"
-                                (\children ->
+                                (\_ ->
                                     Html
                                         { tag = "signup-form"
                                         , buttonText = Nothing
@@ -180,7 +168,7 @@ Parsing failed in the following 2 ways:
                     |> render
                         (testRenderer
                             [ Markdown.Html.tag "requires-attribute"
-                                (\first second children ->
+                                (\first second _ ->
                                     Html
                                         { tag = "requires-attribute "
                                         , first = first
@@ -203,7 +191,7 @@ Expecting attribute "first".
                     |> render
                         (testRenderer
                             [ Markdown.Html.tag "bio"
-                                (\name twitter github children ->
+                                (\name twitter github _ ->
                                     Html
                                         { tag =
                                             "bio"
@@ -233,7 +221,7 @@ Expecting attribute "first".
                     |> render
                         (testRenderer
                             [ Markdown.Html.tag "link"
-                                (\urlText children ->
+                                (\urlText _ ->
                                     Html
                                         { tag = "link"
                                         , urlText = urlText
@@ -256,7 +244,7 @@ Expecting attribute "first".
                     |> render
                         (testRenderer
                             [ Markdown.Html.tag "link"
-                                (\urlText children ->
+                                (\urlText _ ->
                                     Html
                                         { tag = "link"
                                         , urlText = urlText
@@ -279,7 +267,7 @@ Expecting attribute "first".
                     |> render
                         (testRenderer
                             [ Markdown.Html.tag "link"
-                                (\urlText children ->
+                                (\urlText _ ->
                                     Html
                                         { tag = "link"
                                         , urlText = urlText

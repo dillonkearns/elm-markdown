@@ -6,10 +6,10 @@ module Markdown.Parser exposing (parse, deadEndToString)
 
 -}
 
-import Dict exposing (Dict)
+import Dict
 import Helpers
 import HtmlParser exposing (Node(..))
-import Markdown.Block as Block exposing (Block, Inline, ListItem, Task)
+import Markdown.Block as Block exposing (Block, Inline)
 import Markdown.CodeBlock
 import Markdown.Heading as Heading
 import Markdown.Helpers exposing (isEven)
@@ -18,12 +18,12 @@ import Markdown.InlineParser
 import Markdown.LinkReferenceDefinition as LinkReferenceDefinition exposing (LinkReferenceDefinition)
 import Markdown.ListItem as ListItem
 import Markdown.OrderedList
-import Markdown.RawBlock as RawBlock exposing (Attribute, RawBlock(..), SetextLevel(..), UnparsedInlines(..))
+import Markdown.RawBlock as RawBlock exposing (RawBlock(..), SetextLevel(..), UnparsedInlines(..))
 import Markdown.Table
 import Markdown.TableParser as TableParser
 import Markdown.UnorderedList
 import Parser
-import Parser.Advanced as Advanced exposing ((|.), (|=), Nestable(..), Step(..), andThen, chompIf, chompWhile, getChompedString, getIndent, loop, map, oneOf, problem, succeed, symbol, token)
+import Parser.Advanced as Advanced exposing ((|.), (|=), Step(..), andThen, chompIf, chompWhile, getChompedString, loop, map, oneOf, problem, succeed, symbol, token)
 import Parser.Token as Token
 import String exposing (repeat, trim)
 import ThematicBreak
@@ -263,7 +263,7 @@ parseInlines linkReferences rawBlock =
             Block.HtmlBlock html
                 |> ParsedBlock
 
-        UnorderedListBlock tight intended unparsedItems _ ->
+        UnorderedListBlock tight _ unparsedItems _ ->
             let
                 parseItem rawBlockTask rawBlocks =
                     let
@@ -273,7 +273,7 @@ parseInlines linkReferences rawBlock =
                                     parsedBlocks
 
                                 --TODO: pass this Err e
-                                Err e ->
+                                Err _ ->
                                     []
 
                         blocksTask =
@@ -304,7 +304,7 @@ parseInlines linkReferences rawBlock =
                             parsedBlocks
 
                         --TODO: pass this Err e
-                        Err e ->
+                        Err _ ->
                             []
             in
             unparsedItems
@@ -323,7 +323,7 @@ parseInlines linkReferences rawBlock =
         BlankLine ->
             EmptyBlock
 
-        RawBlock.BlockQuote rawBlocks ->
+        RawBlock.BlockQuote _ ->
             EmptyBlock
 
         ParsedBlockQuote rawBlocks ->
@@ -539,7 +539,7 @@ textNodeToBlocks textNodeValue =
 nodeToRawBlock : Node -> Block.Html Block
 nodeToRawBlock node =
     case node of
-        HtmlParser.Text innerText ->
+        HtmlParser.Text _ ->
             Block.HtmlComment "TODO this never happens, but use types to drop this case."
 
         HtmlParser.Element tag attributes children ->
@@ -840,7 +840,7 @@ completeOrMergeBlocks state newRawBlock =
 
         ( _, (UnorderedListBlock tight intended1 closeListItems2 openListItem2) :: rest ) ->
             case newRawBlock of
-                UnorderedListBlock _ intended2 closeListItems1 openListItem1 ->
+                UnorderedListBlock _ intended2 _ openListItem1 ->
                     if openListItem2.marker == openListItem1.marker then
                         case Advanced.run rawBlockParser openListItem2.body of
                             Ok value ->
@@ -909,7 +909,7 @@ completeOrMergeBlocks state newRawBlock =
         -- (\item -> OrderedListBlock True item.intended item.marker item.order [] item.body)
         ( _, (OrderedListBlock tight intended1 marker order closeListItems2 openListItem2) :: rest ) ->
             case newRawBlock of
-                OrderedListBlock _ intended2 marker2 _ closeListItems1 openListItem1 ->
+                OrderedListBlock _ intended2 marker2 _ _ openListItem1 ->
                     if marker == marker2 then
                         case Advanced.run rawBlockParser openListItem2 of
                             Ok value ->

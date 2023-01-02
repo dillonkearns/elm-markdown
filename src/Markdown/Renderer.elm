@@ -19,10 +19,10 @@ module Markdown.Renderer exposing
 
 import Html exposing (Html)
 import Html.Attributes as Attr
-import Markdown.Block as Block exposing (Block, Inline, ListItem, Task)
+import Markdown.Block as Block exposing (Block, Inline, ListItem)
 import Markdown.Html
 import Markdown.HtmlRenderer
-import Markdown.RawBlock exposing (Attribute, RawBlock(..), UnparsedInlines(..))
+import Markdown.RawBlock exposing (Attribute)
 
 
 {-| A record with functions that define how to render all possible markdown blocks.

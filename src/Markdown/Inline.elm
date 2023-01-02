@@ -1,7 +1,4 @@
-module Markdown.Inline exposing
-    ( Inline(..)
-    , extractText
-    )
+module Markdown.Inline exposing (Inline(..))
 
 {-| Inline rendering and helpers.
 
@@ -13,12 +10,9 @@ module Markdown.Inline exposing
 
 # Helpers
 
-@docs extractText
-
 -}
 
 import HtmlParser
-import Markdown.Block as Block
 
 
 {-| The inline type.
@@ -42,10 +36,6 @@ type Inline
     | HtmlInline HtmlParser.Node
     | Emphasis Int (List Inline)
     | Strikethrough (List Inline)
-
-
-type alias Attribute =
-    { name : String, value : String }
 
 
 
@@ -91,7 +81,7 @@ extractTextHelp inline text =
         Image _ _ inlines ->
             text ++ extractText inlines
 
-        HtmlInline html ->
+        HtmlInline _ ->
             --text ++ extractText inlines
             text
 

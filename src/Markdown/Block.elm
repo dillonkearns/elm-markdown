@@ -257,17 +257,17 @@ extractInlineBlockText block =
                 _ ->
                     ""
 
-        UnorderedList tight items ->
+        UnorderedList _ items ->
             items
                 |> List.map
-                    (\(ListItem task blocks) ->
+                    (\(ListItem _ blocks) ->
                         blocks
                             |> List.map extractInlineBlockText
                             |> String.join "\n"
                     )
                 |> String.join "\n"
 
-        OrderedList tight int items ->
+        OrderedList _ _ items ->
             items
                 |> List.map
                     (\blocks ->
@@ -282,7 +282,7 @@ extractInlineBlockText block =
                 |> List.map extractInlineBlockText
                 |> String.join "\n"
 
-        Heading headingLevel inlines ->
+        Heading _ inlines ->
             extractInlineText inlines
 
         Table header rows ->
@@ -468,7 +468,7 @@ walkInlinesHelp function block =
                 _ ->
                     block
 
-        CodeBlock record ->
+        CodeBlock _ ->
             block
 
         ThematicBreak ->
@@ -569,11 +569,11 @@ inlineParserValidateWalk function inline =
                             |> Result.mapError List.singleton
                     )
 
-        CodeSpan string ->
+        CodeSpan _ ->
             function inline
                 |> Result.mapError List.singleton
 
-        Text string ->
+        Text _ ->
             function inline
                 |> Result.mapError List.singleton
 
@@ -671,7 +671,7 @@ inlineParserValidateWalkBlock function block =
             in
             Result.map2 Table mappedHeader mappedRows
 
-        CodeBlock record ->
+        CodeBlock _ ->
             Ok block
 
 
@@ -737,7 +737,7 @@ walk function block =
                 _ ->
                     function block
 
-        UnorderedList tight _ ->
+        UnorderedList _ _ ->
             function block
 
         OrderedList _ _ _ ->
@@ -904,7 +904,7 @@ foldl function acc list =
                         _ ->
                             foldl function (function block acc) remainingBlocks
 
-                UnorderedList tight blocks ->
+                UnorderedList _ blocks ->
                     let
                         childBlocks : List Block
                         childBlocks =
@@ -913,7 +913,7 @@ foldl function acc list =
                     in
                     foldl function (function block acc) (childBlocks ++ remainingBlocks)
 
-                OrderedList _ int blocks ->
+                OrderedList _ _ blocks ->
                     foldl function (function block acc) (List.concat blocks ++ remainingBlocks)
 
                 BlockQuote blocks ->
@@ -1043,13 +1043,13 @@ inlineFoldl ifunction top_acc list =
         bfn =
             \block acc ->
                 case block of
-                    HtmlBlock html ->
+                    HtmlBlock _ ->
                         acc
 
-                    UnorderedList tight _ ->
+                    UnorderedList _ _ ->
                         acc
 
-                    OrderedList _ int lists ->
+                    OrderedList _ _ _ ->
                         acc
 
                     BlockQuote _ ->

@@ -25,8 +25,8 @@ module HtmlParser exposing
 import Char
 import Dict exposing (Dict)
 import Hex
-import Parser as Parser
-import Parser.Advanced as Advanced exposing ((|.), (|=), Nestable(..), Step(..), andThen, chompWhile, getChompedString, loop, map, oneOf, problem, succeed, token)
+import Parser
+import Parser.Advanced as Advanced exposing ((|.), (|=), Step(..), andThen, chompWhile, getChompedString, map, oneOf, problem, succeed, token)
 
 
 {-| Node is either a element such as `<a name="value">foo</a>` or text such as `foo`.
@@ -280,7 +280,7 @@ textNodeStringStepOptions =
 
 
 textNodeStringStep : () -> Parser (Step () ())
-textNodeStringStep _ =
+textNodeStringStep () =
     oneOf textNodeStringStepOptions
 
 
@@ -447,83 +447,6 @@ comment =
 
 
 -- FORMAT
-
-
-formatNode : Node -> String
-formatNode node =
-    case node of
-        Element tagName_ attributes_ children_ ->
-            let
-                formattedAttributes =
-                    attributes_
-                        |> List.map (\{ name, value } -> formatAttribute name value)
-                        |> String.join " "
-            in
-            "<"
-                ++ escape tagName_
-                ++ " "
-                ++ formattedAttributes
-                ++ (if children_ == [] then
-                        "/>"
-
-                    else
-                        ">"
-                            ++ (children_ |> List.map formatNode |> String.join "")
-                            ++ "</"
-                            ++ escape tagName_
-                            ++ ">"
-                   )
-
-        Text s ->
-            escape s
-
-        Comment commentContents ->
-            String.concat
-                [ "<!-- "
-                , commentContents
-                , " -->"
-                ]
-
-        Cdata string ->
-            String.concat
-                [ "<![CDATA["
-                , string
-                , "]"
-                ]
-
-        ProcessingInstruction string ->
-            String.concat
-                [ "<?"
-                , string
-                , "?>"
-                ]
-
-        Declaration declarationType content ->
-            String.concat
-                [ "<!"
-                , declarationType
-                , " "
-                , content
-                , ">"
-                ]
-
-
-formatAttribute : String -> String -> String
-formatAttribute name value =
-    escape name ++ "=\"" ++ escape value ++ "\""
-
-
-escape : String -> String
-escape s =
-    s
-        |> String.replace "&" "&amp;"
-        |> String.replace "<" "&lt;"
-        |> String.replace ">" "&gt;"
-        |> String.replace "\"" "&quot;"
-        |> String.replace "'" "&apos;"
-
-
-
 -- UTILITY
 
 
@@ -540,28 +463,3 @@ symbol str =
 toToken : String -> Advanced.Token Parser.Problem
 toToken str =
     Advanced.Token str (Parser.Expecting str)
-
-
-isUninteresting : Char -> Bool
-isUninteresting c =
-    case c of
-        '/' ->
-            False
-
-        '<' ->
-            False
-
-        '>' ->
-            False
-
-        '"' ->
-            False
-
-        '\'' ->
-            False
-
-        '=' ->
-            False
-
-        _ ->
-            True

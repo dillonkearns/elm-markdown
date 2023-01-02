@@ -2,7 +2,6 @@ module InlineFoldTests exposing (suite)
 
 import Dict
 import Expect
-import GithubSlugs
 import Markdown.Block as Block exposing (..)
 import Test exposing (..)
 

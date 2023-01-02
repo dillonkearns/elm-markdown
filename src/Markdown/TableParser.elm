@@ -1,4 +1,4 @@
-module Markdown.TableParser exposing (..)
+module Markdown.TableParser exposing (Parser, Table, bodyRowParser, delimiterRowParser, parseHeader, parser, rowParser)
 
 import Helpers
 import Markdown.Block exposing (Alignment(..))

@@ -1,11 +1,10 @@
-module Markdown.Heading exposing (..)
+module Markdown.Heading exposing (Parser, parser)
 
 import Helpers
-import Markdown.RawBlock exposing (Attribute, RawBlock(..), UnparsedInlines(..))
+import Markdown.RawBlock exposing (RawBlock(..), UnparsedInlines(..))
 import Parser
-import Parser.Advanced as Advanced exposing ((|.), (|=), Nestable(..), Step(..), andThen, chompIf, chompWhile, getChompedString, oneOf, spaces, succeed, symbol)
+import Parser.Advanced as Advanced exposing ((|.), (|=), andThen, chompWhile, getChompedString, oneOf, spaces, succeed, symbol)
 import Parser.Token as Token
-import Whitespace
 
 
 type alias Parser a =

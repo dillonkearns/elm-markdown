@@ -1,4 +1,4 @@
-module Markdown.InlineParser exposing (parse, query, tokenize, walk)
+module Markdown.InlineParser exposing (parse)
 
 import Dict
 import HtmlParser
@@ -87,7 +87,7 @@ parseTextMatch rawText (Match matchModel) parsedMatches =
                 , normalMatch finalStr
                 ]
 
-        (Match matchHead) :: matchesTail ->
+        (Match matchHead) :: _ ->
             case matchHead.type_ of
                 NormalType ->
                     updtMatch :: parsedMatches
@@ -130,8 +130,7 @@ type Active
 
 
 type Opening
-    = Opening
-    | NotOpening
+    = NotOpening
 
 
 type Meaning
@@ -143,7 +142,6 @@ type Meaning
     | AngleBracketClose Escaped
     | HtmlToken Opening HtmlModel
     | EmphasisToken Char { leftFringeRank : Int, rightFringeRank : Int }
-    | SoftLineBreakToken
     | HardLineBreakToken
     | StrikethroughToken Escaped
 
@@ -823,7 +821,7 @@ angleBracketLTokenRegex =
 regMatchToAngleBracketLToken : Regex.Match -> Maybe Token
 regMatchToAngleBracketLToken regMatch =
     case regMatch.submatches of
-        maybeBackslashes :: (Just delimiter) :: _ ->
+        maybeBackslashes :: (Just _) :: _ ->
             let
                 backslashesLength =
                     Maybe.map String.length maybeBackslashes
@@ -929,7 +927,7 @@ regMatchToSoftHardBreakToken regMatch =
                 }
                     |> Just
 
-        _ :: maybeSpaces :: _ ->
+        _ :: _ :: _ ->
             { index = regMatch.index
             , length = String.length regMatch.match
             , meaning = HardLineBreakToken
@@ -1080,7 +1078,7 @@ codeAutolinkTypeHtmlTagTTM remaining tokens matches references rawText =
 
         token :: tokensTail ->
             case token.meaning of
-                CodeToken isEscaped ->
+                CodeToken _ ->
                     case findToken (isCodeTokenPair token) tokens of
                         Just code ->
                             let
@@ -1332,64 +1330,8 @@ htmlElementTTM remaining tokens matches references rawText =
                                 references
                                 rawText
 
-                        Opening ->
-                            case findToken (isCloseToken htmlModel) tokensTail of
-                                Nothing ->
-                                    htmlElementTTM tokensTail tokens (tokenToMatch token (HtmlType htmlModel) :: matches) references rawText
-
-                                Just ( closeToken, innerTokens, newTail ) ->
-                                    let
-                                        newMatch =
-                                            tokenPairToMatch
-                                                references
-                                                rawText
-                                                (\s -> s)
-                                                (HtmlType htmlModel)
-                                                token
-                                                closeToken
-                                                innerTokens
-                                    in
-                                    htmlElementTTM newTail tokens (newMatch :: matches) references rawText
-
                 _ ->
                     htmlElementTTM tokensTail (token :: tokens) matches references rawText
-
-
-isVoidTag : HtmlModel -> Bool
-isVoidTag htmlModel =
-    -- TODO should I use this later?
-    --List.member htmlModel.tag voidHtmlTags
-    False
-
-
-voidHtmlTags : List String
-voidHtmlTags =
-    [ "area"
-    , "base"
-    , "br"
-    , "col"
-    , "embed"
-    , "hr"
-    , "img"
-    , "input"
-    , "keygen"
-    , "link"
-    , "meta"
-    , "param"
-    , "source"
-    , "track"
-    , "wbr"
-    ]
-
-
-isCloseToken : HtmlModel -> Token -> Bool
-isCloseToken htmlModel token =
-    --case token.meaning of
-    --    HtmlToken False htmlModel_ ->
-    --        htmlModel.tag == htmlModel_.tag
-    --
-    --    _ ->
-    False
 
 
 
@@ -1962,7 +1904,7 @@ strikethroughTTM remaining tokens matches references rawText =
 
         token :: tokensTail ->
             case token.meaning of
-                StrikethroughToken isEscaped ->
+                StrikethroughToken _ ->
                     case findToken (isStrikethroughTokenPair token) tokens of
                         Just content ->
                             let
@@ -2026,97 +1968,3 @@ matchToInline (Match match) =
 
 
 -- Helpers
-
-
-{-| Apply a function to every inline recursively.
-
-Example of converting all text in **headings** to **ALL CAPS**:
-
-    import Html exposing (Html, article)
-    import Markdown.Block as Block exposing (Block(..))
-    import Markdown.Inline as Inline exposing (Inline(..))
-
-    view : Html msg
-    view =
-        myMarkdownString
-            |> Block.parse Nothing
-            |> List.map (Block.walk modHeader)
-            |> List.map Block.toHtml
-            |> List.concat
-            |> article []
-
-    modHeader : Block b i -> Block b i
-    modHeader block =
-        case block of
-            Heading rawText level inlines ->
-                List.map (Inline.walk upperText) inlines
-                    |> Heading rawText level
-
-            _ ->
-                block
-
-    upperText : Inline -> Inline
-    upperText inline =
-        case inline of
-            Text str ->
-                Text (String.toUpper str)
-
-            _ ->
-                inline
-
-**Note:** In this example, `Block.walkInlines` could be used instead.
-
--}
-walk : (Inline -> Inline) -> Inline -> Inline
-walk function inline =
-    case inline of
-        Link url maybeTitle inlines ->
-            List.map (walk function) inlines
-                |> Link url maybeTitle
-                |> function
-
-        Image url maybeTitle inlines ->
-            List.map (walk function) inlines
-                |> Image url maybeTitle
-                |> function
-
-        HtmlInline html ->
-            --List.map (walk function) inlines
-            --    |> HtmlInline tag attrs
-            function inline
-
-        Emphasis length inlines ->
-            List.map (walk function) inlines
-                |> Emphasis length
-                |> function
-
-        _ ->
-            function inline
-
-
-query : (Inline -> List a) -> Inline -> List a
-query function inline =
-    case inline of
-        Link url maybeTitle inlines ->
-            List.map (query function) inlines
-                |> List.concat
-                |> (++) (function (Link url maybeTitle inlines))
-
-        Image url maybeTitle inlines ->
-            List.map (query function) inlines
-                |> List.concat
-                |> (++) (function (Image url maybeTitle inlines))
-
-        HtmlInline html ->
-            --List.map (query function) inlines
-            --    |> List.concat
-            --    |> (++) (function (HtmlInline tag attrs inlines))
-            function inline
-
-        Emphasis length inlines ->
-            List.map (query function) inlines
-                |> List.concat
-                |> (++) (function (Emphasis length inlines))
-
-        _ ->
-            function inline

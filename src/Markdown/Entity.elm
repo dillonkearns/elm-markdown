@@ -1,9 +1,8 @@
-module Markdown.Entity exposing (..)
+module Markdown.Entity exposing (replaceDecimals, replaceEntities, replaceHexadecimals)
 
 import Char
 import Dict exposing (Dict)
 import Regex exposing (Regex)
-import Result
 
 
 

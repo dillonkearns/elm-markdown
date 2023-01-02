@@ -1,6 +1,6 @@
 module OrderedListTests exposing (suite)
 
-import Expect exposing (Expectation)
+import Expect
 import Markdown.Block exposing (Block(..), Inline(..))
 import Markdown.OrderedList
 import Markdown.Parser

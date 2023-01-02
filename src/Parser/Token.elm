@@ -1,4 +1,4 @@
-module Parser.Token exposing (asterisk, backtick, carriageReturn, closingParen, closingSquareBracket, colon, dot, doubleQuote, equals, greaterThan, hash, lessThan, minus, newline, openingSquareBracket, parseString, plus, singleQuote, space, tab, tilde)
+module Parser.Token exposing (backtick, carriageReturn, closingParen, closingSquareBracket, dot, doubleQuote, equals, greaterThan, hash, lessThan, minus, newline, openingSquareBracket, parseString, singleQuote, space, tab, tilde)
 
 import Parser
 import Parser.Advanced as Advanced exposing (Token(..))
@@ -79,24 +79,9 @@ closingSquareBracket =
     Token "]" (Parser.Expecting "a `]`")
 
 
-colon : Token Parser.Problem
-colon =
-    Token ":" (Parser.Expecting "a `:`")
-
-
 minus : Token Parser.Problem
 minus =
     Token "-" (Parser.Expecting "a `-`")
-
-
-plus : Token Parser.Problem
-plus =
-    Token "+" (Parser.Expecting "a `+`")
-
-
-asterisk : Token Parser.Problem
-asterisk =
-    Token "*" (Parser.Expecting "a `*`")
 
 
 equals : Token Parser.Problem

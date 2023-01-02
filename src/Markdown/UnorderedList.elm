@@ -2,7 +2,7 @@ module Markdown.UnorderedList exposing (UnorderedListMarker(..), parser)
 
 import Helpers
 import Markdown.ListItem as ListItem exposing (ListItem(..))
-import Parser exposing (Problem)
+import Parser
 import Parser.Advanced as Advanced exposing (..)
 import Parser.Extra as Extra exposing (chompOneOrMore)
 import Whitespace

@@ -4,13 +4,8 @@ import Expect exposing (Expectation)
 import Markdown.Block exposing (Alignment(..))
 import Markdown.Table exposing (TableDelimiterRow(..))
 import Markdown.TableParser exposing (..)
-import Parser
-import Parser.Advanced as Advanced exposing (..)
+import Parser.Advanced as Advanced
 import Test exposing (..)
-
-
-type alias Parser a =
-    Advanced.Parser String Parser.Problem a
 
 
 expectDelimiterRowOk : String -> List (Maybe Alignment) -> Expectation

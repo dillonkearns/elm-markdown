@@ -5,13 +5,7 @@ import Expect exposing (Expectation)
 import HtmlParser
 import Markdown.Inline as Inlines
 import Markdown.InlineParser
-import Parser
-import Parser.Advanced as Advanced
 import Test exposing (..)
-
-
-type alias Parser a =
-    Advanced.Parser String Parser.Problem a
 
 
 suite : Test
