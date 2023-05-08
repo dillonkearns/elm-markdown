@@ -1,6 +1,7 @@
 module Markdown.Renderer exposing
     ( Renderer, render
     , defaultHtmlRenderer
+    , defaultStringRenderer
     , renderWithMeta
     )
 
@@ -357,17 +358,63 @@ defaultStringRenderer =
                 , "```\n\n"
                 ]
     , thematicBreak = "--------------------\n"
-
-    -- tables not yet supported.
-    , table = String.concat
-    , tableHeader = String.concat
-    , tableBody = String.concat
-    , tableRow = String.concat
+    -- table support is WIP
+    , table = String.concat >> (++) "\n"
+    , tableHeader =
+        -- we get the whole header as one string here, contained in a single element list.
+        List.map
+            twoheads
+            >> String.concat
+    , tableBody = List.foldr (\s l -> s :: "\n" :: l) [] >> String.concat
+    , tableRow = List.intersperse " | " >> String.concat
     , tableHeaderCell =
-        \maybeAlignment strs -> String.concat strs
+        \maybeAlignment strs ->
+            let
+                _ =
+                    Debug.log "thc" ( maybeAlignment, strs )
+            in
+            String.concat strs
+                ++ " | "
+                ++ (case maybeAlignment of
+                        Just Block.AlignLeft ->
+                            ":-"
+
+                        Just Block.AlignRight ->
+                            "-:"
+
+                        Just Block.AlignCenter ->
+                            ":-:"
+
+                        Nothing ->
+                            "--"
+                   )
     , tableCell =
-        \maybeAlignment strs -> String.concat strs
+        \maybeAlignment strs ->
+            String.concat strs
     }
+
+
+twoheads : String -> String
+twoheads headstr =
+    headstr
+        |> String.split " | "
+        |> toheads ( [], [] )
+        |> (\( heads, aligns ) ->
+                String.concat (List.intersperse " | " heads)
+                    ++ "\n"
+                    ++ String.concat (List.intersperse "|" aligns)
+                    ++ "\n"
+           )
+
+
+toheads : ( List String, List String ) -> List String -> ( List String, List String )
+toheads ( llst, rlst ) strs =
+    case strs of
+        l :: r :: cdr ->
+            toheads ( l :: llst, r :: rlst ) cdr
+
+        _ ->
+            ( List.reverse llst, List.reverse rlst )
 
 
 
