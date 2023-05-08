@@ -254,8 +254,7 @@ defaultHtmlRenderer =
             Html.td attrs
     }
 
-{-| This renders `Html` in an attempt to be as close as possible to
-the HTML output in <https://github.github.com/gfm/>.
+{-| This renders the parsed markdown structs to a string.  Tables not yet supported
 -}
 defaultStringRenderer : Renderer String
 defaultStringRenderer =
@@ -359,7 +358,7 @@ defaultStringRenderer =
                 ]
     , thematicBreak = "--------------------\n"
 
-    -- tables not currently parsed by elm-markdown.
+    -- tables not yet supported.
     , table = String.concat
     , tableHeader = String.concat
     , tableBody = String.concat
