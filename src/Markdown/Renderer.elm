@@ -369,10 +369,6 @@ defaultStringRenderer =
     , tableRow = List.intersperse " | " >> String.concat
     , tableHeaderCell =
         \maybeAlignment strs ->
-            let
-                _ =
-                    Debug.log "thc" ( maybeAlignment, strs )
-            in
             String.concat strs
                 ++ " | "
                 ++ (case maybeAlignment of
