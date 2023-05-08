@@ -1,8 +1,8 @@
 module Markdown.Renderer exposing
     ( Renderer, render
     , defaultHtmlRenderer
-    , defaultStringRenderer
     , renderWithMeta
+    , defaultStringRenderer
     )
 
 {-|
@@ -255,7 +255,8 @@ defaultHtmlRenderer =
             Html.td attrs
     }
 
-{-| This renders the parsed markdown structs to a string.  Tables not yet supported
+
+{-| This renders the parsed markdown structs to a string.
 -}
 defaultStringRenderer : Renderer String
 defaultStringRenderer =
@@ -358,6 +359,7 @@ defaultStringRenderer =
                 , "```\n\n"
                 ]
     , thematicBreak = "--------------------\n"
+
     -- table support is WIP
     , table = String.concat >> (++) "\n"
     , tableHeader =
@@ -411,7 +413,6 @@ toheads ( llst, rlst ) strs =
 
         _ ->
             ( List.reverse llst, List.reverse rlst )
-
 
 
 {-| Apply a `Renderer` to turn parsed `Markdown.Block`s into your rendered markdown view.
