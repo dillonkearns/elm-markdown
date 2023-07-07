@@ -9,7 +9,7 @@ module Markdown.Renderer exposing
 
 @docs Renderer, render
 
-@docs defaultHtmlRenderer
+@docs defaultHtmlRenderer, defaultStringRenderer
 
 
 ## Attaching Metadata to Blocks
