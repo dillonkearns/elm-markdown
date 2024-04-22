@@ -4,6 +4,7 @@ import Helpers
 import Markdown.Helpers
 import Parser
 import Parser.Advanced as Advanced exposing (..)
+import Parser.Advanced.Workaround
 import Parser.Extra
 import Parser.Token as Token
 import Url
@@ -49,7 +50,7 @@ labelParser : Parser String
 labelParser =
     succeed Markdown.Helpers.prepareRefLabel
         |. symbol Token.openingSquareBracket
-        |= getChompedString (chompUntil Token.closingSquareBracket)
+        |= getChompedString (Parser.Advanced.Workaround.chompUntilBefore Token.closingSquareBracket)
         |. symbol (Token "]:" (Parser.Expecting "]:"))
 
 
@@ -59,7 +60,7 @@ destinationParser =
         oneOf
             [ succeed Url.percentEncode
                 |. symbol Token.lessThan
-                |= getChompedString (chompUntil Token.greaterThan)
+                |= getChompedString (Parser.Advanced.Workaround.chompUntilBefore Token.greaterThan)
                 |. symbol Token.greaterThan
             , Parser.Extra.chompOneOrMore (not << Whitespace.isWhitespace)
                 |> getChompedString
@@ -73,7 +74,7 @@ titleParser =
         inDoubleQuotes =
             succeed Just
                 |. symbol Token.doubleQuote
-                |= (chompUntil Token.doubleQuote
+                |= (Parser.Advanced.Workaround.chompUntilBefore Token.doubleQuote
                         |> getChompedString
                         |> andThen hasNoBlankLine
                    )
@@ -84,7 +85,7 @@ titleParser =
         inSingleQuotes =
             succeed Just
                 |. symbol Token.singleQuote
-                |= (chompUntil Token.singleQuote
+                |= (Parser.Advanced.Workaround.chompUntilBefore Token.singleQuote
                         |> getChompedString
                         |> andThen hasNoBlankLine
                    )

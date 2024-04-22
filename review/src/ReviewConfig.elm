@@ -14,6 +14,7 @@ when inside the directory containing this file.
 import Docs.NoMissing exposing (exposedModules, onlyExposed)
 import Docs.ReviewAtDocs
 import Docs.ReviewLinksAndSections
+import NoBrokenParserFunctions
 import Docs.UpToDateReadmeLinks
 import NoDebug.Log
 import NoDebug.TodoOrToString
@@ -59,6 +60,7 @@ config =
      , NoMissingTypeAnnotationInLetIn.rule
      , NoMissingTypeExpose.rule
      , NoUnmatchedUnit.rule
+     , NoBrokenParserFunctions.rule
      ]
         ++ (noUnusedRules
                 |> List.map
