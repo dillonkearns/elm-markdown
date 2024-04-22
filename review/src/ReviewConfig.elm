@@ -14,8 +14,8 @@ when inside the directory containing this file.
 import Docs.NoMissing exposing (exposedModules, onlyExposed)
 import Docs.ReviewAtDocs
 import Docs.ReviewLinksAndSections
-import NoBrokenParserFunctions
 import Docs.UpToDateReadmeLinks
+import NoBrokenParserFunctions
 import NoDebug.Log
 import NoDebug.TodoOrToString
 import NoEmptyDocComments
