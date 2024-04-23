@@ -1,8 +1,7 @@
 module Markdown.Renderer exposing
     ( Renderer, render
-    , defaultHtmlRenderer
+    , defaultHtmlRenderer, defaultStringRenderer
     , renderWithMeta
-    , defaultStringRenderer
     )
 
 {-|
