@@ -5,9 +5,14 @@ module MarkdownFuzzer exposing (..)
 import Expect
 import Fuzz
 import Markdown.Block exposing (..)
+import Markdown.Html
 import Markdown.Parser
 import Markdown.Renderer exposing (defaultStringRenderer)
 import Test exposing (fuzz)
+
+
+divDefaultStringRenderer =
+    { defaultStringRenderer | html = Markdown.Html.oneOf [ Markdown.Html.tag "div" (String.join "") ] }
 
 
 all : Test.Test
@@ -26,7 +31,7 @@ all =
                     Debug.log "rstr: "
                         (randomMd
                             |> Result.mapError (\e -> "markdown parse error " ++ Debug.toString e)
-                            |> Result.andThen (\mkd -> Markdown.Renderer.render defaultStringRenderer mkd)
+                            |> Result.andThen (\mkd -> Markdown.Renderer.render divDefaultStringRenderer mkd)
                         )
 
                 -- parse again.
@@ -56,9 +61,7 @@ randomMarkdown =
             , blockQuoteFuzzer
             , orderedListFuzzer
             , unorderedListFuzzer
-
-            -- no html fuzz since defaultStringRenderer doesn't have that.
-            -- , htmlFuzzer
+            , htmlFuzzer
             , tableFuzzer
             , codeBlockFuzzer
             , thematicBreakFuzzer
