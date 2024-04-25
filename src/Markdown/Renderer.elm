@@ -260,7 +260,7 @@ defaultHtmlRenderer =
 defaultStringRenderer : Renderer String
 defaultStringRenderer =
     { heading =
-        \{ level, rawText, children } ->
+        \{ level, children } ->
             (case level of
                 Block.H1 ->
                     "# " ++ String.concat children
@@ -386,7 +386,7 @@ defaultStringRenderer =
                             "--"
                    )
     , tableCell =
-        \maybeAlignment strs ->
+        \_ strs ->
             String.concat strs
     }
 

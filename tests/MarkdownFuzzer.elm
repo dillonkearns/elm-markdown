@@ -1,16 +1,20 @@
 module MarkdownFuzzer exposing (..)
 
 -- import Markdown.CodeBlock exposing (..)
+---exposing ((|.), (|=), Step(..), andThen, chompIf, chompWhile, getChompedString, loop, map, oneOf, problem, succeed, symbol, token)
 
 import Expect
 import Fuzz
-import Markdown.Block exposing (..)
+import Markdown.Block exposing (Block)
 import Markdown.Html
 import Markdown.Parser
-import Markdown.Renderer exposing (defaultStringRenderer)
+import Markdown.Renderer exposing (Renderer, defaultStringRenderer)
+import Parser
+import Parser.Advanced as Advanced
 import Test exposing (fuzz)
 
 
+divDefaultStringRenderer : Renderer String
 divDefaultStringRenderer =
     { defaultStringRenderer | html = Markdown.Html.oneOf [ Markdown.Html.tag "div" (String.join "") ] }
 
@@ -21,20 +25,18 @@ all =
         "testOutputs"
         (\randomMarkdownValue ->
             let
+                randomMd : Result (List (Advanced.DeadEnd String Parser.Problem)) (List Block)
                 randomMd =
-                    Debug.log "randomMarkdownValue"
-                        (randomMarkdownValue
-                            |> Markdown.Parser.parse
-                        )
+                    randomMarkdownValue
+                        |> Markdown.Parser.parse
 
                 renderedStr =
-                    Debug.log "rstr: "
-                        (randomMd
-                            |> Result.mapError (\e -> "markdown parse error " ++ Debug.toString e)
-                            |> Result.andThen (\mkd -> Markdown.Renderer.render divDefaultStringRenderer mkd)
-                        )
+                    randomMd
+                        |> Result.mapError (\e -> "markdown parse error " ++ Debug.toString e)
+                        |> Result.andThen (\mkd -> Markdown.Renderer.render divDefaultStringRenderer mkd)
 
                 -- parse again.
+                parsed : Result String (List Block)
                 parsed =
                     renderedStr
                         |> Result.andThen
@@ -192,6 +194,7 @@ headingFuzzer =
     Fuzz.map3
         (\inlineText level closingHeadingStyle ->
             let
+                headingMark : String
                 headingMark =
                     String.repeat level "#"
             in
