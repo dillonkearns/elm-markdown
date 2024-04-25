@@ -1,7 +1,4 @@
-module MarkdownFuzzer exposing (..)
-
--- import Markdown.CodeBlock exposing (..)
----exposing ((|.), (|=), Step(..), andThen, chompIf, chompWhile, getChompedString, loop, map, oneOf, problem, succeed, symbol, token)
+module MarkdownFuzzer exposing (all, blockQuoteFuzzer, codeBlockFuzzer, decoratedWordFuzzer, divDefaultStringRenderer, headingFuzzer, htmlFuzzer, imageFuzzer, inlineFuzzer, linkFuzzer, list, orderedListFuzzer, paragraphFuzzer, plainWordFuzzer, randomMarkdown, tableFuzzer, thematicBreakFuzzer, unorderedListFuzzer, urlFuzzer)
 
 import Expect
 import Fuzz
@@ -30,6 +27,7 @@ all =
                     randomMarkdownValue
                         |> Markdown.Parser.parse
 
+                renderedStr : Result String (List String)
                 renderedStr =
                     randomMd
                         |> Result.mapError (\e -> "markdown parse error " ++ Debug.toString e)
