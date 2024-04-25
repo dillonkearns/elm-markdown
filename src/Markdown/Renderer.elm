@@ -358,8 +358,6 @@ defaultStringRenderer =
                 , "```\n\n"
                 ]
     , thematicBreak = "--------------------\n"
-
-    -- table support is WIP
     , table = String.concat >> (++) "\n"
     , tableHeader =
         -- we get the whole header as one string here, contained in a single element list.
