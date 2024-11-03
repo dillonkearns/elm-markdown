@@ -196,7 +196,7 @@ you define for the tag's renderer.
     import Markdown.Html
 
     Markdown.Html.tag "contact-button"
-        (\children buttonText color ->
+        (\buttonText color children ->
             Html.button
                 [ Attr.style "background-color" color ]
                 [ Html.text buttonText ]
