@@ -37,15 +37,18 @@ parser previousWasBody =
 
 unorderedListMarkerParser : Parser UnorderedListMarker
 unorderedListMarkerParser =
-    oneOf
-        [ succeed Minus
-            |. Extra.upTo 3 Whitespace.space
-            |. Advanced.symbol (Advanced.Token "-" (Parser.ExpectingSymbol "-"))
-        , succeed Plus
-            |. Advanced.symbol (Advanced.Token "+" (Parser.ExpectingSymbol "+"))
-        , succeed Asterisk
-            |. Advanced.symbol (Advanced.Token "*" (Parser.ExpectingSymbol "*"))
-        ]
+    [ ( Minus, "-" )
+    , ( Plus, "+" )
+    , ( Asterisk, "*" )
+    ]
+        |> List.map
+            (\( tag, token ) ->
+                succeed tag
+                    |. Extra.upTo 3 Whitespace.space
+                    |. Advanced.symbol (Advanced.Token token (Parser.ExpectingSymbol token))
+                    |> backtrackable
+            )
+        |> oneOf
 
 
 unorderedListItemBodyParser : Parser ( Int, ListItem )
