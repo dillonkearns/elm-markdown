@@ -102,26 +102,6 @@ But instead was:
 ````````````html
 <p>Foo<responsive-image src="foo.jpg"></responsive-image></p>
 ````````````
-## [Example 617](https://spec.commonmark.org/0.30/#example-617)
-
-This markdown:
-
-````````````markdown
-<33> <__>
-
-````````````
-
-Should give output:
-
-````````````html
-<p>&lt;33&gt; &lt;__&gt;</p>
-````````````
-
-But instead was:
-
-````````````html
-ERROR Problem at row 2 Expecting symbol
-````````````
 ## [Example 618](https://spec.commonmark.org/0.30/#example-618)
 
 This markdown:
@@ -140,7 +120,7 @@ Should give output:
 But instead was:
 
 ````````````html
-ERROR Problem at row 2 Expecting symbol
+ERROR Problem at row 1 Expecting symbol =
 ````````````
 ## [Example 619](https://spec.commonmark.org/0.30/#example-619)
 
@@ -204,46 +184,6 @@ But instead was:
 
 ````````````html
 ERROR Problem at row 1 Expecting symbol &quot; Problem at row 1 Expecting symbol &#39;
-````````````
-## [Example 622](https://spec.commonmark.org/0.30/#example-622)
-
-This markdown:
-
-````````````markdown
-</a></foo >
-
-````````````
-
-Should give output:
-
-````````````html
-<p></a></foo></p>
-````````````
-
-But instead was:
-
-````````````html
-ERROR Problem at row 1 Expecting at least 1 tag name character
-````````````
-## [Example 623](https://spec.commonmark.org/0.30/#example-623)
-
-This markdown:
-
-````````````markdown
-</a href="foo">
-
-````````````
-
-Should give output:
-
-````````````html
-<p>&lt;/a href=&quot;foo&quot;&gt;</p>
-````````````
-
-But instead was:
-
-````````````html
-ERROR Problem at row 1 Expecting at least 1 tag name character
 ````````````
 ## [Example 625](https://spec.commonmark.org/0.30/#example-625)
 

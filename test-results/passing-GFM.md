@@ -10561,6 +10561,60 @@ Gives this correct output:
 
 ## Raw HTML
 
+### [Example 617](https://spec.commonmark.org/0.30/#example-617)
+
+This markdown:
+
+
+````````````markdown
+<33> <__>
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p>&lt;33&gt; &lt;__&gt;</p>
+
+````````````
+
+### [Example 622](https://spec.commonmark.org/0.30/#example-622)
+
+This markdown:
+
+
+````````````markdown
+</a></foo >
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p></a></foo ></p>
+
+````````````
+
+### [Example 623](https://spec.commonmark.org/0.30/#example-623)
+
+This markdown:
+
+
+````````````markdown
+</a href="foo">
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p>&lt;/a href=&quot;foo&quot;&gt;</p>
+
+````````````
+
 ### [Example 624](https://spec.commonmark.org/0.30/#example-624)
 
 This markdown:

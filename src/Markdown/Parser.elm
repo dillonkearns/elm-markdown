@@ -536,6 +536,11 @@ xmlNodeToHtmlNode xmlNode =
                 |> RawBlock.Html
                 |> succeed
 
+        HtmlParser.ClosingTag tagName ->
+            Block.ClosingTag tagName
+                |> RawBlock.Html
+                |> succeed
+
 
 textNodeToBlocks : String -> List Block
 textNodeToBlocks textNodeValue =
@@ -575,6 +580,9 @@ nodeToRawBlock node =
 
         Declaration declarationType content ->
             Block.HtmlDeclaration declarationType content
+
+        HtmlParser.ClosingTag tagName ->
+            Block.ClosingTag tagName
 
 
 nodesToBlocks : List Node -> Result Parser.Problem (List Block)
@@ -641,6 +649,9 @@ childToBlocks node blocks =
 
         Declaration declarationType content ->
             Ok (Block.HtmlBlock (Block.HtmlDeclaration declarationType content) :: blocks)
+
+        HtmlParser.ClosingTag tagName ->
+            Ok (Block.HtmlBlock (Block.ClosingTag tagName) :: blocks)
 
 
 type alias LinkReferenceDefinitions =
@@ -1467,6 +1478,17 @@ tableRowIfTableStarted (Markdown.Table.Table headers body) =
 This function checks to see if something might be an autolink that could be confused with an HTML block because
 the line starts with `<`. But it's slightly more lenient, so that things like `<>` that aren't actually parsed as
 autolinks are still parsed as paragraphs.
+
+According to CommonMark, valid HTML starts with:
+
+  - `<` + ASCII letter (open tag)
+  - `</` + ASCII letter (close tag)
+  - `<!` (comment, CDATA, doctype)
+  - `<?` (processing instruction)
+
+So if we see `<` followed by anything else (like a digit, underscore, space, etc.),
+it's definitely not HTML and should be parsed as paragraph text.
+
 -}
 parseAsParagraphInsteadOfHtmlBlock : Parser RawBlock
 parseAsParagraphInsteadOfHtmlBlock =
@@ -1482,9 +1504,22 @@ parseAsParagraphInsteadOfHtmlBlock =
 thisIsDefinitelyNotAnHtmlTag : Parser ()
 thisIsDefinitelyNotAnHtmlTag =
     oneOf
-        [ token (Advanced.Token " " (Parser.Expecting " "))
-        , token (Advanced.Token ">" (Parser.Expecting ">"))
-        , chompIf Char.isAlpha (Parser.Expecting "Alpha")
+        [ -- Space after < means it's not HTML
+          token (Advanced.Token " " (Parser.Expecting " "))
+
+        , -- Immediately closing < with > means it's not HTML
+          token (Advanced.Token ">" (Parser.Expecting ">"))
+
+        , -- Closing tags (</...) at block level are NOT HTML blocks according to CommonMark.
+          -- They should be parsed as paragraph content containing inline raw HTML.
+          token (Advanced.Token "/" (Parser.Expecting "/"))
+
+        , -- Character after < that can't start valid HTML (not letter, not /, !, ?)
+          -- means it's definitely not HTML. Examples: <33>, <__>, <,>, etc.
+          chompIf isNotValidHtmlStartChar (Parser.Expecting "non-HTML start character")
+
+        , -- Autolink pattern: <letter...followed by : @ \ + .>
+          chompIf Char.isAlpha (Parser.Expecting "Alpha")
             |. chompWhile (\c -> Char.isAlphaNum c || c == '-')
             |. oneOf
                 [ token (Advanced.Token ":" (Parser.Expecting ":"))
@@ -1494,6 +1529,14 @@ thisIsDefinitelyNotAnHtmlTag =
                 , token (Advanced.Token "." (Parser.Expecting "."))
                 ]
         ]
+
+
+{-| Returns True if the character definitely cannot start valid HTML after `<`.
+Valid HTML starts are: ASCII letter, `/`, `!`, `?`
+-}
+isNotValidHtmlStartChar : Char -> Bool
+isNotValidHtmlStartChar c =
+    not (Char.isAlpha c) && c /= '/' && c /= '!' && c /= '?'
 
 
 joinStringsPreserveAll : String -> String -> String

@@ -517,6 +517,11 @@ renderHelperSingle renderer =
                         renderHtmlNode renderer tag attributes children
                             |> Just
 
+                    Block.ClosingTag tagName ->
+                        -- Render closing tag with "/" prefix so user's renderer can handle it
+                        renderHtmlNode renderer ("/" ++ tagName) [] []
+                            |> Just
+
                     _ ->
                         Nothing
 
@@ -742,6 +747,11 @@ renderSingleInline renderer inline =
             case html of
                 Block.HtmlElement tag attributes children ->
                     renderHtmlNode renderer tag attributes children
+                        |> Just
+
+                Block.ClosingTag tagName ->
+                    -- Render closing tag with "/" prefix so user's renderer can handle it
+                    renderHtmlNode renderer ("/" ++ tagName) [] []
                         |> Just
 
                 _ ->

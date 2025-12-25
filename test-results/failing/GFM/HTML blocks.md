@@ -95,7 +95,7 @@ Should give output:
 But instead was:
 
 ````````````html
-ERROR Problem at row 1 Expecting at least 1 tag name character
+<p></div><em>foo</em></p>
 ````````````
 ## [Example 155](https://spec.commonmark.org/0.30/#example-155)
 
@@ -139,7 +139,7 @@ Should give output:
 But instead was:
 
 ````````````html
-ERROR Problem at row 3 Expecting symbol =
+ERROR Problem at row 2 Expecting symbol /&gt; Problem at row 2 Expecting symbol &gt;
 ````````````
 ## [Example 157](https://spec.commonmark.org/0.30/#example-157)
 
@@ -181,7 +181,7 @@ Should give output:
 But instead was:
 
 ````````````html
-ERROR Problem at row 1 Expecting symbol =
+ERROR Problem at row 1 Expecting symbol /&gt; Problem at row 1 Expecting symbol &gt;
 ````````````
 ## [Example 159](https://spec.commonmark.org/0.30/#example-159)
 
@@ -333,7 +333,7 @@ Should give output:
 But instead was:
 
 ````````````html
-ERROR Problem at row 1 Expecting at least 1 tag name character
+<p></ins><em>bar</em></p>
 ````````````
 ## [Example 166](https://spec.commonmark.org/0.30/#example-166)
 
