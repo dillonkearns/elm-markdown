@@ -1453,21 +1453,34 @@ isValidExtendedEmail email =
 findExtendedAutolinks : String -> Int -> List Match
 findExtendedAutolinks text offset =
     let
+        -- Quick checks to skip expensive regex when there's no possible match
         wwwMatches : List Match
         wwwMatches =
-            Regex.find extendedWwwAutolinkRegex text
-                |> List.filterMap (regexMatchToExtendedAutolinkMatch text offset "http://")
+            if String.contains "www." text then
+                Regex.find extendedWwwAutolinkRegex text
+                    |> List.filterMap (regexMatchToExtendedAutolinkMatch text offset "http://")
+
+            else
+                []
 
         urlMatches : List Match
         urlMatches =
-            Regex.find extendedUrlAutolinkRegex text
-                |> List.filterMap (regexMatchToExtendedAutolinkMatch text offset "")
+            if String.contains "://" text then
+                Regex.find extendedUrlAutolinkRegex text
+                    |> List.filterMap (regexMatchToExtendedAutolinkMatch text offset "")
+
+            else
+                []
 
         emailMatches : List Match
         emailMatches =
-            Regex.find extendedEmailAutolinkRegex text
-                |> List.filterMap (regexMatchToExtendedEmailMatch text)
-                |> List.map (adjustMatchOffset offset)
+            if String.contains "@" text then
+                Regex.find extendedEmailAutolinkRegex text
+                    |> List.filterMap (regexMatchToExtendedEmailMatch text)
+                    |> List.map (adjustMatchOffset offset)
+
+            else
+                []
     in
     wwwMatches ++ urlMatches ++ emailMatches
 
