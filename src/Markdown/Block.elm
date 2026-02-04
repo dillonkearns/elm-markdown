@@ -343,6 +343,7 @@ type Html children
     | ProcessingInstruction String
     | HtmlDeclaration String String
     | Cdata String
+    | ClosingTag String
 
 
 {-| An Html attribute. In <div class="foo">, you would have `{ name = "class", value = "foo" }`.
@@ -1000,6 +1001,9 @@ inlineFoldl ifunction top_acc list =
                                 ifn inline hiacc
 
                             Cdata _ ->
+                                ifn inline hiacc
+
+                            ClosingTag _ ->
                                 ifn inline hiacc
 
                     Link _ _ inlines ->

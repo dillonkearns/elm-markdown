@@ -239,6 +239,7 @@ renderMarkdown markdown =
         |> Result.map (List.map (Html.toString 0))
         |> Result.map (String.join "")
         |> Result.map removeVoidClosingTags
+        |> Result.map replaceClosingTagMarkers
 
 
 {-| Ensure that void tags don't have closing tag, see <https://github.com/zwilias/elm-html-string/issues/12>.
@@ -247,6 +248,29 @@ removeVoidClosingTags : String -> String
 removeVoidClosingTags string =
     string
         |> Regex.replace voidClosingReplaceRegex (\_ -> "")
+
+
+{-| Convert closing tag markers back to actual closing tags.
+The markers are in format: CLOSINGTAG_tagname_ENDCLOSINGTAG
+-}
+replaceClosingTagMarkers : String -> String
+replaceClosingTagMarkers string =
+    string
+        |> Regex.replace closingTagMarkerRegex
+            (\match ->
+                case match.submatches of
+                    [ Just tagName ] ->
+                        "</" ++ tagName ++ ">"
+
+                    _ ->
+                        match.match
+            )
+
+
+closingTagMarkerRegex : Regex.Regex
+closingTagMarkerRegex =
+    Regex.fromString "CLOSINGTAG_([a-zA-Z][a-zA-Z0-9-]*)_ENDCLOSINGTAG"
+        |> Maybe.withDefault Regex.never
 
 
 voidClosingReplaceRegex =
@@ -288,10 +312,20 @@ htmlRenderer =
             let
                 result : Result String (List (Html.Html msg) -> Html.Html msg)
                 result =
-                    (\children ->
-                        Html.node tag htmlAttributes children
-                    )
-                        |> Ok
+                    -- Check if this is a closing tag (prefix "/" from renderer)
+                    if String.startsWith "/" tag then
+                        (\_ ->
+                            -- Use a marker that will be replaced in post-processing
+                            -- The marker format is: CLOSINGTAG_tagname_ENDCLOSINGTAG
+                            Html.text ("CLOSINGTAG_" ++ String.dropLeft 1 tag ++ "_ENDCLOSINGTAG")
+                        )
+                            |> Ok
+
+                    else
+                        (\children ->
+                            Html.node tag htmlAttributes children
+                        )
+                            |> Ok
 
                 htmlAttributes : List (Html.Attribute msg)
                 htmlAttributes =

@@ -28,6 +28,7 @@ parse refs rawText_ =
     tokensToMatches tokens [] refs rawText
         |> organizeMatches
         |> parseTextMatches rawText []
+        |> processExtendedAutolinks rawText
         |> matchesToInlines
 
 
@@ -1281,6 +1282,434 @@ emailRegex : Regex
 emailRegex =
     Regex.fromString "^([a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~\\-]+@[a-zA-Z0-9](?:[a-zA-Z0-9\\-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9\\-]{0,61}[a-zA-Z0-9])?)*)$"
         |> Maybe.withDefault Regex.never
+
+
+
+-- Extended Autolinks (GFM)
+
+
+extendedWwwAutolinkRegex : Regex
+extendedWwwAutolinkRegex =
+    -- Matches www. followed by valid domain characters and optional path
+    Regex.fromString "www\\.[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9](?:\\.[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9])*(?:/[^\\s<]*)?"
+        |> Maybe.withDefault Regex.never
+
+
+extendedUrlAutolinkRegex : Regex
+extendedUrlAutolinkRegex =
+    -- Matches http:// or https:// followed by URL
+    Regex.fromString "https?://[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9](?:\\.[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9])*(?:/[^\\s<]*)?"
+        |> Maybe.withDefault Regex.never
+
+
+extendedEmailAutolinkRegex : Regex
+extendedEmailAutolinkRegex =
+    -- Matches email addresses without angle brackets
+    -- Local part: alphanumeric, ., -, _, +
+    -- Domain: alphanumeric and - (but not at end), separated by dots
+    Regex.fromString "[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*"
+        |> Maybe.withDefault Regex.never
+
+
+trailingEntityRefRegex : Regex
+trailingEntityRefRegex =
+    -- Matches &entity; at the end of a string
+    Regex.fromString "&[a-zA-Z0-9]+;$"
+        |> Maybe.withDefault Regex.never
+
+
+cleanExtendedUrl : String -> String
+cleanExtendedUrl url =
+    url
+        |> stopAtLessThan
+        |> stripTrailingEntityRef
+        |> balanceParentheses
+        |> stripTrailingPunctuation
+
+
+stopAtLessThan : String -> String
+stopAtLessThan url =
+    case String.split "<" url of
+        first :: _ ->
+            first
+
+        [] ->
+            url
+
+
+stripTrailingEntityRef : String -> String
+stripTrailingEntityRef url =
+    if Regex.contains trailingEntityRefRegex url then
+        -- Remove the trailing entity reference
+        let
+            matches : List Regex.Match
+            matches =
+                Regex.find trailingEntityRefRegex url
+        in
+        case matches of
+            match :: _ ->
+                stripTrailingEntityRef (String.dropRight (String.length match.match) url)
+
+            [] ->
+                url
+
+    else
+        url
+
+
+balanceParentheses : String -> String
+balanceParentheses url =
+    let
+        countChar : Char -> String -> Int
+        countChar c str =
+            String.foldl
+                (\char count ->
+                    if char == c then
+                        count + 1
+
+                    else
+                        count
+                )
+                0
+                str
+
+        openCount : Int
+        openCount =
+            countChar '(' url
+
+        closeCount : Int
+        closeCount =
+            countChar ')' url
+    in
+    if closeCount > openCount && String.endsWith ")" url then
+        -- Strip excess trailing parentheses
+        balanceParentheses (String.dropRight 1 url)
+
+    else
+        url
+
+
+stripTrailingPunctuation : String -> String
+stripTrailingPunctuation url =
+    -- Per GFM spec: ? ! . , : * _ ~ ' are stripped from end
+    -- Note: ) is handled separately by balanceParentheses
+    case String.right 1 url of
+        "?" ->
+            stripTrailingPunctuation (String.dropRight 1 url)
+
+        "!" ->
+            stripTrailingPunctuation (String.dropRight 1 url)
+
+        "." ->
+            stripTrailingPunctuation (String.dropRight 1 url)
+
+        "," ->
+            stripTrailingPunctuation (String.dropRight 1 url)
+
+        ":" ->
+            stripTrailingPunctuation (String.dropRight 1 url)
+
+        "*" ->
+            stripTrailingPunctuation (String.dropRight 1 url)
+
+        "_" ->
+            stripTrailingPunctuation (String.dropRight 1 url)
+
+        "~" ->
+            stripTrailingPunctuation (String.dropRight 1 url)
+
+        "'" ->
+            stripTrailingPunctuation (String.dropRight 1 url)
+
+        "\"" ->
+            stripTrailingPunctuation (String.dropRight 1 url)
+
+        _ ->
+            url
+
+
+isValidExtendedEmail : String -> Bool
+isValidExtendedEmail email =
+    -- Domain cannot end with - or _
+    -- Also + is invalid in domain part
+    case String.split "@" email of
+        _ :: domain :: [] ->
+            let
+                domainEndsWithHyphenOrUnderscore : Bool
+                domainEndsWithHyphenOrUnderscore =
+                    String.endsWith "-" domain || String.endsWith "_" domain
+
+                domainContainsPlus : Bool
+                domainContainsPlus =
+                    String.contains "+" domain
+            in
+            not domainEndsWithHyphenOrUnderscore && not domainContainsPlus
+
+        _ ->
+            False
+
+
+findExtendedAutolinks : String -> Int -> List Match
+findExtendedAutolinks text offset =
+    let
+        wwwMatches : List Match
+        wwwMatches =
+            Regex.find extendedWwwAutolinkRegex text
+                |> List.filterMap (regexMatchToExtendedAutolinkMatch text offset "http://")
+
+        urlMatches : List Match
+        urlMatches =
+            Regex.find extendedUrlAutolinkRegex text
+                |> List.filterMap (regexMatchToExtendedAutolinkMatch text offset "")
+
+        emailMatches : List Match
+        emailMatches =
+            Regex.find extendedEmailAutolinkRegex text
+                |> List.filterMap (regexMatchToExtendedEmailMatch text)
+                |> List.map (adjustMatchOffset offset)
+    in
+    wwwMatches ++ urlMatches ++ emailMatches
+
+
+regexMatchToExtendedAutolinkMatch : String -> Int -> String -> Regex.Match -> Maybe Match
+regexMatchToExtendedAutolinkMatch fullText offset hrefPrefix regexMatch =
+    let
+        cleanedUrl : String
+        cleanedUrl =
+            cleanExtendedUrl regexMatch.match
+
+        -- Check if preceded by < or &lt; (escaped angle bracket), possibly with whitespace
+        -- If so, this was likely inside angle brackets that failed to form a valid autolink
+        precedingText : String
+        precedingText =
+            String.left regexMatch.index fullText
+
+        -- Trim trailing whitespace to check for angle bracket
+        precedingTextTrimmed : String
+        precedingTextTrimmed =
+            String.trimRight precedingText
+
+        isPrecededByAngleBracket : Bool
+        isPrecededByAngleBracket =
+            String.endsWith "<" precedingTextTrimmed
+                || String.endsWith "&lt;" precedingTextTrimmed
+    in
+    if String.isEmpty cleanedUrl || isPrecededByAngleBracket then
+        Nothing
+
+    else
+        let
+            start : Int
+            start =
+                offset + regexMatch.index
+
+            end : Int
+            end =
+                start + String.length cleanedUrl
+        in
+        Just
+            (Match
+                { type_ = AutolinkType ( cleanedUrl, hrefPrefix ++ encodeUrl cleanedUrl )
+                , start = start
+                , end = end
+                , textStart = start
+                , textEnd = end
+                , text = cleanedUrl
+                , matches = []
+                }
+            )
+
+
+regexMatchToExtendedEmailMatch : String -> Regex.Match -> Maybe Match
+regexMatchToExtendedEmailMatch fullText regexMatch =
+    let
+        -- First check if the raw match has an invalid domain ending
+        -- Per GFM spec: if domain ends with - or _, the whole thing is NOT an autolink
+        rawEmailHasInvalidDomain : Bool
+        rawEmailHasInvalidDomain =
+            hasInvalidDomainEnding regexMatch.match
+
+        -- Clean email by stripping trailing punctuation
+        cleanedEmail : String
+        cleanedEmail =
+            cleanExtendedEmailUrl regexMatch.match
+
+        -- Check what character follows the match in the original text
+        -- If the match was cut short due to invalid domain chars, we shouldn't match
+        charAfterMatch : String
+        charAfterMatch =
+            String.slice (regexMatch.index + String.length regexMatch.match) (regexMatch.index + String.length regexMatch.match + 1) fullText
+
+        -- If the original regex match was truncated at the domain (not just trailing punctuation stripped),
+        -- we should not match. This handles cases like:
+        -- - hello@mail+xyz.example where the regex matches hello@mail but the + indicates we should NOT match
+        -- - a.b@c.d- where the regex matches a.b@c.d but the trailing - means it's not valid
+        -- - a.b@c.d_ where the regex matches a.b@c.d but the trailing _ means it's not valid
+        matchWasTruncatedAtDomain : Bool
+        matchWasTruncatedAtDomain =
+            charAfterMatch == "+" || charAfterMatch == "-" || charAfterMatch == "_"
+
+        -- Check if preceded by < or &lt; (escaped angle bracket), possibly with whitespace
+        -- If so, this was likely inside angle brackets that failed to form a valid autolink
+        precedingText : String
+        precedingText =
+            String.left regexMatch.index fullText
+
+        -- Trim trailing whitespace to check for angle bracket
+        precedingTextTrimmed : String
+        precedingTextTrimmed =
+            String.trimRight precedingText
+
+        isPrecededByAngleBracket : Bool
+        isPrecededByAngleBracket =
+            String.endsWith "<" precedingTextTrimmed
+                || String.endsWith "&lt;" precedingTextTrimmed
+    in
+    if rawEmailHasInvalidDomain || String.isEmpty cleanedEmail || not (isValidExtendedEmail cleanedEmail) || matchWasTruncatedAtDomain || isPrecededByAngleBracket then
+        Nothing
+
+    else
+        let
+            start : Int
+            start =
+                regexMatch.index
+
+            end : Int
+            end =
+                start + String.length cleanedEmail
+        in
+        Just
+            (Match
+                { type_ = AutolinkType ( cleanedEmail, "mailto:" ++ encodeUrl cleanedEmail )
+                , start = start
+                , end = end
+                , textStart = start
+                , textEnd = end
+                , text = cleanedEmail
+                , matches = []
+                }
+            )
+
+
+hasInvalidDomainEnding : String -> Bool
+hasInvalidDomainEnding email =
+    -- Check if the domain part (after @) ends with - or _
+    case String.split "@" email of
+        _ :: domain :: [] ->
+            String.endsWith "-" domain || String.endsWith "_" domain
+
+        _ ->
+            False
+
+
+cleanExtendedEmailUrl : String -> String
+cleanExtendedEmailUrl email =
+    -- Strip trailing punctuation (but not things like + in local part)
+    case String.right 1 email of
+        "." ->
+            cleanExtendedEmailUrl (String.dropRight 1 email)
+
+        "!" ->
+            cleanExtendedEmailUrl (String.dropRight 1 email)
+
+        "?" ->
+            cleanExtendedEmailUrl (String.dropRight 1 email)
+
+        "," ->
+            cleanExtendedEmailUrl (String.dropRight 1 email)
+
+        ":" ->
+            cleanExtendedEmailUrl (String.dropRight 1 email)
+
+        ";" ->
+            cleanExtendedEmailUrl (String.dropRight 1 email)
+
+        _ ->
+            email
+
+
+adjustMatchOffset : Int -> Match -> Match
+adjustMatchOffset offset (Match match) =
+    Match
+        { match
+            | start = match.start + offset
+            , end = match.end + offset
+            , textStart = match.textStart + offset
+            , textEnd = match.textEnd + offset
+        }
+
+
+processExtendedAutolinks : String -> List Match -> List Match
+processExtendedAutolinks rawText matches =
+    List.concatMap (processMatchForExtendedAutolinks rawText) matches
+
+
+processMatchForExtendedAutolinks : String -> Match -> List Match
+processMatchForExtendedAutolinks rawText (Match match) =
+    case match.type_ of
+        NormalType ->
+            -- Scan NormalType text for extended autolinks
+            let
+                autolinks : List Match
+                autolinks =
+                    findExtendedAutolinks match.text 0
+
+                sortedAutolinks : List Match
+                sortedAutolinks =
+                    List.sortBy (\(Match m) -> m.start) autolinks
+            in
+            if List.isEmpty sortedAutolinks then
+                [ Match match ]
+
+            else
+                splitNormalMatchWithAutolinks match.text sortedAutolinks
+
+        _ ->
+            -- Non-NormalType matches: recursively process children
+            [ Match
+                { match
+                    | matches = processExtendedAutolinks rawText match.matches
+                }
+            ]
+
+
+splitNormalMatchWithAutolinks : String -> List Match -> List Match
+splitNormalMatchWithAutolinks text autolinks =
+    splitNormalMatchWithAutolinksHelp text autolinks 0 []
+
+
+splitNormalMatchWithAutolinksHelp : String -> List Match -> Int -> List Match -> List Match
+splitNormalMatchWithAutolinksHelp text autolinks currentPos acc =
+    case autolinks of
+        [] ->
+            -- Add remaining text as NormalType
+            let
+                remaining : String
+                remaining =
+                    String.dropLeft currentPos text
+            in
+            if String.isEmpty remaining then
+                List.reverse acc
+
+            else
+                List.reverse (normalMatch remaining :: acc)
+
+        (Match autolinkMatch) :: rest ->
+            let
+                -- Text before this autolink
+                beforeText : String
+                beforeText =
+                    String.slice currentPos autolinkMatch.start text
+
+                newAcc : List Match
+                newAcc =
+                    if String.isEmpty beforeText then
+                        Match autolinkMatch :: acc
+
+                    else
+                        Match autolinkMatch :: normalMatch beforeText :: acc
+            in
+            splitNormalMatchWithAutolinksHelp text rest autolinkMatch.end newAcc
 
 
 

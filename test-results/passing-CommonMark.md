@@ -674,42 +674,6 @@ Gives this correct output:
 
 ````````````
 
-### [Example 610](https://spec.commonmark.org/0.30/#example-610)
-
-This markdown:
-
-
-````````````markdown
-http://example.com
-
-````````````
-
-Gives this correct output:
-
-
-````````````html
-<p>http://example.com</p>
-
-````````````
-
-### [Example 611](https://spec.commonmark.org/0.30/#example-611)
-
-This markdown:
-
-
-````````````markdown
-foo@bar.example.com
-
-````````````
-
-Gives this correct output:
-
-
-````````````html
-<p>foo@bar.example.com</p>
-
-````````````
-
 ## Backslash escapes
 
 ### [Example 12](https://spec.commonmark.org/0.30/#example-12)
@@ -10560,6 +10524,60 @@ Gives this correct output:
 ````````````
 
 ## Raw HTML
+
+### [Example 617](https://spec.commonmark.org/0.30/#example-617)
+
+This markdown:
+
+
+````````````markdown
+<33> <__>
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p>&lt;33&gt; &lt;__&gt;</p>
+
+````````````
+
+### [Example 622](https://spec.commonmark.org/0.30/#example-622)
+
+This markdown:
+
+
+````````````markdown
+</a></foo >
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p></a></foo ></p>
+
+````````````
+
+### [Example 623](https://spec.commonmark.org/0.30/#example-623)
+
+This markdown:
+
+
+````````````markdown
+</a href="foo">
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p>&lt;/a href=&quot;foo&quot;&gt;</p>
+
+````````````
 
 ### [Example 624](https://spec.commonmark.org/0.30/#example-624)
 

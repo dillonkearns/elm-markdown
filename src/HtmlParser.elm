@@ -38,6 +38,7 @@ type Node
     | Cdata String
     | ProcessingInstruction String
     | Declaration String String
+    | ClosingTag String
 
 
 type alias Attribute =
@@ -102,8 +103,21 @@ html =
         , processingInstruction
         , comment
         , docType
+        , closingTagStandalone
         , element
         ]
+
+
+{-| Parser for standalone closing tags like </a> or </div>.
+According to CommonMark, a closing tag is </tagname> with optional whitespace.
+-}
+closingTagStandalone : Parser Node
+closingTagStandalone =
+    succeed ClosingTag
+        |. symbol "</"
+        |= tagName
+        |. whiteSpace
+        |. symbol ">"
 
 
 element : Parser Node
@@ -130,54 +144,29 @@ elementContinuation startTagName =
 
 tagName : Parser String
 tagName =
-    Advanced.chompIf tagNameCharacter expectTagNameCharacter
-        |. chompWhile tagNameCharacter
+    Advanced.chompIf isTagNameStartChar expectTagNameCharacter
+        |. chompWhile isTagNameChar
         |> Advanced.mapChompedString (\name _ -> String.toLower name)
 
 
 expectTagNameCharacter : Parser.Problem
 expectTagNameCharacter =
-    Parser.Expecting "at least 1 tag name character"
+    Parser.Expecting "a tag name starting with a letter"
 
 
-tagNameCharacter : Char -> Bool
-tagNameCharacter c =
-    -- inlined equivalent of `not (isWhitespace c) && isUninteresting c`
-    case c of
-        -- whitespace chars
-        ' ' ->
-            False
+{-| According to CommonMark spec, a tag name must start with an ASCII letter.
+-}
+isTagNameStartChar : Char -> Bool
+isTagNameStartChar c =
+    Char.isAlpha c
 
-        '\u{000D}' ->
-            False
 
-        '\n' ->
-            False
-
-        '\t' ->
-            False
-
-        -- html structural characters
-        '/' ->
-            False
-
-        '<' ->
-            False
-
-        '>' ->
-            False
-
-        '"' ->
-            False
-
-        '\'' ->
-            False
-
-        '=' ->
-            False
-
-        _ ->
-            True
+{-| According to CommonMark spec, tag name characters after the first
+must be ASCII letters, digits, or hyphens.
+-}
+isTagNameChar : Char -> Bool
+isTagNameChar c =
+    Char.isAlphaNum c || c == '-'
 
 
 children : String -> Parser (List Node)
@@ -390,7 +379,24 @@ keepOldest new mValue =
 
 attributeName : Parser String
 attributeName =
-    tagName
+    Advanced.chompIf isAttributeNameStartChar (Parser.Expecting "an attribute name")
+        |. chompWhile isAttributeNameChar
+        |> Advanced.mapChompedString (\name _ -> String.toLower name)
+
+
+{-| According to CommonMark spec, attribute names start with ASCII letter, \_, or :.
+-}
+isAttributeNameStartChar : Char -> Bool
+isAttributeNameStartChar c =
+    Char.isAlpha c || c == '_' || c == ':'
+
+
+{-| According to CommonMark spec, attribute name chars after first can be
+ASCII letters, digits, \_, ., :, or -.
+-}
+isAttributeNameChar : Char -> Bool
+isAttributeNameChar c =
+    Char.isAlphaNum c || c == '_' || c == '.' || c == ':' || c == '-'
 
 
 attributeValue : Parser String
