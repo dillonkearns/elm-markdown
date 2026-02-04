@@ -1506,18 +1506,14 @@ thisIsDefinitelyNotAnHtmlTag =
     oneOf
         [ -- Space after < means it's not HTML
           token (Advanced.Token " " (Parser.Expecting " "))
-
         , -- Immediately closing < with > means it's not HTML
           token (Advanced.Token ">" (Parser.Expecting ">"))
-
         , -- Closing tags (</...) at block level are NOT HTML blocks according to CommonMark.
           -- They should be parsed as paragraph content containing inline raw HTML.
           token (Advanced.Token "/" (Parser.Expecting "/"))
-
         , -- Character after < that can't start valid HTML (not letter, not /, !, ?)
           -- means it's definitely not HTML. Examples: <33>, <__>, <,>, etc.
           chompIf isNotValidHtmlStartChar (Parser.Expecting "non-HTML start character")
-
         , -- Autolink pattern: <letter...followed by : @ \ + .>
           chompIf Char.isAlpha (Parser.Expecting "Alpha")
             |. chompWhile (\c -> Char.isAlphaNum c || c == '-')
