@@ -99,32 +99,56 @@ rowParser =
 
 parseCells : Parser (List String)
 parseCells =
-    loop ( Nothing, [] ) parseCellHelper
+    loop ( [], [] ) parseCellHelper
         |> Advanced.map (List.foldl (\cell acc -> String.trim cell :: acc) [])
 
 
-parseCellHelper : ( Maybe String, List String ) -> Parser (Step ( Maybe String, List String ) (List String))
-parseCellHelper ( curr, acc ) =
+{-| State is ( currentCellChunks, completedCells ) where chunks are in reverse order.
+Using List String for chunks avoids O(n²) string concatenation.
+-}
+parseCellHelper : ( List String, List String ) -> Parser (Step ( List String, List String ) (List String))
+parseCellHelper ( currChunks, acc ) =
     let
-        addToCurrent : String -> String
-        addToCurrent c =
-            Maybe.withDefault "" curr ++ c
+        -- Join chunks to build the cell string.
+        -- Chunks are stored in reverse order (newest first via ::), but
+        -- foldl (++) "" reverses them back: ["c","b","a"] -> "a" ++ "b" ++ "c" = "abc"
+        -- This is more efficient than String.concat (List.reverse chunks)
+        -- because it avoids allocating an intermediate reversed list.
+        finishCurrentCell : String
+        finishCurrentCell =
+            case currChunks of
+                [] ->
+                    ""
 
-        continueCell : String -> Step ( Maybe String, List String ) a
-        continueCell c =
-            Loop ( Just (addToCurrent c), acc )
+                _ ->
+                    List.foldl (++) "" currChunks
 
-        finishCell : Step ( Maybe a, List String ) b
+        continueCell : String -> Step ( List String, List String ) a
+        continueCell chunk =
+            Loop ( chunk :: currChunks, acc )
+
+        finishCell : Step ( List String, List String ) b
         finishCell =
-            curr
-                |> Maybe.map (\cell -> Loop ( Nothing, cell :: acc ))
-                |> Maybe.withDefault (Loop ( Nothing, acc ))
+            case currChunks of
+                [] ->
+                    Loop ( [], acc )
+
+                _ ->
+                    Loop ( [], finishCurrentCell :: acc )
 
         return : Step state (List String)
         return =
-            curr
-                |> Maybe.map (\cell -> Done (cell :: acc))
-                |> Maybe.withDefault (Done acc)
+            case currChunks of
+                [] ->
+                    Done acc
+
+                _ ->
+                    Done (finishCurrentCell :: acc)
+
+        -- Check if character is a regular cell content character (not |, \, or newline)
+        isRegularChar : Char -> Bool
+        isRegularChar c =
+            c /= '|' && c /= '\\' && c /= '\n'
     in
     oneOf
         [ Token.parseString "|\n" |> Advanced.map (\_ -> return)
@@ -134,7 +158,12 @@ parseCellHelper ( curr, acc ) =
         , backtrackable (succeed (continueCell "\\")) |. Token.parseString "\\\\"
         , backtrackable (succeed (continueCell "|")) |. Token.parseString "\\|"
         , backtrackable (succeed finishCell) |. Token.parseString "|"
-        , mapChompedString (\char _ -> continueCell char) (chompIf (always True) (Parser.Problem "No character found"))
+
+        -- Optimization: chomp multiple regular characters at once instead of one at a time
+        , mapChompedString (\chunk _ -> continueCell chunk)
+            (chompIf isRegularChar (Parser.Problem "No character found")
+                |. chompWhile isRegularChar
+            )
         ]
 
 
