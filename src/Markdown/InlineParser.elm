@@ -1348,8 +1348,7 @@ stripTrailingEntityRef url =
         in
         case matches of
             match :: _ ->
-                String.dropRight (String.length match.match) url
-                    |> stripTrailingEntityRef
+                stripTrailingEntityRef (String.dropRight (String.length match.match) url)
 
             [] ->
                 url
@@ -1479,14 +1478,6 @@ regexMatchToExtendedAutolinkMatch fullText offset hrefPrefix regexMatch =
         cleanedUrl =
             cleanExtendedUrl regexMatch.match
 
-        start : Int
-        start =
-            offset + regexMatch.index
-
-        end : Int
-        end =
-            start + String.length cleanedUrl
-
         -- Check if preceded by < or &lt; (escaped angle bracket), possibly with whitespace
         -- If so, this was likely inside angle brackets that failed to form a valid autolink
         precedingText : String
@@ -1507,6 +1498,15 @@ regexMatchToExtendedAutolinkMatch fullText offset hrefPrefix regexMatch =
         Nothing
 
     else
+        let
+            start : Int
+            start =
+                offset + regexMatch.index
+
+            end : Int
+            end =
+                start + String.length cleanedUrl
+        in
         Just
             (Match
                 { type_ = AutolinkType ( cleanedUrl, hrefPrefix ++ encodeUrl cleanedUrl )
@@ -1533,14 +1533,6 @@ regexMatchToExtendedEmailMatch fullText regexMatch =
         cleanedEmail : String
         cleanedEmail =
             cleanExtendedEmailUrl regexMatch.match
-
-        start : Int
-        start =
-            regexMatch.index
-
-        end : Int
-        end =
-            start + String.length cleanedEmail
 
         -- Check what character follows the match in the original text
         -- If the match was cut short due to invalid domain chars, we shouldn't match
@@ -1577,6 +1569,15 @@ regexMatchToExtendedEmailMatch fullText regexMatch =
         Nothing
 
     else
+        let
+            start : Int
+            start =
+                regexMatch.index
+
+            end : Int
+            end =
+                start + String.length cleanedEmail
+        in
         Just
             (Match
                 { type_ = AutolinkType ( cleanedEmail, "mailto:" ++ encodeUrl cleanedEmail )
