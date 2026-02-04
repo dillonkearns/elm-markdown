@@ -1,24 +1,42 @@
 const { Elm } = require("../elm.js");
 
-function runner(markdown) {
-  return new Promise(resolve => {
-    console.warn = function(message) {};
-    const app = Elm.OutputMarkdownHtml.init({});
+// Reuse single Elm app instance across all tests
+let app = null;
+let pendingResolve = null;
 
-    app.ports.printOutput.subscribe(output => {
+function init() {
+  // Suppress Elm's console.warn during init
+  const originalWarn = console.warn;
+  console.warn = function() {};
+
+  app = Elm.OutputMarkdownHtml.init({});
+
+  console.warn = originalWarn;
+
+  app.ports.printOutput.subscribe(output => {
+    if (pendingResolve) {
+      const resolve = pendingResolve;
+      pendingResolve = null;
       resolve(output);
-    });
+    }
+  });
 
-    app.ports.error.subscribe(output => {
+  app.ports.error.subscribe(output => {
+    if (pendingResolve) {
+      const resolve = pendingResolve;
+      pendingResolve = null;
       resolve("ERROR\n" + output);
-    });
+    }
+  });
+}
 
-    // console.log("@@@@@@@");
-    // console.log(markdown);
+function runner(markdown) {
+  if (!app) init();
+
+  return new Promise(resolve => {
+    pendingResolve = resolve;
     app.ports.requestHtml.send(markdown);
   });
 }
 
-module.exports = function(markdown) {
-  return runner(markdown);
-};
+module.exports = runner;
