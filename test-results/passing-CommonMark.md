@@ -674,42 +674,6 @@ Gives this correct output:
 
 ````````````
 
-### [Example 610](https://spec.commonmark.org/0.30/#example-610)
-
-This markdown:
-
-
-````````````markdown
-http://example.com
-
-````````````
-
-Gives this correct output:
-
-
-````````````html
-<p>http://example.com</p>
-
-````````````
-
-### [Example 611](https://spec.commonmark.org/0.30/#example-611)
-
-This markdown:
-
-
-````````````markdown
-foo@bar.example.com
-
-````````````
-
-Gives this correct output:
-
-
-````````````html
-<p>foo@bar.example.com</p>
-
-````````````
-
 ## Backslash escapes
 
 ### [Example 12](https://spec.commonmark.org/0.30/#example-12)
