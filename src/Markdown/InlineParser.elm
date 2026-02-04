@@ -249,17 +249,109 @@ tokenToMatch token type_ =
 -- Scan all tokens from the string
 
 
+{-| Check if string contains any special markdown characters.
+If false, we can skip all tokenization entirely.
+-}
+hasAnyTokenChar : String -> Bool
+hasAnyTokenChar str =
+    String.any
+        (\c ->
+            c == '`' || c == '*' || c == '_' || c == '~' || c == '[' || c == ']' || c == '<' || c == '>' || c == '\n'
+        )
+        str
+
+
 tokenize : String -> List Token
 tokenize rawText =
-    findCodeTokens rawText
-        |> mergeByIndex (findAsteriskEmphasisTokens rawText)
-        |> mergeByIndex (findUnderlineEmphasisTokens rawText)
-        |> mergeByIndex (findStrikethroughTokens rawText)
-        |> mergeByIndex (findLinkImageOpenTokens rawText)
-        |> mergeByIndex (findLinkImageCloseTokens rawText)
-        |> mergeByIndex (findHardBreakTokens rawText)
+    -- Fast path: if no special characters at all, skip all tokenization
+    if not (hasAnyTokenChar rawText) then
+        []
+
+    else
+        -- Fall back to individual checks for selective tokenization
+        let
+            hasBacktick =
+                String.contains "`" rawText
+
+            hasAsterisk =
+                String.contains "*" rawText
+
+            hasUnderscore =
+                String.contains "_" rawText
+
+            hasTilde =
+                String.contains "~" rawText
+
+            hasOpenBracket =
+                String.contains "[" rawText
+
+            hasCloseBracket =
+                String.contains "]" rawText
+
+            hasAngleLeft =
+                String.contains "<" rawText
+
+            hasAngleRight =
+                String.contains ">" rawText
+
+            hasNewline =
+                String.contains "\n" rawText
+        in
+    (if hasBacktick then
+        findCodeTokens rawText
+
+     else
+        []
+    )
         |> mergeByIndex
-            (cleanAngleBracketTokens (rawText |> findAngleBracketLTokens |> List.sortBy .index) (rawText |> findAngleBracketRTokens |> List.sortBy .index) 0)
+            (if hasAsterisk then
+                findAsteriskEmphasisTokens rawText
+
+             else
+                []
+            )
+        |> mergeByIndex
+            (if hasUnderscore then
+                findUnderlineEmphasisTokens rawText
+
+             else
+                []
+            )
+        |> mergeByIndex
+            (if hasTilde then
+                findStrikethroughTokens rawText
+
+             else
+                []
+            )
+        |> mergeByIndex
+            (if hasOpenBracket then
+                findLinkImageOpenTokens rawText
+
+             else
+                []
+            )
+        |> mergeByIndex
+            (if hasCloseBracket then
+                findLinkImageCloseTokens rawText
+
+             else
+                []
+            )
+        |> mergeByIndex
+            (if hasNewline then
+                findHardBreakTokens rawText
+
+             else
+                []
+            )
+        |> mergeByIndex
+            (if hasAngleLeft && hasAngleRight then
+                cleanAngleBracketTokens (rawText |> findAngleBracketLTokens |> List.sortBy .index) (rawText |> findAngleBracketRTokens |> List.sortBy .index) 0
+
+             else
+                []
+            )
 
 
 cleanAngleBracketTokens : List { a | index : Int } -> List { a | index : Int } -> Int -> List { a | index : Int }
