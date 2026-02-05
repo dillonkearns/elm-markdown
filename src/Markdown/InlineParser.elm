@@ -297,61 +297,61 @@ tokenize rawText =
             hasNewline =
                 String.contains "\n" rawText
         in
-    (if hasBacktick then
-        findCodeTokens rawText
+        (if hasBacktick then
+            findCodeTokens rawText
 
-     else
-        []
-    )
-        |> mergeByIndex
-            (if hasAsterisk then
-                findAsteriskEmphasisTokens rawText
+         else
+            []
+        )
+            |> mergeByIndex
+                (if hasAsterisk then
+                    findAsteriskEmphasisTokens rawText
 
-             else
-                []
-            )
-        |> mergeByIndex
-            (if hasUnderscore then
-                findUnderlineEmphasisTokens rawText
+                 else
+                    []
+                )
+            |> mergeByIndex
+                (if hasUnderscore then
+                    findUnderlineEmphasisTokens rawText
 
-             else
-                []
-            )
-        |> mergeByIndex
-            (if hasTilde then
-                findStrikethroughTokens rawText
+                 else
+                    []
+                )
+            |> mergeByIndex
+                (if hasTilde then
+                    findStrikethroughTokens rawText
 
-             else
-                []
-            )
-        |> mergeByIndex
-            (if hasOpenBracket then
-                findLinkImageOpenTokens rawText
+                 else
+                    []
+                )
+            |> mergeByIndex
+                (if hasOpenBracket then
+                    findLinkImageOpenTokens rawText
 
-             else
-                []
-            )
-        |> mergeByIndex
-            (if hasCloseBracket then
-                findLinkImageCloseTokens rawText
+                 else
+                    []
+                )
+            |> mergeByIndex
+                (if hasCloseBracket then
+                    findLinkImageCloseTokens rawText
 
-             else
-                []
-            )
-        |> mergeByIndex
-            (if hasNewline then
-                findHardBreakTokens rawText
+                 else
+                    []
+                )
+            |> mergeByIndex
+                (if hasNewline then
+                    findHardBreakTokens rawText
 
-             else
-                []
-            )
-        |> mergeByIndex
-            (if hasAngleLeft && hasAngleRight then
-                cleanAngleBracketTokens (rawText |> findAngleBracketLTokens |> List.sortBy .index) (rawText |> findAngleBracketRTokens |> List.sortBy .index) 0
+                 else
+                    []
+                )
+            |> mergeByIndex
+                (if hasAngleLeft && hasAngleRight then
+                    cleanAngleBracketTokens (rawText |> findAngleBracketLTokens |> List.sortBy .index) (rawText |> findAngleBracketRTokens |> List.sortBy .index) 0
 
-             else
-                []
-            )
+                 else
+                    []
+                )
 
 
 cleanAngleBracketTokens : List { a | index : Int } -> List { a | index : Int } -> Int -> List { a | index : Int }
