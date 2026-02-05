@@ -270,30 +270,39 @@ tokenize rawText =
     else
         -- Fall back to individual checks for selective tokenization
         let
+            hasBacktick : Bool
             hasBacktick =
                 String.contains "`" rawText
 
+            hasAsterisk : Bool
             hasAsterisk =
                 String.contains "*" rawText
 
+            hasUnderscore : Bool
             hasUnderscore =
                 String.contains "_" rawText
 
+            hasTilde : Bool
             hasTilde =
                 String.contains "~" rawText
 
+            hasOpenBracket : Bool
             hasOpenBracket =
                 String.contains "[" rawText
 
+            hasCloseBracket : Bool
             hasCloseBracket =
                 String.contains "]" rawText
 
+            hasAngleLeft : Bool
             hasAngleLeft =
                 String.contains "<" rawText
 
+            hasAngleRight : Bool
             hasAngleRight =
                 String.contains ">" rawText
 
+            hasNewline : Bool
             hasNewline =
                 String.contains "\n" rawText
         in
