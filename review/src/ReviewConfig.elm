@@ -15,6 +15,7 @@ import Docs.NoMissing exposing (exposedModules, onlyExposed)
 import Docs.ReviewAtDocs
 import Docs.ReviewLinksAndSections
 import Docs.UpToDateReadmeLinks
+import NoBrokenParserFunctions
 import NoDebug.Log
 import NoDebug.TodoOrToString
 import NoEmptyDocComments
@@ -59,6 +60,7 @@ config =
      , NoMissingTypeAnnotationInLetIn.rule
      , NoMissingTypeExpose.rule
      , NoUnmatchedUnit.rule
+     , NoBrokenParserFunctions.rule
      ]
         ++ (noUnusedRules
                 |> List.map
