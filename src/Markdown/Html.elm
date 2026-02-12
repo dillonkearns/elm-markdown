@@ -1,7 +1,8 @@
 module Markdown.Html exposing
     ( Renderer
     , tag, withAttribute, withOptionalAttribute
-    , map, oneOf
+    , map, oneOf, oneOfWithFallback
+    , TagFilter, safeTags, allowTags, denyTags
     )
 
 {-|
@@ -12,13 +13,20 @@ module Markdown.Html exposing
 ## Creating an HTML renderer
 
 @docs tag, withAttribute, withOptionalAttribute
-@docs map, oneOf
+@docs map, oneOf, oneOfWithFallback
+
+
+## Tag Filtering
+
+@docs TagFilter, safeTags, allowTags, denyTags
+
 
 -}
 
 import List.Helpers
 import Markdown.Block exposing (Block)
 import Markdown.HtmlRenderer
+import Set exposing (Set)
 
 
 {-| A `Markdown.Html.Renderer` is how you register the list of
@@ -229,6 +237,136 @@ withAttribute attributeName (Markdown.HtmlRenderer.HtmlRenderer renderer) =
                )
     )
         |> Markdown.HtmlRenderer.HtmlRenderer
+
+
+{-| An opaque type that controls which HTML tags are allowed through the fallback
+in [`oneOfWithFallback`](#oneOfWithFallback). See [`safeTags`](#safeTags),
+[`allowTags`](#allowTags), and [`denyTags`](#denyTags).
+-}
+type TagFilter
+    = TagFilter (String -> Bool)
+
+
+{-| A tag filter that allows most tags but excludes the tags disallowed by the
+[GFM Disallowed Raw HTML extension (section 6.11)](https://github.github.com/gfm/#disallowed-raw-html-extension-):
+`title`, `textarea`, `style`, `xmp`, `iframe`, `noembed`, `noframes`, `script`, `plaintext`.
+
+These tags are excluded because they change how HTML is interpreted in ways that
+are usually undesirable in the context of rendered Markdown content.
+
+-}
+safeTags : TagFilter
+safeTags =
+    let
+        unsafeTags : Set String
+        unsafeTags =
+            Set.fromList
+                [ "title"
+                , "textarea"
+                , "style"
+                , "xmp"
+                , "iframe"
+                , "noembed"
+                , "noframes"
+                , "script"
+                , "plaintext"
+                ]
+    in
+    TagFilter (\tagName -> not (Set.member tagName unsafeTags))
+
+
+{-| A tag filter that only allows the specified tags through the fallback.
+
+    Markdown.Html.allowTags [ "div", "span", "details", "summary" ]
+
+-}
+allowTags : List String -> TagFilter
+allowTags allowed =
+    let
+        allowedSet : Set String
+        allowedSet =
+            Set.fromList allowed
+    in
+    TagFilter (\tagName -> Set.member tagName allowedSet)
+
+
+{-| A tag filter that allows all tags except the specified ones.
+
+    Markdown.Html.denyTags [ "script", "iframe" ]
+
+-}
+denyTags : List String -> TagFilter
+denyTags denied =
+    let
+        deniedSet : Set String
+        deniedSet =
+            Set.fromList denied
+    in
+    TagFilter (\tagName -> not (Set.member tagName deniedSet))
+
+
+{-| Like [`oneOf`](#oneOf), but with a fallback for tags not matched by any specific renderer.
+
+The fallback function receives the tag name, attributes, and rendered children.
+If it returns `Nothing`, or if the `TagFilter` rejects the tag, the tag is escaped
+as text using the provided text function.
+
+    htmlRenderer =
+        Markdown.Html.oneOfWithFallback
+            [ Markdown.Html.tag "custom-widget" (\children -> myWidget children)
+            ]
+            Markdown.Html.safeTags
+            Html.text
+            (\tag attributes children ->
+                Just (Html.node tag (attributesToHtmlAttrs attributes) children)
+            )
+
+-}
+oneOfWithFallback :
+    List (Renderer (List view -> view))
+    -> TagFilter
+    -> (String -> view)
+    -> (String -> List { name : String, value : String } -> List view -> Maybe view)
+    -> Renderer (List view -> view)
+oneOfWithFallback decoders (TagFilter tagAllowed) textFn fallbackFn =
+    let
+        unwrappedDecoders : List (String -> List Markdown.HtmlRenderer.Attribute -> List Block -> Result String (List view -> view))
+        unwrappedDecoders =
+            decoders
+                |> List.map
+                    (\(Markdown.HtmlRenderer.HtmlRenderer rawDecoder) -> rawDecoder)
+    in
+    Markdown.HtmlRenderer.HtmlRenderer
+        (\tagName attributes children ->
+            let
+                specificResult : Result (List String) (List view -> view)
+                specificResult =
+                    List.foldl
+                        (\decoder soFar ->
+                            resultOr (decoder tagName attributes children) soFar
+                        )
+                        (Err [])
+                        unwrappedDecoders
+            in
+            case specificResult of
+                Ok view ->
+                    Ok view
+
+                Err _ ->
+                    if tagAllowed tagName then
+                        Ok
+                            (\renderedChildren ->
+                                case fallbackFn tagName attributes renderedChildren of
+                                    Just view ->
+                                        view
+
+                                    Nothing ->
+                                        textFn (Markdown.HtmlRenderer.htmlElementToString tagName attributes children)
+                            )
+
+                    else
+                        Ok (\_ -> textFn (Markdown.HtmlRenderer.htmlElementToString tagName attributes children))
+        )
 
 
 {-| Same as `withAttribute`, but the Renderer won't fail if the attribute is missing.

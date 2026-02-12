@@ -4,7 +4,6 @@ import Html.String as Html
 import Html.String.Attributes as Attr
 import Markdown.Block as Block exposing (Block)
 import Markdown.Html
-import Markdown.HtmlRenderer
 import Markdown.Parser as Markdown
 import Markdown.Renderer
 import Regex
@@ -307,60 +306,27 @@ voidTags =
 
 htmlRenderer : Markdown.Html.Renderer (List (Html.Html msg) -> Html.Html msg)
 htmlRenderer =
-    passthrough
-        (\tag attributes blocks ->
-            let
-                result : Result String (List (Html.Html msg) -> Html.Html msg)
-                result =
-                    -- Check if this is a closing tag (prefix "/" from renderer)
-                    if String.startsWith "/" tag then
-                        (\_ ->
-                            -- Use a marker that will be replaced in post-processing
-                            -- The marker format is: CLOSINGTAG_tagname_ENDCLOSINGTAG
-                            Html.text ("CLOSINGTAG_" ++ String.dropLeft 1 tag ++ "_ENDCLOSINGTAG")
-                        )
-                            |> Ok
+    Markdown.Html.oneOfWithFallback
+        []
+        (Markdown.Html.denyTags [])
+        Html.text
+        (\tag attributes renderedChildren ->
+            if String.startsWith "/" tag then
+                Just
+                    (Html.text ("CLOSINGTAG_" ++ String.dropLeft 1 tag ++ "_ENDCLOSINGTAG"))
 
-                    else
-                        (\children ->
-                            Html.node tag htmlAttributes children
-                        )
-                            |> Ok
-
-                htmlAttributes : List (Html.Attribute msg)
-                htmlAttributes =
-                    attributes
-                        |> List.map
-                            (\{ name, value } ->
-                                Attr.attribute name value
-                            )
-            in
-            result
+            else
+                let
+                    htmlAttributes : List (Html.Attribute msg)
+                    htmlAttributes =
+                        attributes
+                            |> List.map
+                                (\{ name, value } ->
+                                    Attr.attribute name value
+                                )
+                in
+                Just (Html.node tag htmlAttributes renderedChildren)
         )
-
-
-passThroughNode nodeName =
-    Markdown.Html.tag nodeName
-        (\id class href children ->
-            Html.node nodeName
-                ([ id |> Maybe.map Attr.id
-                 , class |> Maybe.map Attr.class
-                 , href |> Maybe.map Attr.href
-                 ]
-                    |> List.filterMap identity
-                )
-                children
-        )
-        |> Markdown.Html.withOptionalAttribute "id"
-        |> Markdown.Html.withOptionalAttribute "class"
-        |> Markdown.Html.withOptionalAttribute "href"
-
-
-{-| TODO come up with an API to provide a solution to do this sort of thing publicly
--}
-passthrough : (String -> List Markdown.HtmlRenderer.Attribute -> List Block -> Result String view) -> Markdown.HtmlRenderer.HtmlRenderer view
-passthrough renderFn =
-    Markdown.HtmlRenderer.HtmlRenderer renderFn
 
 
 type Msg

@@ -426,7 +426,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<script type="text/javascript">&lt;p&gt;// JavaScript example&lt;/p&gt;&lt;p&gt;document.getElementById(&quot;demo&quot;).innerHTML = &quot;Hello JavaScript!&quot;;&lt;/p&gt;</script><p>okay</p>
+&amp;lt;script type=&amp;quot;text/javascript&amp;quot;&amp;gt;// JavaScript exampledocument.getElementById(&quot;demo&quot;).innerHTML = &quot;Hello JavaScript!&quot;;&amp;lt;/script&amp;gt;<p>okay</p>
 ````````````
 ## [Example 171](https://spec.commonmark.org/0.30/#example-171)
 
@@ -452,7 +452,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<textarea>&lt;p&gt;&lt;em&gt;foo&lt;/em&gt;&lt;/p&gt;&lt;p&gt;&lt;em&gt;bar&lt;/em&gt;&lt;/p&gt;</textarea>
+&amp;lt;textarea&amp;gt;foobar&amp;lt;/textarea&amp;gt;
 ````````````
 ## [Example 172](https://spec.commonmark.org/0.30/#example-172)
 
@@ -478,7 +478,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<style type="text/css">&lt;p&gt;h1 {color:red;}&lt;/p&gt;&lt;p&gt;p {color:blue;}&lt;/p&gt;</style><p>okay</p>
+&amp;lt;style type=&amp;quot;text/css&amp;quot;&amp;gt;h1 {color:red;}p {color:blue;}&amp;lt;/style&amp;gt;<p>okay</p>
 ````````````
 ## [Example 173](https://spec.commonmark.org/0.30/#example-173)
 
@@ -566,7 +566,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<style>&lt;p&gt;p{color:red;}&lt;/p&gt;</style><p><em>foo</em></p>
+&amp;lt;style&amp;gt;p{color:red;}&amp;lt;/style&amp;gt;<p><em>foo</em></p>
 ````````````
 ## [Example 177](https://spec.commonmark.org/0.30/#example-177)
 
@@ -609,7 +609,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<script>&lt;p&gt;foo&lt;/p&gt;</script><ol><li><em>bar</em></li></ol>
+&amp;lt;script&amp;gt;foo&amp;lt;/script&amp;gt;<ol><li><em>bar</em></li></ol>
 ````````````
 ## [Example 180](https://spec.commonmark.org/0.30/#example-180)
 

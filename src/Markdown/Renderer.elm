@@ -1,12 +1,12 @@
 module Markdown.Renderer exposing
-    ( Renderer, render
+    ( Renderer, render, renderWithFallback
     , defaultHtmlRenderer, defaultStringRenderer
     , renderWithMeta
     )
 
 {-|
 
-@docs Renderer, render
+@docs Renderer, render, renderWithFallback
 
 @docs defaultHtmlRenderer, defaultStringRenderer
 
@@ -422,6 +422,53 @@ render renderer ast =
     ast
         |> renderHelper renderer
         |> combineResults
+
+
+{-| Like [`render`](#render), but never fails. If the HTML renderer produces an
+error for a tag (e.g. an unregistered tag in `oneOf`), that tag is escaped as
+text using the renderer's `text` function instead of producing an error.
+
+This is useful when you want to render user-provided markdown without worrying
+about unknown HTML tags causing failures.
+
+-}
+renderWithFallback :
+    Renderer view
+    -> List Block
+    -> List view
+renderWithFallback renderer ast =
+    let
+        wrappedRenderer : Renderer view
+        wrappedRenderer =
+            { renderer
+                | html = wrapHtmlWithTextFallback renderer.html renderer.text
+            }
+    in
+    case render wrappedRenderer ast of
+        Ok views ->
+            views
+
+        Err _ ->
+            []
+
+
+wrapHtmlWithTextFallback :
+    Markdown.Html.Renderer (List view -> view)
+    -> (String -> view)
+    -> Markdown.Html.Renderer (List view -> view)
+wrapHtmlWithTextFallback (Markdown.HtmlRenderer.HtmlRenderer originalRenderer) textFn =
+    Markdown.HtmlRenderer.HtmlRenderer
+        (\tagName attributes children ->
+            case originalRenderer tagName attributes children of
+                Ok view ->
+                    Ok view
+
+                Err _ ->
+                    Ok
+                        (\_ ->
+                            textFn (Markdown.HtmlRenderer.htmlElementToString tagName attributes children)
+                        )
+        )
 
 
 {-| Render Tuples of Blocks with arbitrary metadata. See `examples/src/Slugs.elm` for a full example that shows how to
