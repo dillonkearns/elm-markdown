@@ -161,7 +161,7 @@ view markdown =
             |> Markdown.Parser.parse
     of
         Ok okAst ->
-            case Markdown.Renderer.render renderer okAst of
+            case Markdown.Renderer.tryRender renderer okAst of
                 Ok rendered ->
                     Ok ( buildToc okAst, rendered )
 
@@ -172,7 +172,7 @@ view markdown =
             Err (error |> List.map Markdown.Parser.deadEndToString |> String.join "\n")
 
 
-renderer : Markdown.Renderer.Renderer (Element msg)
+renderer : Markdown.Renderer.Renderer String (Element msg)
 renderer =
     ElmUi.renderer
 

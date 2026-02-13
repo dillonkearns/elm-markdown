@@ -9,12 +9,12 @@ import Parser.Advanced
 import Test exposing (..)
 
 
-render : Markdown.Renderer.Renderer view -> String -> Result String (List view)
+render : Markdown.Renderer.Renderer String view -> String -> Result String (List view)
 render renderer markdown =
     markdown
         |> Markdown.parse
         |> Result.mapError deadEndsToString
-        |> Result.andThen (\ast -> Markdown.Renderer.render renderer ast)
+        |> Result.andThen (\ast -> Markdown.Renderer.tryRender renderer ast)
 
 
 deadEndsToString : List (Parser.Advanced.DeadEnd String Parser.Problem) -> String
@@ -29,15 +29,7 @@ type Rendered tag
     | Html tag
 
 
-escapeHtml : String -> String
-escapeHtml =
-    String.replace "&" "&amp;"
-        >> String.replace "<" "&lt;"
-        >> String.replace ">" "&gt;"
-        >> String.replace "\"" "&quot;"
-
-
-stringTestRenderer : Markdown.Html.Renderer (List String -> String) -> Markdown.Renderer.Renderer String
+stringTestRenderer : Markdown.Html.Renderer err (List String -> String) -> Markdown.Renderer.Renderer err String
 stringTestRenderer htmlRenderer =
     { heading = \{ children } -> String.join "" children
     , paragraph = String.join ""
@@ -64,16 +56,16 @@ stringTestRenderer htmlRenderer =
     }
 
 
-renderWithFallback : Markdown.Renderer.Renderer String -> String -> List String
-renderWithFallback renderer markdown =
+renderInfallible : Markdown.Renderer.Renderer Never String -> String -> List String
+renderInfallible renderer markdown =
     markdown
         |> Markdown.parse
         |> Result.mapError deadEndsToString
-        |> Result.map (\ast -> Markdown.Renderer.renderWithFallback renderer ast)
+        |> Result.map (\ast -> Markdown.Renderer.render renderer ast)
         |> Result.withDefault []
 
 
-testRenderer : List (Markdown.Html.Renderer (List (Rendered a) -> Rendered a)) -> Markdown.Renderer.Renderer (Rendered a)
+testRenderer : List (Markdown.Html.Renderer String (List (Rendered a) -> Rendered a)) -> Markdown.Renderer.Renderer String (Rendered a)
 testRenderer htmlRenderer =
     { heading =
         \_ ->
@@ -332,190 +324,79 @@ Expecting attribute "first".
                                 }
                             ]
                         )
-        , describe "oneOfWithFallback"
-            [ test "allows safe tag through fallback" <|
+        , describe "withFallback"
+            [ test "allows any tag through fallback" <|
                 \() ->
                     "<div />"
-                        |> render
+                        |> renderInfallible
                             (stringTestRenderer
-                                (Markdown.Html.oneOfWithFallback
-                                    []
-                                    Markdown.Html.safeTags
-                                    identity
-                                    (\tag attributes children ->
-                                        Just ("<" ++ tag ++ ">")
-                                    )
+                                (Markdown.Html.oneOf []
+                                    |> Markdown.Html.withFallback
+                                        (\tag _ _ ->
+                                            "<" ++ tag ++ ">"
+                                        )
                                 )
                             )
-                        |> Expect.equal (Ok [ "<div>" ])
-            , test "rejects unsafe tag via safeTags" <|
-                \() ->
-                    "<iframe />"
-                        |> render
-                            (stringTestRenderer
-                                (Markdown.Html.oneOfWithFallback
-                                    []
-                                    Markdown.Html.safeTags
-                                    identity
-                                    (\tag attributes children ->
-                                        Just ("<" ++ tag ++ ">")
-                                    )
-                                )
-                            )
-                        |> Expect.equal (Ok [ "&lt;iframe&gt;" ])
+                        |> Expect.equal [ "<div>" ]
             , test "specific renderer takes priority over fallback" <|
                 \() ->
                     "<custom-tag />"
-                        |> render
+                        |> renderInfallible
                             (stringTestRenderer
-                                (Markdown.Html.oneOfWithFallback
+                                (Markdown.Html.oneOf
                                     [ Markdown.Html.tag "custom-tag" (\_ -> "specific-renderer")
                                     ]
-                                    Markdown.Html.safeTags
-                                    identity
-                                    (\tag attributes children ->
-                                        Just ("fallback-" ++ tag)
-                                    )
+                                    |> Markdown.Html.withFallback
+                                        (\tag _ _ ->
+                                            "fallback-" ++ tag
+                                        )
                                 )
                             )
-                        |> Expect.equal (Ok [ "specific-renderer" ])
-            , test "allowTags only allows specified tags" <|
-                \() ->
-                    "<div />"
-                        |> render
-                            (stringTestRenderer
-                                (Markdown.Html.oneOfWithFallback
-                                    []
-                                    (Markdown.Html.allowTags [ "span" ])
-                                    identity
-                                    (\tag attributes children ->
-                                        Just ("<" ++ tag ++ ">")
-                                    )
-                                )
-                            )
-                        |> Expect.equal (Ok [ "&lt;div&gt;" ])
-            , test "allowTags allows specified tag" <|
-                \() ->
-                    "<span />"
-                        |> render
-                            (stringTestRenderer
-                                (Markdown.Html.oneOfWithFallback
-                                    []
-                                    (Markdown.Html.allowTags [ "span" ])
-                                    identity
-                                    (\tag attributes children ->
-                                        Just ("<" ++ tag ++ ">")
-                                    )
-                                )
-                            )
-                        |> Expect.equal (Ok [ "<span>" ])
-            , test "denyTags blocks specified tags" <|
-                \() ->
-                    "<div />"
-                        |> render
-                            (stringTestRenderer
-                                (Markdown.Html.oneOfWithFallback
-                                    []
-                                    (Markdown.Html.denyTags [ "div" ])
-                                    identity
-                                    (\tag attributes children ->
-                                        Just ("<" ++ tag ++ ">")
-                                    )
-                                )
-                            )
-                        |> Expect.equal (Ok [ "&lt;div&gt;" ])
-            , test "denyTags allows non-blocked tags" <|
-                \() ->
-                    "<span />"
-                        |> render
-                            (stringTestRenderer
-                                (Markdown.Html.oneOfWithFallback
-                                    []
-                                    (Markdown.Html.denyTags [ "div" ])
-                                    identity
-                                    (\tag attributes children ->
-                                        Just ("<" ++ tag ++ ">")
-                                    )
-                                )
-                            )
-                        |> Expect.equal (Ok [ "<span>" ])
+                        |> Expect.equal [ "specific-renderer" ]
             , test "fallback receives tag name and attributes" <|
                 \() ->
                     """<div class="wrapper" />"""
-                        |> render
+                        |> renderInfallible
                             (stringTestRenderer
-                                (Markdown.Html.oneOfWithFallback
-                                    []
-                                    Markdown.Html.safeTags
-                                    identity
-                                    (\tag attributes children ->
-                                        let
-                                            attrStr =
-                                                attributes
-                                                    |> List.map (\a -> a.name ++ "=" ++ a.value)
-                                                    |> String.join ","
-                                        in
-                                        Just (tag ++ "[" ++ attrStr ++ "]")
-                                    )
+                                (Markdown.Html.oneOf []
+                                    |> Markdown.Html.withFallback
+                                        (\tag attributes _ ->
+                                            let
+                                                attrStr : String
+                                                attrStr =
+                                                    attributes
+                                                        |> List.map (\a -> a.name ++ "=" ++ a.value)
+                                                        |> String.join ","
+                                            in
+                                            tag ++ "[" ++ attrStr ++ "]"
+                                        )
                                 )
                             )
-                        |> Expect.equal (Ok [ "div[class=wrapper]" ])
-            , test "fallback returning Nothing escapes as text" <|
-                \() ->
-                    "<div />"
-                        |> render
-                            (stringTestRenderer
-                                (Markdown.Html.oneOfWithFallback
-                                    []
-                                    Markdown.Html.safeTags
-                                    identity
-                                    (\tag attributes children ->
-                                        Nothing
-                                    )
-                                )
-                            )
-                        |> Expect.equal (Ok [ "&lt;div&gt;" ])
+                        |> Expect.equal [ "div[class=wrapper]" ]
             , test "fallback with children content" <|
                 \() ->
                     "<div>\n\nhello\n\n</div>"
-                        |> render
+                        |> renderInfallible
                             (stringTestRenderer
-                                (Markdown.Html.oneOfWithFallback
-                                    []
-                                    Markdown.Html.safeTags
-                                    identity
-                                    (\tag attributes children ->
-                                        Just ("<" ++ tag ++ ">" ++ String.join "" children ++ "</" ++ tag ++ ">")
-                                    )
+                                (Markdown.Html.oneOf []
+                                    |> Markdown.Html.withFallback
+                                        (\tag _ children ->
+                                            "<" ++ tag ++ ">" ++ String.join "" children ++ "</" ++ tag ++ ">"
+                                        )
                                 )
                             )
-                        |> Expect.equal (Ok [ "<div>hello</" ++ "div>" ])
-            ]
-        , describe "renderWithFallback"
-            [ test "escapes rejected HTML as text" <|
-                \() ->
-                    "<unregistered-tag />"
-                        |> renderWithFallback
-                            (stringTestRenderer
-                                (Markdown.Html.oneOf [])
-                            )
-                        |> Expect.equal [ "&lt;unregistered-tag&gt;" ]
-            , test "works with oneOf (existing API)" <|
-                \() ->
-                    "<custom-tag />"
-                        |> renderWithFallback
-                            (stringTestRenderer
-                                (Markdown.Html.oneOf
-                                    [ Markdown.Html.tag "custom-tag" (\_ -> "found-it") ]
-                                )
-                            )
-                        |> Expect.equal [ "found-it" ]
+                        |> Expect.equal [ "<div>hello</" ++ "div>" ]
             , test "returns List view directly (no Result)" <|
                 \() ->
                     "hello world"
-                        |> renderWithFallback
+                        |> renderInfallible
                             (stringTestRenderer
-                                (Markdown.Html.oneOf [])
+                                (Markdown.Html.oneOf []
+                                    |> Markdown.Html.withFallback
+                                        (\tag _ _ ->
+                                            "<" ++ tag ++ ">"
+                                        )
+                                )
                             )
                         |> Expect.equal [ "hello world" ]
             ]

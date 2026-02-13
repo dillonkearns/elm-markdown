@@ -11,7 +11,7 @@ import Parser.Advanced as Advanced
 import Test exposing (fuzz)
 
 
-divDefaultStringRenderer : Renderer String
+divDefaultStringRenderer : Renderer String String
 divDefaultStringRenderer =
     { defaultStringRenderer | html = Markdown.Html.oneOf [ Markdown.Html.tag "div" (String.join "") ] }
 
@@ -31,7 +31,7 @@ all =
                 renderedStr =
                     randomMd
                         |> Result.mapError (\e -> "markdown parse error " ++ Debug.toString e)
-                        |> Result.andThen (\mkd -> Markdown.Renderer.render divDefaultStringRenderer mkd)
+                        |> Result.andThen (\mkd -> Markdown.Renderer.tryRender divDefaultStringRenderer mkd)
 
                 -- parse again.
                 parsed : Result String (List Block)

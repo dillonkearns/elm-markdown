@@ -65,7 +65,7 @@ In the simplest case, you can pass this directly to a renderer:
         case
             astResult
                 |> Result.mapError deadEndsToString
-                |> Result.andThen (\ast -> Markdown.Renderer.render Markdown.Renderer.defaultHtmlRenderer ast)
+                |> Result.andThen (\ast -> Markdown.Renderer.tryRender Markdown.Renderer.defaultHtmlRenderer ast)
         of
             Ok rendered ->
                 div [] rendered

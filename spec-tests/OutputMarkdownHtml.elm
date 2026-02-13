@@ -42,7 +42,7 @@ render renderer markdown =
     markdown
         |> Markdown.parse
         |> Result.mapError deadEndsToString
-        |> Result.andThen (\ast -> Markdown.Renderer.render renderer ast)
+        |> Result.map (\ast -> Markdown.Renderer.render renderer ast)
 
 
 deadEndsToString deadEnds =
@@ -250,7 +250,7 @@ removeVoidClosingTags string =
 
 
 {-| Convert closing tag markers back to actual closing tags.
-The markers are in format: CLOSINGTAG_tagname_ENDCLOSINGTAG
+The markers are in format: CLOSINGTAG\_tagname\_ENDCLOSINGTAG
 -}
 replaceClosingTagMarkers : String -> String
 replaceClosingTagMarkers string =
@@ -304,29 +304,26 @@ voidTags =
     ]
 
 
-htmlRenderer : Markdown.Html.Renderer (List (Html.Html msg) -> Html.Html msg)
+htmlRenderer : Markdown.Html.Renderer Never (List (Html.Html msg) -> Html.Html msg)
 htmlRenderer =
-    Markdown.Html.oneOfWithFallback
-        []
-        (Markdown.Html.denyTags [])
-        Html.text
-        (\tag attributes renderedChildren ->
-            if String.startsWith "/" tag then
-                Just
-                    (Html.text ("CLOSINGTAG_" ++ String.dropLeft 1 tag ++ "_ENDCLOSINGTAG"))
+    Markdown.Html.oneOf []
+        |> Markdown.Html.withFallback
+            (\tag attributes renderedChildren ->
+                if String.startsWith "/" tag then
+                    Html.text ("CLOSINGTAG_" ++ String.dropLeft 1 tag ++ "_ENDCLOSINGTAG")
 
-            else
-                let
-                    htmlAttributes : List (Html.Attribute msg)
-                    htmlAttributes =
-                        attributes
-                            |> List.map
-                                (\{ name, value } ->
-                                    Attr.attribute name value
-                                )
-                in
-                Just (Html.node tag htmlAttributes renderedChildren)
-        )
+                else
+                    let
+                        htmlAttributes : List (Html.Attribute msg)
+                        htmlAttributes =
+                            attributes
+                                |> List.map
+                                    (\{ name, value } ->
+                                        Attr.attribute name value
+                                    )
+                    in
+                    Html.node tag htmlAttributes renderedChildren
+            )
 
 
 type Msg

@@ -38,7 +38,7 @@ Often you'll want to render these `Block`s directly:
         markdown
             |> Markdown.Parser.parse
             |> Result.mapError deadEndsToString
-            |> Result.andThen (\ast -> Markdown.Renderer.render renderer ast)
+            |> Result.andThen (\ast -> Markdown.Renderer.tryRender renderer ast)
 
     deadEndsToString deadEnds =
         deadEnds
