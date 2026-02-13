@@ -2,7 +2,7 @@ module InfallibleParseTests exposing (suite)
 
 import Expect
 import Fuzz
-import Markdown.Block as Block exposing (Block)
+import Markdown.Block as Block
 import Markdown.Html
 import Markdown.Parser
 import Markdown.Renderer
