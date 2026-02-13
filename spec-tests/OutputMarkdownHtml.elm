@@ -4,7 +4,6 @@ import Html.String as Html
 import Html.String.Attributes as Attr
 import Markdown.Block as Block exposing (Block)
 import Markdown.Html
-import Markdown.HtmlRenderer
 import Markdown.Parser as Markdown
 import Markdown.Renderer
 import Regex
@@ -42,14 +41,7 @@ init flags =
 render renderer markdown =
     markdown
         |> Markdown.parse
-        |> Result.mapError deadEndsToString
-        |> Result.andThen (\ast -> Markdown.Renderer.render renderer ast)
-
-
-deadEndsToString deadEnds =
-    deadEnds
-        |> List.map Markdown.deadEndToString
-        |> String.join "\n"
+        |> Markdown.Renderer.render renderer
 
 
 renderMarkdown : String -> Html
@@ -236,10 +228,11 @@ renderMarkdown markdown =
                     in
                     Html.td attrs
             }
-        |> Result.map (List.map (Html.toString 0))
-        |> Result.map (String.join "")
-        |> Result.map removeVoidClosingTags
-        |> Result.map replaceClosingTagMarkers
+        |> List.map (Html.toString 0)
+        |> String.join ""
+        |> removeVoidClosingTags
+        |> replaceClosingTagMarkers
+        |> Ok
 
 
 {-| Ensure that void tags don't have closing tag, see <https://github.com/zwilias/elm-html-string/issues/12>.
@@ -251,7 +244,7 @@ removeVoidClosingTags string =
 
 
 {-| Convert closing tag markers back to actual closing tags.
-The markers are in format: CLOSINGTAG_tagname_ENDCLOSINGTAG
+The markers are in format: CLOSINGTAG\_tagname\_ENDCLOSINGTAG
 -}
 replaceClosingTagMarkers : String -> String
 replaceClosingTagMarkers string =
@@ -305,62 +298,26 @@ voidTags =
     ]
 
 
-htmlRenderer : Markdown.Html.Renderer (List (Html.Html msg) -> Html.Html msg)
+htmlRenderer : Markdown.Html.Renderer Never (List (Html.Html msg) -> Html.Html msg)
 htmlRenderer =
-    passthrough
-        (\tag attributes blocks ->
-            let
-                result : Result String (List (Html.Html msg) -> Html.Html msg)
-                result =
-                    -- Check if this is a closing tag (prefix "/" from renderer)
-                    if String.startsWith "/" tag then
-                        (\_ ->
-                            -- Use a marker that will be replaced in post-processing
-                            -- The marker format is: CLOSINGTAG_tagname_ENDCLOSINGTAG
-                            Html.text ("CLOSINGTAG_" ++ String.dropLeft 1 tag ++ "_ENDCLOSINGTAG")
-                        )
-                            |> Ok
+    Markdown.Html.oneOf []
+        |> Markdown.Html.withFallback
+            (\tag attributes renderedChildren ->
+                if String.startsWith "/" tag then
+                    Html.text ("CLOSINGTAG_" ++ String.dropLeft 1 tag ++ "_ENDCLOSINGTAG")
 
-                    else
-                        (\children ->
-                            Html.node tag htmlAttributes children
-                        )
-                            |> Ok
-
-                htmlAttributes : List (Html.Attribute msg)
-                htmlAttributes =
-                    attributes
-                        |> List.map
-                            (\{ name, value } ->
-                                Attr.attribute name value
-                            )
-            in
-            result
-        )
-
-
-passThroughNode nodeName =
-    Markdown.Html.tag nodeName
-        (\id class href children ->
-            Html.node nodeName
-                ([ id |> Maybe.map Attr.id
-                 , class |> Maybe.map Attr.class
-                 , href |> Maybe.map Attr.href
-                 ]
-                    |> List.filterMap identity
-                )
-                children
-        )
-        |> Markdown.Html.withOptionalAttribute "id"
-        |> Markdown.Html.withOptionalAttribute "class"
-        |> Markdown.Html.withOptionalAttribute "href"
-
-
-{-| TODO come up with an API to provide a solution to do this sort of thing publicly
--}
-passthrough : (String -> List Markdown.HtmlRenderer.Attribute -> List Block -> Result String view) -> Markdown.HtmlRenderer.HtmlRenderer view
-passthrough renderFn =
-    Markdown.HtmlRenderer.HtmlRenderer renderFn
+                else
+                    let
+                        htmlAttributes : List (Html.Attribute msg)
+                        htmlAttributes =
+                            attributes
+                                |> List.map
+                                    (\{ name, value } ->
+                                        Attr.attribute name value
+                                    )
+                    in
+                    Html.node tag htmlAttributes renderedChildren
+            )
 
 
 type Msg

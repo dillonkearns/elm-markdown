@@ -18,7 +18,7 @@ Should give output:
 But instead was:
 
 ````````````html
-ERROR Problem at row 2 Expecting symbol
+<p>&lt;a&gt;&lt;bab&gt;&lt;c2c&gt;</p>
 ````````````
 ## [Example 613](https://spec.commonmark.org/0.30/#example-613)
 
@@ -59,7 +59,7 @@ Should give output:
 But instead was:
 
 ````````````html
-ERROR Problem at row 3 Expecting symbol
+<p><a></a>&lt;b2 data=&quot;foo&quot; &gt;</p>
 ````````````
 ## [Example 615](https://spec.commonmark.org/0.30/#example-615)
 
@@ -80,7 +80,7 @@ Should give output:
 But instead was:
 
 ````````````html
-ERROR Problem at row 2 Expecting symbol =
+<p>&lt;a foo=&quot;bar&quot; bam = &#39;baz &lt;em&gt;&quot;&lt;/em&gt;&#39; _boolean zoop:33=zoop:33 /&gt;</p>
 ````````````
 ## [Example 616](https://spec.commonmark.org/0.30/#example-616)
 
@@ -101,89 +101,6 @@ But instead was:
 
 ````````````html
 <p>Foo<responsive-image src="foo.jpg"></responsive-image></p>
-````````````
-## [Example 618](https://spec.commonmark.org/0.30/#example-618)
-
-This markdown:
-
-````````````markdown
-<a h*#ref="hi">
-
-````````````
-
-Should give output:
-
-````````````html
-<p>&lt;a h*#ref=&quot;hi&quot;&gt;</p>
-````````````
-
-But instead was:
-
-````````````html
-ERROR Problem at row 1 Expecting symbol =
-````````````
-## [Example 619](https://spec.commonmark.org/0.30/#example-619)
-
-This markdown:
-
-````````````markdown
-<a href="hi'> <a href=hi'>
-
-````````````
-
-Should give output:
-
-````````````html
-<p>&lt;a href=&quot;hi&#39;&gt; &lt;a href=hi&#39;&gt;</p>
-````````````
-
-But instead was:
-
-````````````html
-ERROR Problem at row 2 Expecting symbol &quot;
-````````````
-## [Example 620](https://spec.commonmark.org/0.30/#example-620)
-
-This markdown:
-
-````````````markdown
-< a><
-foo><bar/ >
-<foo bar=baz
-bim!bop />
-
-````````````
-
-Should give output:
-
-````````````html
-<p>&lt; a&gt;&lt; foo&gt;&lt;bar/ &gt; &lt;foo bar=baz bim!bop /&gt;</p>
-````````````
-
-But instead was:
-
-````````````html
-ERROR Problem at row 3 Expecting symbol &quot; Problem at row 3 Expecting symbol &#39;
-````````````
-## [Example 621](https://spec.commonmark.org/0.30/#example-621)
-
-This markdown:
-
-````````````markdown
-<a href='bar'title=title>
-
-````````````
-
-Should give output:
-
-````````````html
-<p>&lt;a href=&#39;bar&#39;title=title&gt;</p>
-````````````
-
-But instead was:
-
-````````````html
-ERROR Problem at row 1 Expecting symbol &quot; Problem at row 1 Expecting symbol &#39;
 ````````````
 ## [Example 625](https://spec.commonmark.org/0.30/#example-625)
 
@@ -286,24 +203,4 @@ But instead was:
 
 ````````````html
 <p>foo &lt;a href=&quot;*&quot;&gt;</p>
-````````````
-## [Example 632](https://spec.commonmark.org/0.30/#example-632)
-
-This markdown:
-
-````````````markdown
-<a href="\"">
-
-````````````
-
-Should give output:
-
-````````````html
-<p>&lt;a href=&quot;&quot;&quot;&gt;</p>
-````````````
-
-But instead was:
-
-````````````html
-ERROR Problem at row 1 Expecting symbol /&gt; Problem at row 1 Expecting symbol &gt;
 ````````````

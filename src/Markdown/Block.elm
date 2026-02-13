@@ -55,17 +55,16 @@ In the simplest case, you can pass this directly to a renderer:
     markdown =
         "# This is a title!\n\nThis is the body."
 
-    astResult : Result (List (Advanced.DeadEnd String Parser.Problem)) (List Block)
-    astResult =
+    ast : List Block
+    ast =
         markdown
             |> Markdown.Parser.parse
 
     main : Html msg
     main =
         case
-            astResult
-                |> Result.mapError deadEndsToString
-                |> Result.andThen (\ast -> Markdown.Renderer.render Markdown.Renderer.defaultHtmlRenderer ast)
+            ast
+                |> Markdown.Renderer.tryRender Markdown.Renderer.defaultHtmlRenderer
         of
             Ok rendered ->
                 div [] rendered

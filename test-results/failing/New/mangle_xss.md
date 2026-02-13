@@ -20,5 +20,5 @@ Should give output:
 But instead was:
 
 ````````````html
-ERROR Problem at row 3 Expecting symbol /&gt; Problem at row 3 Expecting symbol &gt;
+<p>&lt;&lt;svg/onload=&quot;alert(1)&quot;<a href="mailto://@x">//@x</a>&gt; &lt;bar&quot;onclick=&quot;alert(&#39;XSS&#39;)&quot;@foo&gt;</p>
 ````````````

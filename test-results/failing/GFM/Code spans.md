@@ -18,5 +18,5 @@ Should give output:
 But instead was:
 
 ````````````html
-ERROR Problem at row 2 Expecting symbol
+<p>&lt;a href=&quot;<code>&quot;&gt;</code></p>
 ````````````

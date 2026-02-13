@@ -20,7 +20,7 @@ bar"></p>
 But instead was:
 
 ````````````html
-ERROR Problem at row 3 Expecting symbol
+<p>&lt;a href=&quot;foo<br>bar&quot;&gt;</p>
 ````````````
 ## [Example 643](https://spec.commonmark.org/0.30/#example-643)
 
@@ -42,5 +42,5 @@ bar"></p>
 But instead was:
 
 ````````````html
-ERROR Problem at row 3 Expecting symbol
+<p>&lt;a href=&quot;foo<br>bar&quot;&gt;</p>
 ````````````

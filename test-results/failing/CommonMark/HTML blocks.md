@@ -118,7 +118,7 @@ Should give output:
 But instead was:
 
 ````````````html
-ERROR Problem at row 5 Expecting symbol
+<p>&lt;div&gt;<em>foo</em><em>bar</em></p>
 ````````````
 ## [Example 156](https://spec.commonmark.org/0.30/#example-156)
 
@@ -139,7 +139,7 @@ Should give output:
 But instead was:
 
 ````````````html
-ERROR Problem at row 2 Expecting symbol /&gt; Problem at row 2 Expecting symbol &gt;
+<p>&lt;div id=&quot;foo&quot;<em>hi</em></p>
 ````````````
 ## [Example 157](https://spec.commonmark.org/0.30/#example-157)
 
@@ -160,7 +160,7 @@ Should give output:
 But instead was:
 
 ````````````html
-ERROR Problem at row 2 Expecting symbol =
+<p>&lt;div class foo</p>
 ````````````
 ## [Example 158](https://spec.commonmark.org/0.30/#example-158)
 
@@ -181,7 +181,7 @@ Should give output:
 But instead was:
 
 ````````````html
-ERROR Problem at row 1 Expecting symbol /&gt; Problem at row 1 Expecting symbol &gt;
+<p>&lt;div *???-&amp;&amp;&amp;-&lt;---<em>foo</em></p>
 ````````````
 ## [Example 159](https://spec.commonmark.org/0.30/#example-159)
 
@@ -501,7 +501,7 @@ Should give output:
 But instead was:
 
 ````````````html
-ERROR Problem at row 5 Expecting symbol
+<p>&lt;style type=&quot;text/css&quot;&gt; foo</p>
 ````````````
 ## [Example 174](https://spec.commonmark.org/0.30/#example-174)
 
@@ -524,7 +524,7 @@ Should give output:
 But instead was:
 
 ````````````html
-ERROR Problem at row 4 Problem at row 2 Expecting symbol
+<blockquote><p>&lt;div&gt; foo</p></blockquote><p>bar</p>
 ````````````
 ## [Example 175](https://spec.commonmark.org/0.30/#example-175)
 
@@ -545,7 +545,7 @@ Should give output:
 But instead was:
 
 ````````````html
-ERROR Problem at row 3 Problem at row 1 Expecting symbol
+<ul><li>&lt;div&gt;</li><li>foo</li></ul>
 ````````````
 ## [Example 176](https://spec.commonmark.org/0.30/#example-176)
 
@@ -766,7 +766,7 @@ Should give output:
 But instead was:
 
 ````````````html
-ERROR Problem at row 4 Expecting symbol
+<p>Foo &lt;a href=&quot;bar&quot;&gt; baz</p>
 ````````````
 ## [Example 189](https://spec.commonmark.org/0.30/#example-189)
 

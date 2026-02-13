@@ -1,7 +1,7 @@
 module Markdown.Html exposing
     ( Renderer
     , tag, withAttribute, withOptionalAttribute
-    , map, oneOf
+    , map, oneOf, withFallback
     )
 
 {-|
@@ -12,7 +12,7 @@ module Markdown.Html exposing
 ## Creating an HTML renderer
 
 @docs tag, withAttribute, withOptionalAttribute
-@docs map, oneOf
+@docs map, oneOf, withFallback
 
 -}
 
@@ -34,8 +34,8 @@ For example, if you expect to have an attribute called `button-text` for the
 `button-text` attribute to render your `<signup-form` like so
 
 -}
-type alias Renderer a =
-    Markdown.HtmlRenderer.HtmlRenderer a
+type alias Renderer err a =
+    Markdown.HtmlRenderer.HtmlRenderer err a
 
 
 type alias Attribute =
@@ -44,7 +44,7 @@ type alias Attribute =
 
 {-| Map the value of a `Markdown.Html.Renderer`.
 -}
-map : (a -> b) -> Renderer a -> Renderer b
+map : (a -> b) -> Renderer err a -> Renderer err b
 map function (Markdown.HtmlRenderer.HtmlRenderer renderer) =
     (\tagName attributes innerBlocks ->
         renderer tagName attributes innerBlocks
@@ -66,7 +66,7 @@ be using this function when you use this module.
             ]
 
 -}
-oneOf : List (Renderer view) -> Renderer view
+oneOf : List (Renderer String view) -> Renderer String view
 oneOf decoders =
     let
         unwrappedDecoders : List (String -> List Markdown.HtmlRenderer.Attribute -> List Block -> Result String view)
@@ -106,12 +106,9 @@ oneOf decoders =
                                         """oneOf failed parsing this value:
     """
                                             ++ tagToString tagName attributes
-                                            ++ """
-
-Parsing failed in the following 2 ways:
-
-
-"""
+                                            ++ "\n\nParsing failed in the following "
+                                            ++ String.fromInt (List.length errors)
+                                            ++ " ways:\n\n\n"
                                             ++ (List.indexedMap
                                                     (\index error ->
                                                         "("
@@ -175,7 +172,7 @@ attributesToString attributes =
         )
 
 -}
-tag : String -> view -> Renderer view
+tag : String -> view -> Renderer String view
 tag expectedTag a =
     Markdown.HtmlRenderer.HtmlRenderer
         (\tagName _ _ ->
@@ -205,7 +202,7 @@ you define for the tag's renderer.
         |> Markdown.Html.withAttribute "color"
 
 -}
-withAttribute : String -> Renderer (String -> view) -> Renderer view
+withAttribute : String -> Renderer String (String -> view) -> Renderer String view
 withAttribute attributeName (Markdown.HtmlRenderer.HtmlRenderer renderer) =
     (\tagName attributes innerBlocks ->
         renderer tagName attributes innerBlocks
@@ -231,6 +228,37 @@ withAttribute attributeName (Markdown.HtmlRenderer.HtmlRenderer renderer) =
         |> Markdown.HtmlRenderer.HtmlRenderer
 
 
+{-| Transform a fallible `Renderer String` into an infallible `Renderer Never`
+by providing a fallback function that handles any tags not matched by specific renderers.
+
+The fallback function receives the tag name, attributes, and rendered children.
+
+    htmlRenderer =
+        Markdown.Html.oneOf
+            [ Markdown.Html.tag "custom-widget" (\children -> myWidget children)
+            ]
+            |> Markdown.Html.withFallback
+                (\tag attributes children ->
+                    Html.node tag (attributesToHtmlAttrs attributes) children
+                )
+
+-}
+withFallback :
+    (String -> List { name : String, value : String } -> List view -> view)
+    -> Renderer String (List view -> view)
+    -> Renderer Never (List view -> view)
+withFallback fallbackFn (Markdown.HtmlRenderer.HtmlRenderer renderer) =
+    Markdown.HtmlRenderer.HtmlRenderer
+        (\tagName attributes children ->
+            case renderer tagName attributes children of
+                Ok view ->
+                    Ok view
+
+                Err _ ->
+                    Ok (\renderedChildren -> fallbackFn tagName attributes renderedChildren)
+        )
+
+
 {-| Same as `withAttribute`, but the Renderer won't fail if the attribute is missing.
 Instead, it just returns `Nothing` for missing attributes.
 
@@ -244,7 +272,7 @@ Instead, it just returns `Nothing` for missing attributes.
         )
 
 -}
-withOptionalAttribute : String -> Renderer (Maybe String -> view) -> Renderer view
+withOptionalAttribute : String -> Renderer String (Maybe String -> view) -> Renderer String view
 withOptionalAttribute attributeName (Markdown.HtmlRenderer.HtmlRenderer renderer) =
     (\tagName attributes innerBlocks ->
         renderer tagName attributes innerBlocks

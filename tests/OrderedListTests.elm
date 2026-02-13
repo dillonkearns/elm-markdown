@@ -19,15 +19,13 @@ suite =
 """
                     |> Markdown.Parser.parse
                     |> Expect.equal
-                        (Ok
-                            [ OrderedList Markdown.Block.Tight
-                                1
-                                [ [ Paragraph [ Text "Item 1" ] ]
-                                , [ Paragraph [ Text "Item 2" ] ]
-                                , [ Paragraph [ Text "Item 3" ] ]
-                                ]
+                        [ OrderedList Markdown.Block.Tight
+                            1
+                            [ [ Paragraph [ Text "Item 1" ] ]
+                            , [ Paragraph [ Text "Item 2" ] ]
+                            , [ Paragraph [ Text "Item 3" ] ]
                             ]
-                        )
+                        ]
         , test "list ending without newline" <|
             \() ->
                 """1. Item 1
@@ -35,15 +33,13 @@ suite =
 3. Item 3"""
                     |> Markdown.Parser.parse
                     |> Expect.equal
-                        (Ok
-                            [ OrderedList Markdown.Block.Tight
-                                1
-                                [ [ Paragraph [ Text "Item 1" ] ]
-                                , [ Paragraph [ Text "Item 2" ] ]
-                                , [ Paragraph [ Text "Item 3" ] ]
-                                ]
+                        [ OrderedList Markdown.Block.Tight
+                            1
+                            [ [ Paragraph [ Text "Item 1" ] ]
+                            , [ Paragraph [ Text "Item 2" ] ]
+                            , [ Paragraph [ Text "Item 3" ] ]
                             ]
-                        )
+                        ]
         , test "basic list with that start with '1.' and repeat the same starting number" <|
             \() ->
                 """1. Item 1
@@ -52,15 +48,13 @@ suite =
 """
                     |> Markdown.Parser.parse
                     |> Expect.equal
-                        (Ok
-                            [ OrderedList Markdown.Block.Tight
-                                1
-                                [ [ Paragraph [ Text "Item 1" ] ]
-                                , [ Paragraph [ Text "Item 2" ] ]
-                                , [ Paragraph [ Text "Item 3" ] ]
-                                ]
+                        [ OrderedList Markdown.Block.Tight
+                            1
+                            [ [ Paragraph [ Text "Item 1" ] ]
+                            , [ Paragraph [ Text "Item 2" ] ]
+                            , [ Paragraph [ Text "Item 3" ] ]
                             ]
-                        )
+                        ]
         , test "basic list with that start with '3)' and follow with the same number" <|
             \() ->
                 """3) Item 1
@@ -69,15 +63,13 @@ suite =
 """
                     |> Markdown.Parser.parse
                     |> Expect.equal
-                        (Ok
-                            [ OrderedList Markdown.Block.Tight
-                                3
-                                [ [ Paragraph [ Text "Item 1" ] ]
-                                , [ Paragraph [ Text "Item 2" ] ]
-                                , [ Paragraph [ Text "Item 3" ] ]
-                                ]
+                        [ OrderedList Markdown.Block.Tight
+                            3
+                            [ [ Paragraph [ Text "Item 1" ] ]
+                            , [ Paragraph [ Text "Item 2" ] ]
+                            , [ Paragraph [ Text "Item 3" ] ]
                             ]
-                        )
+                        ]
         , test "sibling lists with different markers" <|
             \() ->
                 """1) Item 1
@@ -89,21 +81,19 @@ suite =
 """
                     |> Markdown.Parser.parse
                     |> Expect.equal
-                        (Ok
-                            [ OrderedList Markdown.Block.Tight
-                                1
-                                [ [ Paragraph [ Text "Item 1" ] ]
-                                , [ Paragraph [ Text "Item 2" ] ]
-                                , [ Paragraph [ Text "Item 3" ] ]
-                                ]
-                            , OrderedList Markdown.Block.Tight
-                                1
-                                [ [ Paragraph [ Text "Item 4" ] ]
-                                , [ Paragraph [ Text "Item 5" ] ]
-                                , [ Paragraph [ Text "Item 6" ] ]
-                                ]
+                        [ OrderedList Markdown.Block.Tight
+                            1
+                            [ [ Paragraph [ Text "Item 1" ] ]
+                            , [ Paragraph [ Text "Item 2" ] ]
+                            , [ Paragraph [ Text "Item 3" ] ]
                             ]
-                        )
+                        , OrderedList Markdown.Block.Tight
+                            1
+                            [ [ Paragraph [ Text "Item 4" ] ]
+                            , [ Paragraph [ Text "Item 5" ] ]
+                            , [ Paragraph [ Text "Item 6" ] ]
+                            ]
+                        ]
         , test "When the marker changes in the middle of a list" <|
             \() ->
                 """1. foo
@@ -112,18 +102,16 @@ suite =
 """
                     |> Markdown.Parser.parse
                     |> Expect.equal
-                        (Ok
-                            [ OrderedList Markdown.Block.Tight
-                                1
-                                [ [ Paragraph [ Text "foo" ] ]
-                                , [ Paragraph [ Text "bar" ] ]
-                                ]
-                            , OrderedList Markdown.Block.Tight
-                                3
-                                [ [ Paragraph [ Text "baz" ] ]
-                                ]
+                        [ OrderedList Markdown.Block.Tight
+                            1
+                            [ [ Paragraph [ Text "foo" ] ]
+                            , [ Paragraph [ Text "bar" ] ]
                             ]
-                        )
+                        , OrderedList Markdown.Block.Tight
+                            3
+                            [ [ Paragraph [ Text "baz" ] ]
+                            ]
+                        ]
         , test "basic list with that start with '3.' and follow with the same number" <|
             \() ->
                 """3. Item 1
@@ -132,15 +120,13 @@ suite =
 """
                     |> Markdown.Parser.parse
                     |> Expect.equal
-                        (Ok
-                            [ OrderedList Markdown.Block.Tight
-                                3
-                                [ [ Paragraph [ Text "Item 1" ] ]
-                                , [ Paragraph [ Text "Item 2" ] ]
-                                , [ Paragraph [ Text "Item 3" ] ]
-                                ]
+                        [ OrderedList Markdown.Block.Tight
+                            3
+                            [ [ Paragraph [ Text "Item 1" ] ]
+                            , [ Paragraph [ Text "Item 2" ] ]
+                            , [ Paragraph [ Text "Item 3" ] ]
                             ]
-                        )
+                        ]
         , test "A list can start at 0" <|
             \() ->
                 """0. Item 1
@@ -149,15 +135,13 @@ suite =
 """
                     |> Markdown.Parser.parse
                     |> Expect.equal
-                        (Ok
-                            [ OrderedList Markdown.Block.Tight
-                                0
-                                [ [ Paragraph [ Text "Item 1" ] ]
-                                , [ Paragraph [ Text "Item 2" ] ]
-                                , [ Paragraph [ Text "Item 3" ] ]
-                                ]
+                        [ OrderedList Markdown.Block.Tight
+                            0
+                            [ [ Paragraph [ Text "Item 1" ] ]
+                            , [ Paragraph [ Text "Item 2" ] ]
+                            , [ Paragraph [ Text "Item 3" ] ]
                             ]
-                        )
+                        ]
         , test "A list starting number can have leading zeros" <|
             \() ->
                 """003. Item 1
@@ -166,15 +150,13 @@ suite =
 """
                     |> Markdown.Parser.parse
                     |> Expect.equal
-                        (Ok
-                            [ OrderedList Markdown.Block.Tight
-                                3
-                                [ [ Paragraph [ Text "Item 1" ] ]
-                                , [ Paragraph [ Text "Item 2" ] ]
-                                , [ Paragraph [ Text "Item 3" ] ]
-                                ]
+                        [ OrderedList Markdown.Block.Tight
+                            3
+                            [ [ Paragraph [ Text "Item 1" ] ]
+                            , [ Paragraph [ Text "Item 2" ] ]
+                            , [ Paragraph [ Text "Item 3" ] ]
                             ]
-                        )
+                        ]
         , test "basic list with that start with '3.' and follow with decreasing numbers" <|
             \() ->
                 """3. Item 1
@@ -183,15 +165,13 @@ suite =
 """
                     |> Markdown.Parser.parse
                     |> Expect.equal
-                        (Ok
-                            [ OrderedList Markdown.Block.Tight
-                                3
-                                [ [ Paragraph [ Text "Item 1" ] ]
-                                , [ Paragraph [ Text "Item 2" ] ]
-                                , [ Paragraph [ Text "Item 3" ] ]
-                                ]
+                        [ OrderedList Markdown.Block.Tight
+                            3
+                            [ [ Paragraph [ Text "Item 1" ] ]
+                            , [ Paragraph [ Text "Item 2" ] ]
+                            , [ Paragraph [ Text "Item 3" ] ]
                             ]
-                        )
+                        ]
         , test "basic list with '1)'" <|
             \() ->
                 """1) Item 1
@@ -200,15 +180,13 @@ suite =
 """
                     |> Markdown.Parser.parse
                     |> Expect.equal
-                        (Ok
-                            [ OrderedList Markdown.Block.Tight
-                                1
-                                [ [ Paragraph [ Text "Item 1" ] ]
-                                , [ Paragraph [ Text "Item 2" ] ]
-                                , [ Paragraph [ Text "Item 3" ] ]
-                                ]
+                        [ OrderedList Markdown.Block.Tight
+                            1
+                            [ [ Paragraph [ Text "Item 1" ] ]
+                            , [ Paragraph [ Text "Item 2" ] ]
+                            , [ Paragraph [ Text "Item 3" ] ]
                             ]
-                        )
+                        ]
         , test "When there is an empty item" <|
             \() ->
                 """1. foo
@@ -217,15 +195,13 @@ suite =
 """
                     |> Markdown.Parser.parse
                     |> Expect.equal
-                        (Ok
-                            [ OrderedList Markdown.Block.Tight
-                                1
-                                [ [ Paragraph [ Text "foo" ] ]
-                                , []
-                                , [ Paragraph [ Text "bar" ] ]
-                                ]
+                        [ OrderedList Markdown.Block.Tight
+                            1
+                            [ [ Paragraph [ Text "foo" ] ]
+                            , []
+                            , [ Paragraph [ Text "bar" ] ]
                             ]
-                        )
+                        ]
         , test "Text starting with a decimal number" <|
             \() ->
                 """4.3

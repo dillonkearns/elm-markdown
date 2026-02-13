@@ -18,7 +18,7 @@ suite =
         , test "definition nested 2 levels" <|
             \() ->
                 """[foo]
-                    
+
 > > [foo]: /url"""
                     |> expectResolvedLinkReference
         , test "definition nested 3 levels" <|
@@ -36,5 +36,5 @@ expectResolvedLinkReference : String -> Expectation
 expectResolvedLinkReference markdownString =
     markdownString
         |> Markdown.Parser.parse
-        |> Result.map List.head
-        |> Expect.equal (Ok (Just <| Paragraph [ Link "/url" Nothing [ Text "foo" ] ]))
+        |> List.head
+        |> Expect.equal (Just <| Paragraph [ Link "/url" Nothing [ Text "foo" ] ])

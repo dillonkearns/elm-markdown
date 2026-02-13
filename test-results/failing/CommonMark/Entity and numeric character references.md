@@ -63,5 +63,5 @@ Should give output:
 But instead was:
 
 ````````````html
-ERROR Problem at row 1 No entity named &quot;ö&quot; found.
+<p>&lt;a href=&quot;öö.html&quot;&gt;</p>
 ````````````

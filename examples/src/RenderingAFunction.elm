@@ -99,11 +99,10 @@ markdownView : Model -> Result String (List (Element Msg))
 markdownView model =
     model.markdown
         |> Markdown.Parser.parse
-        |> Result.mapError (\error -> error |> List.map Markdown.Parser.deadEndToString |> String.join "\n")
-        |> Result.andThen (Markdown.Renderer.render (renderer model.zoomFactor))
+        |> Markdown.Renderer.tryRender (renderer model.zoomFactor)
 
 
-renderer : Int -> Markdown.Renderer.Renderer (Element Msg)
+renderer : Int -> Markdown.Renderer.Renderer String (Element Msg)
 renderer zoomFactor =
     { heading = heading zoomFactor
     , paragraph =

@@ -4,24 +4,14 @@ import Expect
 import Markdown.Html
 import Markdown.Parser as Markdown
 import Markdown.Renderer
-import Parser
-import Parser.Advanced
 import Test exposing (..)
 
 
-render : Markdown.Renderer.Renderer view -> String -> Result String (List view)
+render : Markdown.Renderer.Renderer String view -> String -> Result String (List view)
 render renderer markdown =
     markdown
         |> Markdown.parse
-        |> Result.mapError deadEndsToString
-        |> Result.andThen (\ast -> Markdown.Renderer.render renderer ast)
-
-
-deadEndsToString : List (Parser.Advanced.DeadEnd String Parser.Problem) -> String
-deadEndsToString deadEnds =
-    deadEnds
-        |> List.map Markdown.deadEndToString
-        |> String.join "\n"
+        |> (\ast -> Markdown.Renderer.tryRender renderer ast)
 
 
 type Rendered tag
@@ -29,7 +19,41 @@ type Rendered tag
     | Html tag
 
 
-testRenderer : List (Markdown.Html.Renderer (List (Rendered a) -> Rendered a)) -> Markdown.Renderer.Renderer (Rendered a)
+stringTestRenderer : Markdown.Html.Renderer err (List String -> String) -> Markdown.Renderer.Renderer err String
+stringTestRenderer htmlRenderer =
+    { heading = \{ children } -> String.join "" children
+    , paragraph = String.join ""
+    , blockQuote = String.join ""
+    , strong = String.join ""
+    , emphasis = String.join ""
+    , strikethrough = String.join ""
+    , hardLineBreak = "\n"
+    , codeSpan = identity
+    , image = \_ -> ""
+    , link = \_ children -> String.join "" children
+    , text = identity
+    , unorderedList = \_ -> ""
+    , orderedList = \_ _ -> ""
+    , html = htmlRenderer
+    , codeBlock = \{ body } -> body
+    , thematicBreak = ""
+    , table = \_ -> ""
+    , tableHeader = \_ -> ""
+    , tableBody = \_ -> ""
+    , tableRow = \_ -> ""
+    , tableHeaderCell = \_ _ -> ""
+    , tableCell = \_ _ -> ""
+    }
+
+
+renderInfallible : Markdown.Renderer.Renderer Never String -> String -> List String
+renderInfallible renderer markdown =
+    markdown
+        |> Markdown.parse
+        |> (\ast -> Markdown.Renderer.render renderer ast)
+
+
+testRenderer : List (Markdown.Html.Renderer String (List (Rendered a) -> Rendered a)) -> Markdown.Renderer.Renderer String (Rendered a)
 testRenderer htmlRenderer =
     { heading =
         \_ ->
@@ -288,4 +312,80 @@ Expecting attribute "first".
                                 }
                             ]
                         )
+        , describe "withFallback"
+            [ test "allows any tag through fallback" <|
+                \() ->
+                    "<div />"
+                        |> renderInfallible
+                            (stringTestRenderer
+                                (Markdown.Html.oneOf []
+                                    |> Markdown.Html.withFallback
+                                        (\tag _ _ ->
+                                            "<" ++ tag ++ ">"
+                                        )
+                                )
+                            )
+                        |> Expect.equal [ "<div>" ]
+            , test "specific renderer takes priority over fallback" <|
+                \() ->
+                    "<custom-tag />"
+                        |> renderInfallible
+                            (stringTestRenderer
+                                (Markdown.Html.oneOf
+                                    [ Markdown.Html.tag "custom-tag" (\_ -> "specific-renderer")
+                                    ]
+                                    |> Markdown.Html.withFallback
+                                        (\tag _ _ ->
+                                            "fallback-" ++ tag
+                                        )
+                                )
+                            )
+                        |> Expect.equal [ "specific-renderer" ]
+            , test "fallback receives tag name and attributes" <|
+                \() ->
+                    """<div class="wrapper" />"""
+                        |> renderInfallible
+                            (stringTestRenderer
+                                (Markdown.Html.oneOf []
+                                    |> Markdown.Html.withFallback
+                                        (\tag attributes _ ->
+                                            let
+                                                attrStr : String
+                                                attrStr =
+                                                    attributes
+                                                        |> List.map (\a -> a.name ++ "=" ++ a.value)
+                                                        |> String.join ","
+                                            in
+                                            tag ++ "[" ++ attrStr ++ "]"
+                                        )
+                                )
+                            )
+                        |> Expect.equal [ "div[class=wrapper]" ]
+            , test "fallback with children content" <|
+                \() ->
+                    "<div>\n\nhello\n\n</div>"
+                        |> renderInfallible
+                            (stringTestRenderer
+                                (Markdown.Html.oneOf []
+                                    |> Markdown.Html.withFallback
+                                        (\tag _ children ->
+                                            "<" ++ tag ++ ">" ++ String.join "" children ++ "</" ++ tag ++ ">"
+                                        )
+                                )
+                            )
+                        |> Expect.equal [ "<div>hello</" ++ "div>" ]
+            , test "returns List view directly (no Result)" <|
+                \() ->
+                    "hello world"
+                        |> renderInfallible
+                            (stringTestRenderer
+                                (Markdown.Html.oneOf []
+                                    |> Markdown.Html.withFallback
+                                        (\tag _ _ ->
+                                            "<" ++ tag ++ ">"
+                                        )
+                                )
+                            )
+                        |> Expect.equal [ "hello world" ]
+            ]
         ]

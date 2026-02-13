@@ -86,5 +86,5 @@ Should give output:
 But instead was:
 
 ````````````html
-ERROR Problem at row 70 Expecting symbol
+<p>Here&#39;s a simple block:<div><pre><code>foo</code></pre></div>This should be a code block, though:<div><pre><code>foo</code></pre></div>As should this:<div><p>foo</p></div>Now, nested:<div><pre><code></code></pre><div><pre><code></code></pre><div><pre><code>foo</code></pre></div><pre><code></code></pre></div></div>This should just be an HTML comment: Multiline: Code block: Just plain comment, with trailing spaces on the line:<br>Code:<hr>Hr&#39;s: &lt;hr&gt;<hr><hr>&lt;hr&gt;<br><hr><br><hr><hr class="foo" id="bar"><hr class="foo" id="bar">&lt;hr class=&quot;foo&quot; id=&quot;bar&quot; &gt;</p>
 ````````````

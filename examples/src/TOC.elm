@@ -156,23 +156,19 @@ type alias TableOfContents =
 
 view : String -> Result String ( TableOfContents, List (Element msg) )
 view markdown =
-    case
-        markdown
-            |> Markdown.Parser.parse
-    of
-        Ok okAst ->
-            case Markdown.Renderer.render renderer okAst of
-                Ok rendered ->
-                    Ok ( buildToc okAst, rendered )
+    let
+        ast =
+            Markdown.Parser.parse markdown
+    in
+    case Markdown.Renderer.tryRender renderer ast of
+        Ok rendered ->
+            Ok ( buildToc ast, rendered )
 
-                Err errors ->
-                    Err errors
-
-        Err error ->
-            Err (error |> List.map Markdown.Parser.deadEndToString |> String.join "\n")
+        Err errors ->
+            Err errors
 
 
-renderer : Markdown.Renderer.Renderer (Element msg)
+renderer : Markdown.Renderer.Renderer String (Element msg)
 renderer =
     ElmUi.renderer
 

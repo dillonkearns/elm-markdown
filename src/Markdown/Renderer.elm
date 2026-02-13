@@ -1,12 +1,12 @@
 module Markdown.Renderer exposing
-    ( Renderer, render
+    ( Renderer, render, tryRender
     , defaultHtmlRenderer, defaultStringRenderer
     , renderWithMeta
     )
 
 {-|
 
-@docs Renderer, render
+@docs Renderer, render, tryRender
 
 @docs defaultHtmlRenderer, defaultStringRenderer
 
@@ -28,6 +28,11 @@ import Markdown.RawBlock exposing (Attribute)
 {-| A record with functions that define how to render all possible markdown blocks.
 These renderers are composed together to give you the final rendered output.
 
+The `err` type parameter tracks whether the HTML renderer can fail. Use `Renderer String view`
+with [`tryRender`](#tryRender) when your HTML renderer may produce errors (e.g. unregistered tags).
+Use `Renderer Never view` with [`render`](#render) for an infallible pipeline — you can convert
+a fallible renderer into an infallible one using [`Markdown.Html.withFallback`](Markdown-Html#withFallback).
+
 You could render to any type you want. Here are some useful things you might render to:
 
   - `Html` (using the `defaultHtmlRenderer` provided by this module)
@@ -38,11 +43,11 @@ You could render to any type you want. Here are some useful things you might ren
   - Plain text with any formatting stripped away (maybe for a String search feature)
 
 -}
-type alias Renderer view =
+type alias Renderer err view =
     { heading : { level : Block.HeadingLevel, rawText : String, children : List view } -> view
     , paragraph : List view -> view
     , blockQuote : List view -> view
-    , html : Markdown.Html.Renderer (List view -> view)
+    , html : Markdown.Html.Renderer err (List view -> view)
     , text : String -> view
     , codeSpan : String -> view
     , strong : List view -> view
@@ -67,7 +72,7 @@ type alias Renderer view =
 {-| This renders `Html` in an attempt to be as close as possible to
 the HTML output in <https://github.github.com/gfm/>.
 -}
-defaultHtmlRenderer : Renderer (Html msg)
+defaultHtmlRenderer : Renderer String (Html msg)
 defaultHtmlRenderer =
     { heading =
         \{ level, children } ->
@@ -257,7 +262,7 @@ defaultHtmlRenderer =
 
 {-| This renders the parsed markdown structs to a string.
 -}
-defaultStringRenderer : Renderer String
+defaultStringRenderer : Renderer String String
 defaultStringRenderer =
     { heading =
         \{ level, children } ->
@@ -412,13 +417,34 @@ toheads ( llst, rlst ) strs =
             ( List.reverse llst, List.reverse rlst )
 
 
-{-| Apply a `Renderer` to turn parsed `Markdown.Block`s into your rendered markdown view.
+{-| Apply an infallible `Renderer` (one whose HTML renderer uses `Never` as its
+error type, e.g. via `Markdown.Html.withFallback`)
+to turn parsed `Markdown.Block`s into your rendered markdown view.
+
+Since the renderer can never fail, this returns `List view` directly instead of
+`Result`.
+
 -}
 render :
-    Renderer view
+    Renderer Never view
     -> List Block
-    -> Result String (List view)
+    -> List view
 render renderer ast =
+    case tryRender renderer ast of
+        Ok views ->
+            views
+
+        Err n ->
+            never n
+
+
+{-| Apply a `Renderer` to turn parsed `Markdown.Block`s into your rendered markdown view.
+-}
+tryRender :
+    Renderer err view
+    -> List Block
+    -> Result err (List view)
+tryRender renderer ast =
     ast
         |> renderHelper renderer
         |> combineResults
@@ -432,10 +458,8 @@ add metadata to blocks.
 
     markdownInput
         |> Markdown.Parser.parse
-        |> Result.map gatherHeadingOccurrences
-        |> Result.mapError deadEndsToString
-        |> Result.andThen
-            (\ast ->
+        |> gatherHeadingOccurrences
+        |> (\ast ->
                 Markdown.Renderer.renderWithMeta
                     (\maybeSlug ->
                         { defaultHtmlRenderer
@@ -448,10 +472,10 @@ add metadata to blocks.
                         }
                     )
                     ast
-            )
+           )
 
 -}
-renderWithMeta : (meta -> Renderer view) -> List ( Block, meta ) -> Result String (List view)
+renderWithMeta : (meta -> Renderer err view) -> List ( Block, meta ) -> Result err (List view)
 renderWithMeta renderWithMetaFn blocksWithMeta =
     blocksWithMeta
         |> List.filterMap (\( block, meta ) -> renderHelperSingle (renderWithMetaFn meta) block)
@@ -462,9 +486,9 @@ renderHtml :
     String
     -> List Attribute
     -> List Block
-    -> Markdown.Html.Renderer (List view -> view)
-    -> List (Result String view)
-    -> Result String view
+    -> Markdown.Html.Renderer err (List view -> view)
+    -> List (Result err view)
+    -> Result err view
 renderHtml tagName attributes children (Markdown.HtmlRenderer.HtmlRenderer htmlRenderer) renderedChildren =
     renderedChildren
         |> combineResults
@@ -476,20 +500,20 @@ renderHtml tagName attributes children (Markdown.HtmlRenderer.HtmlRenderer htmlR
             )
 
 
-combineResults : List (Result x a) -> Result x (List a)
+combineResults : List (Result err a) -> Result err (List a)
 combineResults =
     List.foldr (Result.map2 (::)) (Ok [])
 
 
 renderHelper :
-    Renderer view
+    Renderer err view
     -> List Block
-    -> List (Result String view)
+    -> List (Result err view)
 renderHelper renderer blocks =
     List.filterMap (renderHelperSingle renderer) blocks
 
 
-renderHelperSingle : Renderer view -> Block -> Maybe (Result String view)
+renderHelperSingle : Renderer err view -> Block -> Maybe (Result err view)
 renderHelperSingle renderer =
     -- known-unoptimized-recursion
     \block ->
@@ -609,7 +633,7 @@ renderHelperSingle renderer =
 
             Block.Table header rows ->
                 let
-                    renderedHeaderCells : Result String (List ( Maybe Block.Alignment, List view ))
+                    renderedHeaderCells : Result err (List ( Maybe Block.Alignment, List view ))
                     renderedHeaderCells =
                         header
                             |> List.map
@@ -618,7 +642,7 @@ renderHelperSingle renderer =
                                 )
                             |> combineResults
 
-                    renderedHeader : Result String view
+                    renderedHeader : Result err view
                     renderedHeader =
                         renderedHeaderCells
                             |> Result.map
@@ -637,7 +661,7 @@ renderHelperSingle renderer =
                             |> List.head
                             |> Maybe.andThen .alignment
 
-                    renderRow : List (List Inline) -> Result String view
+                    renderRow : List (List Inline) -> Result err view
                     renderRow cells =
                         cells
                             |> List.map (renderStyled renderer)
@@ -645,7 +669,7 @@ renderHelperSingle renderer =
                             |> Result.map (List.indexedMap (\index cell -> renderer.tableCell (alignmentForColumn index) cell))
                             |> Result.map renderer.tableRow
 
-                    renderedRows : Result String (List view)
+                    renderedRows : Result err (List view)
                     renderedRows =
                         rows
                             |> List.map renderRow
@@ -663,14 +687,14 @@ renderHelperSingle renderer =
                     |> Just
 
 
-renderStyled : Renderer view -> List Inline -> Result String (List view)
+renderStyled : Renderer err view -> List Inline -> Result err (List view)
 renderStyled renderer styledStrings =
     styledStrings
         |> List.foldr (foldThing renderer) []
         |> combineResults
 
 
-foldThing : Renderer view -> Inline -> List (Result String view) -> List (Result String view)
+foldThing : Renderer err view -> Inline -> List (Result err view) -> List (Result err view)
 foldThing renderer topLevelInline soFar =
     --                    Ok styledLine ->
     --                        (renderStyled renderer styledLine
@@ -693,7 +717,7 @@ foldThing renderer topLevelInline soFar =
             soFar
 
 
-renderSingleInline : Renderer view -> Block.Inline -> Maybe (Result String view)
+renderSingleInline : Renderer err view -> Block.Inline -> Maybe (Result err view)
 renderSingleInline renderer inline =
     case inline of
         Block.Strong innerInlines ->
@@ -758,7 +782,7 @@ renderSingleInline renderer inline =
                     Nothing
 
 
-renderHtmlNode : Renderer view -> String -> List Attribute -> List Block -> Result String view
+renderHtmlNode : Renderer err view -> String -> List Attribute -> List Block -> Result err view
 renderHtmlNode renderer tag attributes children =
     renderHtml tag
         attributes

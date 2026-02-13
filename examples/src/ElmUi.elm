@@ -188,11 +188,10 @@ view : String -> Result String (List (Element msg))
 view markdown =
     markdown
         |> Markdown.Parser.parse
-        |> Result.mapError (\error -> error |> List.map Markdown.Parser.deadEndToString |> String.join "\n")
-        |> Result.andThen (Markdown.Renderer.render renderer)
+        |> Markdown.Renderer.tryRender renderer
 
 
-renderer : Markdown.Renderer.Renderer (Element msg)
+renderer : Markdown.Renderer.Renderer String (Element msg)
 renderer =
     { heading = heading
     , paragraph =
