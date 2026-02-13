@@ -1,8 +1,8 @@
-module Markdown.Parser exposing (parse, deadEndToString)
+module Markdown.Parser exposing (parse)
 
 {-|
 
-@docs parse, deadEndToString
+@docs parse
 
 -}
 
@@ -23,27 +23,24 @@ import Markdown.Table
 import Markdown.TableParser as TableParser
 import Markdown.UnorderedList
 import Parser
-import Parser.Advanced as Advanced exposing ((|.), (|=), Step(..), andThen, chompIf, chompWhile, getChompedString, loop, map, oneOf, problem, succeed, symbol, token)
+import Parser.Advanced as Advanced exposing ((|.), (|=), Step(..), andThen, chompIf, chompWhile, getChompedString, loop, map, oneOf, succeed, symbol, token)
 import Parser.Token as Token
 import String exposing (repeat, trim)
 import ThematicBreak
 import Whitespace
 
 
-{-| Try parsing a markdown String into `Markdown.Block.Block`s.
+{-| Parse a markdown String into `Markdown.Block.Block`s.
+
+This function always succeeds — any input produces some output, consistent with
+how mature markdown parsers handle arbitrary text.
 
 Often you'll want to render these `Block`s directly:
 
     render renderer markdown =
         markdown
             |> Markdown.Parser.parse
-            |> Result.mapError deadEndsToString
-            |> Result.andThen (\ast -> Markdown.Renderer.tryRender renderer ast)
-
-    deadEndsToString deadEnds =
-        deadEnds
-            |> List.map Markdown.Parser.deadEndToString
-            |> String.join "\n"
+            |> Markdown.Renderer.render renderer
 
 But you can also do a lot with the `Block`s before passing them through:
 
@@ -51,95 +48,34 @@ But you can also do a lot with the `Block`s before passing them through:
   - Use the blocks to gather metadata about the markdown document ([example: building a table of contents from `Block`s](https://ellie-app.com/cHB3fRSKVRha1))
 
 -}
-parse : String -> Result (List (Advanced.DeadEnd String Parser.Problem)) (List Block)
+parse : String -> List Block
 parse input =
-    -- first parse the file as raw blocks
-    case Advanced.run (rawBlockParser |. Helpers.endOfFile) input of
-        Err e ->
-            Err e
+    let
+        -- first parse the file as raw blocks
+        state : State
+        state =
+            case Advanced.run (rawBlockParser |. Helpers.endOfFile) input of
+                Ok v ->
+                    v
 
-        Ok v ->
-            -- then parse the inlines of each raw block
-            case parseAllInlines v of
-                Err e ->
-                    -- NOTE these messages get an incorrect location,
-                    -- because they are parsed outside of the main (raw block) parser context.
-                    Advanced.run (Advanced.problem e) ""
+                Err _ ->
+                    -- Defensive fallback: treat entire input as a paragraph
+                    { linkReferenceDefinitions = []
+                    , rawBlocks = [ OpenBlockOrParagraph (UnparsedInlines input) ]
+                    }
 
-                Ok blocks ->
-                    let
-                        -- TODO find a better way to do this
-                        -- e.g. make sure they are never generated
-                        isNotEmptyParagraph : Block -> Bool
-                        isNotEmptyParagraph block =
-                            case block of
-                                Block.Paragraph [] ->
-                                    False
+        isNotEmptyParagraph : Block -> Bool
+        isNotEmptyParagraph block =
+            case block of
+                Block.Paragraph [] ->
+                    False
 
-                                _ ->
-                                    True
-                    in
-                    Ok (List.filter isNotEmptyParagraph blocks)
-
-
-deadEndsToString : List (Advanced.DeadEnd String Parser.Problem) -> String
-deadEndsToString deadEnds =
-    deadEnds
-        |> List.map deadEndToString
-        |> String.join "\n"
-
-
-{-| Turn a parsing problem into the default String representation.
--}
-deadEndToString : Advanced.DeadEnd String Parser.Problem -> String
-deadEndToString deadEnd =
-    "Problem at row " ++ String.fromInt deadEnd.row ++ "\n" ++ problemToString deadEnd.problem
-
-
-problemToString : Parser.Problem -> String
-problemToString problem =
-    case problem of
-        Parser.Expecting string ->
-            "Expecting " ++ string
-
-        Parser.ExpectingInt ->
-            "Expecting int"
-
-        Parser.ExpectingHex ->
-            "Expecting hex"
-
-        Parser.ExpectingOctal ->
-            "Expecting octal"
-
-        Parser.ExpectingBinary ->
-            "Expecting binary"
-
-        Parser.ExpectingFloat ->
-            "Expecting float"
-
-        Parser.ExpectingNumber ->
-            "Expecting number"
-
-        Parser.ExpectingVariable ->
-            "Expecting variable"
-
-        Parser.ExpectingSymbol string ->
-            "Expecting symbol " ++ string
-
-        Parser.ExpectingKeyword string ->
-            "Expecting keyword " ++ string
-
-        Parser.ExpectingEnd ->
-            "Expecting keyword end"
-
-        Parser.UnexpectedChar ->
-            "Unexpected char"
-
-        Parser.Problem problemDescription ->
-            problemDescription
-
-        Parser.BadRepeat ->
-            "Bad repeat"
+                _ ->
+                    True
+    in
+    -- then parse the inlines of each raw block
+    parseAllInlines state
+        |> List.filter isNotEmptyParagraph
 
 
 type alias Parser a =
@@ -202,35 +138,31 @@ mapInline inline =
             Block.Strikethrough (inlines |> List.map mapInline)
 
 
-toHeading : Int -> Result Parser.Problem Block.HeadingLevel
+toHeading : Int -> Block.HeadingLevel
 toHeading level =
     case level of
         1 ->
-            Ok Block.H1
+            Block.H1
 
         2 ->
-            Ok Block.H2
+            Block.H2
 
         3 ->
-            Ok Block.H3
+            Block.H3
 
         4 ->
-            Ok Block.H4
+            Block.H4
 
         5 ->
-            Ok Block.H5
-
-        6 ->
-            Ok Block.H6
+            Block.H5
 
         _ ->
-            Err ("A heading with 1 to 6 #'s, but found " ++ String.fromInt level |> Parser.Expecting)
+            Block.H6
 
 
 type InlineResult
     = EmptyBlock
     | ParsedBlock Block
-    | InlineProblem Parser.Problem
 
 
 isTightBoolToListDisplay : Bool -> Block.ListSpacing
@@ -246,15 +178,10 @@ parseInlines : LinkReferenceDefinitions -> RawBlock -> InlineResult
 parseInlines linkReferences rawBlock =
     case rawBlock of
         Heading level unparsedInlines ->
-            case toHeading level of
-                Ok parsedLevel ->
-                    unparsedInlines
-                        |> inlineParseHelper linkReferences
-                        |> Block.Heading parsedLevel
-                        |> ParsedBlock
-
-                Err e ->
-                    InlineProblem e
+            unparsedInlines
+                |> inlineParseHelper linkReferences
+                |> Block.Heading (toHeading level)
+                |> ParsedBlock
 
         OpenBlockOrParagraph unparsedInlines ->
             unparsedInlines
@@ -273,13 +200,7 @@ parseInlines linkReferences rawBlock =
                     let
                         blocks : List Block
                         blocks =
-                            case parseAllInlines { linkReferenceDefinitions = linkReferences, rawBlocks = rawBlocks } of
-                                Ok parsedBlocks ->
-                                    parsedBlocks
-
-                                --TODO: pass this Err e
-                                Err _ ->
-                                    []
+                            parseAllInlines { linkReferenceDefinitions = linkReferences, rawBlocks = rawBlocks }
 
                         blocksTask : Block.Task
                         blocksTask =
@@ -305,13 +226,7 @@ parseInlines linkReferences rawBlock =
             let
                 parseItem : List RawBlock -> List Block
                 parseItem rawBlocks =
-                    case parseAllInlines { linkReferenceDefinitions = linkReferences, rawBlocks = rawBlocks } of
-                        Ok parsedBlocks ->
-                            parsedBlocks
-
-                        --TODO: pass this Err e
-                        Err _ ->
-                            []
+                    parseAllInlines { linkReferenceDefinitions = linkReferences, rawBlocks = rawBlocks }
             in
             unparsedItems
                 |> List.map parseItem
@@ -333,13 +248,9 @@ parseInlines linkReferences rawBlock =
             EmptyBlock
 
         ParsedBlockQuote rawBlocks ->
-            case parseAllInlines { linkReferenceDefinitions = linkReferences, rawBlocks = rawBlocks } of
-                Ok parsedBlocks ->
-                    Block.BlockQuote parsedBlocks
-                        |> ParsedBlock
-
-                Err e ->
-                    InlineProblem e
+            parseAllInlines { linkReferenceDefinitions = linkReferences, rawBlocks = rawBlocks }
+                |> Block.BlockQuote
+                |> ParsedBlock
 
         IndentedCodeBlock codeBlockBody ->
             Block.CodeBlock { body = codeBlockBody, language = Nothing }
@@ -507,14 +418,9 @@ xmlNodeToHtmlNode xmlNode =
                 |> succeed
 
         HtmlParser.Element tag attributes children ->
-            case nodesToBlocks children of
-                Ok parsedChildren ->
-                    Block.HtmlElement tag attributes parsedChildren
-                        |> RawBlock.Html
-                        |> succeed
-
-                Err err ->
-                    problem err
+            Block.HtmlElement tag attributes (nodesToBlocks children)
+                |> RawBlock.Html
+                |> succeed
 
         Comment string ->
             Block.HtmlComment string
@@ -545,7 +451,6 @@ xmlNodeToHtmlNode xmlNode =
 textNodeToBlocks : String -> List Block
 textNodeToBlocks textNodeValue =
     parse textNodeValue
-        |> Result.withDefault []
 
 
 nodeToRawBlock : Node -> Block.Html Block
@@ -585,73 +490,52 @@ nodeToRawBlock node =
             Block.ClosingTag tagName
 
 
-nodesToBlocks : List Node -> Result Parser.Problem (List Block)
+nodesToBlocks : List Node -> List Block
 nodesToBlocks children =
     nodesToBlocksHelp children []
 
 
-nodesToBlocksHelp : List Node -> List Block -> Result Parser.Problem (List Block)
+nodesToBlocksHelp : List Node -> List Block -> List Block
 nodesToBlocksHelp remaining soFar =
     case remaining of
         node :: rest ->
-            case childToBlocks node soFar of
-                Ok newSoFar ->
-                    nodesToBlocksHelp rest newSoFar
-
-                Err e ->
-                    Err e
+            nodesToBlocksHelp rest (childToBlocks node soFar)
 
         [] ->
-            Ok (List.reverse soFar)
+            List.reverse soFar
 
 
 {-| Add the blocks from this node to the passed-in list of blocks
 -}
-childToBlocks : Node -> List Block -> Result Parser.Problem (List Block)
+childToBlocks : Node -> List Block -> List Block
 childToBlocks node blocks =
     case node of
         Element tag attributes children ->
-            case nodesToBlocks children of
-                Ok childrenAsBlocks ->
-                    let
-                        block : Block
-                        block =
-                            Block.HtmlElement tag attributes childrenAsBlocks
-                                |> Block.HtmlBlock
-                    in
-                    Ok (block :: blocks)
-
-                Err err ->
-                    Err err
+            let
+                block : Block
+                block =
+                    Block.HtmlElement tag attributes (nodesToBlocks children)
+                        |> Block.HtmlBlock
+            in
+            block :: blocks
 
         Text innerText ->
-            case parse innerText of
-                Ok value ->
-                    Ok (List.reverse value ++ blocks)
-
-                Err error ->
-                    Err
-                        (Parser.Expecting
-                            (error
-                                |> List.map deadEndToString
-                                |> String.join "\n"
-                            )
-                        )
+            List.reverse (parse innerText) ++ blocks
 
         Comment string ->
-            Ok (Block.HtmlBlock (Block.HtmlComment string) :: blocks)
+            Block.HtmlBlock (Block.HtmlComment string) :: blocks
 
         Cdata string ->
-            Ok (Block.HtmlBlock (Block.Cdata string) :: blocks)
+            Block.HtmlBlock (Block.Cdata string) :: blocks
 
         ProcessingInstruction string ->
-            Ok (Block.HtmlBlock (Block.ProcessingInstruction string) :: blocks)
+            Block.HtmlBlock (Block.ProcessingInstruction string) :: blocks
 
         Declaration declarationType content ->
-            Ok (Block.HtmlBlock (Block.HtmlDeclaration declarationType content) :: blocks)
+            Block.HtmlBlock (Block.HtmlDeclaration declarationType content) :: blocks
 
         HtmlParser.ClosingTag tagName ->
-            Ok (Block.HtmlBlock (Block.ClosingTag tagName) :: blocks)
+            Block.HtmlBlock (Block.ClosingTag tagName) :: blocks
 
 
 type alias LinkReferenceDefinitions =
@@ -671,6 +555,18 @@ addReference state linkRef =
     }
 
 
+runRawBlockParserInfallible : String -> State
+runRawBlockParserInfallible input =
+    case Advanced.run rawBlockParser input of
+        Ok state ->
+            state
+
+        Err _ ->
+            { linkReferenceDefinitions = []
+            , rawBlocks = [ OpenBlockOrParagraph (UnparsedInlines input) ]
+            }
+
+
 rawBlockParser : Parser State
 rawBlockParser =
     loop
@@ -681,12 +577,12 @@ rawBlockParser =
         |> andThen completeBlocks
 
 
-parseAllInlines : State -> Result Parser.Problem (List Block)
+parseAllInlines : State -> List Block
 parseAllInlines state =
     parseAllInlinesHelp state state.rawBlocks []
 
 
-parseAllInlinesHelp : State -> List RawBlock -> List Block -> Result Parser.Problem (List Block)
+parseAllInlinesHelp : State -> List RawBlock -> List Block -> List Block
 parseAllInlinesHelp state rawBlocks parsedBlocks =
     case rawBlocks of
         rawBlock :: rest ->
@@ -698,11 +594,8 @@ parseAllInlinesHelp state rawBlocks parsedBlocks =
                     -- ignore empty blocks
                     parseAllInlinesHelp state rest parsedBlocks
 
-                InlineProblem e ->
-                    Err e
-
         [] ->
-            Ok parsedBlocks
+            parsedBlocks
 
 
 endWithOpenBlockOrParagraph : RawBlock -> Bool
@@ -784,120 +677,100 @@ completeOrMergeBlocks state newRawBlock =
                         }
 
                 OpenBlockOrParagraph (UnparsedInlines body1) ->
-                    case Advanced.run rawBlockParser body2 of
-                        Ok value ->
-                            case value.rawBlocks of
-                                last :: _ ->
-                                    if endWithOpenBlockOrParagraph last && not (String.endsWith "\n" body2) then
-                                        succeed
-                                            { linkReferenceDefinitions = state.linkReferenceDefinitions
-                                            , rawBlocks =
-                                                BlockQuote (joinStringsPreserveAll body2 body1)
-                                                    :: rest
-                                            }
+                    let
+                        value : State
+                        value =
+                            runRawBlockParserInfallible body2
+                    in
+                    case value.rawBlocks of
+                        last :: _ ->
+                            if endWithOpenBlockOrParagraph last && not (String.endsWith "\n" body2) then
+                                succeed
+                                    { linkReferenceDefinitions = state.linkReferenceDefinitions
+                                    , rawBlocks =
+                                        BlockQuote (joinStringsPreserveAll body2 body1)
+                                            :: rest
+                                    }
 
-                                    else
-                                        case Advanced.run rawBlockParser body2 of
-                                            Ok value1 ->
-                                                succeed
-                                                    { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
-                                                    , rawBlocks = newRawBlock :: (value1.rawBlocks |> ParsedBlockQuote) :: rest
-                                                    }
+                            else
+                                succeed
+                                    { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
+                                    , rawBlocks = newRawBlock :: (value.rawBlocks |> ParsedBlockQuote) :: rest
+                                    }
 
-                                            Err e1 ->
-                                                problem (Parser.Problem (deadEndsToString e1))
-
-                                _ ->
-                                    case Advanced.run rawBlockParser body2 of
-                                        Ok value1 ->
-                                            succeed
-                                                { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
-                                                , rawBlocks = newRawBlock :: (value1.rawBlocks |> ParsedBlockQuote) :: rest
-                                                }
-
-                                        Err e1 ->
-                                            problem (Parser.Problem (deadEndsToString e1))
-
-                        Err e ->
-                            problem (Parser.Problem (deadEndsToString e))
-
-                IndentedCodeBlock body1 ->
-                    case Advanced.run rawBlockParser body2 of
-                        Ok value ->
-                            case value.rawBlocks of
-                                (OpenBlockOrParagraph _) :: _ ->
-                                    succeed
-                                        { linkReferenceDefinitions = state.linkReferenceDefinitions
-                                        , rawBlocks =
-                                            BlockQuote (joinRawStringsWith " " body2 body1)
-                                                :: rest
-                                        }
-
-                                _ ->
-                                    case Advanced.run rawBlockParser body2 of
-                                        Ok value1 ->
-                                            succeed
-                                                { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
-                                                , rawBlocks = newRawBlock :: (value1.rawBlocks |> ParsedBlockQuote) :: rest
-                                                }
-
-                                        Err e1 ->
-                                            problem (Parser.Problem (deadEndsToString e1))
-
-                        Err e ->
-                            problem (Parser.Problem (deadEndsToString e))
-
-                _ ->
-                    case Advanced.run rawBlockParser body2 of
-                        Ok value ->
+                        _ ->
                             succeed
                                 { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
                                 , rawBlocks = newRawBlock :: (value.rawBlocks |> ParsedBlockQuote) :: rest
                                 }
 
-                        Err e ->
-                            problem (Parser.Problem (deadEndsToString e))
+                IndentedCodeBlock body1 ->
+                    let
+                        value : State
+                        value =
+                            runRawBlockParserInfallible body2
+                    in
+                    case value.rawBlocks of
+                        (OpenBlockOrParagraph _) :: _ ->
+                            succeed
+                                { linkReferenceDefinitions = state.linkReferenceDefinitions
+                                , rawBlocks =
+                                    BlockQuote (joinRawStringsWith " " body2 body1)
+                                        :: rest
+                                }
+
+                        _ ->
+                            succeed
+                                { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
+                                , rawBlocks = newRawBlock :: (value.rawBlocks |> ParsedBlockQuote) :: rest
+                                }
+
+                _ ->
+                    let
+                        value : State
+                        value =
+                            runRawBlockParserInfallible body2
+                    in
+                    succeed
+                        { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
+                        , rawBlocks = newRawBlock :: (value.rawBlocks |> ParsedBlockQuote) :: rest
+                        }
 
         ( _, (UnorderedListBlock tight intended1 closeListItems2 openListItem2) :: rest ) ->
             case newRawBlock of
                 UnorderedListBlock _ intended2 _ openListItem1 ->
+                    let
+                        value : State
+                        value =
+                            runRawBlockParserInfallible openListItem2.body
+                    in
                     if openListItem2.marker == openListItem1.marker then
-                        case Advanced.run rawBlockParser openListItem2.body of
-                            Ok value ->
-                                if List.member BlankLine value.rawBlocks then
-                                    succeed
-                                        { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
-                                        , rawBlocks = UnorderedListBlock False intended2 ({ task = openListItem2.task, body = value.rawBlocks } :: closeListItems2) openListItem1 :: rest
-                                        }
+                        if List.member BlankLine value.rawBlocks then
+                            succeed
+                                { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
+                                , rawBlocks = UnorderedListBlock False intended2 ({ task = openListItem2.task, body = value.rawBlocks } :: closeListItems2) openListItem1 :: rest
+                                }
 
-                                else
-                                    succeed
-                                        { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
-                                        , rawBlocks = UnorderedListBlock tight intended2 ({ task = openListItem2.task, body = value.rawBlocks } :: closeListItems2) openListItem1 :: rest
-                                        }
-
-                            Err e ->
-                                problem (Parser.Problem (deadEndsToString e))
+                        else
+                            succeed
+                                { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
+                                , rawBlocks = UnorderedListBlock tight intended2 ({ task = openListItem2.task, body = value.rawBlocks } :: closeListItems2) openListItem1 :: rest
+                                }
 
                     else
-                        case Advanced.run rawBlockParser openListItem2.body of
-                            Ok value ->
-                                let
-                                    tight2 : Bool
-                                    tight2 =
-                                        if List.member BlankLine value.rawBlocks then
-                                            False
+                        let
+                            tight2 : Bool
+                            tight2 =
+                                if List.member BlankLine value.rawBlocks then
+                                    False
 
-                                        else
-                                            tight
-                                in
-                                succeed
-                                    { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
-                                    , rawBlocks = newRawBlock :: UnorderedListBlock tight2 intended1 ({ task = openListItem2.task, body = value.rawBlocks } :: closeListItems2) openListItem1 :: rest
-                                    }
-
-                            Err e ->
-                                problem (Parser.Problem (deadEndsToString e))
+                                else
+                                    tight
+                        in
+                        succeed
+                            { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
+                            , rawBlocks = newRawBlock :: UnorderedListBlock tight2 intended1 ({ task = openListItem2.task, body = value.rawBlocks } :: closeListItems2) openListItem1 :: rest
+                            }
 
                 OpenBlockOrParagraph (UnparsedInlines body1) ->
                     succeed
@@ -908,69 +781,53 @@ completeOrMergeBlocks state newRawBlock =
                         }
 
                 _ ->
-                    case Advanced.run rawBlockParser openListItem2.body of
-                        Ok value ->
-                            let
-                                tight2 : Bool
-                                tight2 =
-                                    if List.member BlankLine value.rawBlocks then
-                                        False
+                    let
+                        value : State
+                        value =
+                            runRawBlockParserInfallible openListItem2.body
 
-                                    else
-                                        tight
-                            in
-                            succeed
-                                { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
-                                , rawBlocks = newRawBlock :: UnorderedListBlock tight2 intended1 ({ task = openListItem2.task, body = value.rawBlocks } :: closeListItems2) openListItem2 :: rest
-                                }
+                        tight2 : Bool
+                        tight2 =
+                            if List.member BlankLine value.rawBlocks then
+                                False
 
-                        Err e ->
-                            problem (Parser.Problem (deadEndsToString e))
+                            else
+                                tight
+                    in
+                    succeed
+                        { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
+                        , rawBlocks = newRawBlock :: UnorderedListBlock tight2 intended1 ({ task = openListItem2.task, body = value.rawBlocks } :: closeListItems2) openListItem2 :: rest
+                        }
 
         -- OrderedListBlock Bool Int OrderedListMarker Int (List (List RawBlock)) String
         -- (\item -> OrderedListBlock True item.intended item.marker item.order [] item.body)
         ( _, (OrderedListBlock tight intended1 marker order closeListItems2 openListItem2) :: rest ) ->
             case newRawBlock of
                 OrderedListBlock _ intended2 marker2 _ _ openListItem1 ->
+                    let
+                        value : State
+                        value =
+                            runRawBlockParserInfallible openListItem2
+
+                        tight2 : Bool
+                        tight2 =
+                            if List.member BlankLine value.rawBlocks then
+                                False
+
+                            else
+                                tight
+                    in
                     if marker == marker2 then
-                        case Advanced.run rawBlockParser openListItem2 of
-                            Ok value ->
-                                let
-                                    tight2 : Bool
-                                    tight2 =
-                                        if List.member BlankLine value.rawBlocks then
-                                            False
-
-                                        else
-                                            tight
-                                in
-                                succeed
-                                    { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
-                                    , rawBlocks = OrderedListBlock tight2 intended2 marker order (value.rawBlocks :: closeListItems2) openListItem1 :: rest
-                                    }
-
-                            Err e ->
-                                problem (Parser.Problem (deadEndsToString e))
+                        succeed
+                            { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
+                            , rawBlocks = OrderedListBlock tight2 intended2 marker order (value.rawBlocks :: closeListItems2) openListItem1 :: rest
+                            }
 
                     else
-                        case Advanced.run rawBlockParser openListItem2 of
-                            Ok value ->
-                                let
-                                    tight2 : Bool
-                                    tight2 =
-                                        if List.member BlankLine value.rawBlocks then
-                                            False
-
-                                        else
-                                            tight
-                                in
-                                succeed
-                                    { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
-                                    , rawBlocks = newRawBlock :: OrderedListBlock tight2 intended1 marker order (value.rawBlocks :: closeListItems2) openListItem2 :: rest
-                                    }
-
-                            Err e ->
-                                problem (Parser.Problem (deadEndsToString e))
+                        succeed
+                            { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
+                            , rawBlocks = newRawBlock :: OrderedListBlock tight2 intended1 marker order (value.rawBlocks :: closeListItems2) openListItem2 :: rest
+                            }
 
                 OpenBlockOrParagraph (UnparsedInlines body1) ->
                     succeed
@@ -981,24 +838,23 @@ completeOrMergeBlocks state newRawBlock =
                         }
 
                 _ ->
-                    case Advanced.run rawBlockParser openListItem2 of
-                        Ok value ->
-                            let
-                                tight2 : Bool
-                                tight2 =
-                                    if List.member BlankLine value.rawBlocks then
-                                        False
+                    let
+                        value : State
+                        value =
+                            runRawBlockParserInfallible openListItem2
 
-                                    else
-                                        tight
-                            in
-                            succeed
-                                { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
-                                , rawBlocks = newRawBlock :: OrderedListBlock tight2 intended1 marker order (value.rawBlocks :: closeListItems2) openListItem2 :: rest
-                                }
+                        tight2 : Bool
+                        tight2 =
+                            if List.member BlankLine value.rawBlocks then
+                                False
 
-                        Err e ->
-                            problem (Parser.Problem (deadEndsToString e))
+                            else
+                                tight
+                    in
+                    succeed
+                        { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
+                        , rawBlocks = newRawBlock :: OrderedListBlock tight2 intended1 marker order (value.rawBlocks :: closeListItems2) openListItem2 :: rest
+                        }
 
         ( OpenBlockOrParagraph (UnparsedInlines body1), (OpenBlockOrParagraph (UnparsedInlines body2)) :: rest ) ->
             succeed
@@ -1047,42 +903,42 @@ completeOrMergeBlocks state newRawBlock =
                 }
 
         ( _, BlankLine :: (OrderedListBlock tight intended1 marker order closeListItems2 openListItem2) :: rest ) ->
-            case Advanced.run rawBlockParser openListItem2 of
-                Ok value ->
-                    case newRawBlock of
-                        OrderedListBlock _ intended2 _ _ _ openListItem ->
-                            succeed
-                                { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
-                                , rawBlocks = OrderedListBlock False intended2 marker order (value.rawBlocks :: closeListItems2) openListItem :: rest
-                                }
+            let
+                value : State
+                value =
+                    runRawBlockParserInfallible openListItem2
+            in
+            case newRawBlock of
+                OrderedListBlock _ intended2 _ _ _ openListItem ->
+                    succeed
+                        { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
+                        , rawBlocks = OrderedListBlock False intended2 marker order (value.rawBlocks :: closeListItems2) openListItem :: rest
+                        }
 
-                        _ ->
-                            succeed
-                                { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
-                                , rawBlocks = newRawBlock :: BlankLine :: OrderedListBlock tight intended1 marker order (value.rawBlocks :: closeListItems2) openListItem2 :: rest
-                                }
-
-                Err e ->
-                    problem (Parser.Problem (deadEndsToString e))
+                _ ->
+                    succeed
+                        { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
+                        , rawBlocks = newRawBlock :: BlankLine :: OrderedListBlock tight intended1 marker order (value.rawBlocks :: closeListItems2) openListItem2 :: rest
+                        }
 
         ( _, BlankLine :: (UnorderedListBlock tight intended1 closeListItems2 openListItem2) :: rest ) ->
-            case Advanced.run rawBlockParser openListItem2.body of
-                Ok value ->
-                    case newRawBlock of
-                        UnorderedListBlock _ _ _ openListItem ->
-                            succeed
-                                { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
-                                , rawBlocks = UnorderedListBlock False intended1 ({ task = openListItem2.task, body = value.rawBlocks } :: closeListItems2) openListItem :: rest
-                                }
+            let
+                value : State
+                value =
+                    runRawBlockParserInfallible openListItem2.body
+            in
+            case newRawBlock of
+                UnorderedListBlock _ _ _ openListItem ->
+                    succeed
+                        { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
+                        , rawBlocks = UnorderedListBlock False intended1 ({ task = openListItem2.task, body = value.rawBlocks } :: closeListItems2) openListItem :: rest
+                        }
 
-                        _ ->
-                            succeed
-                                { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
-                                , rawBlocks = newRawBlock :: BlankLine :: UnorderedListBlock tight intended1 ({ task = openListItem2.task, body = value.rawBlocks } :: closeListItems2) openListItem2 :: rest
-                                }
-
-                Err e ->
-                    problem (Parser.Problem (deadEndsToString e))
+                _ ->
+                    succeed
+                        { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
+                        , rawBlocks = newRawBlock :: BlankLine :: UnorderedListBlock tight intended1 ({ task = openListItem2.task, body = value.rawBlocks } :: closeListItems2) openListItem2 :: rest
+                        }
 
         _ ->
             succeed
@@ -1286,99 +1142,95 @@ stepRawBlock revStmts =
 
 completeBlocks :
     State
-    -> Parser State --Result Parser.Problem (List Block)
+    -> Parser State
 completeBlocks state =
     case state.rawBlocks of
         (BlockQuote body2) :: rest ->
-            case Advanced.run rawBlockParser body2 of
-                Ok value ->
-                    succeed
-                        { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
-                        , rawBlocks = (value.rawBlocks |> ParsedBlockQuote) :: rest
-                        }
-
-                Err error ->
-                    problem (Parser.Problem (deadEndsToString error))
+            let
+                value : State
+                value =
+                    runRawBlockParserInfallible body2
+            in
+            succeed
+                { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
+                , rawBlocks = (value.rawBlocks |> ParsedBlockQuote) :: rest
+                }
 
         (UnorderedListBlock tight intended closeListItems openListItem) :: rest ->
-            case Advanced.run rawBlockParser openListItem.body of
-                Ok value ->
-                    let
-                        tight2 : Bool
-                        tight2 =
-                            if List.member BlankLine value.rawBlocks then
-                                False
+            let
+                value : State
+                value =
+                    runRawBlockParserInfallible openListItem.body
 
-                            else
-                                tight
-                    in
-                    succeed
-                        { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
-                        , rawBlocks = UnorderedListBlock tight2 intended ({ task = openListItem.task, body = value.rawBlocks } :: closeListItems) openListItem :: rest
-                        }
+                tight2 : Bool
+                tight2 =
+                    if List.member BlankLine value.rawBlocks then
+                        False
 
-                Err e ->
-                    problem (Parser.Problem (deadEndsToString e))
+                    else
+                        tight
+            in
+            succeed
+                { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
+                , rawBlocks = UnorderedListBlock tight2 intended ({ task = openListItem.task, body = value.rawBlocks } :: closeListItems) openListItem :: rest
+                }
 
         BlankLine :: (UnorderedListBlock tight intended closeListItems openListItem) :: rest ->
-            case Advanced.run rawBlockParser openListItem.body of
-                Ok value ->
-                    let
-                        tight2 : Bool
-                        tight2 =
-                            if List.member BlankLine value.rawBlocks then
-                                False
+            let
+                value : State
+                value =
+                    runRawBlockParserInfallible openListItem.body
 
-                            else
-                                tight
-                    in
-                    succeed
-                        { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
-                        , rawBlocks = UnorderedListBlock tight2 intended ({ task = openListItem.task, body = value.rawBlocks } :: closeListItems) openListItem :: rest
-                        }
+                tight2 : Bool
+                tight2 =
+                    if List.member BlankLine value.rawBlocks then
+                        False
 
-                Err e ->
-                    problem (Parser.Problem (deadEndsToString e))
+                    else
+                        tight
+            in
+            succeed
+                { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
+                , rawBlocks = UnorderedListBlock tight2 intended ({ task = openListItem.task, body = value.rawBlocks } :: closeListItems) openListItem :: rest
+                }
 
         (OrderedListBlock tight intended marker order closeListItems openListItem) :: rest ->
-            case Advanced.run rawBlockParser openListItem of
-                Ok value ->
-                    let
-                        tight2 : Bool
-                        tight2 =
-                            if List.member BlankLine value.rawBlocks then
-                                False
+            let
+                value : State
+                value =
+                    runRawBlockParserInfallible openListItem
 
-                            else
-                                tight
-                    in
-                    succeed
-                        { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
-                        , rawBlocks = OrderedListBlock tight2 intended marker order (value.rawBlocks :: closeListItems) openListItem :: rest
-                        }
+                tight2 : Bool
+                tight2 =
+                    if List.member BlankLine value.rawBlocks then
+                        False
 
-                Err e ->
-                    problem (Parser.Problem (deadEndsToString e))
+                    else
+                        tight
+            in
+            succeed
+                { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
+                , rawBlocks = OrderedListBlock tight2 intended marker order (value.rawBlocks :: closeListItems) openListItem :: rest
+                }
 
         BlankLine :: (OrderedListBlock tight intended marker order closeListItems openListItem) :: rest ->
-            case Advanced.run rawBlockParser openListItem of
-                Ok value ->
-                    let
-                        tight2 : Bool
-                        tight2 =
-                            if List.member BlankLine value.rawBlocks then
-                                False
+            let
+                value : State
+                value =
+                    runRawBlockParserInfallible openListItem
 
-                            else
-                                tight
-                    in
-                    succeed
-                        { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
-                        , rawBlocks = OrderedListBlock tight2 intended marker order (value.rawBlocks :: closeListItems) openListItem :: rest
-                        }
+                tight2 : Bool
+                tight2 =
+                    if List.member BlankLine value.rawBlocks then
+                        False
 
-                Err e ->
-                    problem (Parser.Problem (deadEndsToString e))
+                    else
+                        tight
+            in
+            succeed
+                { linkReferenceDefinitions = state.linkReferenceDefinitions ++ value.linkReferenceDefinitions
+                , rawBlocks = OrderedListBlock tight2 intended marker order (value.rawBlocks :: closeListItems) openListItem :: rest
+                }
 
         _ ->
             succeed state

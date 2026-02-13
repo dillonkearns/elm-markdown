@@ -4,8 +4,6 @@ import Expect
 import Markdown.Html
 import Markdown.Parser as Markdown
 import Markdown.Renderer
-import Parser
-import Parser.Advanced
 import Test exposing (..)
 
 
@@ -13,15 +11,7 @@ render : Markdown.Renderer.Renderer String view -> String -> Result String (List
 render renderer markdown =
     markdown
         |> Markdown.parse
-        |> Result.mapError deadEndsToString
-        |> Result.andThen (\ast -> Markdown.Renderer.tryRender renderer ast)
-
-
-deadEndsToString : List (Parser.Advanced.DeadEnd String Parser.Problem) -> String
-deadEndsToString deadEnds =
-    deadEnds
-        |> List.map Markdown.deadEndToString
-        |> String.join "\n"
+        |> (\ast -> Markdown.Renderer.tryRender renderer ast)
 
 
 type Rendered tag
@@ -60,9 +50,7 @@ renderInfallible : Markdown.Renderer.Renderer Never String -> String -> List Str
 renderInfallible renderer markdown =
     markdown
         |> Markdown.parse
-        |> Result.mapError deadEndsToString
-        |> Result.map (\ast -> Markdown.Renderer.render renderer ast)
-        |> Result.withDefault []
+        |> (\ast -> Markdown.Renderer.render renderer ast)
 
 
 testRenderer : List (Markdown.Html.Renderer String (List (Rendered a) -> Rendered a)) -> Markdown.Renderer.Renderer String (Rendered a)

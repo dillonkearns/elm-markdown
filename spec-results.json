@@ -544,11 +544,16 @@
     ],
     "Raw HTML": [
       617,
+      618,
+      619,
+      620,
+      621,
       622,
       623,
       624,
       627,
-      628
+      628,
+      632
     ],
     "Setext headings": [
       100,
@@ -1162,11 +1167,16 @@
     ],
     "Raw HTML": [
       617,
+      618,
+      619,
+      620,
+      621,
       622,
       623,
       624,
       627,
-      628
+      628,
+      632
     ],
     "Setext headings": [
       100,
@@ -1362,6 +1372,9 @@
       null
     ],
     "quadratic_email": [
+      null
+    ],
+    "redos_html_closing": [
       null
     ],
     "redos_nolink": [

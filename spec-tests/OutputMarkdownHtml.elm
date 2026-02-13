@@ -41,14 +41,7 @@ init flags =
 render renderer markdown =
     markdown
         |> Markdown.parse
-        |> Result.mapError deadEndsToString
-        |> Result.map (\ast -> Markdown.Renderer.render renderer ast)
-
-
-deadEndsToString deadEnds =
-    deadEnds
-        |> List.map Markdown.deadEndToString
-        |> String.join "\n"
+        |> (\ast -> Markdown.Renderer.render renderer ast)
 
 
 renderMarkdown : String -> Html
@@ -235,10 +228,11 @@ renderMarkdown markdown =
                     in
                     Html.td attrs
             }
-        |> Result.map (List.map (Html.toString 0))
-        |> Result.map (String.join "")
-        |> Result.map removeVoidClosingTags
-        |> Result.map replaceClosingTagMarkers
+        |> List.map (Html.toString 0)
+        |> String.join ""
+        |> removeVoidClosingTags
+        |> replaceClosingTagMarkers
+        |> Ok
 
 
 {-| Ensure that void tags don't have closing tag, see <https://github.com/zwilias/elm-html-string/issues/12>.

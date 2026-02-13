@@ -46,7 +46,7 @@ Should give output:
 But instead was:
 
 ````````````html
-ERROR Problem at row 2 Expecting symbol
+<p>&lt;a href=&quot;/bar/)&quot;&gt;</p>
 ````````````
 ## [Example 24](https://spec.commonmark.org/0.30/#example-24)
 

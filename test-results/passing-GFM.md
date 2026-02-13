@@ -10543,6 +10543,84 @@ Gives this correct output:
 
 ````````````
 
+### [Example 618](https://spec.commonmark.org/0.30/#example-618)
+
+This markdown:
+
+
+````````````markdown
+<a h*#ref="hi">
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p>&lt;a h*#ref=&quot;hi&quot;&gt;</p>
+
+````````````
+
+### [Example 619](https://spec.commonmark.org/0.30/#example-619)
+
+This markdown:
+
+
+````````````markdown
+<a href="hi'> <a href=hi'>
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p>&lt;a href=&quot;hi'&gt; &lt;a href=hi'&gt;</p>
+
+````````````
+
+### [Example 620](https://spec.commonmark.org/0.30/#example-620)
+
+This markdown:
+
+
+````````````markdown
+< a><
+foo><bar/ >
+<foo bar=baz
+bim!bop />
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p>&lt; a&gt;&lt;
+foo&gt;&lt;bar/ &gt;
+&lt;foo bar=baz
+bim!bop /&gt;</p>
+
+````````````
+
+### [Example 621](https://spec.commonmark.org/0.30/#example-621)
+
+This markdown:
+
+
+````````````markdown
+<a href='bar'title=title>
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p>&lt;a href='bar'title=title&gt;</p>
+
+````````````
+
 ### [Example 622](https://spec.commonmark.org/0.30/#example-622)
 
 This markdown:
@@ -10632,6 +10710,24 @@ Gives this correct output:
 
 ````````````html
 <p>foo <!ELEMENT br EMPTY></p>
+
+````````````
+
+### [Example 632](https://spec.commonmark.org/0.30/#example-632)
+
+This markdown:
+
+
+````````````markdown
+<a href="\"">
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p>&lt;a href=&quot;&quot;&quot;&gt;</p>
 
 ````````````
 

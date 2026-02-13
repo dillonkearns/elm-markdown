@@ -8,8 +8,6 @@ import Html.Events
 import Markdown.Block as Block exposing (Block)
 import Markdown.Parser
 import Markdown.Renderer exposing (defaultHtmlRenderer)
-import Parser exposing (Problem)
-import Parser.Advanced exposing (DeadEnd)
 import Regex
 
 
@@ -20,10 +18,8 @@ view markdownInput =
         , case
             markdownInput
                 |> Markdown.Parser.parse
-                |> Result.map gatherHeadingOccurrences
-                |> Result.mapError deadEndsToString
-                |> Result.andThen
-                    (\ast ->
+                |> gatherHeadingOccurrences
+                |> (\ast ->
                         Markdown.Renderer.renderWithMeta
                             (\maybeSlug ->
                                 { defaultHtmlRenderer
@@ -36,7 +32,7 @@ view markdownInput =
                                 }
                             )
                             ast
-                    )
+                   )
           of
             Ok rendered ->
                 div [] rendered
@@ -60,7 +56,7 @@ markdownInputView markdownInput =
 
 specials : Regex.Regex
 specials =
-    "[\u{2000}-\u{206F}⸀-\u{2E7F}\\\\'!\"#$%&()*+,./:;<=>?@[\\\\]^`{|}~’]"
+    "[\u{2000}-\u{206F}⸀-\u{2E7F}\\\\'!\"#$%&()*+,./:;<=>?@[\\\\]^`{|}~']"
         |> Regex.fromString
         |> Maybe.withDefault Regex.never
 
@@ -78,13 +74,6 @@ toSlug string =
         |> String.toLower
         |> Regex.replace specials (\_ -> "")
         |> Regex.replace whitespace (\_ -> "-")
-
-
-deadEndsToString : List (DeadEnd String Problem) -> String
-deadEndsToString deadEnds =
-    deadEnds
-        |> List.map Markdown.Parser.deadEndToString
-        |> String.join "\n"
 
 
 gatherHeadingOccurrences : List Block -> List ( Block, Maybe String )

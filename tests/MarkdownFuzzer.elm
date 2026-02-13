@@ -6,8 +6,6 @@ import Markdown.Block exposing (Block)
 import Markdown.Html
 import Markdown.Parser
 import Markdown.Renderer exposing (Renderer, defaultStringRenderer)
-import Parser
-import Parser.Advanced as Advanced
 import Test exposing (fuzz)
 
 
@@ -22,7 +20,7 @@ all =
         "testOutputs"
         (\randomMarkdownValue ->
             let
-                randomMd : Result (List (Advanced.DeadEnd String Parser.Problem)) (List Block)
+                randomMd : List Block
                 randomMd =
                     randomMarkdownValue
                         |> Markdown.Parser.parse
@@ -30,20 +28,11 @@ all =
                 renderedStr : Result String (List String)
                 renderedStr =
                     randomMd
-                        |> Result.mapError (\e -> "markdown parse error " ++ Debug.toString e)
-                        |> Result.andThen (\mkd -> Markdown.Renderer.tryRender divDefaultStringRenderer mkd)
+                        |> Markdown.Renderer.tryRender divDefaultStringRenderer
 
                 -- parse again.
-                parsed : Result String (List Block)
-                parsed =
-                    renderedStr
-                        |> Result.andThen
-                            (\strs ->
-                                Markdown.Parser.parse (String.join "" strs)
-                                    |> Result.mapError (\e -> List.map Markdown.Parser.deadEndToString e |> String.join "")
-                            )
             in
-            case parsed of
+            case renderedStr of
                 Ok _ ->
                     Expect.pass
 

@@ -16,8 +16,7 @@ view markdownInput =
         , case
             markdownInput
                 |> Markdown.parse
-                |> Result.mapError deadEndsToString
-                |> Result.andThen (\ast -> Markdown.Renderer.tryRender Markdown.Renderer.defaultHtmlRenderer ast)
+                |> Markdown.Renderer.tryRender Markdown.Renderer.defaultHtmlRenderer
           of
             Ok rendered ->
                 div [] rendered
@@ -48,12 +47,6 @@ markdownInputView markdownInput =
         , Attr.style "font-size" "18px"
         ]
         []
-
-
-deadEndsToString deadEnds =
-    deadEnds
-        |> List.map Markdown.deadEndToString
-        |> String.join "\n"
 
 
 markdownBody =

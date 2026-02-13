@@ -22,5 +22,5 @@ Should give output:
 But instead was:
 
 ````````````html
-ERROR Problem at row 5 tag name mismatch: a2t and a
+<p>AAA&lt;script&gt; &lt;img &lt;script&gt; src=x onerror=alert(1) /&gt;BBB AAA&lt;sometag&gt; &lt;img &lt;sometag&gt; src=x onerror=alert(1)BBB &lt;a&gt;a2&lt;a2t&gt;a2&lt;/a&gt; b &lt;c&gt;c&lt;/c&gt; d #<img alt="text" src="URL"></p>
 ````````````

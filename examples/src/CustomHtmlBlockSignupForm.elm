@@ -47,8 +47,7 @@ markdownView : String -> Result String (List (Element Msg))
 markdownView markdown =
     markdown
         |> Markdown.Parser.parse
-        |> Result.mapError (\error -> error |> List.map Markdown.Parser.deadEndToString |> String.join "\n")
-        |> Result.andThen (Markdown.Renderer.tryRender renderer)
+        |> Markdown.Renderer.tryRender renderer
 
 
 elmUiRenderer =
