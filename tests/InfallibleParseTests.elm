@@ -91,7 +91,7 @@ suite =
                         |> Expect.equal [ Block.Paragraph [ Block.Text "Hello, world!" ] ]
             , test "CRLF line endings parse correctly" <|
                 \() ->
-                    "# Heading\r\n\r\nParagraph"
+                    "# Heading\u{000D}\n\u{000D}\nParagraph"
                         |> Markdown.Parser.parse
                         |> (\blocks ->
                                 case blocks of
@@ -103,7 +103,7 @@ suite =
                            )
             , test "mixed LF and CRLF" <|
                 \() ->
-                    "# Heading\r\n\nParagraph\n"
+                    "# Heading\u{000D}\n\nParagraph\n"
                         |> Markdown.Parser.parse
                         |> (\blocks ->
                                 case blocks of
@@ -270,7 +270,8 @@ fragmentPieceFuzzer =
             |> Fuzz.map String.fromList
 
         -- Plain word (1-5 alpha chars)
-        , Fuzz.listOfLengthBetween 1 5
+        , Fuzz.listOfLengthBetween 1
+            5
             (Fuzz.oneOf
                 [ Fuzz.intRange (Char.toCode 'a') (Char.toCode 'z') |> Fuzz.map Char.fromCode
                 , Fuzz.intRange (Char.toCode 'A') (Char.toCode 'Z') |> Fuzz.map Char.fromCode
