@@ -2,7 +2,10 @@ module InfallibleParseTests exposing (suite)
 
 import Expect
 import Fuzz
+import Markdown.Block as Block exposing (Block)
+import Markdown.Html
 import Markdown.Parser
+import Markdown.Renderer
 import Test exposing (..)
 
 
@@ -74,6 +77,132 @@ suite =
             \input ->
                 Markdown.Parser.parse input
                     |> (\_ -> Expect.pass)
+        , describe "correctness of fallback output"
+            [ test "unterminated code fence still captures body" <|
+                \() ->
+                    "```\nsome code\nmore code"
+                        |> Markdown.Parser.parse
+                        |> Expect.equal
+                            [ Block.CodeBlock { body = "some code\nmore code", language = Nothing } ]
+            , test "normal paragraph preserved through fallback" <|
+                \() ->
+                    "Hello, world!"
+                        |> Markdown.Parser.parse
+                        |> Expect.equal [ Block.Paragraph [ Block.Text "Hello, world!" ] ]
+            , test "CRLF line endings parse correctly" <|
+                \() ->
+                    "# Heading\r\n\r\nParagraph"
+                        |> Markdown.Parser.parse
+                        |> (\blocks ->
+                                case blocks of
+                                    [ Block.Heading Block.H1 _, Block.Paragraph _ ] ->
+                                        Expect.pass
+
+                                    _ ->
+                                        Expect.fail ("Expected heading + paragraph, got: " ++ Debug.toString blocks)
+                           )
+            , test "mixed LF and CRLF" <|
+                \() ->
+                    "# Heading\r\n\nParagraph\n"
+                        |> Markdown.Parser.parse
+                        |> (\blocks ->
+                                case blocks of
+                                    [ Block.Heading _ _, Block.Paragraph _ ] ->
+                                        Expect.pass
+
+                                    _ ->
+                                        Expect.fail ("Expected heading + paragraph, got: " ++ Debug.toString blocks)
+                           )
+            , test "BOM prefix" <|
+                \() ->
+                    "\u{FEFF}# Hello"
+                        |> Markdown.Parser.parse
+                        |> List.isEmpty
+                        |> Expect.equal False
+            , test "only newlines" <|
+                \() ->
+                    "\n\n\n\n\n"
+                        |> Markdown.Parser.parse
+                        |> Expect.equal []
+            , test "tab characters in indentation" <|
+                \() ->
+                    "\t# Heading"
+                        |> Markdown.Parser.parse
+                        |> List.isEmpty
+                        |> Expect.equal False
+            ]
+        , describe "full parse-render pipeline"
+            [ fuzz Fuzz.string "arbitrary string renders infallibly with withFallback" <|
+                \input ->
+                    let
+                        renderer : Markdown.Renderer.Renderer Never String
+                        renderer =
+                            { heading = \{ children } -> String.join "" children
+                            , paragraph = String.join ""
+                            , blockQuote = String.join ""
+                            , strong = String.join ""
+                            , emphasis = String.join ""
+                            , strikethrough = String.join ""
+                            , hardLineBreak = "\n"
+                            , codeSpan = identity
+                            , image = \_ -> ""
+                            , link = \_ children -> String.join "" children
+                            , text = identity
+                            , unorderedList = \_ -> ""
+                            , orderedList = \_ _ -> ""
+                            , html =
+                                Markdown.Html.oneOf []
+                                    |> Markdown.Html.withFallback (\_ _ _ -> "")
+                            , codeBlock = \{ body } -> body
+                            , thematicBreak = ""
+                            , table = \_ -> ""
+                            , tableHeader = \_ -> ""
+                            , tableBody = \_ -> ""
+                            , tableRow = \_ -> ""
+                            , tableHeaderCell = \_ _ -> ""
+                            , tableCell = \_ _ -> ""
+                            }
+                    in
+                    input
+                        |> Markdown.Parser.parse
+                        |> Markdown.Renderer.render renderer
+                        |> (\_ -> Expect.pass)
+            , fuzz markdownFragmentFuzzer "fragment strings render infallibly with withFallback" <|
+                \input ->
+                    let
+                        renderer : Markdown.Renderer.Renderer Never String
+                        renderer =
+                            { heading = \{ children } -> String.join "" children
+                            , paragraph = String.join ""
+                            , blockQuote = String.join ""
+                            , strong = String.join ""
+                            , emphasis = String.join ""
+                            , strikethrough = String.join ""
+                            , hardLineBreak = "\n"
+                            , codeSpan = identity
+                            , image = \_ -> ""
+                            , link = \_ children -> String.join "" children
+                            , text = identity
+                            , unorderedList = \_ -> ""
+                            , orderedList = \_ _ -> ""
+                            , html =
+                                Markdown.Html.oneOf []
+                                    |> Markdown.Html.withFallback (\_ _ _ -> "")
+                            , codeBlock = \{ body } -> body
+                            , thematicBreak = ""
+                            , table = \_ -> ""
+                            , tableHeader = \_ -> ""
+                            , tableBody = \_ -> ""
+                            , tableRow = \_ -> ""
+                            , tableHeaderCell = \_ _ -> ""
+                            , tableCell = \_ _ -> ""
+                            }
+                    in
+                    input
+                        |> Markdown.Parser.parse
+                        |> Markdown.Renderer.render renderer
+                        |> (\_ -> Expect.pass)
+            ]
         ]
 
 

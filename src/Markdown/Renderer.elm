@@ -28,6 +28,11 @@ import Markdown.RawBlock exposing (Attribute)
 {-| A record with functions that define how to render all possible markdown blocks.
 These renderers are composed together to give you the final rendered output.
 
+The `err` type parameter tracks whether the HTML renderer can fail. Use `Renderer String view`
+with [`tryRender`](#tryRender) when your HTML renderer may produce errors (e.g. unregistered tags).
+Use `Renderer Never view` with [`render`](#render) for an infallible pipeline — you can convert
+a fallible renderer into an infallible one using [`Markdown.Html.withFallback`](Markdown-Html#withFallback).
+
 You could render to any type you want. Here are some useful things you might render to:
 
   - `Html` (using the `defaultHtmlRenderer` provided by this module)
@@ -453,10 +458,8 @@ add metadata to blocks.
 
     markdownInput
         |> Markdown.Parser.parse
-        |> Result.map gatherHeadingOccurrences
-        |> Result.mapError deadEndsToString
-        |> Result.andThen
-            (\ast ->
+        |> gatherHeadingOccurrences
+        |> (\ast ->
                 Markdown.Renderer.renderWithMeta
                     (\maybeSlug ->
                         { defaultHtmlRenderer
@@ -469,7 +472,7 @@ add metadata to blocks.
                         }
                     )
                     ast
-            )
+           )
 
 -}
 renderWithMeta : (meta -> Renderer err view) -> List ( Block, meta ) -> Result err (List view)

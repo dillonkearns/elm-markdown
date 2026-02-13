@@ -106,12 +106,9 @@ oneOf decoders =
                                         """oneOf failed parsing this value:
     """
                                             ++ tagToString tagName attributes
-                                            ++ """
-
-Parsing failed in the following 2 ways:
-
-
-"""
+                                            ++ "\n\nParsing failed in the following "
+                                            ++ String.fromInt (List.length errors)
+                                            ++ " ways:\n\n\n"
                                             ++ (List.indexedMap
                                                     (\index error ->
                                                         "("

@@ -60,7 +60,7 @@ import Html.Attributes as Attr
 import Markdown.Block as Block exposing (Block)
 import Markdown.Html
 
-defaultHtmlRenderer : Renderer (Html msg)
+defaultHtmlRenderer : Renderer String (Html msg)
 defaultHtmlRenderer =
     { heading =
         \{ level, children } ->
@@ -174,10 +174,20 @@ defaultHtmlRenderer =
                 )
     , html = Markdown.Html.oneOf []
     , codeBlock =
-        \block ->
+        \{ body, language } ->
+            let
+                classes =
+                    -- Only the first word is used in the class
+                    case Maybe.map String.words language of
+                        Just (actualLanguage :: _) ->
+                            [ Attr.class <| "language-" ++ actualLanguage ]
+
+                        _ ->
+                            []
+            in
             Html.pre []
-                [ Html.code []
-                    [ Html.text block.body
+                [ Html.code classes
+                    [ Html.text body
                     ]
                 ]
     , thematicBreak = Html.hr [] []
@@ -207,8 +217,30 @@ defaultHtmlRenderer =
                         |> Maybe.withDefault []
             in
             Html.th attrs
-    , tableCell = \_ children -> Html.td [] children
-    , strikethrough = Html.span [ Attr.style "text-decoration-line" "line-through" ]
+    , tableCell =
+        \maybeAlignment ->
+            let
+                attrs =
+                    maybeAlignment
+                        |> Maybe.map
+                            (\alignment ->
+                                case alignment of
+                                    Block.AlignLeft ->
+                                        "left"
+
+                                    Block.AlignCenter ->
+                                        "center"
+
+                                    Block.AlignRight ->
+                                        "right"
+                            )
+                        |> Maybe.map Attr.align
+                        |> Maybe.map List.singleton
+                        |> Maybe.withDefault []
+            in
+            Html.td attrs
+    , strikethrough =
+        \children -> Html.del [] children
     }
 
 ```
@@ -224,41 +256,20 @@ You get full access to the parsed markdown blocks before passing it to a rendere
 
 - Render markdown to any type (`Html`, `elm-ui` `Element`s, `String`s representing ANSI color codes for terminal output... or even a function, allowing you to inject dynamic values into your markdown view)
 - Extend markdown without adding to the syntax using custom HTML renderers, and fail explicitly for unexpected HTML tags, or missing attributes within those tags
-- Allow users to give custom parsing failures with nice error messages (for example, broken links, or custom validation like titles that are too long)
+- Allow users to give custom rendering failures with nice error messages (for example, broken links, or custom validation like titles that are too long) via `tryRender`
 
 ### Parsing Goals
 
-This is evolving and I would like input on the direction of parsing. My current thinking is that this library should:
-
 - Do not add any new syntax, this library has a subset of the features of Github flavored markdown.
 - Only parse the [Github-flavored markdown style](https://github.github.com/gfm/) (not CommonMark or other variants)
-- (This breaks GFM compliance in favor of explicit errors) All markdown is valid in github-flavored markdown and other variants. This library aims to give explicit errors instead of falling back and silently continuing, see example below
-- Only deviate from Github-flavored markdown rules when it helps give better error feedback for "things you probably didn't mean to do." In all other cases, follow the Github-flavored markdown spec.
+- Parsing always succeeds — any input produces some output, consistent with how mature markdown parsers handle arbitrary text. Malformed syntax is treated as plain text.
+- Only deviate from Github-flavored markdown rules in cases that improve the user experience. In all other cases, follow the Github-flavored markdown spec.
 
 ## Current Github-flavored markdown compliance
 
 The test suite for this library runs through all the expected outputs outlined in the GFM spec. It uses the same test suite to test these cases as highlight.js (the library that `elm-explorations/elm-markdown` uses under the hood).
 
-You can see the latest passing and failing tests from this test suite in the `test-results` folder [(in particular, take a look at the Github-Flavored Markdown failures in in `failing/GFM`](https://github.com/dillonkearns/elm-markdown/tree/master/test-results/failing/GFM).
-
-### Examples of fallback behavior
-
-Github flavored markdown behavior:
-Links with missing closing parens are are rendered as raw text instead of links
-
-```markdown
-[My link](/home/ wait I forgot to close the link
-```
-
-Renders the raw string instead of a link, like so:
-
-```html
-<p>
-  [My link](/home/ wait I forgot to close the link
-</p>
-```
-
-This library gives an error message here, and aims to do so in similar situations.
+You can see the latest passing and failing tests from this test suite in the `test-results` folder [(in particular, take a look at the Github-Flavored Markdown failures in `failing/GFM`](https://github.com/dillonkearns/elm-markdown/tree/master/test-results/failing/GFM).
 
 ## Contributors
 
