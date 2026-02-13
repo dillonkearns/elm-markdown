@@ -9,6 +9,69 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Changed
+
+- **`Markdown.Parser.parse` is now infallible.** It returns `List Block` instead of `Result (List DeadEnd) (List Block)`. Any input produces output — malformed syntax is treated as plain text, consistent with how mature markdown parsers behave.
+- **`Markdown.Renderer.Renderer` has a new `err` type parameter.** The type is now `Renderer err view` instead of `Renderer view`. The `err` tracks whether the HTML renderer can fail.
+- **`Markdown.Renderer.render` now requires `Renderer Never view`** and returns `List view` directly (no `Result`). For renderers that can fail, use the new `tryRender`.
+
+### Added
+
+- **`Markdown.Renderer.tryRender`** — renders with a fallible renderer, returning `Result err (List view)`. This replaces the old `render` for cases where rendering can fail (e.g. unregistered HTML tags).
+- **`Markdown.Html.withFallback`** — converts a `Renderer String (List view -> view)` into a `Renderer Never (List view -> view)` by providing a fallback function for unmatched HTML tags. This enables a fully infallible parse-and-render pipeline.
+- 5 additional CommonMark/GFM spec tests now pass (malformed HTML is properly escaped as text).
+- Fuzz tests and edge-case tests for the infallible parser.
+
+### Removed
+
+- `Markdown.Parser.deadEndToString` — no longer needed since `parse` cannot fail.
+
+### Migration Guide
+
+**1. Update `parse` call sites** — remove `Result` handling:
+
+```elm
+-- Before
+markdown
+    |> Markdown.Parser.parse
+    |> Result.mapError (\error -> error |> List.map Markdown.Parser.deadEndToString |> String.join "\n")
+    |> Result.andThen (Markdown.Renderer.render renderer)
+
+-- After (infallible renderer)
+markdown
+    |> Markdown.Parser.parse
+    |> Markdown.Renderer.render renderer
+
+-- After (fallible renderer)
+markdown
+    |> Markdown.Parser.parse
+    |> Markdown.Renderer.tryRender renderer
+```
+
+**2. Add `err` type parameter to `Renderer` annotations:**
+
+```elm
+-- Before
+renderer : Markdown.Renderer.Renderer (Html msg)
+
+-- After
+renderer : Markdown.Renderer.Renderer String (Html msg)
+```
+
+**3. (Optional) Make rendering infallible with `withFallback`:**
+
+```elm
+{ myRenderer
+    | html =
+        Markdown.Html.oneOf [ {- your tag handlers -} ]
+            |> Markdown.Html.withFallback
+                (\tag attributes children ->
+                    Html.node tag (List.map (\a -> Attr.attribute a.name a.value) attributes) children
+                )
+}
+-- This renderer has type `Renderer Never view`, so `render` returns `List view` directly.
+```
+
 ## [7.0.1] - 2023-01-02
 
 ### Fixed
