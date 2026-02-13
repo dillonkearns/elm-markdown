@@ -41,7 +41,7 @@ init flags =
 render renderer markdown =
     markdown
         |> Markdown.parse
-        |> (\ast -> Markdown.Renderer.render renderer ast)
+        |> Markdown.Renderer.render renderer
 
 
 renderMarkdown : String -> Html

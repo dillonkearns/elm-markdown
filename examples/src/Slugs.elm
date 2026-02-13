@@ -56,7 +56,7 @@ markdownInputView markdownInput =
 
 specials : Regex.Regex
 specials =
-    "[\u{2000}-\u{206F}⸀-\u{2E7F}\\\\'!\"#$%&()*+,./:;<=>?@[\\\\]^`{|}~']"
+    "[\u{2000}-\u{206F}⸀-\u{2E7F}\\\\'!\"#$%&()*+,./:;<=>?@[\\\\]^`{|}~]"
         |> Regex.fromString
         |> Maybe.withDefault Regex.never
 
