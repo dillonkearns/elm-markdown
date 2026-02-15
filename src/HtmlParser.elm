@@ -1,5 +1,5 @@
 module HtmlParser exposing
-    ( Node(..)
+    ( Attribute, Node(..)
     , Parser, html
     )
 
@@ -32,7 +32,7 @@ import Parser.Advanced as Advanced exposing ((|.), (|=), Step(..), andThen, chom
 {-| Node is either a element such as `<a name="value">foo</a>` or text such as `foo`.
 -}
 type Node
-    = Element String (List Attribute) (List Node)
+    = Element String (List Attribute) (List Node) String
     | Text String
     | Comment String
     | Cdata String
@@ -129,17 +129,33 @@ element =
 
 elementContinuation : String -> Parser Node
 elementContinuation startTagName =
-    succeed (Element startTagName)
+    succeed identity
         |. whiteSpace
         |= attributes
         |. whiteSpace
-        |= oneOf
-            [ symbol "/>"
-                |> Advanced.map (\_ -> [])
-            , succeed identity
-                |. symbol ">"
-                |= children startTagName
-            ]
+        |> andThen
+            (\attrs ->
+                oneOf
+                    [ symbol "/>"
+                        |> Advanced.map (\_ -> Element startTagName attrs [] "")
+                    , succeed identity
+                        |. symbol ">"
+                        |= Advanced.getOffset
+                        |> andThen
+                            (\bodyStart ->
+                                children startTagName
+                                    |> andThen
+                                        (\{ nodes, bodyEndOffset } ->
+                                            succeed identity
+                                                |= Advanced.getSource
+                                                |> map
+                                                    (\source ->
+                                                        Element startTagName attrs nodes (String.slice bodyStart bodyEndOffset source)
+                                                    )
+                                        )
+                            )
+                    ]
+            )
 
 
 tagName : Parser String
@@ -169,12 +185,18 @@ isTagNameChar c =
     Char.isAlphaNum c || c == '-'
 
 
-children : String -> Parser (List Node)
+type alias ChildrenResult =
+    { nodes : List Node
+    , bodyEndOffset : Int
+    }
+
+
+children : String -> Parser ChildrenResult
 children startTagName =
     Advanced.loop [] (childrenStep (childrenStepOptions startTagName))
 
 
-childrenStep : List (Parser (List Node -> Step (List Node) (List Node))) -> List Node -> Parser (Step (List Node) (List Node))
+childrenStep : List (Parser (List Node -> Step (List Node) ChildrenResult)) -> List Node -> Parser (Step (List Node) ChildrenResult)
 childrenStep options accum =
     -- This weird construction is so the `childrenStepOptions` can be shared by all iterations,
     -- rather than be re-defined on every iteration
@@ -182,16 +204,24 @@ childrenStep options accum =
         |> map (\f -> f accum)
 
 
-childrenStepOptions : String -> List (Parser (List Node -> Step (List Node) (List Node)))
+doneWithOffset : String -> Parser (List Node -> Step (List Node) ChildrenResult)
+doneWithOffset startTagName =
+    Advanced.getOffset
+        |> andThen
+            (\offset ->
+                closingTag startTagName
+                    |> Advanced.map (\_ accum -> Done { nodes = List.reverse accum, bodyEndOffset = offset })
+            )
+
+
+childrenStepOptions : String -> List (Parser (List Node -> Step (List Node) ChildrenResult))
 childrenStepOptions startTagName =
-    [ closingTag startTagName
-        |> Advanced.map (\_ accum -> Done (List.reverse accum))
+    [ doneWithOffset startTagName
     , textNodeString
         |> andThen
             (\text ->
                 if String.isEmpty text then
-                    closingTag startTagName
-                        |> Advanced.map (\_ accum -> Done (List.reverse accum))
+                    doneWithOffset startTagName
 
                 else
                     succeed (\accum -> Loop (Text text :: accum))

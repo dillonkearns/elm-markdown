@@ -485,16 +485,16 @@ renderWithMeta renderWithMetaFn blocksWithMeta =
 renderHtml :
     String
     -> List Attribute
-    -> List Block
+    -> String
     -> Markdown.Html.Renderer err (List view -> view)
     -> List (Result err view)
     -> Result err view
-renderHtml tagName attributes children (Markdown.HtmlRenderer.HtmlRenderer htmlRenderer) renderedChildren =
+renderHtml tagName attributes rawBody (Markdown.HtmlRenderer.HtmlRenderer htmlRenderer) renderedChildren =
     renderedChildren
         |> combineResults
         |> Result.andThen
             (\okChildren ->
-                htmlRenderer tagName attributes children
+                htmlRenderer tagName attributes rawBody
                     |> Result.map
                         (\myRenderer -> myRenderer okChildren)
             )
@@ -537,13 +537,13 @@ renderHelperSingle renderer =
 
             Block.HtmlBlock html ->
                 case html of
-                    Block.HtmlElement tag attributes children ->
-                        renderHtmlNode renderer tag attributes children
+                    Block.HtmlElement tag attributes children raw ->
+                        renderHtmlNode renderer tag attributes children raw
                             |> Just
 
                     Block.ClosingTag tagName ->
                         -- Render closing tag with "/" prefix so user's renderer can handle it
-                        renderHtmlNode renderer ("/" ++ tagName) [] []
+                        renderHtmlNodeEmpty renderer ("/" ++ tagName)
                             |> Just
 
                     _ ->
@@ -769,23 +769,46 @@ renderSingleInline renderer inline =
 
         Block.HtmlInline html ->
             case html of
-                Block.HtmlElement tag attributes children ->
-                    renderHtmlNode renderer tag attributes children
+                Block.HtmlElement tag attributes children raw ->
+                    renderInlineHtmlNode renderer tag attributes children raw
                         |> Just
 
                 Block.ClosingTag tagName ->
                     -- Render closing tag with "/" prefix so user's renderer can handle it
-                    renderHtmlNode renderer ("/" ++ tagName) [] []
+                    renderHtmlNodeEmpty renderer ("/" ++ tagName)
                         |> Just
 
                 _ ->
                     Nothing
 
 
-renderHtmlNode : Renderer err view -> String -> List Attribute -> List Block -> Result err view
-renderHtmlNode renderer tag attributes children =
+renderHtmlNode : Renderer err view -> String -> List Attribute -> List Block -> String -> Result err view
+renderHtmlNode renderer tag attributes children raw =
     renderHtml tag
         attributes
-        children
+        raw
         renderer.html
         (renderHelper renderer children)
+
+
+renderInlineHtmlNode : Renderer err view -> String -> List Attribute -> List Inline -> String -> Result err view
+renderInlineHtmlNode renderer tag attributes children raw =
+    let
+        (Markdown.HtmlRenderer.HtmlRenderer htmlRenderer) =
+            renderer.html
+    in
+    renderStyled renderer children
+        |> Result.andThen
+            (\renderedChildren ->
+                htmlRenderer tag attributes raw
+                    |> Result.map (\myRenderer -> myRenderer renderedChildren)
+            )
+
+
+renderHtmlNodeEmpty : Renderer err view -> String -> Result err view
+renderHtmlNodeEmpty renderer tag =
+    renderHtml tag
+        []
+        ""
+        renderer.html
+        []

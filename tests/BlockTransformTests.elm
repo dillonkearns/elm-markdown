@@ -220,6 +220,7 @@ suite =
                                 [ Heading H2 [ Text "3Aiii" ]
                                 , Heading H2 [ Text "3Aiv" ]
                                 ]
+                                ""
                         ]
                     , Heading H2 [ Text "3B" ]
                     ]
@@ -351,20 +352,18 @@ suite =
                 [ HtmlInline
                     (HtmlElement "greeting"
                         []
-                        [ [ Strong [ Text "Hello" ]
-                          , Text " there!"
-                          ]
-                            |> Paragraph
+                        [ Strong [ Text "Hello" ]
+                        , Text " there!"
                         ]
+                        ""
                     )
                 , HtmlInline
                     (HtmlElement "greeting"
                         []
-                        [ [ Strong [ Text "Buenos" ]
-                          , Text " dias!"
-                          ]
-                            |> Paragraph
+                        [ Strong [ Text "Buenos" ]
+                        , Text " dias!"
                         ]
+                        ""
                     )
                 ]
                     |> Block.extractInlineText

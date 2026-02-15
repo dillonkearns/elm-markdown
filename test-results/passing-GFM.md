@@ -5224,6 +5224,114 @@ Gives this correct output:
 
 ````````````
 
+### [Example 170](https://spec.commonmark.org/0.30/#example-170)
+
+This markdown:
+
+
+````````````markdown
+<script type="text/javascript">
+// JavaScript example
+
+document.getElementById("demo").innerHTML = "Hello JavaScript!";
+</script>
+okay
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<script type="text/javascript">
+// JavaScript example
+
+document.getElementById("demo").innerHTML = "Hello JavaScript!";
+</script>
+<p>okay</p>
+
+````````````
+
+### [Example 171](https://spec.commonmark.org/0.30/#example-171)
+
+This markdown:
+
+
+````````````markdown
+<textarea>
+
+*foo*
+
+_bar_
+
+</textarea>
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<textarea>
+
+*foo*
+
+_bar_
+
+</textarea>
+
+````````````
+
+### [Example 172](https://spec.commonmark.org/0.30/#example-172)
+
+This markdown:
+
+
+````````````markdown
+<style
+  type="text/css">
+h1 {color:red;}
+
+p {color:blue;}
+</style>
+okay
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<style
+  type="text/css">
+h1 {color:red;}
+
+p {color:blue;}
+</style>
+<p>okay</p>
+
+````````````
+
+### [Example 176](https://spec.commonmark.org/0.30/#example-176)
+
+This markdown:
+
+
+````````````markdown
+<style>p{color:red;}</style>
+*foo*
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<style>p{color:red;}</style>
+<p><em>foo</em></p>
+
+````````````
+
 ### [Example 179](https://spec.commonmark.org/0.30/#example-179)
 
 This markdown:

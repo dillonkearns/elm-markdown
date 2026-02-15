@@ -116,7 +116,7 @@ mapInline inline =
 
         Inline.HtmlInline node ->
             node
-                |> nodeToRawBlock
+                |> nodeToInlineHtml
                 |> Block.HtmlInline
 
         Inline.Emphasis level inlines ->
@@ -417,8 +417,8 @@ xmlNodeToHtmlNode xmlNode =
             OpenBlockOrParagraph (UnparsedInlines innerText)
                 |> succeed
 
-        HtmlParser.Element tag attributes children ->
-            Block.HtmlElement tag attributes (nodesToBlocks children)
+        HtmlParser.Element tag attributes children rawBody ->
+            Block.HtmlElement tag attributes (nodesToBlocks children) rawBody
                 |> RawBlock.Html
                 |> succeed
 
@@ -453,26 +453,27 @@ textNodeToBlocks textNodeValue =
     parse textNodeValue
 
 
-nodeToRawBlock : Node -> Block.Html Block
-nodeToRawBlock node =
+nodeToInlineHtml : Node -> Block.Html Inline
+nodeToInlineHtml node =
     case node of
         HtmlParser.Text _ ->
             Block.HtmlComment "TODO this never happens, but use types to drop this case."
 
-        HtmlParser.Element tag attributes children ->
+        HtmlParser.Element tag attributes children rawBody ->
             let
-                parseChild : Node -> List Block
+                parseChild : Node -> List Inline
                 parseChild child =
                     case child of
                         HtmlParser.Text text ->
-                            textNodeToBlocks text
+                            textNodeToInlines text
 
                         _ ->
-                            [ nodeToRawBlock child |> Block.HtmlBlock ]
+                            [ nodeToInlineHtml child |> Block.HtmlInline ]
             in
             Block.HtmlElement tag
                 attributes
                 (List.concatMap parseChild children)
+                rawBody
 
         Comment string ->
             Block.HtmlComment string
@@ -488,6 +489,17 @@ nodeToRawBlock node =
 
         HtmlParser.ClosingTag tagName ->
             Block.ClosingTag tagName
+
+
+textNodeToInlines : String -> List Inline
+textNodeToInlines textNodeValue =
+    -- Parse text content as inline markdown
+    let
+        mappedReferencesDict =
+            Dict.empty
+    in
+    Markdown.InlineParser.parse mappedReferencesDict textNodeValue
+        |> List.map mapInline
 
 
 nodesToBlocks : List Node -> List Block
@@ -510,11 +522,11 @@ nodesToBlocksHelp remaining soFar =
 childToBlocks : Node -> List Block -> List Block
 childToBlocks node blocks =
     case node of
-        Element tag attributes children ->
+        Element tag attributes children rawBody ->
             let
                 block : Block
                 block =
-                    Block.HtmlElement tag attributes (nodesToBlocks children)
+                    Block.HtmlElement tag attributes (nodesToBlocks children) rawBody
                         |> Block.HtmlBlock
             in
             block :: blocks

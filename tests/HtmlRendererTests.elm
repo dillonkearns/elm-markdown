@@ -368,12 +368,42 @@ Expecting attribute "first".
                             (stringTestRenderer
                                 (Markdown.Html.oneOf []
                                     |> Markdown.Html.withFallback
-                                        (\tag _ children ->
-                                            "<" ++ tag ++ ">" ++ String.join "" children ++ "</" ++ tag ++ ">"
+                                        (\tag _ { rendered } ->
+                                            "<" ++ tag ++ ">" ++ String.join "" rendered ++ "</" ++ tag ++ ">"
                                         )
                                 )
                             )
                         |> Expect.equal [ "<div>hello</" ++ "div>" ]
+            , test "fallback can escape tags as visible text" <|
+                \() ->
+                    "<script>\n\nalert('xss')\n\n</script>"
+                        |> renderInfallible
+                            (stringTestRenderer
+                                (Markdown.Html.oneOf []
+                                    |> Markdown.Html.withFallback
+                                        (\tag _ { rendered } ->
+                                            "<" ++ tag ++ ">" ++ String.join "" rendered ++ "</" ++ tag ++ ">"
+                                        )
+                                )
+                            )
+                        |> Expect.equal [ "<script>alert('xss')</script>" ]
+            , test "fallback can selectively deny tags" <|
+                \() ->
+                    "<div>\n\n<script>\n\nalert('xss')\n\n</script>\n\n</div>"
+                        |> renderInfallible
+                            (stringTestRenderer
+                                (Markdown.Html.oneOf []
+                                    |> Markdown.Html.withFallback
+                                        (\tag _ { rendered } ->
+                                            if List.member tag [ "script", "iframe", "style" ] then
+                                                ""
+
+                                            else
+                                                "<" ++ tag ++ ">" ++ String.join "" rendered ++ "</" ++ tag ++ ">"
+                                        )
+                                )
+                            )
+                        |> Expect.equal [ "<div></div>" ]
             , test "returns List view directly (no Result)" <|
                 \() ->
                     "hello world"
@@ -387,5 +417,120 @@ Expecting attribute "first".
                                 )
                             )
                         |> Expect.equal [ "hello world" ]
+            , test "fallback raw body contains unparsed source text" <|
+                \() ->
+                    "<style>\n\np {color:red;}\n\n</style>"
+                        |> renderInfallible
+                            (stringTestRenderer
+                                (Markdown.Html.oneOf []
+                                    |> Markdown.Html.withFallback
+                                        (\tag _ { raw } ->
+                                            "<" ++ tag ++ ">" ++ raw ++ "</" ++ tag ++ ">"
+                                        )
+                                )
+                            )
+                        |> Expect.equal [ "<style>\n\np {color:red;}\n\n</style>" ]
+            , test "fallback raw body preserves unprocessed markdown" <|
+                \() ->
+                    "<textarea>\n\n*foo*\n\n_bar_\n\n</textarea>"
+                        |> renderInfallible
+                            (stringTestRenderer
+                                (Markdown.Html.oneOf []
+                                    |> Markdown.Html.withFallback
+                                        (\tag _ { raw } ->
+                                            "<" ++ tag ++ ">" ++ raw ++ "</" ++ tag ++ ">"
+                                        )
+                                )
+                            )
+                        |> Expect.equal [ "<textarea>\n\n*foo*\n\n_bar_\n\n</textarea>" ]
+            ]
+        , describe "withRawContent"
+            [ test "extracts raw body of a tag" <|
+                \() ->
+                    "<style>\n\np { color: red; }\n\n</style>"
+                        |> render
+                            (testRenderer
+                                [ Markdown.Html.tag "style"
+                                    (\rawBody _ ->
+                                        Html
+                                            { tag = "style"
+                                            , rawBody = rawBody
+                                            }
+                                    )
+                                    |> Markdown.Html.withRawContent
+                                ]
+                            )
+                        |> Expect.equal
+                            (Ok
+                                [ Html
+                                    { tag = "style"
+                                    , rawBody = "\n\np { color: red; }\n\n"
+                                    }
+                                ]
+                            )
+            , test "withRawContent for self-closing tag has empty body" <|
+                \() ->
+                    "<my-widget />"
+                        |> render
+                            (testRenderer
+                                [ Markdown.Html.tag "my-widget"
+                                    (\rawBody _ ->
+                                        Html
+                                            { tag = "my-widget"
+                                            , rawBody = rawBody
+                                            }
+                                    )
+                                    |> Markdown.Html.withRawContent
+                                ]
+                            )
+                        |> Expect.equal
+                            (Ok
+                                [ Html
+                                    { tag = "my-widget"
+                                    , rawBody = ""
+                                    }
+                                ]
+                            )
+            , test "withRawContent combined with withAttribute" <|
+                \() ->
+                    """<code-block language="elm">\n\nmodule Main exposing (..)\n\n</code-block>"""
+                        |> render
+                            (testRenderer
+                                [ Markdown.Html.tag "code-block"
+                                    (\language rawBody _ ->
+                                        Html
+                                            { tag = "code-block"
+                                            , language = language
+                                            , rawBody = rawBody
+                                            }
+                                    )
+                                    |> Markdown.Html.withAttribute "language"
+                                    |> Markdown.Html.withRawContent
+                                ]
+                            )
+                        |> Expect.equal
+                            (Ok
+                                [ Html
+                                    { tag = "code-block"
+                                    , language = "elm"
+                                    , rawBody = "\n\nmodule Main exposing (..)\n\n"
+                                    }
+                                ]
+                            )
+            ]
+        , describe "inline html"
+            [ test "inline html renders without paragraph wrapping" <|
+                \() ->
+                    "hello<sup>2</sup>world"
+                        |> renderInfallible
+                            (stringTestRenderer
+                                (Markdown.Html.oneOf []
+                                    |> Markdown.Html.withFallback
+                                        (\tag _ { rendered } ->
+                                            "<" ++ tag ++ ">" ++ String.join "" rendered ++ "</" ++ tag ++ ">"
+                                        )
+                                )
+                            )
+                        |> Expect.equal [ "hello<sup>2</sup>world" ]
             ]
         ]

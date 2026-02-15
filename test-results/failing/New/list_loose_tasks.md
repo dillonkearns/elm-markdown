@@ -21,5 +21,5 @@ Should give output:
 But instead was:
 
 ````````````html
-<ul><li><p>Tasks</p></li><li><input checked="" disabled="" type="checkbox"><p>Task1</p></li><li><input disabled="" type="checkbox"><pre><p>Task2</p></pre></li></ul>
+<ul><li><p>Tasks</p></li><li><input checked="" disabled="" type="checkbox"><p>Task1</p></li><li><input disabled="" type="checkbox"><pre>Task2</pre></li></ul>
 ````````````

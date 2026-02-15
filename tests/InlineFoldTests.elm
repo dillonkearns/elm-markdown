@@ -8,7 +8,7 @@ import Test exposing (..)
 
 allInlines : List Inline
 allInlines =
-    [ HtmlInline (HtmlElement "" [] [ Paragraph [ Text "htmlinlineparablock" ] ])
+    [ HtmlInline (HtmlElement "" [] [ Text "htmlinlineparablock" ] "")
     , Link "" Nothing [ Text "LinkText" ]
     , Image "" Nothing [ Text "ImageText" ]
     , Emphasis [ Text "EmphasisText" ]
@@ -22,7 +22,7 @@ allInlines =
 
 allBlocks : List Block
 allBlocks =
-    [ HtmlBlock (HtmlElement "" [] [ Paragraph [ Text "htmlblockparablock" ] ])
+    [ HtmlBlock (HtmlElement "" [] [ Paragraph [ Text "htmlblockparablock" ] ] "")
     , UnorderedList Block.Loose <| List.map (\i -> ListItem NoTask [ Paragraph [ i ] ]) allInlines
     , OrderedList Block.Loose 0 [ [ Paragraph allInlines ] ]
     , BlockQuote [ Paragraph allInlines ]

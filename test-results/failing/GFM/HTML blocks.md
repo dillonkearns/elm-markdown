@@ -24,7 +24,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<table><tr><td><pre><p><strong>Hello</strong>,</p><p><em>world</em>.</p></pre></td></tr></table>
+<table><tr><td><pre>**Hello**, _world_.</pre></td></tr></table>
 ````````````
 ## [Example 149](https://spec.commonmark.org/0.30/#example-149)
 
@@ -401,84 +401,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<pre language="haskell"><code><p>import Text.HTML.TagSoup</p><p>main :: IO () main = print $ parseTags tags</p></code></pre><p>okay</p>
-````````````
-## [Example 170](https://spec.commonmark.org/0.30/#example-170)
-
-This markdown:
-
-````````````markdown
-<script type="text/javascript">
-// JavaScript example
-
-document.getElementById("demo").innerHTML = "Hello JavaScript!";
-</script>
-okay
-
-````````````
-
-Should give output:
-
-````````````html
-<script type="text/javascript">// JavaScript example document.getElementById(&quot;demo&quot;).innerHTML = &quot;Hello JavaScript!&quot;;</script><p>okay</p>
-````````````
-
-But instead was:
-
-````````````html
-<script type="text/javascript">&lt;p&gt;// JavaScript example&lt;/p&gt;&lt;p&gt;document.getElementById(&quot;demo&quot;).innerHTML = &quot;Hello JavaScript!&quot;;&lt;/p&gt;</script><p>okay</p>
-````````````
-## [Example 171](https://spec.commonmark.org/0.30/#example-171)
-
-This markdown:
-
-````````````markdown
-<textarea>
-
-*foo*
-
-_bar_
-
-</textarea>
-
-````````````
-
-Should give output:
-
-````````````html
-<textarea>*foo* _bar_</textarea>
-````````````
-
-But instead was:
-
-````````````html
-<textarea>&lt;p&gt;&lt;em&gt;foo&lt;/em&gt;&lt;/p&gt;&lt;p&gt;&lt;em&gt;bar&lt;/em&gt;&lt;/p&gt;</textarea>
-````````````
-## [Example 172](https://spec.commonmark.org/0.30/#example-172)
-
-This markdown:
-
-````````````markdown
-<style
-  type="text/css">
-h1 {color:red;}
-
-p {color:blue;}
-</style>
-okay
-
-````````````
-
-Should give output:
-
-````````````html
-<style type="text/css">h1 {color:red;} p {color:blue;}</style><p>okay</p>
-````````````
-
-But instead was:
-
-````````````html
-<style type="text/css">&lt;p&gt;h1 {color:red;}&lt;/p&gt;&lt;p&gt;p {color:blue;}&lt;/p&gt;</style><p>okay</p>
+<pre language="haskell">&lt;code&gt; import Text.HTML.TagSoup main :: IO () main = print $ parseTags tags &lt;/code&gt;</pre><p>okay</p>
 ````````````
 ## [Example 173](https://spec.commonmark.org/0.30/#example-173)
 
@@ -547,27 +470,6 @@ But instead was:
 ````````````html
 <ul><li>&lt;div&gt;</li><li>foo</li></ul>
 ````````````
-## [Example 176](https://spec.commonmark.org/0.30/#example-176)
-
-This markdown:
-
-````````````markdown
-<style>p{color:red;}</style>
-*foo*
-
-````````````
-
-Should give output:
-
-````````````html
-<style>p{color:red;}</style><p><em>foo</em></p>
-````````````
-
-But instead was:
-
-````````````html
-<style>&lt;p&gt;p{color:red;}&lt;/p&gt;</style><p><em>foo</em></p>
-````````````
 ## [Example 177](https://spec.commonmark.org/0.30/#example-177)
 
 This markdown:
@@ -609,7 +511,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<script>&lt;p&gt;foo&lt;/p&gt;</script><ol><li><em>bar</em></li></ol>
+<script>foo</script><ol><li><em>bar</em></li></ol>
 ````````````
 ## [Example 180](https://spec.commonmark.org/0.30/#example-180)
 

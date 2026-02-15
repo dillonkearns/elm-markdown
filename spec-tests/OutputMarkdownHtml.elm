@@ -302,9 +302,21 @@ htmlRenderer : Markdown.Html.Renderer Never (List (Html.Html msg) -> Html.Html m
 htmlRenderer =
     Markdown.Html.oneOf []
         |> Markdown.Html.withFallback
-            (\tag attributes renderedChildren ->
+            (\tag attributes { raw, rendered } ->
                 if String.startsWith "/" tag then
                     Html.text ("CLOSINGTAG_" ++ String.dropLeft 1 tag ++ "_ENDCLOSINGTAG")
+
+                else if List.member tag rawContentTags then
+                    let
+                        htmlAttributes : List (Html.Attribute msg)
+                        htmlAttributes =
+                            attributes
+                                |> List.map
+                                    (\{ name, value } ->
+                                        Attr.attribute name value
+                                    )
+                    in
+                    Html.node tag htmlAttributes [ Html.text raw ]
 
                 else
                     let
@@ -316,8 +328,20 @@ htmlRenderer =
                                         Attr.attribute name value
                                     )
                     in
-                    Html.node tag htmlAttributes renderedChildren
+                    Html.node tag htmlAttributes rendered
             )
+
+
+{-| Tags whose content should be preserved as raw text, not parsed as markdown.
+See <https://spec.commonmark.org/0.30/#html-blocks> (type 1).
+-}
+rawContentTags : List String
+rawContentTags =
+    [ "script"
+    , "style"
+    , "textarea"
+    , "pre"
+    ]
 
 
 type Msg

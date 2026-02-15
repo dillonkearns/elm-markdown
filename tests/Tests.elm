@@ -103,6 +103,7 @@ Hello!
                                 []
                                 [ Block.Paragraph (unstyledText "Hello!")
                                 ]
+                                "\nHello!\n"
                             )
                         ]
         , test "embedded HTML with attribute containing <> chars" <|
@@ -120,6 +121,7 @@ Hello!
                                 [ { name = "attr", value = "<u>" } ]
                                 [ Block.Paragraph (unstyledText "Hello!")
                                 ]
+                                "\nHello!\n"
                             )
                         ]
         , test "heading within HTML" <|
@@ -138,6 +140,7 @@ Hello!
                                 []
                                 [ Block.Heading Block.H1 (unstyledText "Heading in a div!")
                                 ]
+                                "\n# Heading in a div!\n\n"
                             )
                         ]
         , test "simple list" <|
@@ -523,6 +526,7 @@ I'm part of the block quote
                                         , { name = "name", value = "Dillon Kearns" }
                                         ]
                                         []
+                                        ""
                                     )
                                 ]
                             ]
@@ -543,6 +547,7 @@ I'm part of the block quote
                                         , { name = "name", value = "Dillon Kearns" }
                                         ]
                                         []
+                                        ""
                                     )
                                 ]
                             ]
@@ -639,8 +644,10 @@ I'm part of the block quote
                                             [ HtmlBlock (HtmlComment " this is the book review ")
                                             , Paragraph [ Text "This is my review..." ]
                                             ]
+                                            "\n  <!-- this is the book review -->\n  This is my review...\n"
                                         )
                                     ]
+                                    "\n\n<Book title=\"Crime and Punishment\">\n  <!-- this is the book review -->\n  This is my review...\n</Book>\n\n\n"
                                 )
                             ]
             ]
@@ -671,14 +678,16 @@ I'm part of the block quote
                                 , HtmlInline
                                     (HtmlElement "resources"
                                         []
-                                        [ HtmlBlock
+                                        [ HtmlInline
                                             (HtmlElement "resource"
                                                 [ { name = "type", value = "book" }
                                                 , { name = "title", value = "Notes From Underground" }
                                                 ]
                                                 []
+                                                ""
                                             )
                                         ]
+                                        "<Resource type=\"book\" title=\"Notes From Underground\" />"
                                     )
                                 ]
                             ]
@@ -692,16 +701,53 @@ I'm part of the block quote
                                 , HtmlInline
                                     (HtmlElement "resources"
                                         []
-                                        [ HtmlBlock
+                                        [ HtmlInline
                                             (HtmlElement "resource"
                                                 [ { name = "type", value = "book" }
                                                 , { name = "title", value = "Notes From Underground" }
                                                 ]
                                                 []
+                                                ""
                                             )
-                                        , Paragraph [ Text "9/10 interesting read!" ]
+                                        , Text "9/10 interesting read!"
                                         ]
+                                        "<Resource type=\"book\" title=\"Notes From Underground\" />9/10 interesting read!"
                                     )
+                                ]
+                            ]
+            , test "raw body captures content for style tag" <|
+                \() ->
+                    "<style>\n\np { color: red; }\n\n</style>"
+                        |> parse
+                        |> Expect.equal
+                            [ HtmlBlock
+                                (HtmlElement "style"
+                                    []
+                                    [ Paragraph [ Text "p { color: red; }" ] ]
+                                    "\n\np { color: red; }\n\n"
+                                )
+                            ]
+            , test "raw body is empty for self-closing tags" <|
+                \() ->
+                    "<my-widget />"
+                        |> parse
+                        |> Expect.equal
+                            [ HtmlBlock
+                                (HtmlElement "my-widget"
+                                    []
+                                    []
+                                    ""
+                                )
+                            ]
+            , test "inline sup renders without paragraph wrapping" <|
+                \() ->
+                    "hello<sup>2</sup>world"
+                        |> parse
+                        |> Expect.equal
+                            [ Paragraph
+                                [ Text "hello"
+                                , HtmlInline (HtmlElement "sup" [] [ Text "2" ] "2")
+                                , Text "world"
                                 ]
                             ]
             ]
