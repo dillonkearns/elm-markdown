@@ -1047,6 +1047,9 @@ inlineFoldDeep ifn inline acc =
             ifn inline acc
 
 
+{-| Like [`foldl`](#foldl), but operates on [`Inline`](#Inline)s instead of [`Block`](#Block)s.
+Traverses all blocks and folds over every inline found within them.
+-}
 inlineFoldl : (Inline -> acc -> acc) -> acc -> List Block -> acc
 inlineFoldl ifunction top_acc list =
     let

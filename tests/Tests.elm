@@ -920,7 +920,7 @@ I'm part of the block quote
                                 , HtmlInline (ClosingTag "foo")
                                 ]
                             ]
-            , test "mid-line single-line HTML still works inline" <|
+            ,test "mid-line single-line HTML still works inline" <|
                 \() ->
                     "This is my foo thing <foo>text</foo> more"
                         |> parse
