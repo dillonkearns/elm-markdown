@@ -189,7 +189,7 @@ parseInlines linkReferences rawBlock =
                 |> Block.Paragraph
                 |> ParsedBlock
 
-        Html html ->
+        Html html _ ->
             Block.HtmlBlock html
                 |> ParsedBlock
 
@@ -407,11 +407,27 @@ blankLine =
 htmlParser : Parser RawBlock
 htmlParser =
     HtmlParser.html
-        |> Advanced.andThen xmlNodeToHtmlNode
+        |> Advanced.mapChompedString (\raw node -> ( raw, node ))
+        |> Advanced.andThen (\( raw, node ) -> xmlNodeToHtmlNode raw node)
 
 
-xmlNodeToHtmlNode : Node -> Parser RawBlock
-xmlNodeToHtmlNode xmlNode =
+multiLineHtmlParser : Parser RawBlock
+multiLineHtmlParser =
+    HtmlParser.html
+        |> Advanced.mapChompedString (\raw node -> ( raw, node ))
+        |> Advanced.andThen
+            (\( raw, node ) ->
+                if String.contains "\n" raw then
+                    xmlNodeToHtmlNode raw node
+
+                else
+                    Advanced.problem (Parser.Expecting "multi-line HTML")
+            )
+        |> Advanced.backtrackable
+
+
+xmlNodeToHtmlNode : String -> Node -> Parser RawBlock
+xmlNodeToHtmlNode raw xmlNode =
     case xmlNode of
         HtmlParser.Text innerText ->
             OpenBlockOrParagraph (UnparsedInlines innerText)
@@ -419,32 +435,32 @@ xmlNodeToHtmlNode xmlNode =
 
         HtmlParser.Element tag attributes children rawBody ->
             Block.HtmlElement tag attributes (nodesToBlocks children) rawBody
-                |> RawBlock.Html
+                |> (\html -> RawBlock.Html html raw)
                 |> succeed
 
         Comment string ->
             Block.HtmlComment string
-                |> RawBlock.Html
+                |> (\html -> RawBlock.Html html raw)
                 |> succeed
 
         Cdata string ->
             Block.Cdata string
-                |> RawBlock.Html
+                |> (\html -> RawBlock.Html html raw)
                 |> succeed
 
         ProcessingInstruction string ->
             Block.ProcessingInstruction string
-                |> RawBlock.Html
+                |> (\html -> RawBlock.Html html raw)
                 |> succeed
 
         Declaration declarationType content ->
             Block.HtmlDeclaration declarationType content
-                |> RawBlock.Html
+                |> (\html -> RawBlock.Html html raw)
                 |> succeed
 
         HtmlParser.ClosingTag tagName ->
             Block.ClosingTag tagName
-                |> RawBlock.Html
+                |> (\html -> RawBlock.Html html raw)
                 |> succeed
 
 
@@ -952,6 +968,41 @@ completeOrMergeBlocks state newRawBlock =
                         , rawBlocks = newRawBlock :: BlankLine :: UnorderedListBlock tight intended1 ({ task = openListItem2.task, body = value.rawBlocks } :: closeListItems2) openListItem2 :: rest
                         }
 
+        -- Single-line HTML on same line as following text (htmlParser doesn't consume \n,
+        -- so no BlankLine between them). E.g. `<foo>bar</foo>` with ` text` remaining on same line.
+        ( OpenBlockOrParagraph (UnparsedInlines body1), (Html _ rawHtmlText) :: rest ) ->
+            if not (String.contains "\n" rawHtmlText) then
+                succeed
+                    { linkReferenceDefinitions = state.linkReferenceDefinitions
+                    , rawBlocks =
+                        OpenBlockOrParagraph (UnparsedInlines (rawHtmlText ++ body1))
+                            :: rest
+                    }
+
+            else
+                succeed
+                    { linkReferenceDefinitions = state.linkReferenceDefinitions
+                    , rawBlocks = newRawBlock :: state.rawBlocks
+                    }
+
+        -- Single-line HTML followed by text on next line. The \n after the HTML tag
+        -- is consumed as BlankLine by the block parser, so we see [BlankLine, Html ...].
+        -- For single-line HTML, merge into a paragraph so inline parser handles the tag.
+        ( OpenBlockOrParagraph (UnparsedInlines body1), BlankLine :: (Html _ rawHtmlText) :: rest ) ->
+            if not (String.contains "\n" rawHtmlText) then
+                succeed
+                    { linkReferenceDefinitions = state.linkReferenceDefinitions
+                    , rawBlocks =
+                        OpenBlockOrParagraph (UnparsedInlines (joinRawStringsWith "\n" rawHtmlText body1))
+                            :: rest
+                    }
+
+            else
+                succeed
+                    { linkReferenceDefinitions = state.linkReferenceDefinitions
+                    , rawBlocks = newRawBlock :: state.rawBlocks
+                    }
+
         _ ->
             succeed
                 { linkReferenceDefinitions = state.linkReferenceDefinitions
@@ -1277,7 +1328,7 @@ mergeableBlockAfterOpenBlockOrParagraphParser =
         -- NOTE: the ordered list block changes its parsing rules when it's right after a Body
         , orderedListBlock True
         , Heading.parser |> Advanced.backtrackable
-        , htmlParser
+        , multiLineHtmlParser
         , tableDelimiterInOpenParagraph |> Advanced.backtrackable
         ]
 

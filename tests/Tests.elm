@@ -825,6 +825,92 @@ I'm part of the block quote
                         |> Expect.equal
                             [ Paragraph [ Text "~~Hi~~ Hello, world!" ] ]
             ]
+        , describe "positional heuristic for inline vs block HTML"
+            [ test "single-line HTML tag after paragraph text becomes inline" <|
+                \() ->
+                    "She speaks.\n<acerola>Hello!</acerola>"
+                        |> parse
+                        |> Expect.equal
+                            [ Paragraph
+                                [ Text "She speaks.\n"
+                                , HtmlInline (HtmlElement "acerola" [] [ Text "Hello!" ] "Hello!")
+                                ]
+                            ]
+            , test "single-line HTML followed by text on next line merges into paragraph" <|
+                \() ->
+                    "<foo>bar</foo>\nbaz"
+                        |> parse
+                        |> Expect.equal
+                            [ Paragraph
+                                [ HtmlInline (HtmlElement "foo" [] [ Text "bar" ] "bar")
+                                , Text "\nbaz"
+                                ]
+                            ]
+            , test "single-line HTML with trailing spaces followed by text merges into paragraph" <|
+                \() ->
+                    "<foo>bar</foo>  \nbaz"
+                        |> parse
+                        |> Expect.equal
+                            [ Paragraph
+                                [ HtmlInline (HtmlElement "foo" [] [ Text "bar" ] "bar")
+                                , Text "\nbaz"
+                                ]
+                            ]
+            , test "multi-line HTML always becomes block even interrupting paragraph" <|
+                \() ->
+                    "She speaks.\n<foo>\nHello!\n</foo>"
+                        |> parse
+                        |> Expect.equal
+                            [ Paragraph [ Text "She speaks." ]
+                            , HtmlBlock
+                                (HtmlElement "foo"
+                                    []
+                                    [ Paragraph [ Text "Hello!" ] ]
+                                    "\nHello!\n"
+                                )
+                            ]
+            , test "blank line before single-line HTML makes it a block" <|
+                \() ->
+                    "<foo>bar</foo>\n\nbaz"
+                        |> parse
+                        |> Expect.equal
+                            [ HtmlBlock (HtmlElement "foo" [] [ Paragraph [ Text "bar" ] ] "bar")
+                            , Paragraph [ Text "baz" ]
+                            ]
+            , test "multi-line HTML followed by text stays as separate blocks" <|
+                \() ->
+                    "<foo>\nbar\n</foo>\nbaz"
+                        |> parse
+                        |> Expect.equal
+                            [ HtmlBlock
+                                (HtmlElement "foo"
+                                    []
+                                    [ Paragraph [ Text "bar" ] ]
+                                    "\nbar\n"
+                                )
+                            , Paragraph [ Text "baz" ]
+                            ]
+            , test "single-line self-closing tag followed by text merges into paragraph" <|
+                \() ->
+                    "<my-widget />\nsome text"
+                        |> parse
+                        |> Expect.equal
+                            [ Paragraph
+                                [ HtmlInline (HtmlElement "my-widget" [] [] "")
+                                , Text "\nsome text"
+                                ]
+                            ]
+            , test "single-line comment followed by text merges into paragraph" <|
+                \() ->
+                    "<!-- hello -->\nsome text"
+                        |> parse
+                        |> Expect.equal
+                            [ Paragraph
+                                [ HtmlInline (HtmlComment " hello ")
+                                , Text "\nsome text"
+                                ]
+                            ]
+            ]
         ]
 
 
