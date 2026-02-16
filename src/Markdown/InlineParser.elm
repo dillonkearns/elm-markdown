@@ -1865,13 +1865,15 @@ htmlToToken rawText (Match match) =
             rawText
                 |> String.dropLeft match.start
                 |> Advanced.run consumedCharacters
-        htmlContent : String
-        htmlContent =
-            rawText
-                |> String.dropLeft match.start
     in
     case parsed of
         Ok { htmlTag, length } ->
+            let
+                htmlContent : String
+                htmlContent =
+                    rawText
+                        |> String.dropLeft match.start
+            in
             if String.contains "\n" (String.left length htmlContent) then
                 Nothing
 

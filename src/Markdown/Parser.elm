@@ -464,11 +464,6 @@ xmlNodeToHtmlNode raw xmlNode =
                 |> succeed
 
 
-textNodeToBlocks : String -> List Block
-textNodeToBlocks textNodeValue =
-    parse textNodeValue
-
-
 nodeToInlineHtml : Node -> Block.Html Inline
 nodeToInlineHtml node =
     case node of
@@ -511,6 +506,7 @@ textNodeToInlines : String -> List Inline
 textNodeToInlines textNodeValue =
     -- Parse text content as inline markdown
     let
+        mappedReferencesDict : Dict String ( String, Maybe String )
         mappedReferencesDict =
             Dict.empty
     in

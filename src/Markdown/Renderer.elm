@@ -793,13 +793,13 @@ renderHtmlNode renderer tag attributes children raw =
 
 renderInlineHtmlNode : Renderer err view -> String -> List Attribute -> List Inline -> String -> Result err view
 renderInlineHtmlNode renderer tag attributes children raw =
-    let
-        (Markdown.HtmlRenderer.HtmlRenderer htmlRenderer) =
-            renderer.html
-    in
     renderStyled renderer children
         |> Result.andThen
             (\renderedChildren ->
+                let
+                    (Markdown.HtmlRenderer.HtmlRenderer htmlRenderer) =
+                        renderer.html
+                in
                 htmlRenderer tag attributes raw
                     |> Result.map (\myRenderer -> myRenderer renderedChildren)
             )
