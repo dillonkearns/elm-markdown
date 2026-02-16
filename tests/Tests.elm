@@ -910,6 +910,27 @@ I'm part of the block quote
                                 , Text "\nsome text"
                                 ]
                             ]
+            , test "mid-line multi-line HTML does not parse as single inline element" <|
+                \() ->
+                    "This is my foo thing <foo>text\nmore text</foo>"
+                        |> parse
+                        |> Expect.equal
+                            [ Paragraph
+                                [ Text "This is my foo thing <foo>text\nmore text"
+                                , HtmlInline (ClosingTag "foo")
+                                ]
+                            ]
+            , test "mid-line single-line HTML still works inline" <|
+                \() ->
+                    "This is my foo thing <foo>text</foo> more"
+                        |> parse
+                        |> Expect.equal
+                            [ Paragraph
+                                [ Text "This is my foo thing "
+                                , HtmlInline (HtmlElement "foo" [] [ Text "text" ] "text")
+                                , Text " more"
+                                ]
+                            ]
             ]
         ]
 
