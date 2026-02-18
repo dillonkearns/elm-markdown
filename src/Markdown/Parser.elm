@@ -406,7 +406,7 @@ blankLine =
 
 htmlParser : Parser RawBlock
 htmlParser =
-    HtmlParser.html
+    (HtmlParser.html |. chompWhile Whitespace.isSpaceOrTab)
         |> Advanced.mapChompedString (\raw node -> ( raw, node ))
         |> Advanced.andThen (\( raw, node ) -> xmlNodeToHtmlNode raw node)
 
@@ -506,7 +506,7 @@ textNodeToInlines : String -> List Inline
 textNodeToInlines textNodeValue =
     -- Parse text content as inline markdown
     let
-        mappedReferencesDict : Dict String ( String, Maybe String )
+        mappedReferencesDict : Dict.Dict String ( String, Maybe String )
         mappedReferencesDict =
             Dict.empty
     in

@@ -853,7 +853,8 @@ I'm part of the block quote
                         |> Expect.equal
                             [ Paragraph
                                 [ HtmlInline (HtmlElement "foo" [] [ Text "bar" ] "bar")
-                                , Text "\nbaz"
+                                , HardLineBreak
+                                , Text "baz"
                                 ]
                             ]
             , test "multi-line HTML always becomes block even interrupting paragraph" <|
