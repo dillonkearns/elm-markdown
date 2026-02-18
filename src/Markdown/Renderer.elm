@@ -541,11 +541,6 @@ renderHelperSingle renderer =
                         renderHtmlNode renderer tag attributes children raw
                             |> Just
 
-                    Block.ClosingTag tagName ->
-                        -- Render closing tag with "/" prefix so user's renderer can handle it
-                        renderHtmlNodeEmpty renderer ("/" ++ tagName)
-                            |> Just
-
                     _ ->
                         Nothing
 
@@ -773,11 +768,6 @@ renderSingleInline renderer inline =
                     renderInlineHtmlNode renderer tag attributes children raw
                         |> Just
 
-                Block.ClosingTag tagName ->
-                    -- Render closing tag with "/" prefix so user's renderer can handle it
-                    renderHtmlNodeEmpty renderer ("/" ++ tagName)
-                        |> Just
-
                 _ ->
                     Nothing
 
@@ -805,10 +795,3 @@ renderInlineHtmlNode renderer tag attributes children raw =
             )
 
 
-renderHtmlNodeEmpty : Renderer err view -> String -> Result err view
-renderHtmlNodeEmpty renderer tag =
-    renderHtml tag
-        []
-        ""
-        renderer.html
-        []

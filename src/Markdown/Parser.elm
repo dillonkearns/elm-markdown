@@ -458,10 +458,8 @@ xmlNodeToHtmlNode raw xmlNode =
                 |> (\html -> RawBlock.Html html raw)
                 |> succeed
 
-        HtmlParser.ClosingTag tagName ->
-            Block.ClosingTag tagName
-                |> (\html -> RawBlock.Html html raw)
-                |> succeed
+        HtmlParser.ClosingTag _ ->
+            Advanced.problem (Parser.Expecting "")
 
 
 nodeToInlineHtml : Node -> Block.Html Inline
@@ -477,6 +475,9 @@ nodeToInlineHtml node =
                     case child of
                         HtmlParser.Text text ->
                             textNodeToInlines text
+
+                        HtmlParser.ClosingTag tagName ->
+                            [ Block.Text ("</" ++ tagName ++ ">") ]
 
                         _ ->
                             [ nodeToInlineHtml child |> Block.HtmlInline ]
@@ -498,8 +499,8 @@ nodeToInlineHtml node =
         Declaration declarationType content ->
             Block.HtmlDeclaration declarationType content
 
-        HtmlParser.ClosingTag tagName ->
-            Block.ClosingTag tagName
+        HtmlParser.ClosingTag _ ->
+            Block.HtmlComment "TODO this never happens, but use types to drop this case."
 
 
 textNodeToInlines : String -> List Inline
@@ -558,8 +559,8 @@ childToBlocks node blocks =
         Declaration declarationType content ->
             Block.HtmlBlock (Block.HtmlDeclaration declarationType content) :: blocks
 
-        HtmlParser.ClosingTag tagName ->
-            Block.HtmlBlock (Block.ClosingTag tagName) :: blocks
+        HtmlParser.ClosingTag _ ->
+            blocks
 
 
 type alias LinkReferenceDefinitions =

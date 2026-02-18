@@ -917,8 +917,7 @@ I'm part of the block quote
                         |> parse
                         |> Expect.equal
                             [ Paragraph
-                                [ Text "This is my foo thing <foo>text\nmore text"
-                                , HtmlInline (ClosingTag "foo")
+                                [ Text "This is my foo thing <foo>text\nmore text</foo>"
                                 ]
                             ]
             ,test "mid-line single-line HTML still works inline" <|

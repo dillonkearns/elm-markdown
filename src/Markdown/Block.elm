@@ -271,7 +271,6 @@ type Html children
     | ProcessingInstruction String
     | HtmlDeclaration String String
     | Cdata String
-    | ClosingTag String
 
 
 {-| An Html attribute. In <div class="foo">, you would have `{ name = "class", value = "foo" }`.
@@ -926,9 +925,6 @@ inlineFoldDeep ifn inline acc =
                     hiacc
 
                 Cdata _ ->
-                    hiacc
-
-                ClosingTag _ ->
                     hiacc
 
         Link _ _ inlines ->
