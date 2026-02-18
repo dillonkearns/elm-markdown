@@ -459,6 +459,8 @@ xmlNodeToHtmlNode raw xmlNode =
                 |> succeed
 
         HtmlParser.ClosingTag _ ->
+            -- Unreachable: parseAsParagraphInsteadOfHtmlBlock intercepts closing tags
+            -- before htmlParser runs, so this is a defensive fallback.
             Advanced.problem (Parser.Expecting "")
 
 
@@ -560,6 +562,8 @@ childToBlocks node blocks =
             Block.HtmlBlock (Block.HtmlDeclaration declarationType content) :: blocks
 
         HtmlParser.ClosingTag _ ->
+            -- Stray closing tags inside element bodies are silently dropped,
+            -- consistent with how browsers handle unmatched closing tags.
             blocks
 
 
