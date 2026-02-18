@@ -1874,7 +1874,7 @@ htmlToToken rawText (Match match) =
                     rawText
                         |> String.dropLeft match.start
             in
-            if String.contains "\n" (String.left length htmlContent) then
+            if String.contains "\n" (String.left length htmlContent) && isElementNode htmlTag then
                 Nothing
 
             else
@@ -1891,6 +1891,16 @@ htmlToToken rawText (Match match) =
 
         Err _ ->
             Nothing
+
+
+isElementNode : HtmlParser.Node -> Bool
+isElementNode node =
+    case node of
+        HtmlParser.Element _ _ _ _ ->
+            True
+
+        _ ->
+            False
 
 
 htmlElementTTM : List Token -> List Token -> List Match -> References -> String -> List Match

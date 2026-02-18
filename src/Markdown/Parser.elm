@@ -970,7 +970,7 @@ completeOrMergeBlocks state newRawBlock =
         -- Single-line HTML on same line as following text (htmlParser doesn't consume \n,
         -- so no BlankLine between them). E.g. `<foo>bar</foo>` with ` text` remaining on same line.
         ( OpenBlockOrParagraph (UnparsedInlines body1), (Html _ rawHtmlText) :: rest ) ->
-            if not (String.contains "\n" rawHtmlText) then
+            if not (String.contains "\n" rawHtmlText) && not (startsWithBlockLevelHtmlTag rawHtmlText) then
                 succeed
                     { linkReferenceDefinitions = state.linkReferenceDefinitions
                     , rawBlocks =
@@ -988,7 +988,7 @@ completeOrMergeBlocks state newRawBlock =
         -- is consumed as BlankLine by the block parser, so we see [BlankLine, Html ...].
         -- For single-line HTML, merge into a paragraph so inline parser handles the tag.
         ( OpenBlockOrParagraph (UnparsedInlines body1), BlankLine :: (Html _ rawHtmlText) :: rest ) ->
-            if not (String.contains "\n" rawHtmlText) then
+            if not (String.contains "\n" rawHtmlText) && not (startsWithBlockLevelHtmlTag rawHtmlText) then
                 succeed
                     { linkReferenceDefinitions = state.linkReferenceDefinitions
                     , rawBlocks =
@@ -1404,6 +1404,31 @@ So if we see `<` followed by anything else (like a digit, underscore, space, etc
 it's definitely not HTML and should be parsed as paragraph text.
 
 -}
+
+
+{- CommonMark type 1 HTML block tags that should always be treated as block-level,
+   never merged into paragraphs as inline HTML.
+   See <https://spec.commonmark.org/0.30/#html-blocks>.
+-}
+startsWithBlockLevelHtmlTag : String -> Bool
+startsWithBlockLevelHtmlTag rawHtml =
+    let
+        lower : String
+        lower =
+            String.toLower rawHtml
+    in
+    List.any (\tag -> String.startsWith ("<" ++ tag) lower) blockLevelHtmlTags
+
+
+blockLevelHtmlTags : List String
+blockLevelHtmlTags =
+    [ "script"
+    , "style"
+    , "pre"
+    , "textarea"
+    ]
+
+
 parseAsParagraphInsteadOfHtmlBlock : Parser RawBlock
 parseAsParagraphInsteadOfHtmlBlock =
     -- ^<[A-Za-z][A-Za-z0-9.+-]{1,31}:[^<>\x00-\x20]*>
