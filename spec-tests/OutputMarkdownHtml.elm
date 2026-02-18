@@ -231,6 +231,7 @@ renderMarkdown markdown =
         |> List.map (Html.toString 0)
         |> String.join ""
         |> removeVoidClosingTags
+        |> replaceClosingTagMarkers
         |> Ok
 
 
@@ -240,6 +241,29 @@ removeVoidClosingTags : String -> String
 removeVoidClosingTags string =
     string
         |> Regex.replace voidClosingReplaceRegex (\_ -> "")
+
+
+{-| Convert closing tag markers back to actual closing tags.
+The markers are in format: CLOSINGTAG\_tagname\_ENDCLOSINGTAG
+-}
+replaceClosingTagMarkers : String -> String
+replaceClosingTagMarkers string =
+    string
+        |> Regex.replace closingTagMarkerRegex
+            (\match ->
+                case match.submatches of
+                    [ Just tagName ] ->
+                        "</" ++ tagName ++ ">"
+
+                    _ ->
+                        match.match
+            )
+
+
+closingTagMarkerRegex : Regex.Regex
+closingTagMarkerRegex =
+    Regex.fromString "CLOSINGTAG_([a-zA-Z][a-zA-Z0-9-]*)_ENDCLOSINGTAG"
+        |> Maybe.withDefault Regex.never
 
 
 voidClosingReplaceRegex =
@@ -279,7 +303,10 @@ htmlRenderer =
     Markdown.Html.oneOf []
         |> Markdown.Html.withFallback
             (\tag attributes { raw, rendered } ->
-                if List.member tag rawContentTags then
+                if String.startsWith "/" tag then
+                    Html.text ("CLOSINGTAG_" ++ String.dropLeft 1 tag ++ "_ENDCLOSINGTAG")
+
+                else if List.member tag rawContentTags then
                     let
                         htmlAttributes : List (Html.Attribute msg)
                         htmlAttributes =

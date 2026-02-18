@@ -1868,31 +1868,26 @@ htmlToToken rawText (Match match) =
     in
     case parsed of
         Ok { htmlTag, length } ->
-            case htmlTag of
-                HtmlParser.ClosingTag _ ->
-                    Nothing
+            let
+                htmlContent : String
+                htmlContent =
+                    rawText
+                        |> String.dropLeft match.start
+            in
+            if String.contains "\n" (String.left length htmlContent) then
+                Nothing
 
-                _ ->
-                    let
-                        htmlContent : String
-                        htmlContent =
-                            rawText
-                                |> String.dropLeft match.start
-                    in
-                    if String.contains "\n" (String.left length htmlContent) then
-                        Nothing
-
-                    else
-                        let
-                            htmlToken : Meaning
-                            htmlToken =
-                                HtmlToken NotOpening htmlTag
-                        in
-                        Just
-                            { index = match.start
-                            , length = length
-                            , meaning = htmlToken
-                            }
+            else
+                let
+                    htmlToken : Meaning
+                    htmlToken =
+                        HtmlToken NotOpening htmlTag
+                in
+                Just
+                    { index = match.start
+                    , length = length
+                    , meaning = htmlToken
+                    }
 
         Err _ ->
             Nothing
