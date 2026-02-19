@@ -967,6 +967,22 @@ completeOrMergeBlocks state newRawBlock =
                         , rawBlocks = newRawBlock :: BlankLine :: UnorderedListBlock tight intended1 ({ task = openListItem2.task, body = value.rawBlocks } :: closeListItems2) openListItem2 :: rest
                         }
 
+        -- Multi-line HTML following a paragraph: merge into paragraph for non-block-level tags
+        ( Html _ rawHtmlText, (OpenBlockOrParagraph (UnparsedInlines body1)) :: rest ) ->
+            if not (startsWithBlockLevelHtmlTag rawHtmlText) then
+                succeed
+                    { linkReferenceDefinitions = state.linkReferenceDefinitions
+                    , rawBlocks =
+                        OpenBlockOrParagraph (UnparsedInlines (joinRawStringsWith "\n" body1 rawHtmlText))
+                            :: rest
+                    }
+
+            else
+                succeed
+                    { linkReferenceDefinitions = state.linkReferenceDefinitions
+                    , rawBlocks = newRawBlock :: state.rawBlocks
+                    }
+
         -- Single-line HTML on same line as following text (htmlParser doesn't consume \n,
         -- so no BlankLine between them). E.g. `<foo>bar</foo>` with ` text` remaining on same line.
         ( OpenBlockOrParagraph (UnparsedInlines body1), (Html _ rawHtmlText) :: rest ) ->

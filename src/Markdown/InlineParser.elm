@@ -1874,20 +1874,16 @@ htmlToToken rawText (Match match) =
                     rawText
                         |> String.dropLeft match.start
             in
-            if String.contains "\n" (String.left length htmlContent) && isElementNode htmlTag then
-                Nothing
-
-            else
-                let
-                    htmlToken : Meaning
-                    htmlToken =
-                        HtmlToken NotOpening htmlTag
-                in
-                Just
-                    { index = match.start
-                    , length = length
-                    , meaning = htmlToken
-                    }
+            let
+                htmlToken : Meaning
+                htmlToken =
+                    HtmlToken NotOpening htmlTag
+            in
+            Just
+                { index = match.start
+                , length = length
+                , meaning = htmlToken
+                }
 
         Err _ ->
             Nothing

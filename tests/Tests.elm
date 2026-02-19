@@ -857,18 +857,38 @@ I'm part of the block quote
                                 , Text "baz"
                                 ]
                             ]
-            , test "multi-line HTML always becomes block even interrupting paragraph" <|
+            , test "multi-line custom inline HTML continues paragraph" <|
+                \() ->
+                    "A  \n<acerola>B  \nC</acerola>"
+                        |> parse
+                        |> Expect.equal
+                            [ Paragraph
+                                [ Text "A"
+                                , HardLineBreak
+                                , HtmlInline (HtmlElement "acerola" [] [ Text "B", HardLineBreak, Text "C" ] "B  \nC")
+                                ]
+                            ]
+            , test "text before multi-line inline HTML on continuation line" <|
+                \() ->
+                    "A  \n2<acerola>B  \nC</acerola>"
+                        |> parse
+                        |> Expect.equal
+                            [ Paragraph
+                                [ Text "A"
+                                , HardLineBreak
+                                , Text "2"
+                                , HtmlInline (HtmlElement "acerola" [] [ Text "B", HardLineBreak, Text "C" ] "B  \nC")
+                                ]
+                            ]
+            , test "multi-line HTML after paragraph text merges into paragraph as inline" <|
                 \() ->
                     "She speaks.\n<foo>\nHello!\n</foo>"
                         |> parse
                         |> Expect.equal
-                            [ Paragraph [ Text "She speaks." ]
-                            , HtmlBlock
-                                (HtmlElement "foo"
-                                    []
-                                    [ Paragraph [ Text "Hello!" ] ]
-                                    "\nHello!\n"
-                                )
+                            [ Paragraph
+                                [ Text "She speaks.\n"
+                                , HtmlInline (HtmlElement "foo" [] [ Text "Hello!" ] "\nHello!\n")
+                                ]
                             ]
             , test "blank line before single-line HTML makes it a block" <|
                 \() ->
@@ -911,14 +931,14 @@ I'm part of the block quote
                                 , Text "\nsome text"
                                 ]
                             ]
-            , test "mid-line multi-line HTML does not parse as single inline element" <|
+            , test "mid-line multi-line HTML parses as single inline element" <|
                 \() ->
                     "This is my foo thing <foo>text\nmore text</foo>"
                         |> parse
                         |> Expect.equal
                             [ Paragraph
-                                [ Text "This is my foo thing <foo>text\nmore text"
-                                , HtmlInline (HtmlElement "/foo" [] [] "")
+                                [ Text "This is my foo thing "
+                                , HtmlInline (HtmlElement "foo" [] [ Text "text\nmore text" ] "text\nmore text")
                                 ]
                             ]
             ,test "mid-line single-line HTML still works inline" <|
