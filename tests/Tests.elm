@@ -103,6 +103,7 @@ Hello!
                                 []
                                 [ Block.Paragraph (unstyledText "Hello!")
                                 ]
+                                "\nHello!\n"
                             )
                         ]
         , test "embedded HTML with attribute containing <> chars" <|
@@ -120,6 +121,7 @@ Hello!
                                 [ { name = "attr", value = "<u>" } ]
                                 [ Block.Paragraph (unstyledText "Hello!")
                                 ]
+                                "\nHello!\n"
                             )
                         ]
         , test "heading within HTML" <|
@@ -138,6 +140,7 @@ Hello!
                                 []
                                 [ Block.Heading Block.H1 (unstyledText "Heading in a div!")
                                 ]
+                                "\n# Heading in a div!\n\n"
                             )
                         ]
         , test "simple list" <|
@@ -523,6 +526,7 @@ I'm part of the block quote
                                         , { name = "name", value = "Dillon Kearns" }
                                         ]
                                         []
+                                        ""
                                     )
                                 ]
                             ]
@@ -543,6 +547,7 @@ I'm part of the block quote
                                         , { name = "name", value = "Dillon Kearns" }
                                         ]
                                         []
+                                        ""
                                     )
                                 ]
                             ]
@@ -639,8 +644,10 @@ I'm part of the block quote
                                             [ HtmlBlock (HtmlComment " this is the book review ")
                                             , Paragraph [ Text "This is my review..." ]
                                             ]
+                                            "\n  <!-- this is the book review -->\n  This is my review...\n"
                                         )
                                     ]
+                                    "\n\n<Book title=\"Crime and Punishment\">\n  <!-- this is the book review -->\n  This is my review...\n</Book>\n\n\n"
                                 )
                             ]
             ]
@@ -671,14 +678,16 @@ I'm part of the block quote
                                 , HtmlInline
                                     (HtmlElement "resources"
                                         []
-                                        [ HtmlBlock
+                                        [ HtmlInline
                                             (HtmlElement "resource"
                                                 [ { name = "type", value = "book" }
                                                 , { name = "title", value = "Notes From Underground" }
                                                 ]
                                                 []
+                                                ""
                                             )
                                         ]
+                                        "<Resource type=\"book\" title=\"Notes From Underground\" />"
                                     )
                                 ]
                             ]
@@ -692,16 +701,53 @@ I'm part of the block quote
                                 , HtmlInline
                                     (HtmlElement "resources"
                                         []
-                                        [ HtmlBlock
+                                        [ HtmlInline
                                             (HtmlElement "resource"
                                                 [ { name = "type", value = "book" }
                                                 , { name = "title", value = "Notes From Underground" }
                                                 ]
                                                 []
+                                                ""
                                             )
-                                        , Paragraph [ Text "9/10 interesting read!" ]
+                                        , Text "9/10 interesting read!"
                                         ]
+                                        "<Resource type=\"book\" title=\"Notes From Underground\" />9/10 interesting read!"
                                     )
+                                ]
+                            ]
+            , test "raw body captures content for style tag" <|
+                \() ->
+                    "<style>\n\np { color: red; }\n\n</style>"
+                        |> parse
+                        |> Expect.equal
+                            [ HtmlBlock
+                                (HtmlElement "style"
+                                    []
+                                    [ Paragraph [ Text "p { color: red; }" ] ]
+                                    "\n\np { color: red; }\n\n"
+                                )
+                            ]
+            , test "raw body is empty for self-closing tags" <|
+                \() ->
+                    "<my-widget />"
+                        |> parse
+                        |> Expect.equal
+                            [ HtmlBlock
+                                (HtmlElement "my-widget"
+                                    []
+                                    []
+                                    ""
+                                )
+                            ]
+            , test "inline sup renders without paragraph wrapping" <|
+                \() ->
+                    "hello<sup>2</sup>world"
+                        |> parse
+                        |> Expect.equal
+                            [ Paragraph
+                                [ Text "hello"
+                                , HtmlInline (HtmlElement "sup" [] [ Text "2" ] "2")
+                                , Text "world"
                                 ]
                             ]
             ]
@@ -778,6 +824,160 @@ I'm part of the block quote
                         |> parse
                         |> Expect.equal
                             [ Paragraph [ Text "~~Hi~~ Hello, world!" ] ]
+            ]
+        , describe "positional heuristic for inline vs block HTML"
+            [ test "single-line HTML tag after paragraph text becomes inline" <|
+                \() ->
+                    "She speaks.\n<acerola>Hello!</acerola>"
+                        |> parse
+                        |> Expect.equal
+                            [ Paragraph
+                                [ Text "She speaks.\n"
+                                , HtmlInline (HtmlElement "acerola" [] [ Text "Hello!" ] "Hello!")
+                                ]
+                            ]
+            , test "single-line HTML followed by text on next line merges into paragraph" <|
+                \() ->
+                    "<foo>bar</foo>\nbaz"
+                        |> parse
+                        |> Expect.equal
+                            [ Paragraph
+                                [ HtmlInline (HtmlElement "foo" [] [ Text "bar" ] "bar")
+                                , Text "\nbaz"
+                                ]
+                            ]
+            , test "single-line HTML with trailing spaces followed by text merges into paragraph" <|
+                \() ->
+                    "<foo>bar</foo>  \nbaz"
+                        |> parse
+                        |> Expect.equal
+                            [ Paragraph
+                                [ HtmlInline (HtmlElement "foo" [] [ Text "bar" ] "bar")
+                                , HardLineBreak
+                                , Text "baz"
+                                ]
+                            ]
+            , test "multi-line custom inline HTML continues paragraph" <|
+                \() ->
+                    "A  \n<acerola>B  \nC</acerola>"
+                        |> parse
+                        |> Expect.equal
+                            [ Paragraph
+                                [ Text "A"
+                                , HardLineBreak
+                                , HtmlInline (HtmlElement "acerola" [] [ Text "B", HardLineBreak, Text "C" ] "B  \nC")
+                                ]
+                            ]
+            , test "text before multi-line inline HTML on continuation line" <|
+                \() ->
+                    "A  \n2<acerola>B  \nC</acerola>"
+                        |> parse
+                        |> Expect.equal
+                            [ Paragraph
+                                [ Text "A"
+                                , HardLineBreak
+                                , Text "2"
+                                , HtmlInline (HtmlElement "acerola" [] [ Text "B", HardLineBreak, Text "C" ] "B  \nC")
+                                ]
+                            ]
+            , test "multi-line HTML after paragraph text merges into paragraph as inline" <|
+                \() ->
+                    "She speaks.\n<foo>\nHello!\n</foo>"
+                        |> parse
+                        |> Expect.equal
+                            [ Paragraph
+                                [ Text "She speaks.\n"
+                                , HtmlInline (HtmlElement "foo" [] [ Text "Hello!" ] "\nHello!\n")
+                                ]
+                            ]
+            , test "blank line before single-line HTML makes it a block" <|
+                \() ->
+                    "<foo>bar</foo>\n\nbaz"
+                        |> parse
+                        |> Expect.equal
+                            [ HtmlBlock (HtmlElement "foo" [] [ Paragraph [ Text "bar" ] ] "bar")
+                            , Paragraph [ Text "baz" ]
+                            ]
+            , test "multi-line HTML followed by text stays as separate blocks" <|
+                \() ->
+                    "<foo>\nbar\n</foo>\nbaz"
+                        |> parse
+                        |> Expect.equal
+                            [ HtmlBlock
+                                (HtmlElement "foo"
+                                    []
+                                    [ Paragraph [ Text "bar" ] ]
+                                    "\nbar\n"
+                                )
+                            , Paragraph [ Text "baz" ]
+                            ]
+            , test "single-line self-closing tag followed by text merges into paragraph" <|
+                \() ->
+                    "<my-widget />\nsome text"
+                        |> parse
+                        |> Expect.equal
+                            [ Paragraph
+                                [ HtmlInline (HtmlElement "my-widget" [] [] "")
+                                , Text "\nsome text"
+                                ]
+                            ]
+            , test "single-line comment followed by text merges into paragraph" <|
+                \() ->
+                    "<!-- hello -->\nsome text"
+                        |> parse
+                        |> Expect.equal
+                            [ Paragraph
+                                [ HtmlInline (HtmlComment " hello ")
+                                , Text "\nsome text"
+                                ]
+                            ]
+            , test "mid-line multi-line HTML parses as single inline element" <|
+                \() ->
+                    "This is my foo thing <foo>text\nmore text</foo>"
+                        |> parse
+                        |> Expect.equal
+                            [ Paragraph
+                                [ Text "This is my foo thing "
+                                , HtmlInline (HtmlElement "foo" [] [ Text "text\nmore text" ] "text\nmore text")
+                                ]
+                            ]
+            ,test "mid-line single-line HTML still works inline" <|
+                \() ->
+                    "This is my foo thing <foo>text</foo> more"
+                        |> parse
+                        |> Expect.equal
+                            [ Paragraph
+                                [ Text "This is my foo thing "
+                                , HtmlInline (HtmlElement "foo" [] [ Text "text" ] "text")
+                                , Text " more"
+                                ]
+                            ]
+            , test "multi-line HTML with \\r line endings is treated as block" <|
+                \() ->
+                    "<foo>\u{000D}bar\u{000D}</foo>\u{000D}baz"
+                        |> parse
+                        |> Expect.equal
+                            [ HtmlBlock
+                                (HtmlElement "foo"
+                                    []
+                                    [ Paragraph [ Text "bar" ] ]
+                                    "\nbar\n"
+                                )
+                            , Paragraph [ Text "baz" ]
+                            ]
+            , test "multi-line HTML with \\r\\n line endings is treated as block" <|
+                \() ->
+                    "<foo>\u{000D}\nbar\u{000D}\n</foo>\u{000D}\nbaz"
+                        |> parse
+                        |> Expect.equal
+                            [ HtmlBlock
+                                (HtmlElement "foo"
+                                    []
+                                    [ Paragraph [ Text "bar" ] ]
+                                    "\nbar\n"
+                                )
+                            , Paragraph [ Text "baz" ]
+                            ]
             ]
         ]
 

@@ -1,10 +1,17 @@
 module Markdown.Html exposing
     ( Renderer
     , tag, withAttribute, withOptionalAttribute
+    , withRawContent
     , map, oneOf, withFallback
     )
 
-{-|
+{-| This module lets you define how custom HTML tags in your markdown are rendered.
+
+Use [`oneOf`](#oneOf) to register the specific tags you support, then
+[`withFallback`](#withFallback) to handle any unregistered tags gracefully — this
+converts a fallible `Renderer String` into an infallible `Renderer Never`, which
+you can use with [`Markdown.Renderer.render`](Markdown-Renderer#render) for a
+pipeline that can never fail.
 
 @docs Renderer
 
@@ -12,12 +19,12 @@ module Markdown.Html exposing
 ## Creating an HTML renderer
 
 @docs tag, withAttribute, withOptionalAttribute
+@docs withRawContent
 @docs map, oneOf, withFallback
 
 -}
 
 import List.Helpers
-import Markdown.Block exposing (Block)
 import Markdown.HtmlRenderer
 
 
@@ -46,8 +53,8 @@ type alias Attribute =
 -}
 map : (a -> b) -> Renderer err a -> Renderer err b
 map function (Markdown.HtmlRenderer.HtmlRenderer renderer) =
-    (\tagName attributes innerBlocks ->
-        renderer tagName attributes innerBlocks
+    (\tagName attributes rawBody ->
+        renderer tagName attributes rawBody
             |> Result.map function
     )
         |> Markdown.HtmlRenderer.HtmlRenderer
@@ -69,7 +76,7 @@ be using this function when you use this module.
 oneOf : List (Renderer String view) -> Renderer String view
 oneOf decoders =
     let
-        unwrappedDecoders : List (String -> List Markdown.HtmlRenderer.Attribute -> List Block -> Result String view)
+        unwrappedDecoders : List (String -> List Markdown.HtmlRenderer.Attribute -> String -> Result String view)
         unwrappedDecoders =
             decoders
                 |> List.map
@@ -77,16 +84,16 @@ oneOf decoders =
     in
     List.foldl
         (\decoder soFar ->
-            \tagName attributes children ->
-                resultOr (decoder tagName attributes children) (soFar tagName attributes children)
+            \tagName attributes rawBody ->
+                resultOr (decoder tagName attributes rawBody) (soFar tagName attributes rawBody)
         )
         (\_ _ _ ->
             Err []
         )
         unwrappedDecoders
         |> (\rawDecoder ->
-                (\tagName attributes innerBlocks ->
-                    rawDecoder tagName attributes innerBlocks
+                (\tagName attributes rawBody ->
+                    rawDecoder tagName attributes rawBody
                         |> Result.mapError
                             (\errors ->
                                 case errors of
@@ -204,8 +211,8 @@ you define for the tag's renderer.
 -}
 withAttribute : String -> Renderer String (String -> view) -> Renderer String view
 withAttribute attributeName (Markdown.HtmlRenderer.HtmlRenderer renderer) =
-    (\tagName attributes innerBlocks ->
-        renderer tagName attributes innerBlocks
+    (\tagName attributes rawBody ->
+        renderer tagName attributes rawBody
             |> (case
                     attributes
                         |> List.Helpers.find
@@ -228,34 +235,61 @@ withAttribute attributeName (Markdown.HtmlRenderer.HtmlRenderer renderer) =
         |> Markdown.HtmlRenderer.HtmlRenderer
 
 
+{-| Extract the raw body text of an HTML tag. This is the unparsed source text
+between the opening and closing tags.
+
+    Markdown.Html.tag "style"
+        (\rawBody children ->
+            Html.node "style" [] [ Html.text rawBody ]
+        )
+        |> Markdown.Html.withRawContent
+
+-}
+withRawContent : Renderer String (String -> view) -> Renderer String view
+withRawContent (Markdown.HtmlRenderer.HtmlRenderer renderer) =
+    Markdown.HtmlRenderer.HtmlRenderer
+        (\tagName attributes rawBody ->
+            renderer tagName attributes rawBody
+                |> Result.map (\fn -> fn rawBody)
+        )
+
+
 {-| Transform a fallible `Renderer String` into an infallible `Renderer Never`
 by providing a fallback function that handles any tags not matched by specific renderers.
 
-The fallback function receives the tag name, attributes, and rendered children.
+The fallback function receives the tag name, attributes, and a record with `raw` (the raw
+source text) and `rendered` (the rendered children).
 
     htmlRenderer =
         Markdown.Html.oneOf
             [ Markdown.Html.tag "custom-widget" (\children -> myWidget children)
             ]
             |> Markdown.Html.withFallback
-                (\tag attributes children ->
-                    Html.node tag (attributesToHtmlAttrs attributes) children
+                (\tag attributes { raw, rendered } ->
+                    Html.node tag (attributesToHtmlAttrs attributes) rendered
                 )
 
 -}
 withFallback :
-    (String -> List { name : String, value : String } -> List view -> view)
+    (String -> List { name : String, value : String } -> { raw : String, rendered : List view } -> view)
     -> Renderer String (List view -> view)
     -> Renderer Never (List view -> view)
 withFallback fallbackFn (Markdown.HtmlRenderer.HtmlRenderer renderer) =
     Markdown.HtmlRenderer.HtmlRenderer
-        (\tagName attributes children ->
-            case renderer tagName attributes children of
+        (\tagName attributes rawBody ->
+            case renderer tagName attributes rawBody of
                 Ok view ->
                     Ok view
 
                 Err _ ->
-                    Ok (\renderedChildren -> fallbackFn tagName attributes renderedChildren)
+                    Ok
+                        (\renderedChildren ->
+                            fallbackFn tagName
+                                attributes
+                                { raw = rawBody
+                                , rendered = renderedChildren
+                                }
+                        )
         )
 
 
@@ -274,8 +308,8 @@ Instead, it just returns `Nothing` for missing attributes.
 -}
 withOptionalAttribute : String -> Renderer String (Maybe String -> view) -> Renderer String view
 withOptionalAttribute attributeName (Markdown.HtmlRenderer.HtmlRenderer renderer) =
-    (\tagName attributes innerBlocks ->
-        renderer tagName attributes innerBlocks
+    (\tagName attributes rawBody ->
+        renderer tagName attributes rawBody
             |> (case
                     attributes
                         |> List.Helpers.find

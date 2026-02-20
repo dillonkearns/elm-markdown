@@ -137,10 +137,10 @@ type HeadingLevel
     | H6
 
 
-{-| An Inline block. Note that `HtmlInline`s can contain Blocks, not just nested `Inline`s.
+{-| An Inline block. `HtmlInline`s contain inline children, parsed as inline markdown.
 -}
 type Inline
-    = HtmlInline (Html Block)
+    = HtmlInline (Html Inline)
     | Link String (Maybe String) (List Inline)
     | Image String (Maybe String) (List Inline)
     | Emphasis (List Inline)
@@ -216,13 +216,8 @@ extractTextHelp inline text =
 
         HtmlInline html ->
             case html of
-                HtmlElement _ _ blocks ->
-                    blocks
-                        |> foldl
-                            (\block soFar ->
-                                soFar ++ extractInlineBlockText block
-                            )
-                            text
+                HtmlElement _ _ inlines _ ->
+                    text ++ extractInlineText inlines
 
                 _ ->
                     text
@@ -235,72 +230,6 @@ extractTextHelp inline text =
 
         Strikethrough inlines ->
             text ++ extractInlineText inlines
-
-
-extractInlineBlockText : Block -> String
-extractInlineBlockText block =
-    -- known-unoptimized-recursion
-    case block of
-        Paragraph inlines ->
-            extractInlineText inlines
-
-        HtmlBlock html ->
-            case html of
-                HtmlElement _ _ blocks ->
-                    blocks
-                        |> foldl
-                            (\nestedBlock soFar ->
-                                soFar ++ extractInlineBlockText nestedBlock
-                            )
-                            ""
-
-                _ ->
-                    ""
-
-        UnorderedList _ items ->
-            items
-                |> List.map
-                    (\(ListItem _ blocks) ->
-                        blocks
-                            |> List.map extractInlineBlockText
-                            |> String.join "\n"
-                    )
-                |> String.join "\n"
-
-        OrderedList _ _ items ->
-            items
-                |> List.map
-                    (\blocks ->
-                        blocks
-                            |> List.map extractInlineBlockText
-                            |> String.join "\n"
-                    )
-                |> String.join "\n"
-
-        BlockQuote blocks ->
-            blocks
-                |> List.map extractInlineBlockText
-                |> String.join "\n"
-
-        Heading _ inlines ->
-            extractInlineText inlines
-
-        Table header rows ->
-            [ header
-                |> List.map .label
-                |> List.map extractInlineText
-            , rows
-                |> List.map (List.map extractInlineText)
-                |> List.concat
-            ]
-                |> List.concat
-                |> String.join "\n"
-
-        CodeBlock { body } ->
-            body
-
-        ThematicBreak ->
-            ""
 
 
 
@@ -337,12 +266,11 @@ it and perform any special processing based on that. You could even add or remov
 
 -}
 type Html children
-    = HtmlElement String (List HtmlAttribute) (List children)
+    = HtmlElement String (List HtmlAttribute) (List children) String
     | HtmlComment String
     | ProcessingInstruction String
     | HtmlDeclaration String String
     | Cdata String
-    | ClosingTag String
 
 
 {-| An Html attribute. In <div class="foo">, you would have `{ name = "class", value = "foo" }`.
@@ -461,10 +389,11 @@ walkInlinesHelp function block =
 
         HtmlBlock html ->
             case html of
-                HtmlElement string htmlAttributes blocks ->
+                HtmlElement string htmlAttributes blocks raw ->
                     HtmlElement string
                         htmlAttributes
                         (List.map (walkInlinesHelp function) blocks)
+                        raw
                         |> HtmlBlock
 
                 _ ->
@@ -503,8 +432,8 @@ inlineParserWalk function inline =
 
         HtmlInline html ->
             case html of
-                HtmlElement string htmlAttributes children ->
-                    HtmlElement string htmlAttributes (List.map (walkInlines function) children)
+                HtmlElement tag attrs children raw ->
+                    HtmlElement tag attrs (List.map (inlineParserWalk function) children) raw
                         |> HtmlInline
 
                 _ ->
@@ -587,12 +516,12 @@ inlineParserValidateWalk function inline =
 
         HtmlInline html ->
             case html of
-                HtmlElement tagName htmlAttributes blocks ->
-                    blocks
-                        |> traverse (inlineParserValidateWalkBlock function)
+                HtmlElement tag attrs children raw ->
+                    children
+                        |> traverse (inlineParserValidateWalk function)
                         |> Result.andThen
-                            (\transformedBlocks ->
-                                HtmlElement tagName htmlAttributes transformedBlocks
+                            (\transformedChildren ->
+                                HtmlElement tag attrs transformedChildren raw
                                     |> HtmlInline
                                     |> function
                                     |> Result.mapError List.singleton
@@ -612,10 +541,10 @@ inlineParserValidateWalkBlock function block =
 
         HtmlBlock html ->
             case html of
-                HtmlElement tagName attributes children ->
+                HtmlElement tagName attributes children raw ->
                     children
                         |> traverse (inlineParserValidateWalkBlock function)
-                        |> Result.map (HtmlElement tagName attributes)
+                        |> Result.map (\c -> HtmlElement tagName attributes c raw)
                         |> Result.map HtmlBlock
 
                 _ ->
@@ -735,10 +664,11 @@ walk function block =
 
         HtmlBlock html ->
             case html of
-                HtmlElement string htmlAttributes blocks ->
+                HtmlElement string htmlAttributes blocks raw ->
                     HtmlElement string
                         htmlAttributes
                         (List.map (walk function) blocks)
+                        raw
                         |> HtmlBlock
                         |> function
 
@@ -906,7 +836,7 @@ foldl function acc list =
             case block of
                 HtmlBlock html ->
                     case html of
-                        HtmlElement _ _ children ->
+                        HtmlElement _ _ children _ ->
                             foldl function (function block acc) (children ++ remainingBlocks)
 
                         _ ->
@@ -971,92 +901,91 @@ foldl function acc list =
     -->  ["/note/51", "/note/50"]
 
 -}
+inlineFoldDeep : (Inline -> acc -> acc) -> Inline -> acc -> acc
+inlineFoldDeep ifn inline acc =
+    -- known-unoptimized-recursion
+    case inline of
+        HtmlInline hblock ->
+            let
+                hiacc : acc
+                hiacc =
+                    ifn inline acc
+            in
+            case hblock of
+                HtmlElement _ _ inlines _ ->
+                    List.foldl (inlineFoldDeep ifn) hiacc inlines
+
+                HtmlComment _ ->
+                    hiacc
+
+                ProcessingInstruction _ ->
+                    hiacc
+
+                HtmlDeclaration _ _ ->
+                    hiacc
+
+                Cdata _ ->
+                    hiacc
+
+        Link _ _ inlines ->
+            let
+                iacc : acc
+                iacc =
+                    ifn inline acc
+            in
+            List.foldl (inlineFoldDeep ifn) iacc inlines
+
+        Image _ _ inlines ->
+            let
+                iacc : acc
+                iacc =
+                    ifn inline acc
+            in
+            List.foldl (inlineFoldDeep ifn) iacc inlines
+
+        Emphasis inlines ->
+            let
+                iacc : acc
+                iacc =
+                    ifn inline acc
+            in
+            List.foldl (inlineFoldDeep ifn) iacc inlines
+
+        Strong inlines ->
+            let
+                iacc : acc
+                iacc =
+                    ifn inline acc
+            in
+            List.foldl (inlineFoldDeep ifn) iacc inlines
+
+        Strikethrough inlines ->
+            let
+                iacc : acc
+                iacc =
+                    ifn inline acc
+            in
+            List.foldl (inlineFoldDeep ifn) iacc inlines
+
+        CodeSpan _ ->
+            ifn inline acc
+
+        Text _ ->
+            ifn inline acc
+
+        HardLineBreak ->
+            ifn inline acc
+
+
+{-| Like [`foldl`](#foldl), but operates on [`Inline`](#Inline)s instead of [`Block`](#Block)s.
+Traverses all blocks and folds over every inline found within them.
+-}
 inlineFoldl : (Inline -> acc -> acc) -> acc -> List Block -> acc
 inlineFoldl ifunction top_acc list =
     let
-        -- change a simple inline accum function to one that will fold over
-        -- inlines contained within other inlines.
-        inlineFoldF : (Inline -> acc -> acc) -> Inline -> acc -> acc
-        inlineFoldF =
-            \ifn inline acc ->
-                case inline of
-                    HtmlInline hblock ->
-                        let
-                            hiacc : acc
-                            hiacc =
-                                ifn inline acc
-                        in
-                        case hblock of
-                            HtmlElement _ _ blocks ->
-                                inlineFoldl ifn hiacc blocks
-
-                            HtmlComment _ ->
-                                ifn inline hiacc
-
-                            ProcessingInstruction _ ->
-                                ifn inline hiacc
-
-                            HtmlDeclaration _ _ ->
-                                ifn inline hiacc
-
-                            Cdata _ ->
-                                ifn inline hiacc
-
-                            ClosingTag _ ->
-                                ifn inline hiacc
-
-                    Link _ _ inlines ->
-                        let
-                            iacc : acc
-                            iacc =
-                                ifn inline acc
-                        in
-                        List.foldl ifn iacc inlines
-
-                    Image _ _ inlines ->
-                        let
-                            iacc : acc
-                            iacc =
-                                ifn inline acc
-                        in
-                        List.foldl ifn iacc inlines
-
-                    Emphasis inlines ->
-                        let
-                            iacc : acc
-                            iacc =
-                                ifn inline acc
-                        in
-                        List.foldl ifn iacc inlines
-
-                    Strong inlines ->
-                        let
-                            iacc : acc
-                            iacc =
-                                ifn inline acc
-                        in
-                        List.foldl ifn iacc inlines
-
-                    Strikethrough inlines ->
-                        let
-                            iacc : acc
-                            iacc =
-                                ifn inline acc
-                        in
-                        List.foldl ifn iacc inlines
-
-                    CodeSpan _ ->
-                        ifn inline acc
-
-                    Text _ ->
-                        ifn inline acc
-
-                    HardLineBreak ->
-                        ifn inline acc
-
         function : Inline -> acc -> acc
         function =
-            inlineFoldF ifunction
+            inlineFoldDeep ifunction
 
         bfn : Block -> acc -> acc
         bfn =

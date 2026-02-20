@@ -36,7 +36,7 @@ type alias CloseListItem =
 type RawBlock
     = Heading Int UnparsedInlines
     | OpenBlockOrParagraph UnparsedInlines
-    | Html (Markdown.Block.Html Block)
+    | Html (Markdown.Block.Html Block) String
     | UnorderedListBlock Bool Int (List CloseListItem) OpenListItem
     | OrderedListBlock Bool Int OrderedListMarker Int (List (List RawBlock)) String
     | CodeBlock CodeBlock

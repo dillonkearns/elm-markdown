@@ -4,24 +4,63 @@ import Browser
 import Html exposing (Attribute, Html, div, text)
 import Html.Attributes as Attr
 import Html.Events
+import Markdown.Html
 import Markdown.Parser as Markdown
 import Markdown.Renderer
+
+
+{-| A renderer that passes unrecognized HTML tags through as native HTML nodes.
+
+The `Never` error type means rendering can never fail, so we can use
+`Markdown.Renderer.render` instead of `tryRender`.
+
+-}
+renderer : Markdown.Renderer.Renderer Never (Html Msg)
+renderer =
+    let
+        r =
+            Markdown.Renderer.defaultHtmlRenderer
+    in
+    { heading = r.heading
+    , paragraph = r.paragraph
+    , hardLineBreak = r.hardLineBreak
+    , blockQuote = r.blockQuote
+    , strong = r.strong
+    , emphasis = r.emphasis
+    , codeSpan = r.codeSpan
+    , link = r.link
+    , image = r.image
+    , text = r.text
+    , unorderedList = r.unorderedList
+    , orderedList = r.orderedList
+    , codeBlock = r.codeBlock
+    , thematicBreak = r.thematicBreak
+    , table = r.table
+    , tableHeader = r.tableHeader
+    , tableBody = r.tableBody
+    , tableRow = r.tableRow
+    , tableCell = r.tableCell
+    , tableHeaderCell = r.tableHeaderCell
+    , strikethrough = r.strikethrough
+    , html =
+        Markdown.Html.oneOf []
+            |> Markdown.Html.withFallback
+                (\tagName attributes { rendered } ->
+                    Html.node tagName
+                        (List.map (\{ name, value } -> Attr.attribute name value) attributes)
+                        rendered
+                )
+    }
 
 
 view : String -> Html Msg
 view markdownInput =
     Html.div [ Attr.style "padding" "20px" ]
         [ markdownInputView markdownInput
-        , case
-            markdownInput
-                |> Markdown.parse
-                |> Markdown.Renderer.tryRender Markdown.Renderer.defaultHtmlRenderer
-          of
-            Ok rendered ->
-                div [] rendered
-
-            Err errors ->
-                text errors
+        , markdownInput
+            |> Markdown.parse
+            |> Markdown.Renderer.render renderer
+            |> div []
         ]
 
 

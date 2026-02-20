@@ -8,7 +8,7 @@ module Markdown.Parser exposing (parse)
 
 import Dict
 import Helpers
-import HtmlParser exposing (Node(..))
+import HtmlParser exposing (HtmlTag(..), Node(..))
 import Markdown.Block as Block exposing (Block, Inline)
 import Markdown.CodeBlock
 import Markdown.Heading as Heading
@@ -51,17 +51,24 @@ But you can also do a lot with the `Block`s before passing them through:
 parse : String -> List Block
 parse input =
     let
+        -- Normalize line endings: \r\n and \r both become \n (CommonMark spec §2.1)
+        normalizedInput : String
+        normalizedInput =
+            input
+                |> String.replace "\u{000D}\n" "\n"
+                |> String.replace "\u{000D}" "\n"
+
         -- first parse the file as raw blocks
         state : State
         state =
-            case Advanced.run (rawBlockParser |. Helpers.endOfFile) input of
+            case Advanced.run (rawBlockParser |. Helpers.endOfFile) normalizedInput of
                 Ok v ->
                     v
 
                 Err _ ->
                     -- Defensive fallback: treat entire input as a paragraph
                     { linkReferenceDefinitions = []
-                    , rawBlocks = [ OpenBlockOrParagraph (UnparsedInlines input) ]
+                    , rawBlocks = [ OpenBlockOrParagraph (UnparsedInlines normalizedInput) ]
                     }
 
         isNotEmptyParagraph : Block -> Bool
@@ -114,9 +121,9 @@ mapInline inline =
         Inline.Image string maybeString inlines ->
             Block.Image string maybeString (inlines |> List.map mapInline)
 
-        Inline.HtmlInline node ->
-            node
-                |> nodeToRawBlock
+        Inline.HtmlInline tag ->
+            tag
+                |> nodeToInlineHtml
                 |> Block.HtmlInline
 
         Inline.Emphasis level inlines ->
@@ -189,7 +196,7 @@ parseInlines linkReferences rawBlock =
                 |> Block.Paragraph
                 |> ParsedBlock
 
-        Html html ->
+        Html html _ ->
             Block.HtmlBlock html
                 |> ParsedBlock
 
@@ -406,73 +413,81 @@ blankLine =
 
 htmlParser : Parser RawBlock
 htmlParser =
+    (HtmlParser.html |. chompWhile Whitespace.isSpaceOrTab)
+        |> Advanced.mapChompedString (\raw node -> ( raw, node ))
+        |> Advanced.andThen (\( raw, node ) -> xmlNodeToHtmlNode raw node)
+
+
+multiLineHtmlParser : Parser RawBlock
+multiLineHtmlParser =
     HtmlParser.html
-        |> Advanced.andThen xmlNodeToHtmlNode
+        |> Advanced.mapChompedString (\raw node -> ( raw, node ))
+        |> Advanced.andThen
+            (\( raw, node ) ->
+                if String.contains "\n" raw then
+                    xmlNodeToHtmlNode raw node
+
+                else
+                    Advanced.problem (Parser.Expecting "multi-line HTML")
+            )
+        |> Advanced.backtrackable
 
 
-xmlNodeToHtmlNode : Node -> Parser RawBlock
-xmlNodeToHtmlNode xmlNode =
+xmlNodeToHtmlNode : String -> HtmlTag -> Parser RawBlock
+xmlNodeToHtmlNode raw xmlNode =
     case xmlNode of
-        HtmlParser.Text innerText ->
-            OpenBlockOrParagraph (UnparsedInlines innerText)
-                |> succeed
-
-        HtmlParser.Element tag attributes children ->
-            Block.HtmlElement tag attributes (nodesToBlocks children)
-                |> RawBlock.Html
+        Element tag attributes children rawBody ->
+            Block.HtmlElement tag attributes (nodesToBlocks children) rawBody
+                |> (\html -> RawBlock.Html html raw)
                 |> succeed
 
         Comment string ->
             Block.HtmlComment string
-                |> RawBlock.Html
+                |> (\html -> RawBlock.Html html raw)
                 |> succeed
 
         Cdata string ->
             Block.Cdata string
-                |> RawBlock.Html
+                |> (\html -> RawBlock.Html html raw)
                 |> succeed
 
         ProcessingInstruction string ->
             Block.ProcessingInstruction string
-                |> RawBlock.Html
+                |> (\html -> RawBlock.Html html raw)
                 |> succeed
 
         Declaration declarationType content ->
             Block.HtmlDeclaration declarationType content
-                |> RawBlock.Html
+                |> (\html -> RawBlock.Html html raw)
                 |> succeed
 
-        HtmlParser.ClosingTag tagName ->
-            Block.ClosingTag tagName
-                |> RawBlock.Html
+        ClosingTag tagName ->
+            -- Unreachable: parseAsParagraphInsteadOfHtmlBlock intercepts closing tags
+            -- before htmlParser runs, so this is a defensive fallback.
+            -- Represent as HtmlElement with "/" prefix for the user's HTML renderer.
+            Block.HtmlElement ("/" ++ tagName) [] [] ""
+                |> (\html -> RawBlock.Html html raw)
                 |> succeed
 
 
-textNodeToBlocks : String -> List Block
-textNodeToBlocks textNodeValue =
-    parse textNodeValue
-
-
-nodeToRawBlock : Node -> Block.Html Block
-nodeToRawBlock node =
-    case node of
-        HtmlParser.Text _ ->
-            Block.HtmlComment "TODO this never happens, but use types to drop this case."
-
-        HtmlParser.Element tag attributes children ->
+nodeToInlineHtml : HtmlTag -> Block.Html Inline
+nodeToInlineHtml tag =
+    case tag of
+        Element tagName attributes children rawBody ->
             let
-                parseChild : Node -> List Block
+                parseChild : Node -> List Inline
                 parseChild child =
                     case child of
-                        HtmlParser.Text text ->
-                            textNodeToBlocks text
+                        Text text ->
+                            textNodeToInlines text
 
-                        _ ->
-                            [ nodeToRawBlock child |> Block.HtmlBlock ]
+                        HtmlNode childTag ->
+                            [ nodeToInlineHtml childTag |> Block.HtmlInline ]
             in
-            Block.HtmlElement tag
+            Block.HtmlElement tagName
                 attributes
                 (List.concatMap parseChild children)
+                rawBody
 
         Comment string ->
             Block.HtmlComment string
@@ -486,8 +501,20 @@ nodeToRawBlock node =
         Declaration declarationType content ->
             Block.HtmlDeclaration declarationType content
 
-        HtmlParser.ClosingTag tagName ->
-            Block.ClosingTag tagName
+        ClosingTag tagName ->
+            Block.HtmlElement ("/" ++ tagName) [] [] ""
+
+
+textNodeToInlines : String -> List Inline
+textNodeToInlines textNodeValue =
+    -- Parse text content as inline markdown
+    let
+        mappedReferencesDict : Dict.Dict String ( String, Maybe String )
+        mappedReferencesDict =
+            Dict.empty
+    in
+    Markdown.InlineParser.parse mappedReferencesDict textNodeValue
+        |> List.map mapInline
 
 
 nodesToBlocks : List Node -> List Block
@@ -510,32 +537,34 @@ nodesToBlocksHelp remaining soFar =
 childToBlocks : Node -> List Block -> List Block
 childToBlocks node blocks =
     case node of
-        Element tag attributes children ->
-            let
-                block : Block
-                block =
-                    Block.HtmlElement tag attributes (nodesToBlocks children)
-                        |> Block.HtmlBlock
-            in
-            block :: blocks
-
         Text innerText ->
             List.reverse (parse innerText) ++ blocks
 
+        HtmlNode tag ->
+            htmlTagToBlocks tag :: blocks
+
+
+htmlTagToBlocks : HtmlTag -> Block
+htmlTagToBlocks tag =
+    case tag of
+        Element tagName attributes children rawBody ->
+            Block.HtmlElement tagName attributes (nodesToBlocks children) rawBody
+                |> Block.HtmlBlock
+
         Comment string ->
-            Block.HtmlBlock (Block.HtmlComment string) :: blocks
+            Block.HtmlBlock (Block.HtmlComment string)
 
         Cdata string ->
-            Block.HtmlBlock (Block.Cdata string) :: blocks
+            Block.HtmlBlock (Block.Cdata string)
 
         ProcessingInstruction string ->
-            Block.HtmlBlock (Block.ProcessingInstruction string) :: blocks
+            Block.HtmlBlock (Block.ProcessingInstruction string)
 
         Declaration declarationType content ->
-            Block.HtmlBlock (Block.HtmlDeclaration declarationType content) :: blocks
+            Block.HtmlBlock (Block.HtmlDeclaration declarationType content)
 
-        HtmlParser.ClosingTag tagName ->
-            Block.HtmlBlock (Block.ClosingTag tagName) :: blocks
+        ClosingTag tagName ->
+            Block.HtmlBlock (Block.HtmlElement ("/" ++ tagName) [] [] "")
 
 
 type alias LinkReferenceDefinitions =
@@ -602,7 +631,7 @@ endWithOpenBlockOrParagraph : RawBlock -> Bool
 endWithOpenBlockOrParagraph block =
     case block of
         OpenBlockOrParagraph (UnparsedInlines str) ->
-            not (String.endsWith str "\n")
+            not (String.endsWith "\n" str)
 
         ParsedBlockQuote blocks ->
             case blocks of
@@ -940,6 +969,57 @@ completeOrMergeBlocks state newRawBlock =
                         , rawBlocks = newRawBlock :: BlankLine :: UnorderedListBlock tight intended1 ({ task = openListItem2.task, body = value.rawBlocks } :: closeListItems2) openListItem2 :: rest
                         }
 
+        -- Multi-line HTML following a paragraph: merge into paragraph for non-block-level tags
+        ( Html _ rawHtmlText, (OpenBlockOrParagraph (UnparsedInlines body1)) :: rest ) ->
+            if not (startsWithBlockLevelHtmlTag rawHtmlText) then
+                succeed
+                    { linkReferenceDefinitions = state.linkReferenceDefinitions
+                    , rawBlocks =
+                        OpenBlockOrParagraph (UnparsedInlines (joinRawStringsWith "\n" body1 rawHtmlText))
+                            :: rest
+                    }
+
+            else
+                succeed
+                    { linkReferenceDefinitions = state.linkReferenceDefinitions
+                    , rawBlocks = newRawBlock :: state.rawBlocks
+                    }
+
+        -- Single-line HTML on same line as following text (htmlParser doesn't consume \n,
+        -- so no BlankLine between them). E.g. `<foo>bar</foo>` with ` text` remaining on same line.
+        ( OpenBlockOrParagraph (UnparsedInlines body1), (Html _ rawHtmlText) :: rest ) ->
+            if not (String.contains "\n" rawHtmlText) && not (startsWithBlockLevelHtmlTag rawHtmlText) then
+                succeed
+                    { linkReferenceDefinitions = state.linkReferenceDefinitions
+                    , rawBlocks =
+                        OpenBlockOrParagraph (UnparsedInlines (rawHtmlText ++ body1))
+                            :: rest
+                    }
+
+            else
+                succeed
+                    { linkReferenceDefinitions = state.linkReferenceDefinitions
+                    , rawBlocks = newRawBlock :: state.rawBlocks
+                    }
+
+        -- Single-line HTML followed by text on next line. The \n after the HTML tag
+        -- is consumed as BlankLine by the block parser, so we see [BlankLine, Html ...].
+        -- For single-line HTML, merge into a paragraph so inline parser handles the tag.
+        ( OpenBlockOrParagraph (UnparsedInlines body1), BlankLine :: (Html _ rawHtmlText) :: rest ) ->
+            if not (String.contains "\n" rawHtmlText) && not (startsWithBlockLevelHtmlTag rawHtmlText) then
+                succeed
+                    { linkReferenceDefinitions = state.linkReferenceDefinitions
+                    , rawBlocks =
+                        OpenBlockOrParagraph (UnparsedInlines (joinRawStringsWith "\n" rawHtmlText body1))
+                            :: rest
+                    }
+
+            else
+                succeed
+                    { linkReferenceDefinitions = state.linkReferenceDefinitions
+                    , rawBlocks = newRawBlock :: state.rawBlocks
+                    }
+
         _ ->
             succeed
                 { linkReferenceDefinitions = state.linkReferenceDefinitions
@@ -1265,7 +1345,7 @@ mergeableBlockAfterOpenBlockOrParagraphParser =
         -- NOTE: the ordered list block changes its parsing rules when it's right after a Body
         , orderedListBlock True
         , Heading.parser |> Advanced.backtrackable
-        , htmlParser
+        , multiLineHtmlParser
         , tableDelimiterInOpenParagraph |> Advanced.backtrackable
         ]
 
@@ -1342,6 +1422,31 @@ So if we see `<` followed by anything else (like a digit, underscore, space, etc
 it's definitely not HTML and should be parsed as paragraph text.
 
 -}
+
+
+{- CommonMark type 1 HTML block tags that should always be treated as block-level,
+   never merged into paragraphs as inline HTML.
+   See <https://spec.commonmark.org/0.30/#html-blocks>.
+-}
+startsWithBlockLevelHtmlTag : String -> Bool
+startsWithBlockLevelHtmlTag rawHtml =
+    let
+        lower : String
+        lower =
+            String.toLower rawHtml
+    in
+    List.any (\tag -> String.startsWith ("<" ++ tag) lower) blockLevelHtmlTags
+
+
+blockLevelHtmlTags : List String
+blockLevelHtmlTags =
+    [ "script"
+    , "style"
+    , "pre"
+    , "textarea"
+    ]
+
+
 parseAsParagraphInsteadOfHtmlBlock : Parser RawBlock
 parseAsParagraphInsteadOfHtmlBlock =
     -- ^<[A-Za-z][A-Za-z0-9.+-]{1,31}:[^<>\x00-\x20]*>

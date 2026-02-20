@@ -123,7 +123,7 @@ suite =
                     "Hello <div></div> Goodbye"
                         |> expectInlines
                             [ Inlines.Text "Hello "
-                            , Inlines.HtmlInline (HtmlParser.Element "div" [] [])
+                            , Inlines.HtmlInline (HtmlParser.Element "div" [] [] "")
                             , Inlines.Text " Goodbye"
                             ]
             , test "empty div with attributes tag" <|
@@ -131,7 +131,7 @@ suite =
                     """<div class="foo"></div>"""
                         |> expectInlines
                             [ Inlines.HtmlInline
-                                (HtmlParser.Element "div" [ { name = "class", value = "foo" } ] [])
+                                (HtmlParser.Element "div" [ { name = "class", value = "foo" } ] [] "")
                             ]
             , test "backslash hard line break" <|
                 \() ->

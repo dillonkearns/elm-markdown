@@ -1,5 +1,5 @@
 module HtmlParser exposing
-    ( Node(..)
+    ( Attribute, HtmlTag(..), Node(..)
     , Parser, html
     )
 
@@ -29,11 +29,19 @@ import Parser
 import Parser.Advanced as Advanced exposing ((|.), (|=), Step(..), andThen, chompWhile, getChompedString, map, oneOf, problem, succeed, token)
 
 
-{-| Node is either a element such as `<a name="value">foo</a>` or text such as `foo`.
+{-| Node is either an HTML tag or text content within an element's children.
 -}
 type Node
-    = Element String (List Attribute) (List Node)
+    = HtmlNode HtmlTag
     | Text String
+
+
+{-| An HTML tag parsed by `html`. This type excludes `Text` because the `html`
+parser only produces structured HTML constructs, never bare text.
+Text content appears only inside element children as `Node.Text`.
+-}
+type HtmlTag
+    = Element String (List Attribute) (List Node) String
     | Comment String
     | Cdata String
     | ProcessingInstruction String
@@ -51,7 +59,7 @@ type alias Parser a =
     Advanced.Parser String Parser.Problem a
 
 
-processingInstruction : Parser Node
+processingInstruction : Parser HtmlTag
 processingInstruction =
     succeed ProcessingInstruction
         |. symbol "<?"
@@ -67,7 +75,7 @@ cdata =
         |. symbol "]]>"
 
 
-docType : Parser Node
+docType : Parser HtmlTag
 docType =
     {-
        <!
@@ -96,7 +104,7 @@ expectUppercaseCharacter =
     Parser.Expecting "at least 1 uppercase character"
 
 
-html : Parser Node
+html : Parser HtmlTag
 html =
     oneOf
         [ cdata |> map Cdata
@@ -111,7 +119,7 @@ html =
 {-| Parser for standalone closing tags like </a> or </div>.
 According to CommonMark, a closing tag is </tagname> with optional whitespace.
 -}
-closingTagStandalone : Parser Node
+closingTagStandalone : Parser HtmlTag
 closingTagStandalone =
     succeed ClosingTag
         |. symbol "</"
@@ -120,26 +128,42 @@ closingTagStandalone =
         |. symbol ">"
 
 
-element : Parser Node
+element : Parser HtmlTag
 element =
     succeed identity
         |. symbol "<"
         |= (tagName |> andThen elementContinuation)
 
 
-elementContinuation : String -> Parser Node
+elementContinuation : String -> Parser HtmlTag
 elementContinuation startTagName =
-    succeed (Element startTagName)
+    succeed identity
         |. whiteSpace
         |= attributes
         |. whiteSpace
-        |= oneOf
-            [ symbol "/>"
-                |> Advanced.map (\_ -> [])
-            , succeed identity
-                |. symbol ">"
-                |= children startTagName
-            ]
+        |> andThen
+            (\attrs ->
+                oneOf
+                    [ symbol "/>"
+                        |> Advanced.map (\_ -> Element startTagName attrs [] "")
+                    , succeed identity
+                        |. symbol ">"
+                        |= Advanced.getOffset
+                        |> andThen
+                            (\bodyStart ->
+                                children startTagName
+                                    |> andThen
+                                        (\{ nodes, bodyEndOffset } ->
+                                            succeed identity
+                                                |= Advanced.getSource
+                                                |> map
+                                                    (\source ->
+                                                        Element startTagName attrs nodes (String.slice bodyStart bodyEndOffset source)
+                                                    )
+                                        )
+                            )
+                    ]
+            )
 
 
 tagName : Parser String
@@ -169,12 +193,18 @@ isTagNameChar c =
     Char.isAlphaNum c || c == '-'
 
 
-children : String -> Parser (List Node)
+type alias ChildrenResult =
+    { nodes : List Node
+    , bodyEndOffset : Int
+    }
+
+
+children : String -> Parser ChildrenResult
 children startTagName =
     Advanced.loop [] (childrenStep (childrenStepOptions startTagName))
 
 
-childrenStep : List (Parser (List Node -> Step (List Node) (List Node))) -> List Node -> Parser (Step (List Node) (List Node))
+childrenStep : List (Parser (List Node -> Step (List Node) ChildrenResult)) -> List Node -> Parser (Step (List Node) ChildrenResult)
 childrenStep options accum =
     -- This weird construction is so the `childrenStepOptions` can be shared by all iterations,
     -- rather than be re-defined on every iteration
@@ -182,22 +212,30 @@ childrenStep options accum =
         |> map (\f -> f accum)
 
 
-childrenStepOptions : String -> List (Parser (List Node -> Step (List Node) (List Node)))
+doneWithOffset : String -> Parser (List Node -> Step (List Node) ChildrenResult)
+doneWithOffset startTagName =
+    Advanced.getOffset
+        |> andThen
+            (\offset ->
+                closingTag startTagName
+                    |> Advanced.map (\_ accum -> Done { nodes = List.reverse accum, bodyEndOffset = offset })
+            )
+
+
+childrenStepOptions : String -> List (Parser (List Node -> Step (List Node) ChildrenResult))
 childrenStepOptions startTagName =
-    [ closingTag startTagName
-        |> Advanced.map (\_ accum -> Done (List.reverse accum))
+    [ doneWithOffset startTagName
     , textNodeString
         |> andThen
             (\text ->
                 if String.isEmpty text then
-                    closingTag startTagName
-                        |> Advanced.map (\_ accum -> Done (List.reverse accum))
+                    doneWithOffset startTagName
 
                 else
                     succeed (\accum -> Loop (Text text :: accum))
             )
     , html
-        |> Advanced.map (\new accum -> Loop (new :: accum))
+        |> Advanced.map (\new accum -> Loop (HtmlNode new :: accum))
     ]
 
 
@@ -443,7 +481,7 @@ isWhitespace c =
             False
 
 
-comment : Parser Node
+comment : Parser HtmlTag
 comment =
     succeed Comment
         |. token (toToken "<!--")

@@ -18,5 +18,5 @@ Should give output:
 But instead was:
 
 ````````````html
-<p>&lt;a&gt;a2&lt;a2t&gt;a2</a>b<c><p>c</p></c>d #<img alt="text" src="URL"></p>
+<p>&lt;a&gt;a2&lt;a2t&gt;a2</a>b<c>c</c>d #<img alt="text" src="URL"></p>
 ````````````
