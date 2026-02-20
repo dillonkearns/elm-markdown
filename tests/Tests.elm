@@ -952,6 +952,32 @@ I'm part of the block quote
                                 , Text " more"
                                 ]
                             ]
+            , test "multi-line HTML with \\r line endings is treated as block" <|
+                \() ->
+                    "<foo>\u{000D}bar\u{000D}</foo>\u{000D}baz"
+                        |> parse
+                        |> Expect.equal
+                            [ HtmlBlock
+                                (HtmlElement "foo"
+                                    []
+                                    [ Paragraph [ Text "bar" ] ]
+                                    "\nbar\n"
+                                )
+                            , Paragraph [ Text "baz" ]
+                            ]
+            , test "multi-line HTML with \\r\\n line endings is treated as block" <|
+                \() ->
+                    "<foo>\u{000D}\nbar\u{000D}\n</foo>\u{000D}\nbaz"
+                        |> parse
+                        |> Expect.equal
+                            [ HtmlBlock
+                                (HtmlElement "foo"
+                                    []
+                                    [ Paragraph [ Text "bar" ] ]
+                                    "\nbar\n"
+                                )
+                            , Paragraph [ Text "baz" ]
+                            ]
             ]
         ]
 

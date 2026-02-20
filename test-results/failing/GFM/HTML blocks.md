@@ -623,7 +623,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<p>Foo</p><div><p>bar</p></div>
+<p>Foo<div>bar</div></p>
 ````````````
 ## [Example 186](https://spec.commonmark.org/0.30/#example-186)
 

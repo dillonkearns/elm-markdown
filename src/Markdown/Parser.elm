@@ -51,17 +51,24 @@ But you can also do a lot with the `Block`s before passing them through:
 parse : String -> List Block
 parse input =
     let
+        -- Normalize line endings: \r\n and \r both become \n (CommonMark spec §2.1)
+        normalizedInput : String
+        normalizedInput =
+            input
+                |> String.replace "\u{000D}\n" "\n"
+                |> String.replace "\u{000D}" "\n"
+
         -- first parse the file as raw blocks
         state : State
         state =
-            case Advanced.run (rawBlockParser |. Helpers.endOfFile) input of
+            case Advanced.run (rawBlockParser |. Helpers.endOfFile) normalizedInput of
                 Ok v ->
                     v
 
                 Err _ ->
                     -- Defensive fallback: treat entire input as a paragraph
                     { linkReferenceDefinitions = []
-                    , rawBlocks = [ OpenBlockOrParagraph (UnparsedInlines input) ]
+                    , rawBlocks = [ OpenBlockOrParagraph (UnparsedInlines normalizedInput) ]
                     }
 
         isNotEmptyParagraph : Block -> Bool

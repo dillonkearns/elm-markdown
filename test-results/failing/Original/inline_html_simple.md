@@ -86,5 +86,5 @@ Should give output:
 But instead was:
 
 ````````````html
-<p>Here&#39;s a simple block: &lt;div&gt; foo</div>This should be a code block, though: &lt;div&gt; foo</div>As should this:<div>foo</div>Now, nested: &lt;div&gt; &lt;div&gt; &lt;div&gt; foo</div></div></div>This should just be an HTML comment: Multiline: Code block: Just plain comment, with trailing spaces on the line:<br>Code:<hr>Hr&#39;s: &lt;hr&gt;<hr><hr>&lt;hr&gt;<br><hr><br><hr><hr class="foo" id="bar"><hr class="foo" id="bar">&lt;hr class=&quot;foo&quot; id=&quot;bar&quot; &gt;</p>
+<p>Here&#39;s a simple block:<div>foo</div>This should be a code block, though:<div>foo</div>As should this:<div>foo</div>Now, nested:<div><div><div>foo</div></div></div>This should just be an HTML comment: Multiline: Code block: Just plain comment, with trailing spaces on the line:<br>Code:<hr>Hr&#39;s: &lt;hr&gt;<hr><hr>&lt;hr&gt;<br><hr><br><hr><hr class="foo" id="bar"><hr class="foo" id="bar">&lt;hr class=&quot;foo&quot; id=&quot;bar&quot; &gt;</p>
 ````````````
