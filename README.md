@@ -245,6 +245,34 @@ defaultHtmlRenderer =
 
 ```
 
+### Rendering
+
+There are two ways to turn parsed markdown blocks into your rendered view:
+
+- **`Markdown.Renderer.render`** returns `List view` directly — rendering cannot fail. This is the recommended default. It requires a `Renderer Never view`, which you get by using `Markdown.Html.withFallback` on your HTML renderer.
+- **`Markdown.Renderer.tryRender`** returns `Result String (List view)` — rendering can fail if it encounters HTML tags that aren't handled by your `Markdown.Html.oneOf` list. Use this when you want explicit errors for unexpected HTML.
+
+To use `render`, convert your fallible HTML renderer into an infallible one with `withFallback`:
+
+```elm
+import Markdown.Html
+
+htmlRenderer : Markdown.Html.Renderer Never (List (Html msg) -> Html msg)
+htmlRenderer =
+    Markdown.Html.oneOf
+        [ Markdown.Html.tag "bio"
+            (\name children -> bioView name children)
+            |> Markdown.Html.withAttribute "name"
+        ]
+        |> Markdown.Html.withFallback
+            (\tagName attributes { rendered } ->
+                Html.node tagName
+                    (List.map (\{ name, value } -> Html.Attributes.attribute name value) attributes)
+                    rendered
+            )
+```
+
+The fallback function handles any tags not matched by your `oneOf` list. It receives the tag name, attributes, and a record with `raw` (unparsed source) and `rendered` (the rendered children). A common pattern is to pass them through as native HTML nodes with `Html.node`.
 
 ### Markdown Block Transformation
 
@@ -255,8 +283,8 @@ You get full access to the parsed markdown blocks before passing it to a rendere
 ## Philosophy & Goals
 
 - Render markdown to any type (`Html`, `elm-ui` `Element`s, `String`s representing ANSI color codes for terminal output... or even a function, allowing you to inject dynamic values into your markdown view)
-- Extend markdown without adding to the syntax using custom HTML renderers, and fail explicitly for unexpected HTML tags, or missing attributes within those tags
-- Allow users to give custom rendering failures with nice error messages (for example, broken links, or custom validation like titles that are too long) via `tryRender`
+- Extend markdown without adding to the syntax using custom HTML renderers, with `Markdown.Html.withFallback` to handle unexpected tags gracefully or `Markdown.Html.oneOf` to fail explicitly for unregistered tags
+- Provide an infallible `render` pipeline by default, with `tryRender` available when you want custom rendering failures with nice error messages (for example, broken links, or custom validation like titles that are too long)
 
 ### Parsing Goals
 

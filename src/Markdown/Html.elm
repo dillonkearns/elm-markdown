@@ -5,7 +5,13 @@ module Markdown.Html exposing
     , map, oneOf, withFallback
     )
 
-{-|
+{-| This module lets you define how custom HTML tags in your markdown are rendered.
+
+Use [`oneOf`](#oneOf) to register the specific tags you support, then
+[`withFallback`](#withFallback) to handle any unregistered tags gracefully — this
+converts a fallible `Renderer String` into an infallible `Renderer Never`, which
+you can use with [`Markdown.Renderer.render`](Markdown-Renderer#render) for a
+pipeline that can never fail.
 
 @docs Renderer
 

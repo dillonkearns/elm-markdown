@@ -418,11 +418,20 @@ toheads ( llst, rlst ) strs =
 
 
 {-| Apply an infallible `Renderer` (one whose HTML renderer uses `Never` as its
-error type, e.g. via `Markdown.Html.withFallback`)
+error type, e.g. via [`Markdown.Html.withFallback`](Markdown-Html#withFallback))
 to turn parsed `Markdown.Block`s into your rendered markdown view.
 
 Since the renderer can never fail, this returns `List view` directly instead of
 `Result`.
+
+    markdownInput
+        |> Markdown.Parser.parse
+        |> Markdown.Renderer.render myRenderer
+        |> Html.div []
+
+This is the recommended rendering path. To create a `Renderer Never view`, use
+[`Markdown.Html.withFallback`](Markdown-Html#withFallback) on your HTML renderer.
+If you need custom error handling instead, see [`tryRender`](#tryRender).
 
 -}
 render :
@@ -439,6 +448,15 @@ render renderer ast =
 
 
 {-| Apply a `Renderer` to turn parsed `Markdown.Block`s into your rendered markdown view.
+
+Unlike [`render`](#render), this returns a `Result` because the HTML renderer may fail
+(for example, when it encounters an unregistered HTML tag or a missing attribute).
+Use this when you want to enforce that only specific HTML tags appear in your markdown
+and surface errors for anything unexpected.
+
+If you want an infallible pipeline instead, convert your HTML renderer with
+[`Markdown.Html.withFallback`](Markdown-Html#withFallback) and use [`render`](#render).
+
 -}
 tryRender :
     Renderer err view
