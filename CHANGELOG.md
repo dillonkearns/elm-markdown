@@ -14,17 +14,30 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - **`Markdown.Parser.parse` is now infallible.** It returns `List Block` instead of `Result (List DeadEnd) (List Block)`. Any input produces output — malformed syntax is treated as plain text, consistent with how mature markdown parsers behave.
 - **`Markdown.Renderer.Renderer` has a new `err` type parameter.** The type is now `Renderer err view` instead of `Renderer view`. The `err` tracks whether the HTML renderer can fail.
 - **`Markdown.Renderer.render` now requires `Renderer Never view`** and returns `List view` directly (no `Result`). For renderers that can fail, use the new `tryRender`.
+- **`Block.HtmlElement` has a new 4th field** for raw body text: `HtmlElement String (List HtmlAttribute) (List children) String`. The new `String` is the unparsed source text between the opening and closing tags. Pattern matches on `HtmlElement tag attrs children` must become `HtmlElement tag attrs children raw`.
+- **`Inline.HtmlInline` now wraps `Html Inline` instead of `Html Block`.** Inline HTML elements now contain inline children, parsed as inline markdown. Code matching on `HtmlInline` children must be updated.
+- **`Block.UnorderedList` now carries `ListSpacing`:** `UnorderedList ListSpacing (List (ListItem Block))` (was `UnorderedList (List (ListItem Inline))`).
+- **`Block.OrderedList` now carries `ListSpacing`:** `OrderedList ListSpacing Int (List (List Block))` (was `OrderedList Int (List (List Inline))`).
 
 ### Added
 
 - **`Markdown.Renderer.tryRender`** — renders with a fallible renderer, returning `Result err (List view)`. This replaces the old `render` for cases where rendering can fail (e.g. unregistered HTML tags).
 - **`Markdown.Html.withFallback`** — converts a `Renderer String (List view -> view)` into a `Renderer Never (List view -> view)` by providing a fallback function for unmatched HTML tags. This enables a fully infallible parse-and-render pipeline.
-- 5 additional CommonMark/GFM spec tests now pass (malformed HTML is properly escaped as text).
+- **`Markdown.Html.withRawContent`** — extracts the raw body text of an HTML tag (the unparsed source between opening and closing tags). Useful for elements like `<style>` or `<script>` where you want the raw text, not parsed markdown.
+- **`Block.ListSpacing`** — new exposed type (`Loose | Tight`) replacing implicit list spacing tracking.
+- **`Block.inlineFoldl`** — now exposed in the public API for folding over all inlines within a list of blocks.
+- 21 additional CommonMark/GFM spec tests now pass (malformed HTML is properly escaped as text, `<script>`/`<style>`/`<textarea>` blocks preserve raw content).
 - Fuzz tests and edge-case tests for the infallible parser.
+
+### Fixed
+
+- Fixed `defaultHtmlRenderer` `orderedList` start attribute logic — previously the `start` attribute was incorrectly added for lists starting at 1 and omitted for all other starting indices.
+- Fixed swapped `String.endsWith` argument order in block quote lazy continuation logic.
 
 ### Removed
 
 - `Markdown.Parser.deadEndToString` — no longer needed since `parse` cannot fail.
+- `Block.ClosingTag` variant — stray closing tags are now handled internally.
 
 ### Migration Guide
 
@@ -65,11 +78,33 @@ renderer : Markdown.Renderer.Renderer String (Html msg)
     | html =
         Markdown.Html.oneOf [ {- your tag handlers -} ]
             |> Markdown.Html.withFallback
-                (\tag attributes children ->
-                    Html.node tag (List.map (\a -> Attr.attribute a.name a.value) attributes) children
+                (\tag attributes { rendered } ->
+                    Html.node tag (List.map (\a -> Attr.attribute a.name a.value) attributes) rendered
                 )
 }
 -- This renderer has type `Renderer Never view`, so `render` returns `List view` directly.
+```
+
+**4. Update pattern matches on `Block` types:**
+
+```elm
+-- HtmlElement: add 4th field
+-- Before
+HtmlElement tag attrs children -> ...
+-- After
+HtmlElement tag attrs children raw -> ...
+
+-- UnorderedList: add ListSpacing, children are now Block
+-- Before
+UnorderedList items -> ...
+-- After
+UnorderedList spacing items -> ...
+
+-- OrderedList: add ListSpacing, children are now Block
+-- Before
+OrderedList startIndex items -> ...
+-- After
+OrderedList spacing startIndex items -> ...
 ```
 
 ## [7.0.1] - 2023-01-02
