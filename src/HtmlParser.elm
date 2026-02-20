@@ -1,5 +1,5 @@
 module HtmlParser exposing
-    ( Attribute, Node(..)
+    ( Attribute, HtmlTag(..), Node(..)
     , Parser, html
     )
 
@@ -29,11 +29,19 @@ import Parser
 import Parser.Advanced as Advanced exposing ((|.), (|=), Step(..), andThen, chompWhile, getChompedString, map, oneOf, problem, succeed, token)
 
 
-{-| Node is either a element such as `<a name="value">foo</a>` or text such as `foo`.
+{-| Node is either an HTML tag or text content within an element's children.
 -}
 type Node
-    = Element String (List Attribute) (List Node) String
+    = HtmlNode HtmlTag
     | Text String
+
+
+{-| An HTML tag parsed by `html`. This type excludes `Text` because the `html`
+parser only produces structured HTML constructs, never bare text.
+Text content appears only inside element children as `Node.Text`.
+-}
+type HtmlTag
+    = Element String (List Attribute) (List Node) String
     | Comment String
     | Cdata String
     | ProcessingInstruction String
@@ -51,7 +59,7 @@ type alias Parser a =
     Advanced.Parser String Parser.Problem a
 
 
-processingInstruction : Parser Node
+processingInstruction : Parser HtmlTag
 processingInstruction =
     succeed ProcessingInstruction
         |. symbol "<?"
@@ -67,7 +75,7 @@ cdata =
         |. symbol "]]>"
 
 
-docType : Parser Node
+docType : Parser HtmlTag
 docType =
     {-
        <!
@@ -96,7 +104,7 @@ expectUppercaseCharacter =
     Parser.Expecting "at least 1 uppercase character"
 
 
-html : Parser Node
+html : Parser HtmlTag
 html =
     oneOf
         [ cdata |> map Cdata
@@ -111,7 +119,7 @@ html =
 {-| Parser for standalone closing tags like </a> or </div>.
 According to CommonMark, a closing tag is </tagname> with optional whitespace.
 -}
-closingTagStandalone : Parser Node
+closingTagStandalone : Parser HtmlTag
 closingTagStandalone =
     succeed ClosingTag
         |. symbol "</"
@@ -120,14 +128,14 @@ closingTagStandalone =
         |. symbol ">"
 
 
-element : Parser Node
+element : Parser HtmlTag
 element =
     succeed identity
         |. symbol "<"
         |= (tagName |> andThen elementContinuation)
 
 
-elementContinuation : String -> Parser Node
+elementContinuation : String -> Parser HtmlTag
 elementContinuation startTagName =
     succeed identity
         |. whiteSpace
@@ -227,7 +235,7 @@ childrenStepOptions startTagName =
                     succeed (\accum -> Loop (Text text :: accum))
             )
     , html
-        |> Advanced.map (\new accum -> Loop (new :: accum))
+        |> Advanced.map (\new accum -> Loop (HtmlNode new :: accum))
     ]
 
 
@@ -473,7 +481,7 @@ isWhitespace c =
             False
 
 
-comment : Parser Node
+comment : Parser HtmlTag
 comment =
     succeed Comment
         |. token (toToken "<!--")

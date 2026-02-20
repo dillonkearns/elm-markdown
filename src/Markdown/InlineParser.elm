@@ -1831,7 +1831,7 @@ splitNormalMatchWithAutolinksHelp text autolinks currentPos acc =
 
 
 type alias HtmlModel =
-    HtmlParser.Node
+    HtmlParser.HtmlTag
 
 
 
@@ -1848,7 +1848,7 @@ softAsHardLineBreak =
 htmlToToken : String -> Match -> Maybe Token
 htmlToToken rawText (Match match) =
     let
-        consumedCharacters : Advanced.Parser String Problem { length : Int, htmlTag : HtmlParser.Node }
+        consumedCharacters : Advanced.Parser String Problem { length : Int, htmlTag : HtmlParser.HtmlTag }
         consumedCharacters =
             Advanced.succeed
                 (\startOffset htmlTag endOffset ->
@@ -1860,7 +1860,7 @@ htmlToToken rawText (Match match) =
                 |= HtmlParser.html
                 |= Advanced.getOffset
 
-        parsed : Result (List (Advanced.DeadEnd String Problem)) { length : Int, htmlTag : HtmlParser.Node }
+        parsed : Result (List (Advanced.DeadEnd String Problem)) { length : Int, htmlTag : HtmlParser.HtmlTag }
         parsed =
             rawText
                 |> String.dropLeft match.start
@@ -1868,35 +1868,14 @@ htmlToToken rawText (Match match) =
     in
     case parsed of
         Ok { htmlTag, length } ->
-            let
-                htmlContent : String
-                htmlContent =
-                    rawText
-                        |> String.dropLeft match.start
-            in
-            let
-                htmlToken : Meaning
-                htmlToken =
-                    HtmlToken NotOpening htmlTag
-            in
             Just
                 { index = match.start
                 , length = length
-                , meaning = htmlToken
+                , meaning = HtmlToken NotOpening htmlTag
                 }
 
         Err _ ->
             Nothing
-
-
-isElementNode : HtmlParser.Node -> Bool
-isElementNode node =
-    case node of
-        HtmlParser.Element _ _ _ _ ->
-            True
-
-        _ ->
-            False
 
 
 htmlElementTTM : List Token -> List Token -> List Match -> References -> String -> List Match

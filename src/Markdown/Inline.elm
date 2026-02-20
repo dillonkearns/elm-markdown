@@ -33,7 +33,7 @@ type Inline
     | CodeInline String
     | Link String (Maybe String) (List Inline)
     | Image String (Maybe String) (List Inline)
-    | HtmlInline HtmlParser.Node
+    | HtmlInline HtmlParser.HtmlTag
     | Emphasis Int (List Inline)
     | Strikethrough (List Inline)
 

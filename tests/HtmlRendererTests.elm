@@ -46,6 +46,44 @@ stringTestRenderer htmlRenderer =
     }
 
 
+stringTestRendererWithOrderedListStart : Markdown.Html.Renderer String (List String -> String) -> Markdown.Renderer.Renderer String String
+stringTestRendererWithOrderedListStart htmlRenderer =
+    { heading = \{ children } -> String.join "" children
+    , paragraph = String.join ""
+    , blockQuote = String.join ""
+    , strong = String.join ""
+    , emphasis = String.join ""
+    , strikethrough = String.join ""
+    , hardLineBreak = "\n"
+    , codeSpan = identity
+    , image = \_ -> ""
+    , link = \_ children -> String.join "" children
+    , text = identity
+    , unorderedList = \_ -> ""
+    , orderedList =
+        \startingIndex items ->
+            let
+                startAttr =
+                    case startingIndex of
+                        1 ->
+                            []
+
+                        _ ->
+                            [ " start=\"" ++ String.fromInt startingIndex ++ "\"" ]
+            in
+            "<ol" ++ String.join "" startAttr ++ ">" ++ (items |> List.map (String.join "") |> String.join "") ++ "</ol>"
+    , html = htmlRenderer
+    , codeBlock = \{ body } -> body
+    , thematicBreak = ""
+    , table = \_ -> ""
+    , tableHeader = \_ -> ""
+    , tableBody = \_ -> ""
+    , tableRow = \_ -> ""
+    , tableHeaderCell = \_ _ -> ""
+    , tableCell = \_ _ -> ""
+    }
+
+
 renderInfallible : Markdown.Renderer.Renderer Never String -> String -> List String
 renderInfallible renderer markdown =
     markdown
@@ -443,6 +481,32 @@ Expecting attribute "first".
                                 )
                             )
                         |> Expect.equal [ "<textarea>\n\n*foo*\n\n_bar_\n\n</textarea>" ]
+            ]
+        , describe "defaultHtmlRenderer orderedList start attribute"
+            [ test "ordered list starting at 1 does not include start attribute" <|
+                \() ->
+                    "1. Item 1\n2. Item 2\n"
+                        |> render
+                            (stringTestRendererWithOrderedListStart
+                                (Markdown.Html.oneOf [])
+                            )
+                        |> Expect.equal (Ok [ "<ol>Item 1Item 2</ol>" ])
+            , test "ordered list starting at 3 includes start attribute" <|
+                \() ->
+                    "3. Item 1\n4. Item 2\n"
+                        |> render
+                            (stringTestRendererWithOrderedListStart
+                                (Markdown.Html.oneOf [])
+                            )
+                        |> Expect.equal (Ok [ "<ol start=\"3\">Item 1Item 2</ol>" ])
+            , test "ordered list starting at 0 includes start attribute" <|
+                \() ->
+                    "0. Item 1\n1. Item 2\n"
+                        |> render
+                            (stringTestRendererWithOrderedListStart
+                                (Markdown.Html.oneOf [])
+                            )
+                        |> Expect.equal (Ok [ "<ol start=\"0\">Item 1Item 2</ol>" ])
             ]
         , describe "withRawContent"
             [ test "extracts raw body of a tag" <|

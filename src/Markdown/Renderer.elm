@@ -175,10 +175,10 @@ defaultHtmlRenderer =
             Html.ol
                 (case startingIndex of
                     1 ->
-                        [ Attr.start startingIndex ]
+                        []
 
                     _ ->
-                        []
+                        [ Attr.start startingIndex ]
                 )
                 (items
                     |> List.map

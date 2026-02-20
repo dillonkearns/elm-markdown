@@ -8,7 +8,7 @@ module Markdown.Parser exposing (parse)
 
 import Dict
 import Helpers
-import HtmlParser exposing (Node(..))
+import HtmlParser exposing (HtmlTag(..), Node(..))
 import Markdown.Block as Block exposing (Block, Inline)
 import Markdown.CodeBlock
 import Markdown.Heading as Heading
@@ -121,8 +121,8 @@ mapInline inline =
         Inline.Image string maybeString inlines ->
             Block.Image string maybeString (inlines |> List.map mapInline)
 
-        Inline.HtmlInline node ->
-            node
+        Inline.HtmlInline tag ->
+            tag
                 |> nodeToInlineHtml
                 |> Block.HtmlInline
 
@@ -433,14 +433,10 @@ multiLineHtmlParser =
         |> Advanced.backtrackable
 
 
-xmlNodeToHtmlNode : String -> Node -> Parser RawBlock
+xmlNodeToHtmlNode : String -> HtmlTag -> Parser RawBlock
 xmlNodeToHtmlNode raw xmlNode =
     case xmlNode of
-        HtmlParser.Text innerText ->
-            OpenBlockOrParagraph (UnparsedInlines innerText)
-                |> succeed
-
-        HtmlParser.Element tag attributes children rawBody ->
+        Element tag attributes children rawBody ->
             Block.HtmlElement tag attributes (nodesToBlocks children) rawBody
                 |> (\html -> RawBlock.Html html raw)
                 |> succeed
@@ -465,7 +461,7 @@ xmlNodeToHtmlNode raw xmlNode =
                 |> (\html -> RawBlock.Html html raw)
                 |> succeed
 
-        HtmlParser.ClosingTag tagName ->
+        ClosingTag tagName ->
             -- Unreachable: parseAsParagraphInsteadOfHtmlBlock intercepts closing tags
             -- before htmlParser runs, so this is a defensive fallback.
             -- Represent as HtmlElement with "/" prefix for the user's HTML renderer.
@@ -474,24 +470,21 @@ xmlNodeToHtmlNode raw xmlNode =
                 |> succeed
 
 
-nodeToInlineHtml : Node -> Block.Html Inline
-nodeToInlineHtml node =
-    case node of
-        HtmlParser.Text _ ->
-            Block.HtmlComment "TODO this never happens, but use types to drop this case."
-
-        HtmlParser.Element tag attributes children rawBody ->
+nodeToInlineHtml : HtmlTag -> Block.Html Inline
+nodeToInlineHtml tag =
+    case tag of
+        Element tagName attributes children rawBody ->
             let
                 parseChild : Node -> List Inline
                 parseChild child =
                     case child of
-                        HtmlParser.Text text ->
+                        Text text ->
                             textNodeToInlines text
 
-                        _ ->
-                            [ nodeToInlineHtml child |> Block.HtmlInline ]
+                        HtmlNode childTag ->
+                            [ nodeToInlineHtml childTag |> Block.HtmlInline ]
             in
-            Block.HtmlElement tag
+            Block.HtmlElement tagName
                 attributes
                 (List.concatMap parseChild children)
                 rawBody
@@ -508,7 +501,7 @@ nodeToInlineHtml node =
         Declaration declarationType content ->
             Block.HtmlDeclaration declarationType content
 
-        HtmlParser.ClosingTag tagName ->
+        ClosingTag tagName ->
             Block.HtmlElement ("/" ++ tagName) [] [] ""
 
 
@@ -544,32 +537,34 @@ nodesToBlocksHelp remaining soFar =
 childToBlocks : Node -> List Block -> List Block
 childToBlocks node blocks =
     case node of
-        Element tag attributes children rawBody ->
-            let
-                block : Block
-                block =
-                    Block.HtmlElement tag attributes (nodesToBlocks children) rawBody
-                        |> Block.HtmlBlock
-            in
-            block :: blocks
-
         Text innerText ->
             List.reverse (parse innerText) ++ blocks
 
+        HtmlNode tag ->
+            htmlTagToBlocks tag :: blocks
+
+
+htmlTagToBlocks : HtmlTag -> Block
+htmlTagToBlocks tag =
+    case tag of
+        Element tagName attributes children rawBody ->
+            Block.HtmlElement tagName attributes (nodesToBlocks children) rawBody
+                |> Block.HtmlBlock
+
         Comment string ->
-            Block.HtmlBlock (Block.HtmlComment string) :: blocks
+            Block.HtmlBlock (Block.HtmlComment string)
 
         Cdata string ->
-            Block.HtmlBlock (Block.Cdata string) :: blocks
+            Block.HtmlBlock (Block.Cdata string)
 
         ProcessingInstruction string ->
-            Block.HtmlBlock (Block.ProcessingInstruction string) :: blocks
+            Block.HtmlBlock (Block.ProcessingInstruction string)
 
         Declaration declarationType content ->
-            Block.HtmlBlock (Block.HtmlDeclaration declarationType content) :: blocks
+            Block.HtmlBlock (Block.HtmlDeclaration declarationType content)
 
-        HtmlParser.ClosingTag tagName ->
-            Block.HtmlBlock (Block.HtmlElement ("/" ++ tagName) [] [] "") :: blocks
+        ClosingTag tagName ->
+            Block.HtmlBlock (Block.HtmlElement ("/" ++ tagName) [] [] "")
 
 
 type alias LinkReferenceDefinitions =
@@ -636,7 +631,7 @@ endWithOpenBlockOrParagraph : RawBlock -> Bool
 endWithOpenBlockOrParagraph block =
     case block of
         OpenBlockOrParagraph (UnparsedInlines str) ->
-            not (String.endsWith str "\n")
+            not (String.endsWith "\n" str)
 
         ParsedBlockQuote blocks ->
             case blocks of

@@ -63,7 +63,7 @@ next line
                         (HtmlParser.Element "resources"
                             []
                             [ HtmlParser.Text "\n\n"
-                            , HtmlParser.Element "book" [ { name = "title", value = "Crime and Punishment" } ] [] ""
+                            , HtmlParser.HtmlNode (HtmlParser.Element "book" [ { name = "title", value = "Crime and Punishment" } ] [] "")
                             , HtmlParser.Text "\n\n\n"
                             ]
                             "\n\n<Book title=\"Crime and Punishment\" />\n\n\n"
@@ -84,13 +84,15 @@ next line
                         (HtmlParser.Element "resources"
                             []
                             [ HtmlParser.Text "\n\n"
-                            , HtmlParser.Element "book"
-                                [ { name = "title", value = "Crime and Punishment" } ]
-                                [ HtmlParser.Text "\n  "
-                                , HtmlParser.Comment " this is the book review "
-                                , HtmlParser.Text "\n  This is my review...\n"
-                                ]
-                                "\n  <!-- this is the book review -->\n  This is my review...\n"
+                            , HtmlParser.HtmlNode
+                                (HtmlParser.Element "book"
+                                    [ { name = "title", value = "Crime and Punishment" } ]
+                                    [ HtmlParser.Text "\n  "
+                                    , HtmlParser.HtmlNode (HtmlParser.Comment " this is the book review ")
+                                    , HtmlParser.Text "\n  This is my review...\n"
+                                    ]
+                                    "\n  <!-- this is the book review -->\n  This is my review...\n"
+                                )
                             , HtmlParser.Text "\n\n\n"
                             ]
                             "\n\n<Book title=\"Crime and Punishment\">\n  <!-- this is the book review -->\n  This is my review...\n</Book>\n\n\n"
@@ -112,7 +114,7 @@ next line
         ]
 
 
-expectHtml : HtmlParser.Node -> String -> Expectation
+expectHtml : HtmlParser.HtmlTag -> String -> Expectation
 expectHtml expected input =
     input
         |> Advanced.run HtmlParser.html
