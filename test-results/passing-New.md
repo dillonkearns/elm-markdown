@@ -236,7 +236,7 @@ Gives this correct output:
 
 
 ````````````html
-<p><a href="%3Ctest">URL</a></p>
+<p>[URL](&lt;test)</p>
 
 ````````````
 
