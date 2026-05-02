@@ -52,6 +52,51 @@ suite =
                 """[Contact](/contact)"""
                     |> expectInlines
                         [ Inlines.Link "/contact" Nothing [ Inlines.Text "Contact" ] ]
+        , test "CommonMark 494: escaped balanced parens in link destination OK" <|
+            \() ->
+                "[link](\\(foo\\))"
+                    |> expectInlines
+                        [ Inlines.Link "(foo)" Nothing [ Inlines.Text "link" ] ]
+        , test "CommonMark 495: unescaped balanced parens in link destination OK" <|
+            \() ->
+                "[link](foo(and(bar)))"
+                    |> expectInlines
+                        [ Inlines.Link "foo(and(bar))" Nothing [ Inlines.Text "link" ] ]
+        , test "CommonMark 496: unescaped unbalanced parens in link destination not OK" <|
+            \() ->
+                "[link](foo(and(bar))"
+                    |> expectInlines
+                        [ Inlines.Text "[link](foo(and(bar))" ]
+        , test "CommonMark 497: escaped unbalanced parens in link destination OK" <|
+            \() ->
+                "[link](foo\\(and\\(bar\\))"
+                    |> expectInlines
+                        [ Inlines.Link "foo(and(bar)" Nothing [ Inlines.Text "link" ] ]
+        , test "CommonMark 504: link with title in double quotes" <|
+            \() ->
+                "[link](/url \"title\")"
+                    |> expectInlines
+                        [ Inlines.Link "/url" (Just "title") [ Inlines.Text "link" ] ]
+        , test "CommonMark 504: link with title in single quotes" <|
+            \() ->
+                "[link](/url 'title')"
+                    |> expectInlines
+                        [ Inlines.Link "/url" (Just "title") [ Inlines.Text "link" ] ]
+        , test "CommonMark 504: link with title in parentheses" <|
+            \() ->
+                "[link](/url (title))"
+                    |> expectInlines
+                        [ Inlines.Link "/url" (Just "title") [ Inlines.Text "link" ] ]
+        , test "CommonMark 506: title separated by nbsp isn't recognized" <|
+            \() ->
+                """[link](/url\u{00A0}"title")"""
+                    |> expectInlines
+                        [ Inlines.Link "/url%C2%A0%22title%22" Nothing [ Inlines.Text "link" ] ]
+        , test "link title after an angle-wrapped destination" <|
+            \() ->
+                "[link](<foo(bar(baz)> (title))"
+                    |> expectInlines
+                        [ Inlines.Link "foo(bar(baz)" (Just "title") [ Inlines.Text "link" ] ]
         , test "link with formatting" <|
             \() ->
                 """[This `code` is *really* awesome](/contact)"""

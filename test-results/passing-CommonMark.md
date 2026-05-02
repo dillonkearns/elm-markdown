@@ -7006,6 +7006,24 @@ Gives this correct output:
 
 ````````````
 
+### [Example 495](https://spec.commonmark.org/0.30/#example-495)
+
+This markdown:
+
+
+````````````markdown
+[link](foo(and(bar)))
+
+````````````
+
+Gives this correct output:
+
+
+````````````html
+<p><a href="foo(and(bar))">link</a></p>
+
+````````````
+
 ### [Example 496](https://spec.commonmark.org/0.30/#example-496)
 
 This markdown:

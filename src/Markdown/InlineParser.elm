@@ -2,7 +2,7 @@ module Markdown.InlineParser exposing (parse)
 
 import Dict
 import HtmlParser
-import Markdown.Helpers exposing (References, cleanWhitespaces, formatStr, ifError, insideSquareBracketRegex, isEven, lineEndChars, prepareRefLabel, returnFirstJust, titleRegex, whiteSpaceChars)
+import Markdown.Helpers exposing (References, cleanWhitespaces, formatStr, ifError, insideSquareBracketRegex, isEven, prepareRefLabel, returnFirstJust, titleRegex)
 import Markdown.Inline exposing (Inline(..))
 import Parser exposing (Problem)
 import Parser.Advanced as Advanced exposing ((|=))
@@ -656,6 +656,32 @@ isWhitespace c =
             True
 
         '\u{2029}' ->
+            True
+
+        _ ->
+            False
+
+
+{-| Space, tab, and line endings only — allowed after `(` before the destination,
+and between an unquoted link destination and its title. Other Unicode space
+characters (e.g. nbsp) are not separators (CommonMark example 506).
+
+TODO: CommonMark only allows up to one newline, not arbitrarily many.
+
+-}
+isLinkInlineSyntaxWhitespace : Char -> Bool
+isLinkInlineSyntaxWhitespace c =
+    case c of
+        ' ' ->
+            True
+
+        '\t' ->
+            True
+
+        '\n' ->
+            True
+
+        '\u{000D}' ->
             True
 
         _ ->
@@ -2066,16 +2092,24 @@ removeParsedAheadTokens (Match match) tokensTail =
 
 checkForInlineLinkTypeOrImageType : String -> Match -> References -> Maybe Match
 checkForInlineLinkTypeOrImageType remainText (Match tempMatch) refs =
-    case Regex.findAtMost 1 inlineLinkTypeOrImageTypeRegex remainText of
-        first :: _ ->
-            case inlineLinkTypeOrImageTypeRegexToMatch tempMatch first of
-                Just match ->
-                    Just match
+    case parseInlineLinkParenGroup remainText of
+        Just parsed ->
+            Just <|
+                Match
+                    { tempMatch
+                        | type_ =
+                            prepareUrlAndTitle parsed.rawUrl parsed.maybeTitle
+                                |> (case tempMatch.type_ of
+                                        ImageType _ ->
+                                            ImageType
 
-                Nothing ->
-                    checkForInlineReferences remainText (Match tempMatch) refs
+                                        _ ->
+                                            LinkType
+                                   )
+                        , end = tempMatch.end + parsed.consumed
+                    }
 
-        [] ->
+        Nothing ->
             checkForInlineReferences remainText (Match tempMatch) refs
 
 
@@ -2089,66 +2123,260 @@ checkForInlineReferences remainText (Match tempMatch) references =
     refRegexToMatch tempMatch references (List.head matches)
 
 
-inlineLinkTypeOrImageTypeRegex : Regex
-inlineLinkTypeOrImageTypeRegex =
-    Regex.fromString ("^\\(\\s*" ++ hrefRegex ++ titleRegex ++ "\\s*\\)")
-        |> Maybe.withDefault Regex.never
+{-| Text after `]` of a link or an image: must start with `(` and contain
+destination + optional title before the closing `)`.
+
+CommonMark allows balanced `(` and `)` in unquoted destinations, so we need to
+count them.
+
+-}
+parseInlineLinkParenGroup : String -> Maybe { rawUrl : String, maybeTitle : Maybe String, consumed : Int }
+parseInlineLinkParenGroup text =
+    if not (String.startsWith "(" text) then
+        Nothing
+
+    else
+        let
+            textLen : Int
+            textLen =
+                String.length text
+        in
+        case skipLinkInlineWhitespace text textLen 1 of
+            Nothing ->
+                Nothing
+
+            Just linkDestinationStart ->
+                -- We're now after `(` and ASCII link whitespace only
+                if String.slice linkDestinationStart (linkDestinationStart + 1) text == "<" then
+                    parseAngleInlineDestination text textLen linkDestinationStart
+
+                else
+                    parsePlainInlineDestination text textLen linkDestinationStart
 
 
-hrefRegex : String
-hrefRegex =
-    "(?:<([^<>"
-        ++ lineEndChars
-        ++ "]*)>|([^"
-        ++ whiteSpaceChars
-        ++ "\\(\\)\\\\]*(?:\\\\.[^"
-        ++ whiteSpaceChars
-        ++ "\\(\\)\\\\]*)*))"
+charAt : String -> Int -> Maybe Char
+charAt s i =
+    String.slice i (i + 1) s
+        |> String.uncons
+        |> Maybe.map Tuple.first
 
 
-inlineLinkTypeOrImageTypeRegexToMatch : MatchModel -> Regex.Match -> Maybe Match
-inlineLinkTypeOrImageTypeRegexToMatch matchModel regexMatch =
-    case regexMatch.submatches of
-        maybeRawUrlAngleBrackets :: maybeRawUrlWithoutBrackets :: maybeTitleSingleQuotes :: maybeTitleDoubleQuotes :: maybeTitleParenthesis :: _ ->
+{-| Find the next character that is not link-inline whitespace.
+-}
+skipLinkInlineWhitespace : String -> Int -> Int -> Maybe Int
+skipLinkInlineWhitespace s len i =
+    if i >= len then
+        Nothing
+
+    else
+        case charAt s i of
+            Just c ->
+                if isLinkInlineSyntaxWhitespace c then
+                    skipLinkInlineWhitespace s len (i + 1)
+
+                else
+                    Just i
+
+            Nothing ->
+                Nothing
+
+
+parsePlainInlineDestination : String -> Int -> Int -> Maybe { rawUrl : String, maybeTitle : Maybe String, consumed : Int }
+parsePlainInlineDestination text textLen destStart =
+    case scanPlainLinkDestinationEnd text textLen destStart of
+        Nothing ->
+            -- Malformed link destination
+            Nothing
+
+        Just destEnd ->
             let
-                maybeRawUrl : Maybe String
-                maybeRawUrl =
-                    returnFirstJust
-                        [ maybeRawUrlAngleBrackets
-                        , maybeRawUrlWithoutBrackets
-                        ]
+                rest : String
+                rest =
+                    String.dropLeft destEnd text
+            in
+            -- There might be a title after the destination, eg. [link](/url (title))
+            matchInlineLinkSuffix rest
+                |> Maybe.map
+                    (\{ maybeTitle, matchedLength } ->
+                        let
+                            rawUrl : String
+                            rawUrl =
+                                String.slice destStart destEnd text
+                        in
+                        { rawUrl = rawUrl
+                        , maybeTitle = maybeTitle
+                        , consumed = destEnd + matchedLength
+                        }
+                    )
 
+
+{-| Unquoted link destination - due to CommonMark 495 we need to support
+unescaped parentheses as long as they're balanced.
+
+This means we need to go char by char and keep track of the depth.
+
+    ( -> +1
+    ) -> -1 (but if depth is 0, return Just early)
+
+    \( -> +0, skip both
+    \) -> +0, skip both
+
+If we get to the end of the string with unbalanced parens, return Nothing - not
+a valid link.
+
+If we find a whitespace at depth 0, return Just - we got the link destination,
+though there might still be a title afterwards, eg. as in [link](/url "title")
+
+-}
+scanPlainLinkDestinationEnd : String -> Int -> Int -> Maybe Int
+scanPlainLinkDestinationEnd text textLen start =
+    scanPlainLinkDestinationHelp text textLen start 0
+
+
+scanPlainLinkDestinationHelp : String -> Int -> Int -> Int -> Maybe Int
+scanPlainLinkDestinationHelp text textLen i depth =
+    if i >= textLen then
+        Nothing
+
+    else
+        case charAt text i of
+            Nothing ->
+                Nothing
+
+            Just '\\' ->
+                case charAt text (i + 1) of
+                    Nothing ->
+                        Nothing
+
+                    Just _ ->
+                        scanPlainLinkDestinationHelp text textLen (i + 2) depth
+
+            Just '(' ->
+                scanPlainLinkDestinationHelp text textLen (i + 1) (depth + 1)
+
+            Just ')' ->
+                if depth == 0 then
+                    -- Returning! Found the closing parenthesis of the whole
+                    -- link (not part of the destination)
+                    Just i
+
+                else
+                    scanPlainLinkDestinationHelp text textLen (i + 1) (depth - 1)
+
+            Just c ->
+                if isLinkInlineSyntaxWhitespace c then
+                    if depth == 0 then
+                        -- Returning, a link title will likely follow as in
+                        -- [link](/url (title))
+                        Just i
+
+                    else
+                        Nothing
+
+                else
+                    scanPlainLinkDestinationHelp text textLen (i + 1) depth
+
+
+parseAngleInlineDestination : String -> Int -> Int -> Maybe { rawUrl : String, maybeTitle : Maybe String, consumed : Int }
+parseAngleInlineDestination text textLen angleLtIndex =
+    case scanAngleLinkDestinationEnd text textLen (angleLtIndex + 1) of
+        Nothing ->
+            Nothing
+
+        Just angleGtIndex ->
+            let
+                afterGt : Int
+                afterGt =
+                    angleGtIndex + 1
+
+                rest : String
+                rest =
+                    String.dropLeft afterGt text
+            in
+            -- There might be a title after the destination, eg. [link](</url> (title))
+            matchInlineLinkSuffix rest
+                |> Maybe.map
+                    (\{ maybeTitle, matchedLength } ->
+                        let
+                            rawUrl : String
+                            rawUrl =
+                                String.slice (angleLtIndex + 1) angleGtIndex text
+                        in
+                        { rawUrl = rawUrl
+                        , maybeTitle = maybeTitle
+                        , consumed = afterGt + matchedLength
+                        }
+                    )
+
+
+{-| Angle link destination: CommonMark 488, eg. [link](/my uri)
+
+We're just past the <, we need to find the >
+
+-}
+scanAngleLinkDestinationEnd : String -> Int -> Int -> Maybe Int
+scanAngleLinkDestinationEnd text textLen i =
+    if i >= textLen then
+        -- Didn't find a > before end of the string.
+        Nothing
+
+    else
+        case charAt text i of
+            Nothing ->
+                -- Didn't find a > before end of the string.
+                Nothing
+
+            Just '>' ->
+                Just i
+
+            Just '<' ->
+                {- Can't contain nested <. From the spec:
+
+                   A link destination consists of either
+                   * a sequence of zero or more characters between an opening < and a
+                   closing > that contains no line endings or unescaped < or >
+                   characters, or(...)
+                -}
+                Nothing
+
+            Just _ ->
+                scanAngleLinkDestinationEnd text textLen (i + 1)
+
+
+{-| Finding title in links:
+
+    [foo](/url (title))
+    [foo](</url> (title))
+    [foo](/url 'title')
+    [foo](/url "title")
+
+and so on.
+
+-}
+matchInlineLinkSuffix : String -> Maybe { maybeTitle : Maybe String, matchedLength : Int }
+matchInlineLinkSuffix rest =
+    case Regex.findAtMost 1 inlineLinkSuffixRegex rest of
+        first :: _ ->
+            let
                 maybeTitle : Maybe String
                 maybeTitle =
-                    returnFirstJust
-                        [ maybeTitleSingleQuotes
-                        , maybeTitleDoubleQuotes
-                        , maybeTitleParenthesis
-                        ]
-
-                toMatch : String -> Match
-                toMatch rawUrl =
-                    { matchModel
-                        | type_ =
-                            prepareUrlAndTitle rawUrl maybeTitle
-                                |> (case matchModel.type_ of
-                                        ImageType _ ->
-                                            ImageType
-
-                                        _ ->
-                                            LinkType
-                                   )
-                        , end = matchModel.end + String.length regexMatch.match
-                    }
-                        |> Match
+                    returnFirstJust first.submatches
             in
-            maybeRawUrl
-                |> Maybe.withDefault ""
-                |> toMatch
-                |> Just
+            Just
+                { maybeTitle = maybeTitle
+                , matchedLength = String.length first.match
+                }
 
-        _ ->
+        [] ->
             Nothing
+
+
+{-| Title, whitespace, closing ) of the link
+-}
+inlineLinkSuffixRegex : Regex
+inlineLinkSuffixRegex =
+    Regex.fromString ("^" ++ titleRegex ++ "[ \\t\\r\\n]*\\)")
+        |> Maybe.withDefault Regex.never
 
 
 prepareUrlAndTitle : String -> Maybe String -> ( String, Maybe String )

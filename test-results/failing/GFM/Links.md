@@ -19,7 +19,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<p>[link](&lt;foo bar&gt;)</p>
+<p><a href="foo%0Abar">link</a></p>
 ````````````
 ## [Example 492](https://spec.commonmark.org/0.30/#example-492)
 
@@ -61,27 +61,7 @@ Should give output:
 But instead was:
 
 ````````````html
-<p><a href="%3Cb">a</a>c<a href="%3Cb">a</a>c&gt;<a href="%3Cb%3Ec">a</a></p>
-````````````
-## [Example 495](https://spec.commonmark.org/0.30/#example-495)
-
-This markdown:
-
-````````````markdown
-[link](foo(and(bar)))
-
-````````````
-
-Should give output:
-
-````````````html
-<p><a href="foo(and(bar))">link</a></p>
-````````````
-
-But instead was:
-
-````````````html
-<p>[link](foo(and(bar)))</p>
+<p>[a](&lt;b)c [a](&lt;b)c&gt; [a](&lt;b&gt;c)</p>
 ````````````
 ## [Example 505](https://spec.commonmark.org/0.30/#example-505)
 
